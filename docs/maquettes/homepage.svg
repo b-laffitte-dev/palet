@@ -1,0 +1,322 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="2400" viewBox="0 0 1440 2400" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d3b2e"/>
+      <stop offset="1" stop-color="#1a6b4c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5d576"/>
+      <stop offset="1" stop-color="#d4a017"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ===== TOP BAR ===== -->
+  <rect width="1440" height="40" fill="#0a2e23"/>
+  <text x="60" y="26" fill="#9fc4b5" font-size="13">Fédération de Palet Vendéen</text>
+  <circle cx="1180" cy="20" r="4" fill="#e74c3c"/>
+  <text x="1195" y="25" fill="#fff" font-size="13">EN DIRECT</text>
+  <text x="1290" y="26" fill="#9fc4b5" font-size="13">Connexion  |  Mon espace licencié</text>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <rect y="40" width="1440" height="80" fill="#0d3b2e"/>
+  <g>
+    <circle cx="80" cy="80" r="26" fill="url(#gold)"/>
+    <circle cx="80" cy="80" r="16" fill="#0d3b2e"/>
+    <circle cx="80" cy="80" r="7" fill="url(#gold)"/>
+    <text x="120" y="72" fill="#f5d576" font-size="24" font-weight="bold">PALET VENDÉEN</text>
+    <text x="120" y="95" fill="#9fc4b5" font-size="13">LE SITE OFFICIEL — CHAMPIONNATS, CLUBS &amp; TOURNOIS</text>
+  </g>
+  <g font-size="15" fill="#e8f5ef" font-weight="600">
+    <text x="640" y="85" fill="#f5d576" text-decoration="underline">Championnat</text>
+    <text x="770" y="85">Tournois</text>
+    <text x="870" y="85">Clubs</text>
+    <text x="960" y="85">Joueurs</text>
+    <text x="1050" y="85">Fédération</text>
+    <text x="1160" y="85">Actualités</text>
+  </g>
+  <rect x="1290" y="62" width="110" height="36" rx="18" fill="#f5d576"/>
+  <text x="1315" y="85" fill="#0d3b2e" font-size="14" font-weight="bold">S'inscrire</text>
+
+  <!-- ===== HERO : AFFICHE DE MATCH (style Top 14) ===== -->
+  <rect y="120" width="1440" height="520" fill="url(#hero)"/>
+  <rect y="120" width="1440" height="520" fill="#000" opacity="0.05"/>
+  <text x="720" y="175" fill="#f5d576" font-size="18" font-weight="bold" text-anchor="middle" letter-spacing="4">FINALE DU CHAMPIONNAT DE VENDÉE — DIVISION 1</text>
+  <text x="720" y="205" fill="#cfe8dc" font-size="15" text-anchor="middle">Samedi 14 juin 2025 · 15h00 · Terrain clos de La Roche-sur-Yon</text>
+
+  <!-- team left -->
+  <circle cx="420" cy="330" r="80" fill="#fff" stroke="#f5d576" stroke-width="4"/>
+  <text x="420" y="325" fill="#0d3b2e" font-size="34" font-weight="bold" text-anchor="middle">PC</text>
+  <text x="420" y="360" fill="#0d3b2e" font-size="14" text-anchor="middle">PALET CLUB</text>
+  <text x="420" y="460" fill="#fff" font-size="30" font-weight="bold" text-anchor="middle">LA ROCHE-SUR-YON</text>
+  <text x="420" y="485" fill="#9fc4b5" font-size="14" text-anchor="middle">Vainqueur poule A</text>
+
+  <!-- score -->
+  <rect x="620" y="290" width="200" height="90" rx="10" fill="#0a2e23" stroke="#f5d576" stroke-width="2"/>
+  <text x="690" y="348" fill="#fff" font-size="42" font-weight="bold" text-anchor="middle">72</text>
+  <text x="750" y="348" fill="#f5d576" font-size="42" font-weight="bold" text-anchor="middle">68</text>
+  <line x1="720" y1="305" x2="720" y2="365" stroke="#f5d576" stroke-width="2"/>
+  <rect x="640" y="400" width="160" height="34" rx="17" fill="#e74c3c"/>
+  <text x="720" y="423" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">● LIVE — Manche 24</text>
+
+  <!-- team right -->
+  <circle cx="1020" cy="330" r="80" fill="#fff" stroke="#f5d576" stroke-width="4"/>
+  <text x="1020" y="325" fill="#0d3b2e" font-size="34" font-weight="bold" text-anchor="middle">FC</text>
+  <text x="1020" y="360" fill="#0d3b2e" font-size="14" text-anchor="middle">FONTENAY</text>
+  <text x="1020" y="460" fill="#fff" font-size="30" font-weight="bold" text-anchor="middle">CLOS FONTENOIS</text>
+  <text x="1020" y="485" fill="#9fc4b5" font-size="14" text-anchor="middle">Vainqueur poule B</text>
+
+  <text x="720" y="590" fill="#fff" font-size="16" text-anchor="middle" font-weight="600">📍 Terrain clos municipal — entrée gratuite · buvette et fan zone</text>
+
+  <!-- ===== BANDEAU LIVE SCORES ===== -->
+  <rect y="640" width="1440" height="130" fill="#0a2e23"/>
+  <text x="60" y="672" fill="#f5d576" font-size="16" font-weight="bold">⏱ SCORES EN DIRECT — 12e journée</text>
+  <g font-size="14" fill="#fff">
+    <rect x="60" y="690" width="410" height="60" rx="8" fill="#124a38"/>
+    <text x="80" y="715">Luçon PC</text><text x="200" y="715" fill="#f5d576" font-weight="bold">45 — 38</text><text x="270" y="715">Les Sables</text>
+    <text x="80" y="738" fill="#9fc4b5" font-size="12">Manche 18 · en cours</text>
+
+    <rect x="490" y="690" width="410" height="60" rx="8" fill="#124a38"/>
+    <text x="510" y="715">Challans</text><text x="630" y="715" fill="#f5d576" font-weight="bold">52 — 52</text><text x="700" y="715">Montaigu</text>
+    <text x="510" y="738" fill="#9fc4b5" font-size="12">Manche 21 · en cours</text>
+
+    <rect x="920" y="690" width="410" height="60" rx="8" fill="#124a38"/>
+    <text x="940" y="715">Saint-Gilles</text><text x="1070" y="715" fill="#f5d576" font-weight="bold">61 — 44</text><text x="1140" y="715">Pouzaugues</text>
+    <text x="940" y="738" fill="#9fc4b5" font-size="12">Terminé</text>
+  </g>
+
+  <!-- ===== SECTION CLASSEMENT ===== -->
+  <text x="60" y="830" fill="#0d3b2e" font-size="28" font-weight="bold">CHAMPIONNAT — DIVISION 1</text>
+  <text x="300" y="830" fill="#7a8b84" font-size="15">Classement après 12 journées</text>
+  <rect x="1250" y="810" width="140" height="34" rx="17" fill="#0d3b2e"/>
+  <text x="1275" y="833" fill="#fff" font-size="13" font-weight="600">Tout le classement →</text>
+
+  <!-- table header -->
+  <g font-size="13" fill="#7a8b84" font-weight="600">
+    <text x="80" y="880">POS</text><text x="150" y="880">CLUB</text>
+    <text x="900" y="880" text-anchor="middle">MJ</text><text x="960" y="880" text-anchor="middle">G</text>
+    <text x="1010" y="880" text-anchor="middle">P</text><text x="1080" y="880" text-anchor="middle">DIFF</text>
+    <text x="1180" y="880" text-anchor="middle">PTS</text><text x="1300" y="880">FORME</text>
+  </g>
+
+  <g font-size="16">
+    <!-- row 1 (qualifs directes) -->
+    <rect x="60" y="895" width="1330" height="58" fill="#eaf4ee"/>
+    <rect x="60" y="895" width="6" height="58" fill="#1a6b4c"/>
+    <text x="105" y="930" font-weight="bold" fill="#0d3b2e" text-anchor="middle">1</text>
+    <circle cx="170" cy="924" r="16" fill="#0d3b2e"/><text x="170" y="929" fill="#f5d576" font-size="12" text-anchor="middle">LR</text>
+    <text x="200" y="930" fill="#0d3b2e" font-weight="600">La Roche-sur-Yon Palet Club</text>
+    <text x="900" y="930" text-anchor="middle" fill="#333">12</text><text x="960" y="930" text-anchor="middle" fill="#333">10</text>
+    <text x="1010" y="930" text-anchor="middle" fill="#333">2</text><text x="1080" y="930" text-anchor="middle" fill="#333">+84</text>
+    <text x="1180" y="930" text-anchor="middle" fill="#0d3b2e" font-weight="bold">30</text>
+    <g>
+      <rect x="1255" y="917" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1275" y="917" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1295" y="917" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1315" y="917" width="14" height="14" rx="3" fill="#e74c3c"/>
+      <rect x="1335" y="917" width="14" height="14" rx="3" fill="#2ecc71"/>
+    </g>
+
+    <!-- row 2 -->
+    <rect x="60" y="953" width="1330" height="58" fill="#fff"/>
+    <rect x="60" y="953" width="6" height="58" fill="#1a6b4c"/>
+    <text x="105" y="988" font-weight="bold" fill="#0d3b2e" text-anchor="middle">2</text>
+    <circle cx="170" cy="982" r="16" fill="#0d3b2e"/><text x="170" y="987" fill="#f5d576" font-size="12" text-anchor="middle">CF</text>
+    <text x="200" y="988" fill="#0d3b2e" font-weight="600">Clos Fontenois</text>
+    <text x="900" y="988" text-anchor="middle" fill="#333">12</text><text x="960" y="988" text-anchor="middle" fill="#333">9</text>
+    <text x="1010" y="988" text-anchor="middle" fill="#333">3</text><text x="1080" y="988" text-anchor="middle" fill="#333">+61</text>
+    <text x="1180" y="988" text-anchor="middle" fill="#0d3b2e" font-weight="bold">28</text>
+    <g>
+      <rect x="1255" y="975" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1275" y="975" width="14" height="14" rx="3" fill="#e74c3c"/>
+      <rect x="1295" y="975" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1315" y="975" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1335" y="975" width="14" height="14" rx="3" fill="#2ecc71"/>
+    </g>
+
+    <!-- row 3 barrage -->
+    <rect x="60" y="1011" width="1330" height="58" fill="#eaf4ee"/>
+    <rect x="60" y="1011" width="6" height="58" fill="#f5d576"/>
+    <text x="105" y="1046" font-weight="bold" fill="#0d3b2e" text-anchor="middle">3</text>
+    <circle cx="170" cy="1040" r="16" fill="#0d3b2e"/><text x="170" y="1045" fill="#f5d576" font-size="12" text-anchor="middle">LU</text>
+    <text x="200" y="1046" fill="#0d3b2e" font-weight="600">Luçon Palet Club</text>
+    <text x="900" y="1046" text-anchor="middle" fill="#333">12</text><text x="960" y="1046" text-anchor="middle" fill="#333">8</text>
+    <text x="1010" y="1046" text-anchor="middle" fill="#333">4</text><text x="1080" y="1046" text-anchor="middle" fill="#333">+38</text>
+    <text x="1180" y="1046" text-anchor="middle" fill="#0d3b2e" font-weight="bold">26</text>
+    <g>
+      <rect x="1255" y="1033" width="14" height="14" rx="3" fill="#f39c12"/>
+      <rect x="1275" y="1033" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1295" y="1033" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1315" y="1033" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1335" y="1033" width="14" height="14" rx="3" fill="#e74c3c"/>
+    </g>
+
+    <!-- rows 4-5 neutral, row 6 descente -->
+    <rect x="60" y="1069" width="1330" height="58" fill="#fff"/>
+    <text x="105" y="1104" font-weight="bold" fill="#0d3b2e" text-anchor="middle">4</text>
+    <circle cx="170" cy="1098" r="16" fill="#0d3b2e"/><text x="170" y="1103" fill="#f5d576" font-size="12" text-anchor="middle">CH</text>
+    <text x="200" y="1104" fill="#0d3b2e" font-weight="600">Challans Sport Palet</text>
+    <text x="900" y="1104" text-anchor="middle" fill="#333">12</text><text x="960" y="1104" text-anchor="middle" fill="#333">7</text>
+    <text x="1010" y="1104" text-anchor="middle" fill="#333">5</text><text x="1080" y="1104" text-anchor="middle" fill="#333">+12</text>
+    <text x="1180" y="1104" text-anchor="middle" fill="#0d3b2e" font-weight="bold">24</text>
+    <g>
+      <rect x="1255" y="1091" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1275" y="1091" width="14" height="14" rx="3" fill="#e74c3c"/>
+      <rect x="1295" y="1091" width="14" height="14" rx="3" fill="#f39c12"/>
+      <rect x="1315" y="1091" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1335" y="1091" width="14" height="14" rx="3" fill="#2ecc71"/>
+    </g>
+
+    <!-- row 6 relegation -->
+    <rect x="60" y="1127" width="1330" height="58" fill="#fdecea"/>
+    <rect x="60" y="1127" width="6" height="58" fill="#e74c3c"/>
+    <text x="105" y="1162" font-weight="bold" fill="#c0392b" text-anchor="middle">6</text>
+    <circle cx="170" cy="1156" r="16" fill="#0d3b2e"/><text x="170" y="1161" fill="#f5d576" font-size="12" text-anchor="middle">PO</text>
+    <text x="200" y="1162" fill="#0d3b2e" font-weight="600">Pouzaugues PC</text>
+    <text x="900" y="1162" text-anchor="middle" fill="#333">12</text><text x="960" y="1162" text-anchor="middle" fill="#333">2</text>
+    <text x="1010" y="1162" text-anchor="middle" fill="#333">10</text><text x="1080" y="1162" text-anchor="middle" fill="#333">−52</text>
+    <text x="1180" y="1162" text-anchor="middle" fill="#c0392b" font-weight="bold">8</text>
+    <g>
+      <rect x="1255" y="1149" width="14" height="14" rx="3" fill="#e74c3c"/>
+      <rect x="1275" y="1149" width="14" height="14" rx="3" fill="#e74c3c"/>
+      <rect x="1295" y="1149" width="14" height="14" rx="3" fill="#2ecc71"/>
+      <rect x="1315" y="1149" width="14" height="14" rx="3" fill="#e74c3c"/>
+      <rect x="1335" y="1149" width="14" height="14" rx="3" fill="#f39c12"/>
+    </g>
+  </g>
+
+  <!-- legend -->
+  <g font-size="12" fill="#7a8b84">
+    <rect x="60" y="1200" width="14" height="14" rx="3" fill="#1a6b4c"/><text x="80" y="1212">Finale</text>
+    <rect x="140" y="1200" width="14" height="14" rx="3" fill="#f5d576"/><text x="160" y="1212">Barrage</text>
+    <rect x="240" y="1200" width="14" height="14" rx="3" fill="#e74c3c"/><text x="260" y="1212">Descente D2</text>
+  </g>
+
+  <!-- ===== SECTION TOURNOIS ===== -->
+  <rect y="1260" width="1440" height="420" fill="#f4f7f5"/>
+  <text x="60" y="1310" fill="#0d3b2e" font-size="28" font-weight="bold">TOURNOIS À VENIR</text>
+  <text x="290" y="1310" fill="#7a8b84" font-size="15">Open, qualificatifs et championnats</text>
+
+  <g>
+    <!-- card 1 -->
+    <rect x="60" y="1340" width="420" height="290" rx="14" fill="#fff" stroke="#dbe5df"/>
+    <rect x="60" y="1340" width="420" height="90" rx="14" fill="#1a6b4c"/>
+    <rect x="60" y="1410" width="420" height="20" fill="#1a6b4c"/>
+    <text x="90" y="1375" fill="#f5d576" font-size="13" font-weight="bold">OPEN NATIONAL</text>
+    <text x="90" y="1400" fill="#fff" font-size="20" font-weight="bold">Open de Luçon</text>
+    <rect x="350" y="1362" width="100" height="26" rx="13" fill="#f5d576"/>
+    <text x="375" y="1380" fill="#0d3b2e" font-size="12" font-weight="bold">Inscriptions</text>
+    <text x="90" y="1470" fill="#333" font-size="15" font-weight="600">📅 Dimanche 6 juillet 2025</text>
+    <text x="90" y="1498" fill="#7a8b84" font-size="14">📍 Terrain clos de Luçon (85)</text>
+    <text x="90" y="1522" fill="#7a8b84" font-size="14">👥 64 joueurs · 8 poules · élimination directe</text>
+    <text x="90" y="1546" fill="#7a8b84" font-size="14">💰 500 € de lots · buvette sur place</text>
+    <rect x="90" y="1570" width="150" height="32" rx="16" fill="#0d3b2e"/>
+    <text x="115" y="1591" fill="#fff" font-size="13" font-weight="600">S'inscrire en ligne</text>
+
+    <!-- card 2 -->
+    <rect x="510" y="1340" width="420" height="290" rx="14" fill="#fff" stroke="#dbe5df"/>
+    <rect x="510" y="1340" width="420" height="90" rx="14" fill="#0d3b2e"/>
+    <rect x="510" y="1410" width="420" height="20" fill="#0d3b2e"/>
+    <text x="540" y="1375" fill="#f5d576" font-size="13" font-weight="bold">CHAMPIONNAT DÉPARTEMENTAL</text>
+    <text x="540" y="1400" fill="#fff" font-size="20" font-weight="bold">Championnat D2 — J13</text>
+    <rect x="800" y="1362" width="100" height="26" rx="13" fill="#f5d576"/>
+    <text x="825" y="1380" fill="#0d3b2e" font-size="12" font-weight="bold">Billetterie</text>
+    <text x="540" y="1470" fill="#333" font-size="15" font-weight="600">📅 Dimanche 29 juin 2025</text>
+    <text x="540" y="1498" fill="#7a8b84" font-size="14">📍 Saint-Gilles-Croix-de-Vie (85)</text>
+    <text x="540" y="1522" fill="#7a8b84" font-size="14">👥 48 joueurs · 12 clubs représentés</text>
+    <text x="540" y="1546" fill="#7a8b84" font-size="14">🏆 Titre de champion D2 en jeu</text>
+    <rect x="540" y="1570" width="160" height="32" rx="16" fill="#0d3b2e"/>
+    <text x="565" y="1591" fill="#fff" font-size="13" font-weight="600">Voir la poule</text>
+
+    <!-- card 3 -->
+    <rect x="960" y="1340" width="420" height="290" rx="14" fill="#fff" stroke="#dbe5df"/>
+    <rect x="960" y="1340" width="420" height="90" rx="14" fill="#b8860b"/>
+    <rect x="960" y="1410" width="420" height="20" fill="#b8860b"/>
+    <text x="990" y="1375" fill="#fff8e1" font-size="13" font-weight="bold">ÉVÉNEMENT FÉDÉRAL</text>
+    <text x="990" y="1400" fill="#fff" font-size="20" font-weight="bold">Internationaux de Vendée</text>
+    <rect x="1250" y="1362" width="100" height="26" rx="13" fill="#fff"/>
+    <text x="1275" y="1380" fill="#b8860b" font-size="12" font-weight="bold">Complet</text>
+    <text x="990" y="1470" fill="#333" font-size="15" font-weight="600">📅 15–17 août 2025</text>
+    <text x="990" y="1498" fill="#7a8b84" font-size="14">📍 La Roche-sur-Yon — 4 terrains</text>
+    <text x="990" y="1522" fill="#7a8b84" font-size="14">👥 128 joueurs · délégations FR + MX</text>
+    <text x="990" y="1546" fill="#7a8b84" font-size="14">📺 Streaming + live score</text>
+    <rect x="990" y="1570" width="180" height="32" rx="16" fill="#0d3b2e"/>
+    <text x="1015" y="1591" fill="#fff" font-size="13" font-weight="600">Suivre en direct</text>
+  </g>
+
+  <!-- ===== SECTION MEILLEURS JOUEURS ===== -->
+  <text x="60" y="1760" fill="#0d3b2e" font-size="28" font-weight="bold">LES MEILLEURS JOUEURS</text>
+  <text x="380" y="1760" fill="#7a8b84" font-size="15">Statistiques de la saison</text>
+
+  <g>
+    <!-- player card 1 -->
+    <rect x="60" y="1790" width="420" height="260" rx="14" fill="#fff" stroke="#dbe5df"/>
+    <rect x="60" y="1790" width="420" height="6" fill="url(#gold)"/>
+    <circle cx="120" cy="1870" r="42" fill="#0d3b2e"/>
+    <text x="120" y="1878" fill="#f5d576" font-size="26" font-weight="bold" text-anchor="middle">JM</text>
+    <text x="185" y="1855" fill="#0d3b2e" font-size="20" font-weight="bold">Jean Morice</text>
+    <text x="185" y="1880" fill="#7a8b84" font-size="14">La Roche-sur-Yon · Div. 1</text>
+    <rect x="185" y="1895" width="110" height="22" rx="11" fill="#f5d576"/>
+    <text x="200" y="1911" fill="#0d3b2e" font-size="12" font-weight="bold">★ Joueur MVP</text>
+    <g font-size="14" fill="#333">
+      <text x="90" y="1960">Points marqués : <tspan font-weight="bold" fill="#0d3b2e">412</tspan></text>
+      <text x="90" y="1988">Moyenne / manche : <tspan font-weight="bold" fill="#0d3b2e">11,4</tspan></text>
+      <text x="90" y="2016">Lancers gagnants : <tspan font-weight="bold" fill="#0d3b2e">68 %</tspan></text>
+    </g>
+
+    <!-- player card 2 -->
+    <rect x="510" y="1790" width="420" height="260" rx="14" fill="#fff" stroke="#dbe5df"/>
+    <rect x="510" y="1790" width="420" height="6" fill="#1a6b4c"/>
+    <circle cx="570" cy="1870" r="42" fill="#0d3b2e"/>
+    <text x="570" y="1878" fill="#f5d576" font-size="26" font-weight="bold" text-anchor="middle">PB</text>
+    <text x="635" y="1855" fill="#0d3b2e" font-size="20" font-weight="bold">Pierre Baudry</text>
+    <text x="635" y="1880" fill="#7a8b84" font-size="14">Clos Fontenois · Div. 1</text>
+    <rect x="635" y="1895" width="130" height="22" rx="11" fill="#eaf4ee"/>
+    <text x="650" y="1911" fill="#1a6b4c" font-size="12" font-weight="bold">Meilleur marqueur</text>
+    <g font-size="14" fill="#333">
+      <text x="540" y="1960">Points marqués : <tspan font-weight="bold" fill="#0d3b2e">445</tspan></text>
+      <text x="540" y="1988">Moyenne / manche : <tspan font-weight="bold" fill="#0d3b2e">10,8</tspan></text>
+      <text x="540" y="2016">Lancers gagnants : <tspan font-weight="bold" fill="#0d3b2e">64 %</tspan></text>
+    </g>
+
+    <!-- player card 3 -->
+    <rect x="960" y="1790" width="420" height="260" rx="14" fill="#fff" stroke="#dbe5df"/>
+    <rect x="960" y="1790" width="420" height="6" fill="#b8860b"/>
+    <circle cx="1020" cy="1870" r="42" fill="#0d3b2e"/>
+    <text x="1020" y="1878" fill="#f5d576" font-size="26" font-weight="bold" text-anchor="middle">AL</text>
+    <text x="1085" y="1855" fill="#0d3b2e" font-size="20" font-weight="bold">Anaïs Léger</text>
+    <text x="1085" y="1880" fill="#7a8b84" font-size="14">Luçon · Div. 1 Féminines</text>
+    <rect x="1085" y="1895" width="120" height="22" rx="11" fill="#fdf3d8"/>
+    <text x="1100" y="1911" fill="#b8860b" font-size="12" font-weight="bold">Révélation 2025</text>
+    <g font-size="14" fill="#333">
+      <text x="990" y="1960">Points marqués : <tspan font-weight="bold" fill="#0d3b2e">398</tspan></text>
+      <text x="990" y="1988">Moyenne / manche : <tspan font-weight="bold" fill="#0d3b2e">11,1</tspan></text>
+      <text x="990" y="2016">Lancers gagnants : <tspan font-weight="bold" fill="#0d3b2e">71 %</tspan></text>
+    </g>
+  </g>
+
+  <!-- ===== SECTION FEDERATION / ESPACES ===== -->
+  <rect y="2100" width="1440" height="220" fill="#0a2e23"/>
+  <text x="60" y="2150" fill="#f5d576" font-size="22" font-weight="bold">NOS ESPACES</text>
+  <g>
+    <rect x="60" y="2175" width="300" height="100" rx="10" fill="#124a38"/>
+    <text x="80" y="2210" fill="#fff" font-size="16" font-weight="bold">🏛 Espace Fédération</text>
+    <text x="80" y="2235" fill="#9fc4b5" font-size="13">Licences, règles, arbitres, sélections</text>
+
+    <rect x="380" y="2175" width="300" height="100" rx="10" fill="#124a38"/>
+    <text x="400" y="2210" fill="#fff" font-size="16" font-weight="bold">🏟 Espace Club</text>
+    <text x="400" y="2235" fill="#9fc4b5" font-size="13">Effectifs, résultats, gestion des équipes</text>
+
+    <rect x="700" y="2175" width="300" height="100" rx="10" fill="#124a38"/>
+    <text x="720" y="2210" fill="#fff" font-size="16" font-weight="bold">👤 Espace Joueur</text>
+    <text x="720" y="2235" fill="#9fc4b5" font-size="13">Profil, stats, palmarès personnel</text>
+
+    <rect x="1020" y="2175" width="300" height="100" rx="10" fill="#124a38"/>
+    <text x="1040" y="2210" fill="#fff" font-size="16" font-weight="bold">📣 Espace Supporter</text>
+    <text x="1040" y="2235" fill="#9fc4b5" font-size="13">Pronostics, votes, notifications</text>
+  </g>
+
+  <!-- ===== FOOTER ===== -->
+  <rect y="2330" width="1440" height="70" fill="#071f17"/>
+  <text x="60" y="2370" fill="#9fc4b5" font-size="13">Fédération de Palet Vendéen · Mentions légales · RGPD · Contact</text>
+  <text x="1380" y="2370" fill="#9fc4b5" font-size="13" text-anchor="end">Maquette — Page d'accueil</text>
+</svg>
