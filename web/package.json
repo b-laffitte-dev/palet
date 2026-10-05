@@ -1,0 +1,33 @@
+{
+  "name": "palet-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint src",
+    "format": "oxfmt src",
+    "format:check": "oxfmt --check src",
+    "types": "openapi-typescript",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5",
+    "openapi-fetch": "^0.14",
+    "react": "^19",
+    "react-dom": "^19",
+    "react-router": "^7"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5",
+    "openapi-typescript": "^7",
+    "oxlint": "^1",
+    "typescript": "~5.9",
+    "vite": "^7",
+    "vitest": "^3"
+  }
+}
