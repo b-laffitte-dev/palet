@@ -25,6 +25,7 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5",
     "openapi-typescript": "^7",
+    "oxfmt": "^0.72.0",
     "oxlint": "^1",
     "typescript": "~5.9",
     "vite": "^7",
