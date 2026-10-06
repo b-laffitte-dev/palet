@@ -19,7 +19,6 @@ services:
     build: ./backend
     environment:
       DATABASE_URL: postgres://palet:palet@db:5432/palet
-      RUST_LOG: info
     ports:
       - "3000:3000"
     depends_on:
