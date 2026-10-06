@@ -1,8 +1,7 @@
-FROM rust:1.85 AS build
+FROM node:22
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
-RUN cargo build --release
-
-FROM debian:bookworm-slim
-COPY --from=build /app/target/release/palet-backend /usr/local/bin/palet-backend
-CMD ["palet-backend"]
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
