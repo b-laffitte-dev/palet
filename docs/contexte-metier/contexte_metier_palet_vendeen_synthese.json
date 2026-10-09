@@ -1,0 +1,259 @@
+{
+  "palet_vendeen": {
+    "metadata": {
+      "date_creation": "2026-10-09",
+      "sources": [
+        "https://www.le-palet.com/",
+        "https://fr.wikipedia.org/wiki/Palet_vend%C3%A9en",
+        "https://www.palet-vendeen.fr/regles-du-palet-vendeen",
+        "https://www.petanqueshop.com/regle-palet-vendeen.html",
+        "https://conseilsport.decathlon.fr/jeu-de-palets-vendeens-les-regles-du-jeu"
+      ]
+    },
+    
+    "histoire": {
+      "origines": "XVe siècle (pierres plates sur le sol)",
+      "standardisation": "Années 1960 (plaques de plomb, palets en fonte/laiton)",
+      "patrimoine": "Inventaire du patrimoine culturel immatériel (2012)"
+    },
+    
+    "geographie": {
+      "principal": "Vendée (85)",
+      "secondaires": [
+        "Deux-Sèvres (79)",
+        "Maine-et-Loire (49)",
+        "Charente-Maritime (17)",
+        "Loire-Atlantique (44)",
+        "Vienne (86)"
+      ]
+    },
+    
+    "materiel": {
+      "plaque": {
+        "dimensions": "45cm x 45cm",
+        "poids_min": "20kg",
+        "materiau": "plomb"
+      },
+      "palets": {
+        "fonte": {
+          "diametre": "54mm",
+          "poids": "~100g",
+          "quantite_par_equipe": 6,
+          "distance_lancer": "3.80m",
+          "couleurs": "2 couleurs différentes"
+        },
+        "laiton": {
+          "diametre": "40mm",
+          "poids": "~50g",
+          "quantite_par_equipe": 6,
+          "distance_lancer": "2.80m",
+          "couleurs": "6 lisses + 6 striés"
+        }
+      },
+      "maitre": {
+        "description": "Petit palet de couleur différente",
+        "epaisseur": "Identique aux autres palets"
+      }
+    },
+    
+    "regles": {
+      "objectif": "Placer ses palets le plus près du maître sur la plaque",
+      "points_victoire": {
+        "partie_normale": 13,
+        "finale": 15
+      },
+      "deroulement_manche": [
+        "Placement du maître (2 tentatives max)",
+        "Lancer des palets alterné par équipe",
+        "Comptage des points à la fin de la manche"
+      ],
+      "comptage_points": {
+        "regle": "1 point par palet plus près du maître que le premier palet adverse",
+        "tous_les_palets_comptent": true
+      },
+      "cas_particuliers": {
+        "maitre_hors_plaque": "Manche annulée, équipe précédente conserve la main",
+        "palet_rebondit": "Nul (ne compte pas)",
+        "egalite_distance": "Mesure avec mètre",
+        "plusieurs_palets_sur_maitre": "Jeu à tour de rôle jusqu'à résolution"
+      },
+      "formats_jeu": [
+        "1 contre 1 (tête-à-tête)",
+        "2 contre 2 (doublette)",
+        "3 contre 3 (triplette)"
+      ]
+    },
+    
+    "competitions": {
+      "types": {
+        "amicale": {"points": 13},
+        "tournoi_local": {"points": 13},
+        "championnat": {"points": 13, "finale": 15},
+        "coupe_de_france": {"points": 15}
+      },
+      "niveaux": {
+        "national": [
+          {"nom": "Coupe de France", "categories": ["Fonte - Doublette", "Laiton - Doublette", "Bois - Doublette", "Individuel (Fonte/Laiton/Bois)", "Open Féminin"]},
+          {"nom": "Championnat de France Individuel", "categories": ["Fonte", "Laiton", "Bois"]}
+        ],
+        "regional": [
+          "Auvergne-Rhône-Alpes",
+          "Bretagne (Bois - Finales BRE)",
+          "Nouvelle-Aquitaine",
+          "Pays de la Loire"
+        ],
+        "departemental": [
+          {"nom": "Championnat de Vendée Fonte", "saison": "2025-2026"},
+          {"nom": "Coupe de Vendée Jeunes", "edition": "28ème (2026)"},
+          {"nom": "Challenge de Vendée", "edition": "2026"},
+          {"nom": "Coupe des Clubs 79", "edition": "9ème (2025)"}
+        ]
+      },
+      "calendrier_2026": [
+        {"date": "2026-02-22", "evenement": "Open Féminin Palet", "vainqueur": "Elise BESSEAU"},
+        {"date": "2026-03-02", "evenement": "Coupe de France Palet"},
+        {"date": "2026-03-14", "evenement": "Challenge de Vendée", "vainqueur": "Gétigné"},
+        {"date": "2026-03-28", "evenement": "Coupe de Vendée", "vainqueur": "Sérigné"},
+        {"date": "2026-05-31", "evenement": "Coupe de France", "vainqueurs": ["Etienne CHIRON", "Gaëtan CHARBONNEAU"]},
+        {"date": "2026-06-11", "evenement": "Coupe de France Doublette Fonte sur bois"},
+        {"date": "2026-08-24", "evenement": "Coupe de Vendée Jeunes", "organisateurs": ["CVDP", "CDSMR 85"]},
+        {"date": "2026-10-05", "evenement": "Coupe de France Individuel Palet"}
+      ],
+      "classement": {
+        "critere_1": "Points (décroissant)",
+        "critere_2": "Différence de points",
+        "critere_3": "Points marqués (Bp)"
+      }
+    },
+    
+    "organisation": {
+      "federation_nationale": {
+        "nom": "Fédération Nationale du Sport en Milieu Rural (FNSMR)",
+        "role": "Organe référent du palet en France",
+        "site": "https://www.le-palet.com/",
+        "disciplines": [
+          "Palet fonte/laiton",
+          "Palet sur terre",
+          "Palet sur route",
+          "Palet coutançais",
+          "Galoche sur billot",
+          "Palet gascon"
+        ]
+      },
+      "commissions_departementales": [
+        {
+          "nom": "Commission Vendéenne Du Palet (CVDP)",
+          "role": "Organisation des compétitions en Vendée",
+          "partenaires": ["CDSMR 85", "Club des Essarts"],
+          "evenements": ["Championnat de Vendée", "Coupe de Vendée Jeunes"]
+        },
+        {
+          "nom": "Commission Deux-Sévrienne Du Palet (CDSP)",
+          "role": "Organisation des compétitions dans les Deux-Sèvres",
+          "exemple": "9ème Coupe des Clubs 79 de Palet (22/11/2025)",
+          "stats": "11 clubs, 138 doublettes, 276 joueurs"
+        }
+      ],
+      "clubs": [
+        "Club des Essarts (Vendée)",
+        "Palet du Marais Champagnelais",
+        "La Sportive (Saint Pardoux)"
+      ],
+      "partenaires": [
+        "Crédit Mutuel Océan",
+        "Département de la Vendée",
+        "Agence Nationale du Sport"
+      ]
+    },
+    
+    "variantes": {
+      "palet_fonte_vs_laiton": {
+        "fonte": {"poids": "~100g", "diametre": "54mm", "distance": "3.80m", "zone": "Sud Loire-Atlantique, Vendée"},
+        "laiton": {"poids": "~50g", "diametre": "40mm", "distance": "2.80m", "zone": "Bas-Poitou"}
+      },
+      "autres": [
+        "Palet Breton (sur planche en bois, terre battue)",
+        "Palet Valdôtain (Vallée d'Aoste, Italie)",
+        "Palet sur Terre",
+        "Palet sur Route",
+        "Palet Coutançais",
+        "Galoche sur Billot"
+      ]
+    },
+    
+    "culture_et_securite": {
+      "importance_culturelle": [
+        "Transmission de génération en génération",
+        "Intégré aux fêtes locales et rassemblements familiaux",
+        "Activité de team building pour entreprises",
+        "Attraction touristique"
+      ],
+      "securite": {
+        "risque": "Saturnisme (plomb des plaques et palets en bronze)",
+        "danger": "Enfants peuvent toucher/sucer/lécher le plomb (goût sucré à l'oxydation)",
+        "recommandations": [
+          "Éviter le contact avec les enfants",
+          "Nettoyer les palets après utilisation",
+          "Utiliser des alternatives si nécessaire"
+        ]
+      },
+      "convivialite": [
+        "Jeu social (amis, famille)",
+        "Mixité (tous âges, tous genres)",
+        "Tradition (accompagné de boissons et repas locaux)"
+      ]
+    },
+    
+    "lexique": {
+      "palet": "Disque métallique (fonte ou laiton) lancé vers la plaque",
+      "maitre": "Petit palet servant de cible",
+      "plaque": "Surface en plomb carrée (45x45 cm)",
+      "faire_le_point": "Placer un palet plus près du maître que l'adversaire",
+      "manche": "Série de lancers jusqu'à épuisement des palets",
+      "la_balle": "Finale jouée en 15 points",
+      "chezelle": "Cercle situé au milieu du terrain (terme ancien)",
+      "paletiste": "Joueur de palet",
+      "doublette": "Équipe de 2 joueurs",
+      "triplette": "Équipe de 3 joueurs",
+      "Bp": "Points marqués (Bons Points)",
+      "CVDP": "Commission Vendéenne Du Palet",
+      "CDSMR": "Comité Départemental du Sport en Milieu Rural",
+      "FNSMR": "Fédération Nationale du Sport en Milieu Rural"
+    },
+    
+    "besoins_metier": {
+      "gestion_competitions": [
+        "Système de classement (points, différence, Bp)",
+        "Calendrier saisonnier",
+        "Inscription (équipes/individuel)",
+        "Phases (poules + élimination directe)"
+      ],
+      "gestion_joueurs_equipes": [
+        "Profil joueur (historique, classement, statistiques)",
+        "Équipes (composition, capitaines, performances)",
+        "Clubs (affiliation, localisation, résultats)"
+      ],
+      "gestion_materiel": [
+        "Inventaire (plaques, palets, maîtres)",
+        "Maintenance (vérification poids/dimensions)",
+        "Prêt/Location (pour tournois)",
+        "Sécurité (contrôle plomb)"
+      ],
+      "suivi_resultats": [
+        "Saisie des scores (par manche, partie, tournoi)",
+        "Statistiques (moyennes, records, classements)",
+        "Historique (archives des compétitions)"
+      ],
+      "communication": [
+        "Actualités (résultats, événements à venir)",
+        "Partenariats (sponsors, soutiens locaux)",
+        "Réseaux sociaux (Facebook, sites dédiés)"
+      ],
+      "analyse_performances": [
+        "Tableaux de bord",
+        "Rapports statistiques",
+        "Analyse des tendances"
+      ]
+    }
+  }
+}
