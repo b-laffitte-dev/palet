@@ -1,4 +1,4 @@
-// Core Types for Palet Vendéen Application
+// Core Types for CDSP 79 Application - Palet Fonte Deux-Sèvres
 
 // ============================================
 // COMMON TYPES
@@ -223,7 +223,7 @@ export interface Club extends Identifiable, Timestamped {
   postalCode: string | null;
   
   // Affiliation
-  league: string; // ex: "Vendée", "Deux-Sèvres"
+  league: string; // ex: "Deux-Sèvres"
   division: string; // ex: "D1", "D2"
   status: 'active' | 'inactive' | 'suspended';
   

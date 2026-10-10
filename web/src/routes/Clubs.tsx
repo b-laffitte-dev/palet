@@ -41,7 +41,7 @@ const Clubs: React.FC = () => {
               CLUBS
             </h1>
             <p className="text-body-m text-primary-200 mt-2">
-              Annuaire des clubs de Palet Vendéen
+              Annuaire des clubs de Palet Fonte Deux-Sèvres
             </p>
           </div>
         </section>

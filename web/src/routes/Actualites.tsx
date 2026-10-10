@@ -7,7 +7,7 @@ const Actualites: React.FC = () => {
   const newsItems = [
     {
       id: '1',
-      title: 'Résultats de la finale du Championnat Vendée 2025',
+      title: 'Résultats de la finale du Championnat 79 2026',
       excerpt: 'La Roche-sur-Yon Palet Club remporte la finale contre Clos Fontenois dans un match très serré.',
       date: new Date('2025-06-15'),
       category: 'competitions',
@@ -32,15 +32,15 @@ const Actualites: React.FC = () => {
     {
       id: '4',
       title: 'Règlement mis à jour pour les tournois fédéraux',
-      excerpt: 'Un nouveau règlement a été publié pour les tournois sous égide de la CVDP.',
+      excerpt: 'Un nouveau règlement a été publié pour les tournois sous égide du CDSP 79.'
       date: new Date('2025-05-20'),
       category: 'official',
       image: null,
     },
     {
       id: '5',
-      title: 'Palmarès des Internationaux de Vendée 2024',
-      excerpt: 'Retrouvez tous les résultats et classements des Internationaux de Vendée qui se sont tenus en août 2024.',
+      title: 'Palmarès des Challenges CDSP 79 2026',
+      excerpt: 'Retrouvez tous les résultats et classements des Challenges CDSP qui se sont tenus en 2026.'
       date: new Date('2024-08-20'),
       category: 'competitions',
       image: null,
@@ -79,7 +79,7 @@ const Actualites: React.FC = () => {
               ACTUALITÉS
             </h1>
             <p className="text-body-m text-primary-200 mt-2">
-              Toutes les nouvelles du Palet Vendéen
+              Toutes les nouvelles du CDSP 79
             </p>
           </div>
         </section>

@@ -46,7 +46,7 @@ const Connexion: React.FC = () => {
                 <Icon name="Target" size="xxl" className="text-gold-700" />
               </div>
               <h1 className="text-heading-l font-bold text-white uppercase tracking-wide">
-                PALET VENDÉEN
+                CDSP 79
               </h1>
               <p className="text-body-s text-primary-300 mt-2">
                 Fédération des joueurs et clubs
@@ -157,7 +157,7 @@ const Connexion: React.FC = () => {
 
           {/* Footer */}
           <p className="text-center text-caption text-primary-400 mt-8">
-            © 2025 Palet Vendéen - Tous droits réservés
+            © 2026 CDSP 79 - Tous droits réservés
           </p>
         </div>
       </main>

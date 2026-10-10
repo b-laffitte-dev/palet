@@ -252,7 +252,7 @@ const Inscription: React.FC = () => {
 
           {/* Footer */}
           <p className="text-center text-caption text-primary-400 mt-8">
-            © 2025 Palet Vendéen - Tous droits réservés
+            © 2026 CDSP 79 - Tous droits réservés
           </p>
         </div>
       </main>

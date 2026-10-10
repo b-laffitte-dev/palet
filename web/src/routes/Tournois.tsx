@@ -47,7 +47,7 @@ const Tournois: React.FC = () => {
               TOURNOIS
             </h1>
             <p className="text-body-m text-primary-200 mt-2">
-              Tous les tournois et coupes du Palet Vendéen
+              Tous les tournois et coupes du CDSP 79
             </p>
           </div>
         </section>

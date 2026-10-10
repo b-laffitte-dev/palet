@@ -17,7 +17,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
         <div style={styles.leftSection}>
           {/* Federation Name */}
           <Link to="/" style={styles.federationName}>
-            Fédération de Palet Vendéen
+            CDSP 79 - Palet Fonte
           </Link>
           
           {/* Live Indicator */}

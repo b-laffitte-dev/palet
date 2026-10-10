@@ -64,7 +64,7 @@ const Joueurs: React.FC = () => {
               JOUEURS
             </h1>
             <p className="text-body-m text-primary-200 mt-2">
-              Classement et statistiques des joueurs de Palet Vendéen
+              Classement et statistiques des joueurs de Palet Fonte Deux-Sèvres
             </p>
           </div>
         </section>

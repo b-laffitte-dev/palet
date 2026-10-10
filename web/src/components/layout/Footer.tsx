@@ -11,9 +11,9 @@ export function Footer({ className = '' }: FooterProps) {
   const footerLinks = {
     platform: [
       { to: '/a-propos', label: 'À propos' },
-      { to: '/equipe', label: 'L\'équipe' },
-      { to: '/partenaires', label: 'Partenaires' },
-      { to: '/nous-soutenir', label: 'Nous soutenir' },
+      { to: '/membres', label: 'Membres CDSP 79' },
+      { to: '/documents', label: 'Documents' },
+      { to: '/reglement', label: 'Règlement' },
     ],
     legal: [
       { to: '/mentions-legales', label: 'Mentions légales' },
@@ -23,12 +23,12 @@ export function Footer({ className = '' }: FooterProps) {
     support: [
       { to: '/contact', label: 'Contact' },
       { to: '/faq', label: 'FAQ' },
-      { to: '/aide', label: 'Aide' },
+      { to: '/logiciel', label: 'Logiciel Gestion Match' },
     ],
     social: [
-      { to: 'https://facebook.com/paletvendeen', label: 'Facebook', icon: 'facebook' },
-      { to: 'https://twitter.com/paletvendeen', label: 'Twitter', icon: 'twitter' },
-      { to: 'https://instagram.com/paletvendeen', label: 'Instagram', icon: 'instagram' },
+      { to: 'https://facebook.com/CDSP79', label: 'Facebook', icon: 'facebook' },
+      { to: 'https://twitter.com/CDSP79', label: 'Twitter', icon: 'twitter' },
+      { to: 'https://instagram.com/CDSP79', label: 'Instagram', icon: 'instagram' },
     ],
   };
 
@@ -40,12 +40,14 @@ export function Footer({ className = '' }: FooterProps) {
           {/* Logo and Description */}
           <div style={styles.brandSection}>
             <Link to="/" style={styles.logoLink}>
-              <Icon name="Target" size="l" />
-              <span style={styles.logoText}>Palet Vendéen</span>
+              <div className="w-10 h-10 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center bg-black">
+                <span className="text-[var(--text-body-sm)] font-[var(--font-weight-black)] text-[var(--color-gold)]">PC</span>
+              </div>
+              <span style={styles.logoText}>CDSP 79</span>
             </Link>
             <p style={styles.description}>
-              Le site officiel de la Fédération du Palet Vendéen. Suivez les championnats, tournois,
-              et résultats en temps réel.
+              Commission Deux-Sévrienne du Palet. Suivez le Championnat 79, la Coupe 79,
+              et les résultats du palet fonte en temps réel.
             </p>
             <div style={styles.socialLinks}>
               {footerLinks.social.map((link) => (
@@ -74,10 +76,10 @@ export function Footer({ className = '' }: FooterProps) {
         {/* Footer Bottom - Copyright */}
         <div style={styles.bottomBar}>
           <div style={styles.copyright}>
-            © {currentYear} Palet Vendéen — Tous droits réservés
+            © {currentYear} CDSP 79 — Tous droits réservés
           </div>
           <div style={styles.footerMeta}>
-            <span>FNSMR</span>
+            <span>CDSP 79 | FNSMR | CRSMR Nouvelle-Aquitaine</span>
             <span style={styles.metaSeparator}>|</span>
             <span>Version 1.0.0</span>
           </div>

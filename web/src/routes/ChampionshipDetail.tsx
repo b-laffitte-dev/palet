@@ -21,7 +21,7 @@ const mockTeams: Team[] = [
       address: '123 Rue du Palet, 85140 Les Essarts',
       city: 'Les Essarts',
       postalCode: '85140',
-      league: 'Vendée',
+      league: 'Deux-Sèvres',
       division: 'D1',
       status: 'active',
       playersCount: 25,
@@ -66,7 +66,7 @@ const mockTeams: Team[] = [
       address: '456 Rue de la Plaque, 85170 Le Poiré-sur-Vie',
       city: 'Le Poiré-sur-Vie',
       postalCode: '85170',
-      league: 'Vendée',
+      league: 'Deux-Sèvres',
       division: 'D1',
       status: 'active',
       playersCount: 20,
@@ -111,7 +111,7 @@ const mockTeams: Team[] = [
       address: '789 Rue du Jeu, 85500 Les Herbiers',
       city: 'Les Herbiers',
       postalCode: '85500',
-      league: 'Vendée',
+      league: 'Deux-Sèvres',
       division: 'D1',
       status: 'active',
       playersCount: 18,
@@ -156,7 +156,7 @@ const mockTeams: Team[] = [
       address: '321 Rue de la Barre, 85400 Luçon',
       city: 'Luçon',
       postalCode: '85400',
-      league: 'Vendée',
+      league: 'Deux-Sèvres',
       division: 'D1',
       status: 'active',
       playersCount: 15,
@@ -193,14 +193,14 @@ const mockTeams: Team[] = [
 
 const mockChampionship: Championship = {
   id: 'championship-001',
-  name: 'Championnat de Vendée D1 2026-2027',
+  name: 'Championnat 79 D1 2026-2027',
   code: 'D1-2026-2027',
   type: 'championship',
   category: 'doublette',
   material: 'fonte',
   season: '2026-2027',
-  description: 'Le championnat départemental de Vendée en Division 1 pour la saison 2026-2027.',
-  location: 'Vendée, France',
+  description: 'Le championnat départemental des Deux-Sèvres en Division 1 pour la saison 2026-2027.',
+  location: 'Deux-Sèvres, France',
   divisions: ['D1'],
   format: 'round-robin',
   registrationStart: new Date('2026-08-01'),
@@ -513,7 +513,7 @@ const ChampionshipDetail: React.FC = () => {
                   <div className="flex items-center gap-2 md:col-span-3">
                     <span className="text-primary-400">Lieu:</span>
                     <span className="text-gold-700 font-semibold text-body-s">
-                      {displayChampionship.location || 'Vendée, France'}
+                      {displayChampionship.location || 'Deux-Sèvres, France'}
                     </span>
                   </div>
                 </div>

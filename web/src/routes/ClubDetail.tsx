@@ -17,7 +17,7 @@ const mockClub: Club = {
   address: '123 Rue du Palet, 85140 Les Essarts',
   city: 'Les Essarts',
   postalCode: '85140',
-  league: 'Vendée',
+  league: 'Deux-Sèvres',
   division: 'D1',
   status: 'active',
   playersCount: 25,

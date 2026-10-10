@@ -18,11 +18,12 @@ export function Header({ showCTA = true }: HeaderProps) {
   // Navigation links
   const navLinks = [
     { to: '/', label: 'Accueil' },
-    { to: '/championnats', label: 'Championnats' },
-    { to: '/tournois', label: 'Tournois' },
+    { to: '/championnat-79', label: 'Championnat 79' },
+    { to: '/coupe-79', label: 'Coupe 79' },
+    { to: '/challenges', label: 'Challenges' },
     { to: '/clubs', label: 'Clubs' },
     { to: '/joueurs', label: 'Joueurs' },
-    { to: '/federation', label: 'Fédération' },
+    { to: '/documents', label: 'Documents' },
     { to: '/actualites', label: 'Actualités' },
   ];
 
@@ -44,14 +45,14 @@ export function Header({ showCTA = true }: HeaderProps) {
                 <span className="text-[var(--text-heading-l)] font-[var(--font-weight-black)] text-[var(--color-gold)]">PC</span>
               </div>
               <span className="text-[var(--text-heading-m)] font-[var(--font-weight-bold)] tracking-[var(--letter-spacing-tight)] text-white">
-                PALET VENDÉEN
+                CDSP 79
               </span>
             </div>
           </Link>
           <div className="flex items-center gap-[var(--spacing-2)] text-[var(--text-body-xs)] font-[var(--font-weight-medium)] text-text-tertiary tracking-[var(--letter-spacing-wide)] uppercase">
-            <span>LE SITE OFFICIEL</span>
+            <span>COMMISSION DEUX-SÈVRIENNE DU PALET</span>
             <span className="text-gold-pure">—</span>
-            <span>CHAMPIONNATS, CLUBS & TOURNOIS</span>
+            <span>CHAMPIONNAT & COUPE 79</span>
           </div>
         </div>
 
