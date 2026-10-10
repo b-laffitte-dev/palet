@@ -56,18 +56,18 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
         <div>
           <h2 
             id="classification-title"
-            className="text-heading-l font-bold text-white uppercase tracking-wide"
+            className="text-heading-l font-bold text-dark-primary uppercase tracking-wide"
           >
             {competition}
           </h2>
-          <p className="text-body-m text-primary-200">
+          <p className="text-body-m text-dark-secondary">
             Classement après {journee} journée{journee > 1 ? 's' : ''} — {season}
           </p>
         </div>
         {showAllLink && onAllClick && (
           <button 
             onClick={onAllClick}
-            className="text-body-s text-gold-700 hover:text-gold-600 flex items-center gap-1"
+            className="text-body-s text-gold-pure hover:text-gold-dark flex items-center gap-1"
           >
             Tout le classement
             <Icon name="ArrowRight" size="sm" />
@@ -76,33 +76,33 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg border border-primary-700/50">
+      <div className="overflow-x-auto rounded-lg border border-neutral-200 bg-white">
         <table className="w-full text-left">
           {/* Table Header */}
-          <thead className="bg-primary-800">
+          <thead className="bg-neutral-50">
             <tr>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-16">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-16">
                 POS
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider min-w-[200px]">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider min-w-[200px]">
                 CLUB
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-16 text-center">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-16 text-center">
                 MJ
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-16 text-center">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-16 text-center">
                 G
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-16 text-center">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-16 text-center">
                 P
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-16 text-center">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-16 text-center">
                 DIFF
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-16 text-center">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-16 text-center">
                 PTS
               </th>
-              <th className="px-4 py-3 text-body-xs font-bold text-primary-200 uppercase tracking-wider w-24">
+              <th className="px-4 py-3 text-body-xs font-bold text-dark-tertiary uppercase tracking-wider w-24">
                 FORME
               </th>
             </tr>
@@ -117,7 +117,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
               >
                 {/* Position */}
                 <td className="px-4 py-3">
-                  <span className="text-body-l font-bold text-gold-700">
+                  <span className="text-body-l font-bold text-gold-pure">
                     {team.position}
                   </span>
                 </td>
@@ -126,7 +126,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div>
-                      <span className="text-body-m font-medium text-white block">
+                      <span className="text-body-m font-medium text-dark-primary block">
                         {team.team.name}
                       </span>
                     </div>
@@ -135,7 +135,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
                 {/* MJ (Matches Joués) */}
                 <td className="px-4 py-3 text-center">
-                  <span className="text-body-m text-primary-200">{team.stats.matches}</span>
+                  <span className="text-body-m text-dark-secondary">{team.stats.matches}</span>
                 </td>
 
                 {/* G (Gagnés) */}
@@ -159,7 +159,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
                 {/* PTS */}
                 <td className="px-4 py-3 text-center">
-                  <span className="text-body-m font-bold text-gold-700">
+                  <span className="text-body-m font-bold text-gold-pure">
                     {team.stats.points}
                   </span>
                 </td>

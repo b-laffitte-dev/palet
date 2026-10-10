@@ -111,9 +111,10 @@ function FooterNavSection({ title, links }: FooterNavSectionProps) {
 
 const styles = {
   footer: {
-    backgroundColor: 'var(--color-neutral-900)',
-    color: 'var(--color-neutral-300)',
+    backgroundColor: '#000000',
+    color: 'var(--text-secondary)',
     padding: 'var(--spacing-12) 0 var(--spacing-6)',
+    borderTop: '1px solid var(--border-dark)',
   } as React.CSSProperties,
   
   container: {
@@ -147,7 +148,7 @@ const styles = {
   } as React.CSSProperties,
   
   logoText: {
-    color: 'white',
+    color: 'var(--text-primary)',
   } as React.CSSProperties,
   
   description: {
@@ -185,7 +186,7 @@ const styles = {
   navSectionTitle: {
     fontSize: 'var(--text-body-sm)',
     fontWeight: 'var(--font-weight-semibold)',
-    color: 'white',
+    color: 'var(--text-primary)',
     textTransform: 'uppercase' as const,
     letterSpacing: 'var(--letter-spacing-wide)',
   } as React.CSSProperties,
@@ -204,7 +205,7 @@ const styles = {
   
   navSectionLink: {
     fontSize: 'var(--text-body-sm)',
-    color: 'var(--color-neutral-400)',
+    color: 'var(--text-tertiary)',
     textDecoration: 'none',
     transition: 'color var(--transition-colors)',
     ':hover': {
@@ -217,12 +218,12 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: 'var(--spacing-6)',
-    borderTop: '1px solid var(--border-dark)',
+    borderTop: '1px solid var(--border-secondary)',
   } as React.CSSProperties,
   
   copyright: {
     fontSize: 'var(--text-body-xs)',
-    color: 'var(--color-neutral-500)',
+    color: 'var(--text-light)',
   } as React.CSSProperties,
   
   footerMeta: {
@@ -230,11 +231,11 @@ const styles = {
     alignItems: 'center',
     gap: 'var(--spacing-2)',
     fontSize: 'var(--text-body-xs)',
-    color: 'var(--color-neutral-500)',
+    color: 'var(--text-light)',
   } as React.CSSProperties,
   
   metaSeparator: {
-    color: 'var(--color-neutral-600)',
+    color: 'var(--text-tertiary)',
   } as React.CSSProperties,
 };
 

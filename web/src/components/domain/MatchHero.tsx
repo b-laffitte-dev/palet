@@ -34,18 +34,18 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = '' }) =
 
   return (
     <section 
-      className={`w-full bg-primary-900 rounded-lg overflow-hidden ${className}`}
+      className={`w-full bg-green-dark rounded-lg overflow-hidden ${className}`}
       aria-labelledby="match-hero-title"
     >
       {/* Header */}
-      <div className="px-6 py-4 bg-gradient-to-r from-primary-800 to-primary-900">
+      <div className="px-6 py-4 bg-green-dark">
         <h2 
           id="match-hero-title" 
-          className="text-heading-m font-bold text-gold-700 uppercase tracking-wide"
+          className="text-heading-m font-bold text-gold-pure uppercase tracking-wide"
         >
           {match.competition.name} — {match.type}
         </h2>
-        <p className="text-body-m text-primary-200 mt-1">
+        <p className="text-body-m text-gold-pure/80 mt-1">
           {new Date(match.date).toLocaleDateString('fr-FR', {
             weekday: 'long',
             year: 'numeric',
@@ -60,30 +60,34 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = '' }) =
         {/* Team 1 */}
         <div className="flex-1 flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-40 h-40 rounded-full bg-primary-800 border-4 border-gold-700 flex flex-col items-center justify-center">
-              <span className="text-heading-xl font-black text-primary-700">
-                {(match.team1.name || 'T1').substring(0, 2).toUpperCase()}
+            <div className="w-40 h-40 rounded-full bg-green-dark border-4 border-gold-pure flex flex-col items-center justify-center">
+              <span className="text-heading-xl font-black text-gold-pure">
+                PC
               </span>
+              <span className="text-body-xs font-bold text-gold-pure/80">PALET CLUB</span>
             </div>
           </div>
           <span className="text-heading-l font-bold text-white truncate max-w-full">
             {match.team1.name || 'Équipe 1'}
           </span>
+          <span className="text-body-sm text-gold-pure/80">
+            Vainqueur poule A
+          </span>
         </div>
 
         {/* Score */}
         <div className="flex flex-col items-center gap-2">
-          <div className="flex items-baseline gap-8">
+          <div className="flex items-baseline gap-2 bg-gold-pure px-4 py-2 rounded-lg">
             <span 
-              className="text-display-m font-black text-gold-700"
+              className="text-display-m font-black text-green-dark"
               aria-live="polite"
               aria-atomic="true"
             >
               {match.team1Score || 0}
             </span>
-            <span className="text-heading-l font-bold text-primary-200">—</span>
+            <span className="text-heading-l font-bold text-green-dark">—</span>
             <span 
-              className="text-display-m font-black text-gold-700"
+              className="text-display-m font-black text-green-dark"
               aria-live="polite"
               aria-atomic="true"
             >
@@ -91,14 +95,14 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = '' }) =
             </span>
           </div>
           
-          <div className="flex items-center gap-2 bg-gold-900/50 px-4 py-2 rounded-full">
+          <div className="flex items-center gap-2 bg-green-darker px-4 py-2 rounded-full">
             {match.status === 'in_progress' && (
               <>
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-                <span className="text-body-s font-bold text-gold-700 uppercase">
+                <span className="text-body-s font-bold text-red-500 uppercase">
                   LIVE
                 </span>
-                <span className="text-body-xs text-primary-200">
+                <span className="text-body-xs text-gold-pure">
                   Manche {match.currentManche || 1}
                 </span>
               </>
@@ -114,23 +118,26 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = '' }) =
         {/* Team 2 */}
         <div className="flex-1 flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-40 h-40 rounded-full bg-primary-800 border-4 border-gold-700 flex flex-col items-center justify-center">
-              <span className="text-heading-xl font-black text-primary-700">
-                {(match.team2.name || 'T2').substring(0, 2).toUpperCase()}
+            <div className="w-40 h-40 rounded-full bg-green-dark border-4 border-gold-pure flex flex-col items-center justify-center">
+              <span className="text-heading-xl font-black text-gold-pure">
+                FC
               </span>
+              <span className="text-body-xs font-bold text-gold-pure/80">FONTENAY</span>
             </div>
           </div>
           <span className="text-heading-l font-bold text-white truncate max-w-full">
             {match.team2.name || 'Équipe 2'}
           </span>
+          <span className="text-body-sm text-gold-pure/80">
+            Vainqueur poule B
+          </span>
         </div>
       </div>
 
       {/* Info footer */}
-      <div className="px-6 py-4 bg-primary-800/50">
-        <div className="flex items-center gap-2 text-body-m text-primary-200">
-          <Icon name="Info" size="sm" />
-          <span>Terrain clos municipal — entrée gratuite · buvette et fan zone</span>
+      <div className="px-6 py-4 bg-green-darker">
+        <div className="flex items-center gap-2 text-body-m text-gold-pure/80 justify-center">
+          <span>★ Terrain clos municipal — entrée gratuite · buvette et fan zone</span>
         </div>
       </div>
     </section>

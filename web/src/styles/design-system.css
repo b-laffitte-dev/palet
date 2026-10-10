@@ -2,11 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ============================================ */
-/* COLOR SYSTEM */
+/* COLOR SYSTEM - Palet Vendéen Theme */
 /* ============================================ */
 
 :root {
-  /* Primary Colors - Gold/Brown Theme */
+  /* Primary Colors - Pure Gold Theme (mockup colors) */
   --color-primary-50: #fefce8;
   --color-primary-100: #fef3c7;
   --color-primary-200: #fde68a;
@@ -17,7 +17,17 @@
   --color-primary-700: #b45309;
   --color-primary-800: #92400e;
   --color-primary-900: #78350f;
-  --color-primary-950: #451a03;
+  --color-primary-950: #3f1902;
+  
+  /* Pure Gold - exact from mockup */
+  --color-gold: #ffd700;
+  --color-gold-light: #ffec8b;
+  --color-gold-dark: #c6a600;
+  
+  /* Deep Green - exact from mockup (#1a3d2e) */
+  --color-green-dark: #1a3d2e;
+  --color-green-darker: #004d2b;
+  --color-green-light: #2d5a3d;
 
   /* Secondary Colors - Deep Blue */
   --color-secondary-50: #eff6ff;
@@ -90,32 +100,44 @@
   --color-info-800: #1e40af;
   --color-info-900: #1e3a8a;
 
-  /* Background Colors */
-  --bg-primary: var(--color-neutral-50);
-  --bg-secondary: var(--color-neutral-100);
-  --bg-tertiary: var(--color-neutral-200);
-  --bg-dark: var(--color-neutral-900);
-  --bg-darker: var(--color-neutral-950);
+  /* Background Colors - Match mockup exactly */
+  --bg-primary: var(--color-neutral-900);
+  --bg-secondary: var(--color-neutral-800);
+  --bg-tertiary: var(--color-neutral-700);
+  --bg-dark: #000000;
+  --bg-darker: #0a0a0a;
+  --bg-light: var(--color-neutral-50);
+  --bg-lighter: var(--color-neutral-100);
+  --bg-green: var(--color-green-dark);
+  --bg-green-light: var(--color-green-light);
   
-  /* Text Colors */
-  --text-primary: var(--color-neutral-900);
-  --text-secondary: var(--color-neutral-600);
-  --text-tertiary: var(--color-neutral-500);
-  --text-light: var(--color-neutral-300);
-  --text-lighter: var(--color-neutral-200);
-  --text-inverse: var(--color-neutral-50);
+  /* Text Colors - High contrast for readability on dark backgrounds */
+  --text-primary: var(--color-neutral-50);
+  --text-secondary: var(--color-neutral-300);
+  --text-tertiary: var(--color-neutral-400);
+  --text-light: var(--color-neutral-500);
+  --text-lighter: var(--color-neutral-600);
+  --text-inverse: var(--color-neutral-900);
+  
+  /* Dark mode text colors (for light backgrounds) */
+  --text-dark-primary: var(--color-neutral-900);
+  --text-dark-secondary: var(--color-neutral-600);
+  --text-dark-tertiary: var(--color-neutral-500);
   
   /* Border Colors */
-  --border-primary: var(--color-neutral-200);
-  --border-secondary: var(--color-neutral-300);
-  --border-dark: var(--color-neutral-400);
+  --border-primary: var(--color-neutral-700);
+  --border-secondary: var(--color-neutral-600);
+  --border-dark: var(--color-neutral-500);
+  --border-light: var(--color-neutral-200);
+  --border-gold: var(--color-primary-500);
 
   /* Accent Colors */
-  --accent-gold: var(--color-primary-600);
-  --accent-gold-light: var(--color-primary-500);
-  --accent-gold-dark: var(--color-primary-700);
+  --accent-gold: var(--color-gold);
+  --accent-gold-light: var(--color-gold-light);
+  --accent-gold-dark: var(--color-gold-dark);
   --accent-blue: var(--color-secondary-600);
   --accent-blue-light: var(--color-secondary-500);
+  --accent-yellow: #ffc107;
 }
 
 /* ============================================ */
@@ -315,7 +337,7 @@ html {
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);
   color: var(--text-primary);
-  background-color: var(--bg-primary);
+  background-color: var(--bg-dark);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -324,6 +346,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-dark);
 }
 
 /* Remove default focus outline for mouse users */
@@ -418,12 +441,132 @@ a {
 .bg-primary { background-color: var(--bg-primary); }
 .bg-secondary { background-color: var(--bg-secondary); }
 .bg-tertiary { background-color: var(--bg-tertiary); }
+.bg-dark { background-color: var(--bg-dark); }
+.bg-darker { background-color: var(--bg-darker); }
+.bg-light { background-color: var(--bg-light); }
+.bg-lighter { background-color: var(--bg-lighter); }
+.bg-white { background-color: white; }
+
+/* Text color utilities */
+.text-white { color: white; }
+.text-black { color: black; }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-dark { color: var(--text-dark-primary); }
+.text-dark-primary { color: var(--text-dark-primary); }
+.text-dark-secondary { color: var(--text-dark-secondary); }
+.text-dark-tertiary { color: var(--text-dark-tertiary); }
+.text-gold { color: var(--accent-gold); }
+.text-gold-400 { color: var(--color-primary-400); }
+.text-gold-500 { color: var(--color-primary-500); }
+.text-gold-600 { color: var(--color-primary-600); }
+.text-gold-700 { color: var(--color-primary-700); }
+
+/* Text size utilities */
+.text-xs { font-size: var(--text-body-xs); }
+.text-body-xs { font-size: var(--text-body-xs); }
+.text-body-sm { font-size: var(--text-body-sm); }
+.text-body-m { font-size: var(--text-body-m); }
+.text-body-l { font-size: var(--text-body-l); }
+.text-body-xl { font-size: var(--text-body-xl); }
+.text-caption { font-size: var(--text-caption); }
+
+/* Font weight utilities */
+.font-black { font-weight: var(--font-weight-black); }
+
+/* Background opacity for primary-800 */
+.bg-primary-800\/50 { background-color: rgba(180, 83, 9, 0.5); }
 
 /* Accent utilities */
-.text-gold { color: var(--accent-gold); }
 .bg-gold { background-color: var(--accent-gold); }
+.bg-gold-pure { background-color: var(--color-gold); }
+.bg-gold-500 { background-color: var(--color-primary-500); }
+.bg-gold-600 { background-color: var(--color-primary-600); }
+.bg-gold-700 { background-color: var(--color-primary-700); }
+.bg-gold-800 { background-color: var(--color-primary-800); }
+.text-gold { color: var(--accent-gold); }
+.text-gold-pure { color: var(--color-gold); }
 .text-blue { color: var(--accent-blue); }
 .bg-blue { background-color: var(--accent-blue); }
+
+/* Green utilities */
+.bg-green-dark { background-color: var(--color-green-dark); }
+.bg-green-darker { background-color: var(--color-green-darker); }
+.bg-green-light { background-color: var(--color-green-light); }
+.text-green-dark { color: var(--color-green-dark); }
+
+/* Red/Danger utilities */
+.bg-red-800 { background-color: var(--color-danger-800); }
+.bg-red-600 { background-color: var(--color-danger-600); }
+
+/* Yellow utility */
+.bg-yellow { background-color: var(--accent-yellow); }
+.text-yellow { color: var(--accent-yellow); }
+
+/* Background opacity utilities */
+.bg-primary-600 { background-color: var(--color-primary-600); }
+.bg-primary-700 { background-color: var(--color-primary-700); }
+.bg-primary-800\/20 { background-color: rgba(146, 64, 14, 0.2); }
+.bg-primary-800\/30 { background-color: rgba(45, 26, 13, 0.3); }
+.bg-primary-900 { background-color: var(--color-primary-900); }
+.bg-primary-800 { background-color: var(--color-primary-800); }
+.bg-gold\/10 { background-color: rgba(245, 158, 11, 0.1); }
+.bg-gold\/20 { background-color: rgba(245, 158, 11, 0.2); }
+.bg-gold-900\/50 { background-color: rgba(180, 83, 9, 0.5); }
+
+/* Amber/Warning opacity utilities - for barrage rows */
+.bg-amber-900\/20 { background-color: rgba(120, 53, 15, 0.2); }
+
+/* Red/Danger opacity utilities - for relegated rows */
+.bg-red-900\/20 { background-color: rgba(127, 29, 29, 0.2); }
+
+/* Classification table row hover and transition */
+.bg-primary-800\/20,
+.bg-amber-900\/20,
+.bg-red-900\/20 {
+  transition: background-color var(--transition-colors);
+}
+
+.bg-primary-800\/20:hover,
+.bg-amber-900\/20:hover,
+.bg-red-900\/20:hover {
+  background-color: rgba(45, 26, 13, 0.3) !important;
+}
+
+/* Text colors for primary palette */
+.text-primary-200 { color: var(--color-primary-200); }
+.text-primary-300 { color: var(--color-primary-300); }
+.text-primary-700 { color: var(--color-primary-700); }
+
+/* Success/Green text and background colors */
+.text-green-600 { color: var(--color-success-600); }
+.bg-green-600 { background-color: var(--color-success-600); }
+
+/* Danger/Red text and background colors */
+.text-red-600 { color: var(--color-danger-600); }
+.bg-red-600 { background-color: var(--color-danger-600); }
+
+/* Gray/Neutral background colors */
+.bg-gray-500 { background-color: var(--color-neutral-500); }
+.bg-neutral-50 { background-color: var(--color-neutral-50); }
+.bg-neutral-200 { background-color: var(--color-neutral-200); }
+.border-neutral-200 { border-color: var(--color-neutral-200); }
+
+/* Border utilities */
+.border { border-width: 1px; border-style: solid; }
+
+/* Border colors */
+.border-gold-700 { border-color: var(--color-primary-700); }
+.border-primary-700\/50 { border-color: rgba(180, 83, 9, 0.5); }
+
+/* Hover text color utilities */
+.hover\:text-gold-dark:hover { color: var(--color-gold-dark); }
+
+/* Gradient utilities */
+.bg-gradient-to-r { 
+  background: linear-gradient(to right, var(--color-primary-800), var(--color-primary-900));
+}
 
 /* Spacing utilities */
 .mt-4 { margin-top: var(--spacing-4); }
@@ -440,17 +583,66 @@ a {
   padding-right: var(--container-padding);
 }
 
-.flex {
-  display: flex;
-}
+/* Display utilities */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.block { display: block; }
 
-.items-center {
-  align-items: center;
-}
+/* Flex direction utilities */
+.flex-row { flex-direction: row; }
 
-.justify-between {
-  justify-content: space-between;
-}
+/* Align items utilities */
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+
+/* Justify content utilities */
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+
+/* Text alignment utilities */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Overflow utilities */
+.overflow-x-auto { overflow-x: auto; }
+
+/* Rounded utilities */
+.rounded-lg { border-radius: var(--radius-xl); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Width utilities */
+.w-full { width: 100%; }
+.w-4 { width: var(--spacing-4); }
+.w-16 { width: var(--spacing-16); }
+.w-24 { width: var(--spacing-24); }
+.min-w-\[200px\] { min-width: 200px; }
+
+/* Height utilities */
+.h-4 { height: var(--spacing-4); }
+
+/* Spacing utilities */
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mt-4 { margin-top: var(--spacing-4); }
+.py-3 { padding-top: var(--spacing-3); padding-bottom: var(--spacing-3); }
+.px-4 { padding-left: var(--spacing-4); padding-right: var(--spacing-4); }
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-6 { gap: var(--spacing-6); }
+
+/* Text transform utilities */
+.uppercase { text-transform: uppercase; }
+.tracking-wide { letter-spacing: var(--letter-spacing-wide); }
+.tracking-wider { letter-spacing: var(--letter-spacing-wider); }
+
+/* Font weight utilities */
+.font-bold { font-weight: var(--font-weight-bold); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+
+/* Transition utilities */
+.transition-colors { transition: color var(--transition-colors), background-color var(--transition-colors); }
 
 /* ============================================ */
 /* ANIMATIONS */

@@ -1,6 +1,4 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../api';
 import {
   Layout,
   MatchHero,
@@ -17,13 +15,13 @@ import { LiveScoreMatch } from '../components/domain/LiveScores';
 // Mock competition
 const mockCompetition: Competition = {
   id: 'comp-1',
-  name: 'Finale Championnat Vendée',
+  name: 'FINALE DU CHAMPIONNAT DE VENDÉE',
   code: 'FINAL-24',
   type: 'championship',
   category: 'doublette',
   material: 'fonte',
   season: '2024-2025',
-  description: 'Finale du championnat',
+  description: 'Finale du championnat — Division 1',
   location: 'La Roche-sur-Yon',
   divisions: ['D1'],
   format: 'knockout',
@@ -95,8 +93,8 @@ const mockFeaturedMatch: Match = {
   journee: 15,
   phase: 'Finale',
   round: null,
-  team1: { id: 'team-1', name: 'La Roche-sur-Yon PC', logo: null, players: [], rank: null, seed: null },
-  team2: { id: 'team-2', name: 'Clos Fontenois', logo: null, players: [], rank: null, seed: null },
+  team1: { id: 'team-1', name: 'LA ROCHE-SUR-YON', logo: null, players: [], rank: null, seed: null },
+  team2: { id: 'team-2', name: 'CLOS FONTENAIS', logo: null, players: [], rank: null, seed: null },
   team1Score: 72,
   team2Score: 68,
   winner: null,
@@ -340,55 +338,15 @@ const mockPlayers: Player[] = [
  * Displays live matches, scores, classification, tournaments, and top players
  */
 const Home: React.FC = () => {
-  // API calls for real data (with fallback to mock)
-  const { data: featuredMatch } = useQuery<Match>({
-    queryKey: ['matches', 'featured'],
-    queryFn: async () => {
-      const response = await api().GET<Match>('/api/matches/featured');
-      return response.data;
-    },
-    initialData: mockFeaturedMatch
-  });
-
-  const { data: liveScores } = useQuery<LiveScoreMatch[]>({
-    queryKey: ['matches', 'live-scores'],
-    queryFn: async () => {
-      const response = await api().GET<LiveScoreMatch[]>('/api/matches/live-scores');
-      return response.data;
-    },
-    initialData: mockLiveScores
-  });
-
-  const { data: classification } = useQuery<ChampionshipClassification>({
-    queryKey: ['classification', 'division-1'],
-    queryFn: async () => {
-      const response = await api().GET<ChampionshipClassification>('/api/championships/division-1/classification');
-      return response.data;
-    },
-    initialData: mockClassification
-  });
-
-  const { data: tournaments } = useQuery<Tournament[]>({
-    queryKey: ['tournaments', 'upcoming'],
-    queryFn: async () => {
-      const response = await api().GET<Tournament[]>('/api/tournaments?status=upcoming&limit=3');
-      return response.data;
-    },
-    initialData: mockTournaments
-  });
-
-  const { data: players } = useQuery<Player[]>({
-    queryKey: ['players', 'top'],
-    queryFn: async () => {
-      const response = await api().GET<Player[]>('/api/players/top?limit=3');
-      return response.data;
-    },
-    initialData: mockPlayers
-  });
+  // Use mock data directly - disable API calls until backend is ready
+  const featuredMatch = mockFeaturedMatch;
+  const liveScores = mockLiveScores;
+  const classification = mockClassification;
+  const tournaments = mockTournaments;
+  const players = mockPlayers;
 
   return (
     <Layout>
-      {/* Main content */}
       <main className="flex-1">
         {/* Hero Match Section */}
         <section className="px-4 py-6 lg:px-8 lg:py-8" aria-labelledby="featured-match-heading">
@@ -432,11 +390,11 @@ const Home: React.FC = () => {
               <div>
                 <h2 
                   id="tournaments-heading"
-                  className="text-heading-l font-bold text-white uppercase tracking-wide"
+                  className="text-heading-l font-bold text-primary uppercase tracking-wide"
                 >
                   TOURNOIS À VENIR
                 </h2>
-                <p className="text-body-m text-primary-200">
+                <p className="text-body-m text-secondary">
                   Open, qualificatifs et championnats
                 </p>
               </div>
@@ -463,11 +421,11 @@ const Home: React.FC = () => {
               <div>
                 <h2 
                   id="players-heading"
-                  className="text-heading-l font-bold text-white uppercase tracking-wide"
+                  className="text-heading-l font-bold text-primary uppercase tracking-wide"
                 >
                   LES MEILLEURS JOUEURS
                 </h2>
-                <p className="text-body-m text-primary-200">
+                <p className="text-body-m text-secondary">
                   Statistiques de la saison
                 </p>
               </div>
@@ -489,12 +447,12 @@ const Home: React.FC = () => {
         </section>
 
         {/* Spaces Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30" aria-labelledby="spaces-heading">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-gold/10" aria-labelledby="spaces-heading">
           <div className="max-w-7xl mx-auto">
             <div className="mb-6">
               <h2 
                 id="spaces-heading"
-                className="text-heading-l font-bold text-gold-700 uppercase tracking-wide text-center"
+                className="text-heading-l font-bold text-gold-500 uppercase tracking-wide text-center"
               >
                 NOS ESPACES
               </h2>
@@ -509,15 +467,15 @@ const Home: React.FC = () => {
               ].map((space, index) => (
                 <div 
                   key={index}
-                  className="bg-primary-900 rounded-lg p-4 text-center hover:bg-primary-800 transition-colors border border-primary-700/50 cursor-pointer"
+                  className="bg-dark rounded-lg p-4 text-center hover:bg-secondary transition-colors border border-border-secondary/50 cursor-pointer"
                 >
-                  <div className="w-12 h-12 mx-auto mb-3 bg-primary-800 rounded-lg flex items-center justify-center">
-                    <Icon name={space.icon} size="xl" className="text-gold-700" />
+                  <div className="w-12 h-12 mx-auto mb-3 bg-secondary rounded-lg flex items-center justify-center">
+                    <Icon name={space.icon} size="xl" className="text-gold-500" />
                   </div>
-                  <h3 className="text-heading-xs font-bold text-white mb-1">
+                  <h3 className="text-heading-xs font-bold text-primary mb-1">
                     {space.title}
                   </h3>
-                  <p className="text-caption text-primary-200">
+                  <p className="text-caption text-tertiary">
                     {space.description}
                   </p>
                 </div>

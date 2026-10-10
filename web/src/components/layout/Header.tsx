@@ -34,21 +34,23 @@ export function Header({ showCTA = true }: HeaderProps) {
   };
 
   return (
-    <header className="h-[80px] bg-white border-b border-border-primary sticky top-[40px] z-[var(--z-fixed)]">
+    <header className="h-[80px] bg-[#000000] border-b border-border-dark sticky top-[40px] z-[var(--z-fixed)] shadow-lg">
       <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--container-padding)] flex items-center justify-between gap-[var(--spacing-4)]">
         {/* Left Section - Logo and Tagline */}
         <div className="flex flex-col gap-[var(--spacing-1)]">
           <Link to="/" className="text-decoration-none">
-            <div className="flex items-center gap-[var(--spacing-2)] text-primary-700">
-              <Icon name="Target" size="l" />
-              <span className="text-[var(--text-heading-m)] font-[var(--font-weight-bold)] tracking-[var(--letter-spacing-tight)]">
-                Palet Vendéen
+            <div className="flex items-center gap-[var(--spacing-2)]">
+              <div className="w-12 h-12 rounded-full border-4 border-[var(--color-gold)] flex items-center justify-center bg-black">
+                <span className="text-[var(--text-heading-l)] font-[var(--font-weight-black)] text-[var(--color-gold)]">PC</span>
+              </div>
+              <span className="text-[var(--text-heading-m)] font-[var(--font-weight-bold)] tracking-[var(--letter-spacing-tight)] text-white">
+                PALET VENDÉEN
               </span>
             </div>
           </Link>
           <div className="flex items-center gap-[var(--spacing-2)] text-[var(--text-body-xs)] font-[var(--font-weight-medium)] text-text-tertiary tracking-[var(--letter-spacing-wide)] uppercase">
             <span>LE SITE OFFICIEL</span>
-            <span className="text-primary-500">—</span>
+            <span className="text-gold-pure">—</span>
             <span>CHAMPIONNATS, CLUBS & TOURNOIS</span>
           </div>
         </div>
@@ -64,9 +66,9 @@ export function Header({ showCTA = true }: HeaderProps) {
                     flex items-center px-[var(--spacing-2)] py-[var(--spacing-1)] 
                     text-body-sm font-medium text-text-secondary 
                     border-b-2 border-transparent 
-                    hover:text-text-primary hover:border-primary-500
+                    hover:text-gold-pure hover:border-gold-pure
                     transition-colors transition-border
-                    ${isActive(link.to) ? 'text-primary-700 border-primary-700 font-semibold' : ''}
+                    ${isActive(link.to) ? 'text-gold-pure border-gold-pure font-semibold' : ''}
                   `}
                 >
                   {link.label}
@@ -84,16 +86,17 @@ export function Header({ showCTA = true }: HeaderProps) {
               className="
                 flex items-center gap-[var(--spacing-2)] 
                 px-[var(--spacing-4)] py-[var(--spacing-2)] 
-                bg-primary-600 text-white 
+                bg-yellow text-black 
                 text-body-sm font-semibold 
                 rounded-[var(--radius-m)] 
                 border-none cursor-pointer
                 tracking-[var(--letter-spacing-wide)]
-                hover:bg-primary-700 active:bg-primary-800
-                transition-colors transition-transform hover:-translate-y-px active:translate-y-0
+                hover:bg-[#ffe082] active:bg-[#ffb300]
+                transition-all duration-200
+                shadow-md hover:shadow-lg hover:-translate-y-px active:translate-y-0
               "
             >
-              S'INSCRIRE
+              5s'inscrire
             </Link>
           </div>
         )}

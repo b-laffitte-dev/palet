@@ -1,8 +1,7 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { TopBar } from './TopBar';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { api } from '../../api';
 
 export interface LayoutProps {
   children: ReactNode;
@@ -17,32 +16,9 @@ export function Layout({
   showFooter = true,
   showTopBar = true,
 }: LayoutProps) {
-  const [hasLiveMatches, setHasLiveMatches] = useState(false);
-  const [liveMatchesCount, setLiveMatchesCount] = useState(0);
-
-  // Fetch live matches data for TopBar
-  useEffect(() => {
-    const fetchLiveMatches = async () => {
-      try {
-        const response = await api().GET('/matches/live');
-        const liveMatches = (response.data as Array<any>) || [];
-        setHasLiveMatches(liveMatches.length > 0);
-        setLiveMatchesCount(liveMatches.length);
-      } catch (error) {
-        console.error('Error fetching live matches:', error);
-        setHasLiveMatches(false);
-        setLiveMatchesCount(0);
-      }
-    };
-
-    // Initial fetch
-    fetchLiveMatches();
-
-    // Poll every 30 seconds for live matches
-    const interval = setInterval(fetchLiveMatches, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
+  // Disable live matches API call until backend endpoint is available
+  const hasLiveMatches = false;
+  const liveMatchesCount = 0;
 
   return (
     <div style={styles.layout}>
@@ -70,12 +46,14 @@ const styles = {
     display: 'flex',
     flexDirection: 'column' as const,
     minHeight: '100vh',
+    backgroundColor: 'var(--bg-dark)',
   } as React.CSSProperties,
   
   main: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column' as const,
+    backgroundColor: 'var(--bg-dark)',
   } as React.CSSProperties,
 };
 

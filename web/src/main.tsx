@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createBrowserRouter, RouterProvider, Navigate, Link } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate, Link, Outlet } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import { Layout } from './components/layout/Layout';
 import Button from './components/common/Button';
@@ -36,145 +36,113 @@ const queryClient = new QueryClient({
   },
 });
 
+// Auth wrapper component - must be inside Router context
+function AuthWrapper() {
+  return (
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
+  );
+}
+
+// 404 component
+function NotFoundPage() {
+  return (
+    <Layout>
+      <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide mb-4">
+            404 - Page non trouvée
+          </h1>
+          <p className="text-body-m text-primary-200 mb-6">
+            La page que vous cherchez n'existe pas.
+          </p>
+          <Link to="/">
+            <Button variant="primary" size="l">
+              Retour à l'accueil
+            </Button>
+          </Link>
+        </div>
+      </main>
+    </Layout>
+  );
+}
+
 // Router configuration
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <Layout>
-        <Home />
-      </Layout>
-    ),
-  },
-  {
-    path: '/championnats',
-    element: (
-      <Layout>
-        <Championnats />
-      </Layout>
-    ),
-  },
-  {
-    path: '/championnats/:championshipId',
-    element: (
-      <Layout>
-        <ChampionshipDetail />
-      </Layout>
-    ),
-  },
-  {
-    path: '/tournois',
-    element: (
-      <Layout>
-        <Tournois />
-      </Layout>
-    ),
-  },
-  {
-    path: '/tournois/:tournamentId',
-    element: (
-      <Layout>
-        <TournamentDetail />
-      </Layout>
-    ),
-  },
-  {
-    path: '/clubs',
-    element: (
-      <Layout>
-        <Clubs />
-      </Layout>
-    ),
-  },
-  {
-    path: '/clubs/:clubId',
-    element: (
-      <Layout>
-        <ClubDetail />
-      </Layout>
-    ),
-  },
-  {
-    path: '/joueurs',
-    element: (
-      <Layout>
-        <Joueurs />
-      </Layout>
-    ),
-  },
-  {
-    path: '/joueurs/:playerId',
-    element: (
-      <Layout>
-        <PlayerDetail />
-      </Layout>
-    ),
-  },
-  {
-    path: '/actualites',
-    element: (
-      <Layout>
-        <Actualites />
-      </Layout>
-    ),
-  },
-  {
-    path: '/federation',
-    element: (
-      <Layout>
-        <Federation />
-      </Layout>
-    ),
-  },
-  {
-    path: '/matchs/:matchId',
-    element: (
-      <Layout>
-        <MatchDetail />
-      </Layout>
-    ),
-  },
-  {
-    path: '/teams/:teamId',
-    element: (
-      <Layout>
-        <TeamDetail />
-      </Layout>
-    ),
-  },
-  {
-    path: '/connexion',
-    element: <Connexion />,
-  },
-  {
-    path: '/inscription',
-    element: <Inscription />,
-  },
-  {
-    path: '/verification-email',
-    element: <VerificationEmail />,
-  },
-  {
-    path: '*',
-    element: (
-      <Layout>
-        <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
-          <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide mb-4">
-              404 - Page non trouvée
-            </h1>
-            <p className="text-body-m text-primary-200 mb-6">
-              La page que vous cherchez n'existe pas.
-            </p>
-            <Link to="/">
-              <Button variant="primary" size="l">
-                Retour à l'accueil
-              </Button>
-            </Link>
-          </div>
-        </main>
-      </Layout>
-    ),
+    element: <AuthWrapper />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: 'championnats',
+        element: <Championnats />,
+      },
+      {
+        path: 'championnats/:championshipId',
+        element: <ChampionshipDetail />,
+      },
+      {
+        path: 'tournois',
+        element: <Tournois />,
+      },
+      {
+        path: 'tournois/:tournamentId',
+        element: <TournamentDetail />,
+      },
+      {
+        path: 'clubs',
+        element: <Clubs />,
+      },
+      {
+        path: 'clubs/:clubId',
+        element: <ClubDetail />,
+      },
+      {
+        path: 'joueurs',
+        element: <Joueurs />,
+      },
+      {
+        path: 'joueurs/:playerId',
+        element: <PlayerDetail />,
+      },
+      {
+        path: 'actualites',
+        element: <Actualites />,
+      },
+      {
+        path: 'federation',
+        element: <Federation />,
+      },
+      {
+        path: 'matchs/:matchId',
+        element: <MatchDetail />,
+      },
+      {
+        path: 'teams/:teamId',
+        element: <TeamDetail />,
+      },
+      {
+        path: 'connexion',
+        element: <Connexion />,
+      },
+      {
+        path: 'inscription',
+        element: <Inscription />,
+      },
+      {
+        path: 'verification-email',
+        element: <VerificationEmail />,
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
+    ],
   },
 
 ]);
@@ -184,9 +152,7 @@ function App() {
   return (
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </StrictMode>
   );

@@ -17,7 +17,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
         <div style={styles.leftSection}>
           {/* Federation Name */}
           <Link to="/" style={styles.federationName}>
-            Palet Vendéen
+            Fédération de Palet Vendéen
           </Link>
           
           {/* Live Indicator */}
@@ -35,11 +35,16 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
           ) : (
             <>
               {/* Authentication Links */}
+              <span style={styles.liveText}>EN DIRECT</span>
               <Link to="/connexion" style={styles.authLink}>
-                Se connecter
+                Connexion
               </Link>
+              <span style={styles.separator}>|</span>
               <Link to="/inscription" style={styles.authLink}>
-                S'inscrire
+                Mon espace
+              </Link>
+              <Link to="/inscription" style={styles.ctaButton}>
+                5s'inscrire
               </Link>
             </>
           )}
@@ -52,14 +57,15 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
 const styles = {
   topbar: {
     height: '40px',
-    backgroundColor: 'var(--color-neutral-900)',
-    color: 'var(--color-neutral-50)',
+    backgroundColor: '#000000',
+    color: 'var(--text-primary)',
     display: 'flex',
     alignItems: 'center',
     position: 'sticky',
     top: 0,
     zIndex: 'var(--z-fixed)',
-    boxShadow: 'var(--shadow-sm)',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+    borderBottom: '1px solid var(--border-dark)',
   } as React.CSSProperties,
   
   container: {
@@ -87,19 +93,45 @@ const styles = {
   federationName: {
     fontSize: 'var(--text-body-sm)',
     fontWeight: 'var(--font-weight-semibold)',
-    color: 'var(--color-neutral-50)',
+    color: 'var(--color-gold)',
     textDecoration: 'none',
     letterSpacing: 'var(--letter-spacing-wide)',
+  } as React.CSSProperties,
+  
+  liveText: {
+    fontSize: 'var(--text-body-sm)',
+    fontWeight: 'var(--font-weight-semibold)',
+    color: 'var(--color-danger-500)',
+    textDecoration: 'none',
   } as React.CSSProperties,
   
   authLink: {
     fontSize: 'var(--text-body-sm)',
     fontWeight: 'var(--font-weight-medium)',
-    color: 'var(--color-neutral-300)',
+    color: 'var(--text-secondary)',
     textDecoration: 'none',
     transition: 'color var(--transition-colors)',
     ':hover': {
-      color: 'var(--color-neutral-50)',
+      color: 'var(--color-gold)',
+    },
+  } as React.CSSProperties,
+  
+  separator: {
+    color: 'var(--text-tertiary)',
+    fontSize: 'var(--text-body-sm)',
+  } as React.CSSProperties,
+  
+  ctaButton: {
+    backgroundColor: 'var(--accent-yellow)',
+    color: '#000000',
+    fontSize: 'var(--text-body-sm)',
+    fontWeight: 'var(--font-weight-bold)',
+    padding: 'var(--spacing-1) var(--spacing-3)',
+    borderRadius: 'var(--radius-sm)',
+    textDecoration: 'none',
+    transition: 'all var(--transition-colors)',
+    ':hover': {
+      backgroundColor: '#ffe082',
     },
   } as React.CSSProperties,
 };

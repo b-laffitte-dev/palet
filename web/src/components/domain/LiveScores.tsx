@@ -48,12 +48,12 @@ export const LiveScores: React.FC<LiveScoresProps> = ({
 
   return (
     <section className={`w-full ${className}`} aria-labelledby="live-scores-title">
-      <div className="px-6 py-4 bg-primary-800/50">
+      <div className="px-6 py-4 bg-[#000000]">
         <div className="flex items-center gap-2">
-          <Icon name="Clock" size="sm" className="text-gold-700" />
+          <Icon name="Clock" size="sm" className="text-gold-pure" />
           <h2 
             id="live-scores-title"
-            className="text-body-m font-bold text-gold-700 uppercase tracking-wide"
+            className="text-body-m font-bold text-gold-pure uppercase tracking-wide"
           >
             Scores en direct — {journee}e journée
           </h2>
@@ -61,11 +61,11 @@ export const LiveScores: React.FC<LiveScoresProps> = ({
       </div>
 
       <div className="overflow-x-auto">
-        <div className="flex gap-4 p-4 min-w-max">
+        <div className="flex gap-4 p-4 min-w-max bg-[#000000]">
           {matches.map((match) => (
             <div 
               key={match.id}
-              className="min-w-[300px] flex-shrink-0 bg-primary-900 rounded-lg p-4 border border-primary-700/50 hover:border-gold-700 transition-colors"
+              className="min-w-[300px] flex-shrink-0 bg-green-dark rounded-lg p-4 border border-green-light hover:border-gold-pure transition-colors"
               aria-live="polite"
             >
               <div className="flex items-center justify-between gap-4">
@@ -81,15 +81,15 @@ export const LiveScores: React.FC<LiveScoresProps> = ({
                   <div className="flex items-baseline gap-2">
                     <span 
                       className={`text-heading-s font-bold ${
-                        match.status === 'in_progress' ? 'text-gold-700' : 'text-white'
+                        match.status === 'in_progress' ? 'text-gold-pure' : 'text-white'
                       }`}
                     >
                       {match.team1Score}
                     </span>
-                    <span className="text-body-l font-bold text-primary-200">—</span>
+                    <span className="text-body-l font-bold text-gold-pure/80">—</span>
                     <span 
                       className={`text-heading-s font-bold ${
-                        match.status === 'in_progress' ? 'text-gold-700' : 'text-white'
+                        match.status === 'in_progress' ? 'text-gold-pure' : 'text-white'
                       }`}
                     >
                       {match.team2Score}
