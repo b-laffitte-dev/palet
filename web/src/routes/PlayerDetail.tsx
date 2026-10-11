@@ -19,384 +19,7 @@ import {
 import { PlayerCard, ClubCard } from "../components/domain";
 import { Player, Club, Match, Trophy, Badge as BadgeType } from "../types";
 import { api } from "../api";
-
-// Mock data for development
-const mockClub: Club = {
-  id: "club-001",
-  name: "Club des Essarts",
-  nickname: "Les Essartiates",
-  code: "ESS",
-  logo: "/images/clubs/niort.png",
-  address: "123 Rue du Palet, 79000 Niort",
-  city: "Niort",
-  postalCode: "79000",
-  league: "Deux-Sèvres",
-  division: "D1",
-  status: "active",
-  playersCount: 25,
-  teamsCount: 8,
-  contactEmail: "contact@palet-essarts.fr",
-  contactPhone: "+33 2 51 65 43 21",
-  website: "https://palet-essarts.fr",
-  social: {
-    facebook: "https://facebook.com/paletessarts",
-    twitter: "https://twitter.com/paletessarts",
-    instagram: "https://instagram.com/paletessarts",
-  },
-  createdAt: new Date("2020-01-15"),
-  updatedAt: new Date("2026-10-01"),
-};
-
-const mockPlayer: Player = {
-  id: "player-001",
-  firstName: "Jean",
-  lastName: "Martin",
-  fullName: "Jean Martin",
-  alias: "Le Maestro",
-  email: "jean.martin@palet.fr",
-  photo: "/images/players/jean-martin.jpg",
-  status: "active",
-  birthDate: new Date("1985-03-15"),
-  age: 41,
-  birthPlace: "Les Essarts",
-  nationality: "Français",
-  dominantHand: "right",
-  playStyle: "Précision",
-  phone: "+33 6 12 34 56 78",
-  address: "123 Rue du Palet, 85140 Les Essarts",
-  city: "Les Essarts",
-  postalCode: "85140",
-  club: mockClub,
-  clubId: "club-001",
-  clubNumber: "ESS-001",
-  category: "Senior",
-  licenseNumber: "PV-2026-001",
-  licenseDate: new Date("2026-01-01"),
-  licenseStatus: "valid",
-  registrationDate: new Date("2020-01-15"),
-  stats: {
-    matchesPlayed: 150,
-    wins: 105,
-    draws: 20,
-    losses: 25,
-    totalPoints: 1575,
-    averagePoints: 10.5,
-    pointsPerManche: 3.5,
-    bestScore: 15,
-    bestStreak: 15,
-    maxWinStreak: 8,
-    winRate: 70,
-    accuracy: 85,
-    currentRank: 1,
-    currentDivision: "D1",
-    currentPoints: 45,
-    previousRank: 2,
-    rankTrend: "up",
-    newHighlights: 5,
-    byPosition: {
-      first: { matches: 80, points: 840, winRate: 72 },
-      second: { matches: 70, points: 735, winRate: 68 },
-    },
-    byCompetition: {},
-    bySeason: {
-      "2025-2026": {
-        matches: 30,
-        wins: 22,
-        draws: 4,
-        losses: 4,
-        totalPoints: 330,
-        averagePoints: 11,
-        pointsPerManche: 3.6,
-        winRate: 73.33,
-        bestScore: 15,
-        bestStreak: 6,
-        rank: 1,
-        division: "D1",
-      },
-      "2024-2025": {
-        matches: 40,
-        wins: 28,
-        draws: 6,
-        losses: 6,
-        totalPoints: 420,
-        averagePoints: 10.5,
-        pointsPerManche: 3.5,
-        winRate: 70,
-        bestScore: 14,
-        bestStreak: 8,
-        rank: 2,
-        division: "D1",
-      },
-    },
-  },
-  trophies: {
-    total: 12,
-    list: [
-      {
-        id: "trophy-001",
-        name: "Champion 79",
-        competition: "Championnat 79 D1",
-        category: "champion",
-        year: "2025",
-        date: new Date("2025-06-15"),
-        type: "champion",
-      },
-      {
-        id: "trophy-002",
-        name: "Vainqueur Coupe de France",
-        competition: "Coupe de France",
-        category: "winner",
-        year: "2024",
-        date: new Date("2024-11-20"),
-        type: "winner",
-      },
-      {
-        id: "trophy-003",
-        name: "Finaliste Coupe de France",
-        competition: "Coupe de France",
-        category: "finalist",
-        year: "2023",
-        date: new Date("2023-11-18"),
-        type: "finalist",
-      },
-    ],
-  },
-  badges: {
-    total: 8,
-    categories: [
-      {
-        id: "badge-cat-001",
-        name: "Performance",
-        badges: [
-          {
-            id: "badge-001",
-            name: "10 victoires consécutives",
-            icon: null,
-            description: "10 victoires d'affilée en championnat",
-            rarity: "gold",
-            date: new Date("2025-04-15"),
-          },
-          {
-            id: "badge-002",
-            name: "Meilleur buteur",
-            icon: null,
-            description: "Meilleur buteur de la saison",
-            rarity: "gold",
-            date: new Date("2025-06-15"),
-          },
-        ],
-      },
-      {
-        id: "badge-cat-002",
-        name: "Participation",
-        badges: [
-          {
-            id: "badge-003",
-            name: "5 ans de fidélité",
-            icon: null,
-            description: "5 ans au club",
-            rarity: "platinum",
-            date: new Date("2025-01-15"),
-          },
-        ],
-      },
-    ],
-  },
-  records: {
-    total: 3,
-    list: [],
-  },
-  currentTeams: [],
-  pastTeams: [],
-  frequentTeammates: [],
-  matchHistory: {
-    wins: 105,
-    losses: 25,
-    draws: 20,
-    total: 150,
-    byCompetition: {
-      "Championnat D1": { wins: 35, losses: 8, draws: 7, total: 50 },
-      "Coupe de France": { wins: 7, losses: 1, draws: 2, total: 10 },
-    },
-  },
-  competitionStats: [],
-  recentActivities: [
-    {
-      id: "activity-001",
-      type: "match",
-      title: "Victoire contre Team B",
-      message: "15-10 dans le Championnat D1",
-      userId: "player-001",
-      timestamp: new Date("2026-10-08T14:00:00"),
-      data: { score: "15-10", competition: "Championnat D1" },
-    },
-    {
-      id: "activity-002",
-      type: "achievement",
-      title: "Nouveau record",
-      message: "15 points en une manche",
-      userId: "player-001",
-      timestamp: new Date("2026-10-07T11:00:00"),
-      data: { record: "15 points" },
-    },
-    {
-      id: "activity-003",
-      type: "tournament",
-      title: "Inscription au tournoi",
-      message: "Inscription confirmée pour la Coupe de France 2026",
-      userId: "player-001",
-      timestamp: new Date("2026-10-06T09:00:00"),
-      data: { tournament: "Coupe de France 2026" },
-    },
-  ],
-  preferences: {
-    language: "fr",
-    timezone: "Europe/Paris",
-    distanceUnit: "metric",
-    notifications: {
-      email: { results: true, news: true, reminders: true },
-      push: { results: true, matches: true },
-    },
-  },
-  social: {
-    facebook: "https://facebook.com/jean.martin.palet",
-    twitter: "https://twitter.com/jeanmartin85",
-    instagram: "https://instagram.com/jeanmartin_palet",
-  },
-  lastActiveAt: new Date("2026-10-09"),
-  createdAt: new Date("2020-01-15"),
-  updatedAt: new Date("2026-10-09"),
-};
-
-const mockMatches: Match[] = [
-  {
-    id: "match-001",
-    competitionId: "comp-001",
-    competition: {
-      id: "comp-001",
-      name: "Championnat D1",
-      type: "championship",
-      category: "doublette",
-      material: "fonte",
-      season: "2026-2027",
-    } as any,
-    type: "championship",
-    journee: 5,
-    phase: "Phase 1",
-    round: "Round 1",
-    team1: {
-      id: "team-001",
-      name: "Jean Martin - Pierre Durand",
-      logo: null,
-      players: [mockPlayer],
-      rank: 1,
-      seed: 1,
-    },
-    team2: {
-      id: "team-002",
-      name: "Team B",
-      logo: null,
-      players: [],
-      rank: 2,
-      seed: 2,
-    },
-    team1Score: 15,
-    team2Score: 10,
-    winner: "team1",
-    manches: [
-      { number: 1, team1: 8, team2: 5, winner: "team1" },
-      { number: 2, team1: 7, team2: 5, winner: "team1" },
-    ],
-    bestOf: 3,
-    currentManche: null,
-    currentScores: null,
-    status: "completed",
-    verified: true,
-    verifiedBy: "arbitre-001",
-    verifiedAt: new Date("2026-10-08T14:30:00"),
-    date: new Date("2026-10-08T14:00:00"),
-    time: "14:00",
-    location: "Salle de Palet - Les Essarts",
-    duration: "1h",
-    canEdit: false,
-    isLive: false,
-    isRecent: true,
-    stats: {
-      totalManches: 2,
-      avgPointsPerManche: 7.5,
-      bestManche: { number: 2, team1: 7, team2: 5, winner: "team1" },
-      playerStats: [],
-    },
-    startedAt: new Date("2026-10-08T14:00:00"),
-    endedAt: new Date("2026-10-08T14:30:00"),
-    createdAt: new Date("2026-10-01"),
-    updatedAt: new Date("2026-10-08T14:30:00"),
-  },
-  {
-    id: "match-002",
-    competitionId: "comp-001",
-    competition: {
-      id: "comp-001",
-      name: "Championnat D1",
-      type: "championship",
-      category: "doublette",
-      material: "fonte",
-      season: "2026-2027",
-    } as any,
-    type: "championship",
-    journee: 4,
-    phase: "Phase 1",
-    round: "Round 1",
-    team1: {
-      id: "team-001",
-      name: "Jean Martin - Pierre Durand",
-      logo: null,
-      players: [mockPlayer],
-      rank: 1,
-      seed: 1,
-    },
-    team2: {
-      id: "team-003",
-      name: "Team C",
-      logo: null,
-      players: [],
-      rank: 3,
-      seed: 3,
-    },
-    team1Score: 15,
-    team2Score: 12,
-    winner: "team1",
-    manches: [
-      { number: 1, team1: 9, team2: 6, winner: "team1" },
-      { number: 2, team1: 6, team2: 6, winner: null },
-      { number: 3, team1: 6, team2: 3, winner: "team1" },
-    ],
-    bestOf: 3,
-    currentManche: null,
-    currentScores: null,
-    status: "completed",
-    verified: true,
-    verifiedBy: "arbitre-001",
-    verifiedAt: new Date("2026-10-01T10:30:00"),
-    date: new Date("2026-10-01T10:00:00"),
-    time: "10:00",
-    location: "Salle de Palet - Les Essarts",
-    duration: "1h15",
-    canEdit: false,
-    isLive: false,
-    isRecent: true,
-    stats: {
-      totalManches: 3,
-      avgPointsPerManche: 6.67,
-      bestManche: { number: 1, team1: 9, team2: 6, winner: "team1" },
-      playerStats: [],
-    },
-    startedAt: new Date("2026-10-01T10:00:00"),
-    endedAt: new Date("2026-10-01T10:30:00"),
-    createdAt: new Date("2026-09-25"),
-    updatedAt: new Date("2026-10-01T10:30:00"),
-  },
-];
+import { mockPlayer, mockClubs } from "../data/mocks";
 
 const PlayerDetail: React.FC = () => {
   const { playerId } = useParams<{ playerId: string }>();
@@ -412,6 +35,7 @@ const PlayerDetail: React.FC = () => {
 
   // For development, use mock data if no real data
   const displayPlayer = player || mockPlayer;
+  const displayClub = displayPlayer.club || mockClubs[0];
 
   if (isLoading && !player) {
     return (
@@ -442,20 +66,11 @@ const PlayerDetail: React.FC = () => {
             <div className="flex flex-col md:flex-row items-start gap-6">
               {/* Photo */}
               <div className="flex-shrink-0">
-                <UserAvatar
-                  user={{
-                    id: displayPlayer.id,
-                    name: displayPlayer.fullName,
-                    photo: displayPlayer.photo ?? undefined,
-                  }}
-                  size="xl"
-                  className="border-4 border-brand-orange-700"
+                <img
+                  src={displayPlayer.photo || "/images/players/default.png"}
+                  alt={displayPlayer.fullName}
+                  className="w-32 h-32 rounded-full object-cover border-4 border-brand-orange-700"
                 />
-                {displayPlayer.club && (
-                  <div className="mt-4 text-center">
-                    <ClubCard club={displayPlayer.club} compact={true} />
-                  </div>
-                )}
               </div>
 
               {/* Info */}
@@ -466,142 +81,82 @@ const PlayerDetail: React.FC = () => {
                   </h1>
                   {displayPlayer.alias && (
                     <span className="text-heading-m text-brand-green-300">
-                      ({displayPlayer.alias})
+                      "{displayPlayer.alias}"
                     </span>
                   )}
                 </div>
 
                 <div className="flex items-center gap-4 mb-4">
-                  <Badge variant="gold">N°{displayPlayer.clubNumber}</Badge>
-                  <Badge variant={displayPlayer.licenseStatus === "valid" ? "success" : "warning"}>
-                    {displayPlayer.licenseStatus === "valid"
-                      ? "Licence Valide"
-                      : displayPlayer.licenseStatus}
+                  <Badge variant={displayPlayer.category === "Senior" ? "gold" : "primary"}>
+                    {displayPlayer.category}
                   </Badge>
-                  <Badge variant="default">{displayPlayer.category}</Badge>
-                  <Badge variant="default">
-                    {displayPlayer.dominantHand === "right"
-                      ? "Droitier"
-                      : displayPlayer.dominantHand === "left"
-                        ? "Gaucher"
-                        : "Ambidextre"}
+                  <Badge variant={displayPlayer.status === "active" ? "success" : "warning"}>
+                    {displayPlayer.status === "active" ? "Actif" : "Inactif"}
                   </Badge>
+                  <Badge variant="default">{displayPlayer.nationality}</Badge>
+                  <Badge variant="secondary">{displayPlayer.age} ans</Badge>
                 </div>
 
                 <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
-                  Né le {new Date(displayPlayer.birthDate).toLocaleDateString("fr-FR")} à{" "}
-                  {displayPlayer.birthPlace} ({displayPlayer.age} ans)
+                  {displayPlayer.birthPlace && `${displayPlayer.birthPlace} - `}
+                  {displayPlayer.city}, {displayPlayer.postalCode}
                 </p>
 
-                {/* Stats Summary */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-300 mb-1">Matchs Joués</p>
-                    <p className="text-heading-s font-bold text-brand-orange-700">
-                      {displayPlayer.stats.matchesPlayed}
-                    </p>
+                {/* Club Info */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Club:</span>
+                    <Link
+                      to={`/clubs/${displayClub.id}`}
+                      className="flex items-center gap-2 text-brand-orange-pure hover:underline"
+                    >
+                      <img
+                        src={displayClub.logo || "/images/clubs/default.png"}
+                        alt={displayClub.name}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      <span>{displayClub.name}</span>
+                    </Link>
                   </div>
-                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
-                    <p className="text-heading-s font-bold text-brand-orange-700">
-                      {displayPlayer.stats.wins}
-                    </p>
-                  </div>
-                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-300 mb-1">Taux de Victoire</p>
-                    <p className="text-heading-s font-bold text-brand-orange-700">
-                      {displayPlayer.stats.winRate}%
-                    </p>
-                  </div>
-                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-300 mb-1">Points Moyens</p>
-                    <p className="text-heading-s font-bold text-brand-orange-700">
-                      {displayPlayer.stats.averagePoints.toFixed(1)}
-                    </p>
-                  </div>
+                  {displayPlayer.clubNumber && (
+                    <Badge variant="secondary">{displayPlayer.clubNumber}</Badge>
+                  )}
                 </div>
 
-                {/* Contact & Social */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex items-center gap-4">
-                    {displayPlayer.email && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-brand-green-400">Email:</span>
-                        <a
-                          href={`mailto:${displayPlayer.email}`}
-                          className="text-brand-orange-700 hover:underline text-body-s"
-                        >
-                          {displayPlayer.email}
-                        </a>
-                      </div>
-                    )}
-                    {displayPlayer.phone && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-brand-green-400">Téléphone:</span>
-                        <a
-                          href={`tel:${displayPlayer.phone}`}
-                          className="text-brand-orange-700 hover:underline text-body-s"
-                        >
-                          {displayPlayer.phone}
-                        </a>
-                      </div>
-                    )}
+                {/* License Info */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Licence:</span>
+                    <Badge
+                      variant={displayPlayer.licenseStatus === "valid" ? "success" : "warning"}
+                    >
+                      {displayPlayer.licenseNumber}
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-4">
-                    {displayPlayer.social.facebook && (
-                      <a
-                        href={displayPlayer.social.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-brand-green-400 hover:text-brand-orange-700"
-                      >
-                        Facebook
-                      </a>
-                    )}
-                    {displayPlayer.social.twitter && (
-                      <a
-                        href={displayPlayer.social.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-brand-green-400 hover:text-brand-orange-700"
-                      >
-                        Twitter
-                      </a>
-                    )}
-                    {displayPlayer.social.instagram && (
-                      <a
-                        href={displayPlayer.social.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-brand-green-400 hover:text-brand-orange-700"
-                      >
-                        Instagram
-                      </a>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Main:</span>
+                    <Badge variant="default">
+                      {displayPlayer.dominantHand === "right" ? "Droitier" : "Gaucher"}
+                    </Badge>
                   </div>
+                  {displayPlayer.playStyle && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-brand-green-400">Style:</span>
+                      <Badge variant="secondary">{displayPlayer.playStyle}</Badge>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Rank */}
               <div className="flex-shrink-0">
                 <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
-                  <p className="text-body-xs text-brand-green-400 mb-1">Classement Actuel</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-heading-xl font-bold text-brand-orange-700">
-                      {displayPlayer.stats.currentRank}
-                    </span>
-                    {displayPlayer.stats.rankTrend === "up" && (
-                      <span className="text-green-400">↑</span>
-                    )}
-                    {displayPlayer.stats.rankTrend === "down" && (
-                      <span className="text-red-400">↓</span>
-                    )}
-                  </div>
-                  <p className="text-body-xs text-brand-green-300 mt-1">
-                    {displayPlayer.stats.currentDivision}
+                  <p className="text-body-xs text-brand-green-400 mb-1">Classement</p>
+                  <p className="text-heading-l font-bold text-brand-orange-pure">
+                    #{displayPlayer.stats.currentRank}
                   </p>
-                  <p className="text-body-xs text-brand-green-400 mt-2">
-                    {displayPlayer.stats.currentPoints} pts
+                  <p className="text-body-xs text-brand-green-400 mt-1">
+                    {displayPlayer.stats.currentDivision}
                   </p>
                 </div>
               </div>
@@ -609,81 +164,74 @@ const PlayerDetail: React.FC = () => {
           </div>
         </section>
 
-        {/* Progress Bar - Win Rate */}
+        {/* Stats Overview */}
         <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
-              Statistiques Détaillées
+            <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
+              Statistiques Générales
             </h2>
-
-            {/* Win Rate Progress */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-body-s text-brand-green-300">
-                  Taux de Victoire: {displayPlayer.stats.winRate}%
-                </span>
-                <span className="text-body-s text-brand-orange-700">
-                  {displayPlayer.stats.wins}V - {displayPlayer.stats.draws}N -{" "}
-                  {displayPlayer.stats.losses}D
-                </span>
-              </div>
-              <div className="h-4 bg-brand-green-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-brand-orange-700 rounded-full"
-                  style={{ width: `${displayPlayer.stats.winRate}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Accuracy Progress */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-body-s text-brand-green-300">
-                  Précision: {displayPlayer.stats.accuracy}%
-                </span>
-                <span className="text-body-s text-brand-orange-700">
-                  Meilleur score: {displayPlayer.stats.bestScore}
-                </span>
-              </div>
-              <div className="h-4 bg-brand-green-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-green-500 rounded-full"
-                  style={{ width: `${displayPlayer.stats.accuracy}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Meilleure Série</p>
-                  <p className="text-heading-m font-bold text-brand-orange-700">
-                    {displayPlayer.stats.bestStreak}
+                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Joués</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.matchesPlayed}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Points/Manche</p>
-                  <p className="text-heading-m font-bold text-brand-orange-700">
-                    {displayPlayer.stats.pointsPerManche.toFixed(1)}
+                  <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.wins}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Total Points</p>
-                  <p className="text-heading-m font-bold text-brand-orange-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Défaites</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.losses}
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                <CardContent className="text-center p-4">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Nuls</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.draws}
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                <CardContent className="text-center p-4">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Win Rate</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.winRate}%
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                <CardContent className="text-center p-4">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Points Totaux</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayPlayer.stats.totalPoints}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Nuls</p>
-                  <p className="text-heading-m font-bold text-brand-orange-700">
-                    {displayPlayer.stats.draws}
+                  <p className="text-body-xs text-brand-green-300 mb-1">Moyenne</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.averagePoints.toFixed(1)}
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                <CardContent className="text-center p-4">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Meilleur Score</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayPlayer.stats.bestScore}
                   </p>
                 </CardContent>
               </Card>
@@ -694,169 +242,152 @@ const PlayerDetail: React.FC = () => {
         {/* Tabs */}
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <Tabs defaultValue="statistiques">
+            <Tabs defaultValue="stats">
               <TabList>
-                <Tab value="statistiques" label="Statistiques" />
-                <Tab value="historique" label="Historique des Matchs" />
-                <Tab value="trophees" label="Trophées ({displayPlayer.trophies.total})" />
+                <Tab value="stats" label="Statistiques Détaillées" />
+                <Tab value="historique" label="Historique" />
+                <Tab value="trophees" label={`Trophées (${displayPlayer.trophies.total})`} />
                 <Tab value="equipes" label="Équipes" />
-                <Tab value="records" label="Records ({displayPlayer.records.total})" />
               </TabList>
 
-              {/* Statistiques */}
-              <TabPanel value="statistiques" className="py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Par Compétition */}
+              {/* Stats Détaillées */}
+              <TabPanel value="stats" className="py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Stats par Position */}
                   <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">Par Compétition</h3>
+                      <h3 className="text-heading-s font-bold text-white">
+                        Statistiques par Position
+                      </h3>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {Object.entries(displayPlayer.stats.byCompetition).map(
-                          ([compName, stats]) => (
-                            <div key={compName} className="bg-brand-green-800/50 rounded p-3">
-                              <p className="text-body-s font-semibold text-brand-orange-700">
-                                {compName}
-                              </p>
-                              <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
-                                <div>
-                                  <p className="text-brand-green-300">
-                                    Points: {stats.totalPoints}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-brand-green-300">
-                                    Victoires: {(stats as any).wins || "N/A"}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-brand-green-300">
-                                    Win Rate: {(stats as any).winRate || "N/A"}%
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ),
-                        )}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Premier</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayPlayer.stats.byPosition.first.matches} matchs
+                          </p>
+                          <p className="text-body-xs text-brand-green-300">
+                            {displayPlayer.stats.byPosition.first.points} points
+                          </p>
+                          <p className="text-body-xs text-brand-green-300">
+                            {displayPlayer.stats.byPosition.first.winRate?.toFixed(0)}% de victoires
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Second</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayPlayer.stats.byPosition.second.matches} matchs
+                          </p>
+                          <p className="text-body-xs text-brand-green-300">
+                            {displayPlayer.stats.byPosition.second.points} points
+                          </p>
+                          <p className="text-body-xs text-brand-green-300">
+                            {displayPlayer.stats.byPosition.second.winRate?.toFixed(0)}% de
+                            victoires
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
 
-                  {/* Par Saison */}
+                  {/* Autres Stats */}
                   <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">Par Saison</h3>
+                      <h3 className="text-heading-s font-bold text-white">Autres Statistiques</h3>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {Object.entries(displayPlayer.stats.bySeason).map(([season, stats]) => (
-                          <div key={season} className="bg-brand-green-800/50 rounded p-3">
-                            <p className="text-body-s font-semibold text-brand-orange-700">
-                              {season}
-                            </p>
-                            <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
-                              <div>
-                                <p className="text-brand-green-300">Classement: {stats.rank}°</p>
-                              </div>
-                              <div>
-                                <p className="text-brand-green-300">Victoires: {stats.wins}</p>
-                              </div>
-                              <div>
-                                <p className="text-brand-green-300">Points: {stats.totalPoints}</p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Par Position */}
-                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-2">
-                    <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">Par Position</h3>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {Object.entries(displayPlayer.stats.byPosition).map(([position, stats]) => (
-                          <div key={position} className="bg-brand-green-800/50 rounded p-3">
-                            <p className="text-body-s font-semibold text-brand-orange-700">
-                              Position: {position}
-                            </p>
-                            <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
-                              <div>
-                                <p className="text-brand-green-300">Matchs: {stats.matches}</p>
-                              </div>
-                              <div>
-                                <p className="text-brand-green-300">Points: {stats.points}</p>
-                              </div>
-                              <div>
-                                <p className="text-brand-green-300">Win Rate: {stats.winRate}%</p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Points/Manche</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayPlayer.stats.pointsPerManche.toFixed(1)}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Meilleure Série</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayPlayer.stats.bestStreak}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Max Win Streak</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayPlayer.stats.maxWinStreak}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Précision</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayPlayer.stats.accuracy}%
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Évolution du Classement */}
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50 mt-6">
+                  <CardHeader>
+                    <h3 className="text-heading-s font-bold text-white">Évolution du Classement</h3>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div className="text-center">
+                        <p className="text-body-xs text-brand-green-300 mb-1">Classement Actuel</p>
+                        <p className="text-heading-m font-bold text-brand-orange-pure">
+                          #{displayPlayer.stats.currentRank}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-body-xs text-brand-green-300 mb-1">
+                          Classement Précédent
+                        </p>
+                        <p className="text-heading-m font-bold text-brand-orange-pure">
+                          #{displayPlayer.stats.previousRank}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-body-xs text-brand-green-300 mb-1">Tendance</p>
+                        <Badge
+                          variant={
+                            displayPlayer.stats.rankTrend === "up"
+                              ? "success"
+                              : displayPlayer.stats.rankTrend === "down"
+                                ? "danger"
+                                : "secondary"
+                          }
+                        >
+                          {displayPlayer.stats.rankTrend === "up"
+                            ? "↑"
+                            : displayPlayer.stats.rankTrend === "down"
+                              ? "↓"
+                              : "→"}
+                        </Badge>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-body-xs text-brand-green-300 mb-1">Points Actuels</p>
+                        <p className="text-heading-m font-bold text-brand-orange-pure">
+                          {displayPlayer.stats.currentPoints}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </TabPanel>
 
-              {/* Historique des Matchs */}
+              {/* Historique */}
               <TabPanel value="historique" className="py-6">
                 <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
-                    <h3 className="text-heading-s font-bold text-white">
-                      Derniers Matchs ({mockMatches.length})
-                    </h3>
+                    <h3 className="text-heading-s font-bold text-white">Historique des Matchs</h3>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {mockMatches.map((match) => (
-                        <div
-                          key={match.id}
-                          className="bg-brand-green-800/50 rounded p-4 flex items-center justify-between"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-body-s font-semibold text-white">
-                                {match.competition.name}
-                              </span>
-                              {match.status === "completed" && (
-                                <Badge variant="success">Terminé</Badge>
-                              )}
-                              {match.status === "in_progress" && (
-                                <Badge variant="warning">En cours</Badge>
-                              )}
-                              {match.status === "scheduled" && (
-                                <Badge variant="default">À venir</Badge>
-                              )}
-                            </div>
-                            <p className="text-body-xs text-brand-green-300">
-                              Journée {match.journee} - {match.date.toLocaleDateString("fr-FR")}
-                            </p>
-                            <div className="flex items-center gap-2 mt-2">
-                              <span className="text-body-s text-white">{match.team1.name}</span>
-                              <span className="text-body-s text-brand-orange-700 font-bold">
-                                {match.team1Score} - {match.team2Score}
-                              </span>
-                              <span className="text-body-s text-white">{match.team2.name}</span>
-                            </div>
-                          </div>
-                          <div className="flex-shrink-0">
-                            {match.winner === "team1" &&
-                              match.team1.players.some((p) => p.id === displayPlayer.id) && (
-                                <Badge variant="success">Victoire</Badge>
-                              )}
-                            {match.winner === "team2" &&
-                              match.team2.players.some((p) => p.id === displayPlayer.id) && (
-                                <Badge variant="danger">Défaite</Badge>
-                              )}
-                            {match.winner === null && <Badge variant="default">Match nul</Badge>}
-                          </div>
-                        </div>
-                      ))}
+                    <div className="text-center p-8">
+                      <p className="text-body-m text-brand-green-300">
+                        L&apos;historique des matchs sera affiché ici.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -864,198 +395,75 @@ const PlayerDetail: React.FC = () => {
 
               {/* Trophées */}
               <TabPanel value="trophees" className="py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {displayPlayer.trophies.list.map((trophy) => (
-                    <Card
-                      key={trophy.id}
-                      className="bg-brand-green-900/50 border-brand-green-700/50"
-                    >
-                      <CardContent className="text-center p-6">
-                        <div className="mb-4">
-                          <span className="text-4xl">🏆</span>
-                        </div>
-                        <h3 className="text-heading-s font-bold text-brand-orange-700 mb-2">
-                          {trophy.name}
-                        </h3>
-                        <p className="text-body-xs text-brand-green-300 mb-1">
-                          {trophy.competition}
-                        </p>
-                        <p className="text-body-xs text-brand-green-400 mb-1">
-                          {trophy.type === "champion" && "Champion"}
-                          {trophy.type === "winner" && "Vainqueur"}
-                          {trophy.type === "finalist" && "Finaliste"}
-                          {trophy.type === "semifinalist" && "Demi-finaliste"}
-                        </p>
-                        <p className="text-body-xs text-brand-green-300">Saison {trophy.year}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                  {displayPlayer.trophies.list.length === 0 && (
-                    <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-3">
-                      <CardContent className="text-center p-8">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                  <CardHeader>
+                    <h3 className="text-heading-s font-bold text-white">
+                      Trophées ({displayPlayer.trophies.total})
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    {displayPlayer.trophies.total > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {displayPlayer.trophies.list.map((trophy, index) => (
+                          <div
+                            key={index}
+                            className="text-center p-4 bg-brand-green-800/50 rounded-lg"
+                          >
+                            <p className="text-body-s text-brand-orange-pure font-bold">
+                              {trophy.name || `Trophée #${index + 1}`}
+                            </p>
+                            <p className="text-body-xs text-brand-green-300">
+                              {trophy.year || trophy.season || "Date inconnue"}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center p-8">
                         <p className="text-body-m text-brand-green-300">
                           Aucun trophée pour le moment.
                         </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </TabPanel>
 
               {/* Équipes */}
               <TabPanel value="equipes" className="py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Équipes actuelles */}
-                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
-                    <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">
-                        Équipes Actuelles ({displayPlayer.currentTeams.length})
-                      </h3>
-                    </CardHeader>
-                    <CardContent>
-                      {displayPlayer.currentTeams.length > 0 ? (
-                        <div className="space-y-3">
-                          {displayPlayer.currentTeams.map((team) => (
-                            <div
-                              key={team.id}
-                              className="bg-brand-green-800/50 rounded p-3 flex items-center justify-between"
-                            >
-                              <div>
-                                <p className="text-body-s font-semibold text-white">{team.name}</p>
-                                <p className="text-body-xs text-brand-green-300">
-                                  {team.stats.wins}V - {team.stats.losses}D
-                                </p>
-                              </div>
-                              <Badge variant="success">Actif</Badge>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-body-s text-brand-green-300">Aucune équipe actuelle.</p>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  {/* Équipes passées */}
-                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
-                    <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">
-                        Équipes Passées ({displayPlayer.pastTeams.length})
-                      </h3>
-                    </CardHeader>
-                    <CardContent>
-                      {displayPlayer.pastTeams.length > 0 ? (
-                        <div className="space-y-3">
-                          {displayPlayer.pastTeams.map((team) => (
-                            <div
-                              key={team.id}
-                              className="bg-brand-green-800/50 rounded p-3 flex items-center justify-between"
-                            >
-                              <div>
-                                <p className="text-body-s font-semibold text-white">{team.name}</p>
-                                <p className="text-body-xs text-brand-green-300">
-                                  Saison: {team.season}
-                                </p>
-                                <p className="text-body-xs text-brand-green-300">
-                                  {team.stats.wins}V - {team.stats.losses}D
-                                </p>
-                              </div>
-                              <Badge variant="default">Passé</Badge>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-body-s text-brand-green-300">Aucune équipe passée.</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Coéquipiers fréquents */}
-                {displayPlayer.frequentTeammates.length > 0 && (
-                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 mt-4">
-                    <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">Coéquipiers Fréquents</h3>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {displayPlayer.frequentTeammates.map((teammate, index) => (
-                          <div
-                            key={index}
-                            className="bg-brand-green-800/50 rounded p-3 flex items-center gap-3"
-                          >
-                            <UserAvatar
-                              user={{
-                                id: teammate.player.id,
-                                name: teammate.player.fullName,
-                                photo: teammate.player.photo || undefined,
-                              }}
-                              size="sm"
-                            />
-                            <div className="flex-1">
-                              <p className="text-body-s font-semibold text-white">
-                                {teammate.player.fullName}
-                              </p>
-                              <p className="text-body-xs text-brand-green-300">
-                                {teammate.count} matchs ensemble
-                              </p>
-                            </div>
-                            <div className="text-center">
-                              <p className="text-body-xs text-brand-green-300">Win Rate</p>
-                              <p className="text-body-s font-bold text-brand-orange-700">
-                                {teammate.winRate}%
-                              </p>
-                            </div>
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                  <CardHeader>
+                    <h3 className="text-heading-s font-bold text-white">Équipes Actuelles</h3>
+                  </CardHeader>
+                  <CardContent>
+                    {displayPlayer.currentTeams && displayPlayer.currentTeams.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {displayPlayer.currentTeams.map((team) => (
+                          <div key={team.id} className="p-4 bg-brand-green-800/50 rounded-lg">
+                            <h4 className="text-heading-s text-brand-orange-pure font-bold mb-2">
+                              {team.name}
+                            </h4>
+                            <p className="text-body-xs text-brand-green-300 mb-2">
+                              Capitaine: {team.captain?.fullName || "Aucun"}
+                            </p>
+                            <p className="text-body-xs text-brand-green-300">
+                              Joueurs: {team.players.length}
+                            </p>
+                            <Link to={`/teams/${team.id}`} className="inline-block mt-4">
+                              <Button variant="gold" size="sm">
+                                Voir l&apos;équipe
+                              </Button>
+                            </Link>
                           </div>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabPanel>
-
-              {/* Records */}
-              <TabPanel value="records" className="py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {displayPlayer.records.list.map((record) => (
-                    <Card
-                      key={record.id}
-                      className="bg-brand-green-900/50 border-brand-green-700/50"
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0">
-                            <span className="text-2xl">🎯</span>
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="text-heading-s font-bold text-brand-orange-700 mb-1">
-                              {record.type}
-                            </h3>
-                            <p className="text-body-s text-white mb-2">{record.value}</p>
-                            <p className="text-body-xs text-brand-green-300 mb-1">
-                              {record.tournament}
-                            </p>
-                            <p className="text-body-xs text-brand-green-400">
-                              {new Date(record.date).toLocaleDateString("fr-FR")}
-                            </p>
-                          </div>
-                          <div className="flex-shrink-0">
-                            {record.verified && <Badge variant="success">Vérifié</Badge>}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                  {displayPlayer.records.list.length === 0 && (
-                    <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-3">
-                      <CardContent className="text-center p-8">
-                        <p className="text-body-m text-brand-green-300">
-                          Aucun record pour le moment.
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
+                    ) : (
+                      <div className="text-center p-8">
+                        <p className="text-body-m text-brand-green-300">Aucune équipe actuelle.</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </TabPanel>
             </Tabs>
           </div>

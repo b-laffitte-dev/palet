@@ -19,392 +19,7 @@ import {
 import { ClassificationTable, MatchCard, ClubCard, TournamentCard } from "../components/domain";
 import { Championship, Team, Match, ChampionshipClassification, ChampionshipTeam } from "../types";
 import { api } from "../api";
-
-// Mock data for development
-const mockTeams: Team[] = [
-  {
-    id: "team-001",
-    name: "Équipe 1 - Essarts",
-    club: {
-      id: "club-001",
-      name: "Club des Essarts",
-      nickname: "Les Essartiates",
-      code: "ESS",
-      logo: "/images/clubs/essarts.png",
-      address: "123 Rue du Palet, 85140 Les Essarts",
-      city: "Les Essarts",
-      postalCode: "85140",
-      league: "Deux-Sèvres",
-      division: "D1",
-      status: "active",
-      playersCount: 25,
-      teamsCount: 8,
-      contactEmail: "contact@palet-essarts.fr",
-      contactPhone: "+33 2 51 65 43 21",
-      website: "https://palet-essarts.fr",
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date("2020-01-15"),
-      updatedAt: new Date("2026-10-01"),
-    },
-    clubId: "club-001",
-    captain: null as any,
-    captainId: null,
-    players: [],
-    logo: null,
-    stats: {
-      matches: 20,
-      wins: 15,
-      draws: 3,
-      losses: 2,
-      pointsFor: 225,
-      pointsAgainst: 165,
-      diff: 60,
-      points: 48,
-      winRate: 75,
-    },
-    status: "active",
-    competitions: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "team-002",
-    name: "Équipe 1 - Marais",
-    club: {
-      id: "club-002",
-      name: "Palet du Marais Champagnelais",
-      nickname: "Les Maraisiens",
-      code: "MAR",
-      logo: "/images/clubs/marais.png",
-      address: "456 Rue de la Plaque, 85170 Le Poiré-sur-Vie",
-      city: "Le Poiré-sur-Vie",
-      postalCode: "85170",
-      league: "Deux-Sèvres",
-      division: "D1",
-      status: "active",
-      playersCount: 20,
-      teamsCount: 6,
-      contactEmail: "contact@palet-marais.fr",
-      contactPhone: "+33 2 51 65 43 22",
-      website: "https://palet-marais.fr",
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date("2018-03-20"),
-      updatedAt: new Date("2026-10-01"),
-    },
-    clubId: "club-002",
-    captain: null as any,
-    captainId: null,
-    players: [],
-    logo: null,
-    stats: {
-      matches: 20,
-      wins: 12,
-      draws: 5,
-      losses: 3,
-      pointsFor: 210,
-      pointsAgainst: 180,
-      diff: 30,
-      points: 41,
-      winRate: 60,
-    },
-    status: "active",
-    competitions: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "team-003",
-    name: "Équipe 1 - Herbiers",
-    club: {
-      id: "club-003",
-      name: "Palet des Herbiers",
-      nickname: "Les Herbiers",
-      code: "HER",
-      logo: "/images/clubs/herbiers.png",
-      address: "789 Rue du Jeu, 85500 Les Herbiers",
-      city: "Les Herbiers",
-      postalCode: "85500",
-      league: "Deux-Sèvres",
-      division: "D1",
-      status: "active",
-      playersCount: 18,
-      teamsCount: 5,
-      contactEmail: "contact@palet-herbiers.fr",
-      contactPhone: "+33 2 51 65 43 23",
-      website: "https://palet-herbiers.fr",
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date("2019-05-10"),
-      updatedAt: new Date("2026-10-01"),
-    },
-    clubId: "club-003",
-    captain: null as any,
-    captainId: null,
-    players: [],
-    logo: null,
-    stats: {
-      matches: 20,
-      wins: 10,
-      draws: 6,
-      losses: 4,
-      pointsFor: 195,
-      pointsAgainst: 190,
-      diff: 5,
-      points: 36,
-      winRate: 50,
-    },
-    status: "active",
-    competitions: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "team-004",
-    name: "Équipe 1 - Luçon",
-    club: {
-      id: "club-004",
-      name: "Palet de Luçon",
-      nickname: "Les Luçonnais",
-      code: "LUC",
-      logo: "/images/clubs/lucon.png",
-      address: "321 Rue de la Barre, 85400 Luçon",
-      city: "Luçon",
-      postalCode: "85400",
-      league: "Deux-Sèvres",
-      division: "D1",
-      status: "active",
-      playersCount: 15,
-      teamsCount: 4,
-      contactEmail: "contact@palet-lucon.fr",
-      contactPhone: "+33 2 51 65 43 24",
-      website: "https://palet-lucon.fr",
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date("2021-07-01"),
-      updatedAt: new Date("2026-10-01"),
-    },
-    clubId: "club-004",
-    captain: null as any,
-    captainId: null,
-    players: [],
-    logo: null,
-    stats: {
-      matches: 20,
-      wins: 8,
-      draws: 4,
-      losses: 8,
-      pointsFor: 180,
-      pointsAgainst: 200,
-      diff: -20,
-      points: 28,
-      winRate: 40,
-    },
-    status: "active",
-    competitions: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
-const mockChampionship: Championship = {
-  id: "championship-001",
-  name: "Championnat 79 D1 2026-2027",
-  code: "D1-2026-2027",
-  type: "championship",
-  category: "doublette",
-  material: "fonte",
-  season: "2026-2027",
-  description:
-    "Le championnat départemental des Deux-Sèvres en Division 1 pour la saison 2026-2027.",
-  location: "Deux-Sèvres, France",
-  divisions: ["D1"],
-  format: "round-robin",
-  registrationStart: new Date("2026-08-01"),
-  registrationEnd: new Date("2026-08-31"),
-  startDate: new Date("2026-09-15"),
-  endDate: new Date("2027-05-31"),
-  status: "in_progress",
-  currentJournee: 5,
-  totalJournees: 18,
-  currentPhase: "Phase Aller",
-  maxTeams: 12,
-  registeredTeams: mockTeams.length,
-  teams: mockTeams,
-  pointsType: "13",
-  winPoints: 3,
-  drawPoints: 1,
-  lossPoints: 0,
-  autoRegistration: false,
-  manualValidation: true,
-  isPublic: true,
-  isArchived: false,
-  stats: {
-    totalMatches: 40,
-    completedMatches: 20,
-    totalPoints: 1800,
-    topScorer: null,
-    topTeam: mockTeams[0]!,
-  },
-  organizer: mockTeams[0]!.club!,
-  organizerId: "club-001",
-  classificationRules: {
-    primary: "points",
-    secondary: "diff",
-    tertiary: "pointsFor",
-  },
-  classification: {
-    division: "D1",
-    journee: 5,
-    updatedAt: new Date("2026-10-08"),
-    teams: [
-      {
-        position: 1,
-        team: mockTeams[0]!,
-        stats: mockTeams[0]!.stats,
-        form: ["win", "win", "win", "win", "draw"],
-        status: "qualified",
-      },
-      {
-        position: 2,
-        team: mockTeams[1]!,
-        stats: mockTeams[1]!.stats,
-        form: ["win", "win", "draw", "win", "loss"],
-        status: "qualified",
-      },
-      {
-        position: 3,
-        team: mockTeams[2]!,
-        stats: mockTeams[2]!.stats,
-        form: ["win", "draw", "loss", "win", "win"],
-        status: "safe",
-      },
-      {
-        position: 4,
-        team: mockTeams[3]!,
-        stats: mockTeams[3]!.stats,
-        form: ["loss", "draw", "win", "loss", "draw"],
-        status: "relegated",
-      },
-    ],
-  },
-  journeeDuration: "1 week",
-  createdAt: new Date("2026-07-01"),
-  updatedAt: new Date("2026-10-09"),
-};
-
-const mockMatches: Match[] = [
-  {
-    id: "match-001",
-    competitionId: "championship-001",
-    competition: mockChampionship as any,
-    type: "championship",
-    journee: 5,
-    phase: "Phase Aller",
-    round: "Round 5",
-    team1: {
-      id: "team-001",
-      name: "Équipe 1 - Essarts",
-      logo: "/images/clubs/essarts.png",
-      players: [],
-      rank: 1,
-      seed: 1,
-    },
-    team2: {
-      id: "team-002",
-      name: "Équipe 1 - Marais",
-      logo: "/images/clubs/marais.png",
-      players: [],
-      rank: 2,
-      seed: 2,
-    },
-    team1Score: 13,
-    team2Score: 10,
-    winner: "team1",
-    manches: [
-      { number: 1, team1: 7, team2: 5, winner: "team1" },
-      { number: 2, team1: 6, team2: 5, winner: "team1" },
-    ],
-    bestOf: 3,
-    currentManche: null,
-    currentScores: null,
-    status: "completed",
-    verified: true,
-    verifiedBy: "arbitre-001",
-    verifiedAt: new Date("2026-10-08T14:30:00"),
-    date: new Date("2026-10-08T14:00:00"),
-    time: "14:00",
-    location: "Salle de Palet - Les Essarts",
-    duration: "1h",
-    canEdit: false,
-    isLive: false,
-    isRecent: true,
-    stats: {
-      totalManches: 2,
-      avgPointsPerManche: 6.5,
-      bestManche: { number: 1, team1: 7, team2: 5, winner: "team1" },
-      playerStats: [],
-    },
-    startedAt: new Date("2026-10-08T14:00:00"),
-    endedAt: new Date("2026-10-08T14:30:00"),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "match-002",
-    competitionId: "championship-001",
-    competition: mockChampionship as any,
-    type: "championship",
-    journee: 5,
-    phase: "Phase Aller",
-    round: "Round 5",
-    team1: {
-      id: "team-003",
-      name: "Équipe 1 - Herbiers",
-      logo: "/images/clubs/herbiers.png",
-      players: [],
-      rank: 3,
-      seed: 3,
-    },
-    team2: {
-      id: "team-004",
-      name: "Équipe 1 - Luçon",
-      logo: "/images/clubs/lucon.png",
-      players: [],
-      rank: 4,
-      seed: 4,
-    },
-    team1Score: 13,
-    team2Score: 11,
-    winner: "team1",
-    manches: [
-      { number: 1, team1: 7, team2: 5, winner: "team1" },
-      { number: 2, team1: 6, team2: 6, winner: null },
-      { number: 3, team1: 6, team2: 4, winner: "team1" },
-    ],
-    bestOf: 3,
-    currentManche: null,
-    currentScores: null,
-    status: "completed",
-    verified: true,
-    verifiedBy: "arbitre-001",
-    verifiedAt: new Date("2026-10-08T16:30:00"),
-    date: new Date("2026-10-08T16:00:00"),
-    time: "16:00",
-    location: "Salle de Palet - Les Herbiers",
-    duration: "1h15",
-    canEdit: false,
-    isLive: false,
-    isRecent: true,
-    stats: {
-      totalManches: 3,
-      avgPointsPerManche: 5.67,
-      bestManche: { number: 3, team1: 6, team2: 4, winner: "team1" },
-      playerStats: [],
-    },
-    startedAt: new Date("2026-10-08T16:00:00"),
-    endedAt: new Date("2026-10-08T16:30:00"),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+import { mockChampionship, mockClassification, mockMatches, mockTeams } from "../data/mocks";
 
 const ChampionshipDetail: React.FC = () => {
   const { championshipId } = useParams<{ championshipId: string }>();
@@ -433,17 +48,6 @@ const ChampionshipDetail: React.FC = () => {
     );
   }
 
-  // Calculate progress
-  const getJourneeProgress = () => {
-    if (!displayChampionship.totalJournees || !displayChampionship.currentJournee) {
-      return 0;
-    }
-    return Math.min(
-      ((displayChampionship.currentJournee || 0) / displayChampionship.totalJournees) * 100,
-      100,
-    );
-  };
-
   return (
     <Layout>
       <main className="flex-1">
@@ -459,178 +63,149 @@ const ChampionshipDetail: React.FC = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-start gap-6">
-              {/* Logo/Icon */}
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-brand-green-800 rounded-full flex items-center justify-center border-2 border-brand-orange-700">
-                  <span className="text-4xl text-brand-orange-pure">🏅</span>
-                </div>
-              </div>
-
               {/* Info */}
               <div className="flex-1">
-                <div className="flex items-center gap-4 mb-2">
+                <div className="flex items-center gap-4 mb-4">
                   <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
                     {displayChampionship.name}
                   </h1>
+                  <Badge variant="gold">{displayChampionship.code}</Badge>
                 </div>
 
                 <div className="flex items-center gap-4 mb-4">
-                  <Badge variant="secondary">{displayChampionship.season}</Badge>
-                  <Badge variant="secondary">{displayChampionship.divisions[0]}</Badge>
-                  <Badge variant="secondary">{displayChampionship.category}</Badge>
+                  <Badge variant="primary">{displayChampionship.category}</Badge>
                   <Badge variant="secondary">{displayChampionship.material}</Badge>
-                  {displayChampionship.status === "pending" && (
-                    <Badge variant="info">À venir</Badge>
-                  )}
-                  {displayChampionship.status === "in_progress" && (
-                    <Badge variant="warning">En cours</Badge>
-                  )}
-                  {displayChampionship.status === "completed" && (
-                    <Badge variant="success">Terminé</Badge>
-                  )}
-                  {displayChampionship.status === "cancelled" && (
-                    <Badge variant="danger">Annulé</Badge>
-                  )}
+                  <Badge variant="default">{displayChampionship.season}</Badge>
+                  <Badge
+                    variant={
+                      displayChampionship.status === "in_progress"
+                        ? "success"
+                        : displayChampionship.status === "completed"
+                          ? "default"
+                          : "warning"
+                    }
+                  >
+                    {displayChampionship.status.replace("_", " ")}
+                  </Badge>
                 </div>
 
                 <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
                   {displayChampionship.description}
                 </p>
 
-                {/* Dates and Location */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-brand-green-400">Journée actuelle:</span>
-                    <span className="text-brand-orange-pure font-semibold text-body-s">
-                      {displayChampionship.currentJournee || "Non commencé"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-brand-green-400">Total journées:</span>
-                    <span className="text-brand-orange-pure font-semibold text-body-s">
-                      {displayChampionship.totalJournees}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-brand-green-400">Phase actuelle:</span>
-                    <span className="text-brand-orange-pure font-semibold text-body-s">
-                      {displayChampionship.currentPhase}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 md:col-span-3">
-                    <span className="text-brand-green-400">Dates:</span>
-                    <span className="text-brand-orange-pure font-semibold text-body-s">
-                      {displayChampionship.startDate?.toLocaleDateString("fr-FR") || "À définir"} -
-                      {displayChampionship.endDate?.toLocaleDateString("fr-FR") || "À définir"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 md:col-span-3">
                     <span className="text-brand-green-400">Lieu:</span>
-                    <span className="text-brand-orange-pure font-semibold text-body-s">
-                      {displayChampionship.location || "Deux-Sèvres, France"}
+                    <span className="text-brand-orange-pure">{displayChampionship.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Format:</span>
+                    <span className="text-brand-orange-pure">
+                      {displayChampionship.format.replace("_", " ")}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Type:</span>
+                    <span className="text-brand-orange-pure">{displayChampionship.type}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Équipes inscrites:</span>
+                    <span className="text-brand-orange-pure">
+                      {displayChampionship.registeredTeams}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Journées:</span>
+                    <span className="text-brand-orange-pure">
+                      {displayChampionship.currentJournee || 0}/{displayChampionship.totalJournees}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-green-400">Organisateur:</span>
+                    <span className="text-brand-orange-pure">
+                      {(displayChampionship.organizer as any)?.name || "CDSP 79"}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Code and Organizer */}
+              {/* Current Journee */}
               <div className="flex-shrink-0">
-                <div className="space-y-4">
-                  <div className="bg-brand-green-900/50 rounded-lg p-4 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-400 mb-1">Code Championnat</p>
-                    <p className="text-heading-m font-bold text-brand-orange-pure">
-                      {displayChampionship.code}
-                    </p>
-                  </div>
-                  <div className="bg-brand-green-900/50 rounded-lg p-4 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-400 mb-1">Organisateur</p>
-                    <p className="text-heading-xs font-bold text-brand-orange-pure">
-                      {(displayChampionship.organizer as any)?.name}
-                    </p>
-                  </div>
-                  <div className="bg-brand-green-900/50 rounded-lg p-4 border border-brand-green-700/50 text-center">
-                    <p className="text-body-xs text-brand-green-400 mb-1">Équipes</p>
-                    <p className="text-heading-m font-bold text-brand-orange-pure">
-                      {displayChampionship.registeredTeams}/
-                      {displayChampionship.maxTeams || "Illimité"}
-                    </p>
-                  </div>
+                <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                  <p className="text-body-xs text-brand-green-400 mb-1">Journée Actuelle</p>
+                  <p className="text-heading-l font-bold text-brand-orange-pure">
+                    #{displayChampionship.currentJournee || 0}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Progress */}
+        {/* Stats Overview */}
         <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
-              Progression du Championnat
+              Informations
             </h2>
-
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-body-s text-brand-green-300">
-                  Journée {displayChampionship.currentJournee || 0} /{" "}
-                  {displayChampionship.totalJournees}
-                </span>
-                <span className="text-body-s text-brand-orange-pure">
-                  {getJourneeProgress().toFixed(0)}%
-                </span>
-              </div>
-              <div className="h-6 bg-brand-green-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-brand-orange-700 to-brand-orange-500 rounded-full"
-                  style={{ width: `${getJourneeProgress()}%` }}
-                />
-              </div>
-              <div className="flex justify-between mt-2 text-body-xs text-brand-green-400">
-                <span>Début</span>
-                <span>Journée {displayChampionship.currentJournee || 0}</span>
-                <span>Fin</span>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Totaux</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Type</p>
                   <p className="text-heading-m font-bold text-brand-orange-pure">
-                    {displayChampionship.stats.totalMatches}
+                    {displayChampionship.type}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Termines</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Catégorie</p>
                   <p className="text-heading-m font-bold text-brand-orange-pure">
-                    {displayChampionship.stats.completedMatches}
+                    {displayChampionship.category}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Points Totaux</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Matériel</p>
                   <p className="text-heading-m font-bold text-brand-orange-pure">
-                    {displayChampionship.stats.totalPoints}
+                    {displayChampionship.material}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Points par Manche</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Saison</p>
                   <p className="text-heading-m font-bold text-brand-orange-pure">
-                    {displayChampionship.pointsType}
+                    {displayChampionship.season}
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-brand-green-300 mb-1">Durée Journée</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Équipes</p>
                   <p className="text-heading-m font-bold text-brand-orange-pure">
-                    {displayChampionship.journeeDuration || "1 semaine"}
+                    {displayChampionship.registeredTeams}
                   </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                <CardContent className="text-center p-4">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Statut</p>
+                  <Badge
+                    variant={
+                      displayChampionship.status === "in_progress"
+                        ? "success"
+                        : displayChampionship.status === "completed"
+                          ? "default"
+                          : "warning"
+                    }
+                  >
+                    {displayChampionship.status.replace("_", " ")}
+                  </Badge>
                 </CardContent>
               </Card>
             </div>
@@ -643,89 +218,72 @@ const ChampionshipDetail: React.FC = () => {
             <Tabs defaultValue="classement">
               <TabList>
                 <Tab value="classement" label="Classement" />
-                <Tab value="journee" label="Journée Actuelle" />
-                <Tab value="matchs" label="Tous les Matchs" />
-                <Tab
-                  value="equipes"
-                  label="Équipes Participants ({displayChampionship.registeredTeams || 0})"
-                />
-                <Tab value="regles" label="Règlement" />
+                <Tab value="journees" label="Journées" />
+                <Tab value="equipes" label={`Équipes (${displayChampionship.registeredTeams})`} />
+                <Tab value="matchs" label="Matchs" />
+                <Tab value="statistiques" label="Statistiques" />
               </TabList>
 
               {/* Classement */}
               <TabPanel value="classement" className="py-6">
                 <ClassificationTable
-                  teams={displayChampionship.classification.teams}
-                  competition={displayChampionship.name}
-                  journee={displayChampionship.currentJournee || 0}
+                  teams={displayChampionship.classification?.teams || mockClassification.teams}
+                  competition={`${displayChampionship.name} - ${displayChampionship.divisions[0]}`}
+                  journee={displayChampionship.currentJournee || mockClassification.journee}
                   season={displayChampionship.season}
+                  showAllLink={false}
+                  onAllClick={() => {}}
                 />
               </TabPanel>
 
-              {/* Journée Actuelle */}
-              <TabPanel value="journee" className="py-6">
-                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
+              {/* Journées */}
+              <TabPanel value="journees" className="py-6">
+                <div className="space-y-6">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
-                        Journée {displayChampionship.currentJournee || "Non commencé"} -{" "}
-                        {displayChampionship.currentPhase}
+                        Journée {displayChampionship.currentJournee || mockClassification.journee}
                       </h3>
-                      <Badge variant="warning">
-                        {displayChampionship.currentJournee ? "En cours" : "Non commencé"}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {displayChampionship.currentJournee && mockMatches.length > 0 ? (
-                        mockMatches
-                          .filter((m) => m.journee === displayChampionship.currentJournee)
-                          .map((match) => (
-                            <MatchCard
-                              key={match.id}
-                              match={match}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {mockMatches.slice(0, 3).map((match) => (
+                          <MatchCard key={match.id} match={match} showDetails />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                              showTournament={false}
-                            />
-                          ))
-                      ) : (
-                        <p className="text-body-m text-brand-green-300 text-center py-4">
-                          Aucune journée en cours pour le moment.
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabPanel>
-
-              {/* Tous les Matchs */}
-              <TabPanel value="matchs" className="py-6">
-                <div className="space-y-4">
-                  {mockMatches.map((match) => (
-                    <MatchCard
-                      key={match.id}
-                      match={match}
-
-                      showTournament={false}
-                    />
-                  ))}
-                  {mockMatches.length === 0 && (
-                    <Card className="bg-brand-green-900/50 border-brand-green-700/50">
-                      <CardContent className="text-center p-8">
-                        <p className="text-body-m text-brand-green-300">
-                          Aucun match programmé pour le moment.
-                        </p>
-                      </CardContent>
-                    </Card>
+                  {Array.from({ length: Math.min(3, displayChampionship.totalJournees || 5) }).map(
+                    (_, index) => {
+                      const journeeNumber = (displayChampionship.currentJournee || 5) - index - 1;
+                      if (journeeNumber <= 0) return null;
+                      return (
+                        <Card
+                          key={journeeNumber}
+                          className="bg-brand-green-900/50 border-brand-green-700/50"
+                        >
+                          <CardHeader>
+                            <h3 className="text-heading-s font-bold text-white">
+                              Journée {journeeNumber}
+                            </h3>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-body-m text-brand-green-300 text-center">
+                              Matchs de la journée {journeeNumber}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      );
+                    },
                   )}
                 </div>
               </TabPanel>
 
-              {/* Équipes Participants */}
+              {/* Équipes */}
               <TabPanel value="equipes" className="py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {displayChampionship.teams.map((team) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {mockTeams.slice(0, 6).map((team) => (
                     <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center gap-3">
@@ -734,48 +292,46 @@ const ChampionshipDetail: React.FC = () => {
                               id: team.id,
                               name: team.name,
                               logo: team.logo ?? undefined,
-                              abbreviation: (team.club as any)?.code,
+                              abbreviation: team.club.code,
                             }}
                             size="m"
                           />
-                          <div className="flex-1">
+                          <div>
                             <h3 className="text-heading-s font-bold text-white">{team.name}</h3>
-                            <p className="text-body-xs text-brand-green-300">
-                              {(team.club as any)?.name}
-                            </p>
+                            <p className="text-body-xs text-brand-green-300">{team.club.name}</p>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                        <div className="grid grid-cols-2 gap-4">
                           <div className="text-center">
                             <p className="text-body-xs text-brand-green-300">Matchs</p>
-                            <p className="text-heading-xs font-bold text-brand-orange-pure">
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.matches}
                             </p>
                           </div>
                           <div className="text-center">
                             <p className="text-body-xs text-brand-green-300">Victoires</p>
-                            <p className="text-heading-xs font-bold text-brand-orange-pure">
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.wins}
                             </p>
                           </div>
                           <div className="text-center">
                             <p className="text-body-xs text-brand-green-300">Défaites</p>
-                            <p className="text-heading-xs font-bold text-brand-orange-pure">
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.losses}
                             </p>
                           </div>
                           <div className="text-center">
                             <p className="text-body-xs text-brand-green-300">Points</p>
-                            <p className="text-heading-xs font-bold text-brand-orange-pure">
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.points}
                             </p>
                           </div>
                         </div>
-                        <Link to={`/teams/${team.id}`} className="inline-block">
-                          <Button variant="outline" size="sm" fullWidth>
-                            Voir l'équipe
+                        <Link to={`/teams/${team.id}`} className="inline-block mt-4">
+                          <Button variant="gold" size="sm" className="w-full">
+                            Voir l&apos;équipe
                           </Button>
                         </Link>
                       </CardContent>
@@ -784,86 +340,109 @@ const ChampionshipDetail: React.FC = () => {
                 </div>
               </TabPanel>
 
-              {/* Règlement */}
-              <TabPanel value="regles" className="py-6">
-                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
-                  <CardHeader>
-                    <h3 className="text-heading-s font-bold text-white">
-                      Règlement du Championnat
-                    </h3>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="prose prose-invert max-w-none text-body-s text-brand-green-200">
-                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">
-                        Règles de Classement
-                      </h4>
-                      <div className="space-y-3 mb-6">
-                        <div className="flex items-center gap-2">
-                          <span className="text-brand-green-400">1.</span>
-                          <span className="text-white">
-                            {displayChampionship.classificationRules.primary === "points" &&
-                              "Points"}
-                            {displayChampionship.classificationRules.primary === "winRate" &&
-                              "Taux de victoire"}
-                            {displayChampionship.classificationRules.primary === "diff" &&
-                              "Différence de points"}
-                          </span>
+              {/* Matchs */}
+              <TabPanel value="matchs" className="py-6">
+                <div className="space-y-4">
+                  {mockMatches.map((match) => (
+                    <MatchCard key={match.id} match={match} showDetails />
+                  ))}
+                </div>
+              </TabPanel>
+
+              {/* Statistiques */}
+              <TabPanel value="statistiques" className="py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <CardHeader>
+                      <h3 className="text-heading-s font-bold text-white">
+                        Statistiques du Championnat
+                      </h3>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Matchs joués</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayChampionship.stats.totalMatches}
+                          </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-brand-green-400">2.</span>
-                          <span className="text-white">
-                            {displayChampionship.classificationRules.secondary === "diff" &&
-                              "Différence de points"}
-                            {displayChampionship.classificationRules.secondary === "pointsFor" &&
-                              "Points pour"}
-                            {displayChampionship.classificationRules.secondary === "headToHead" &&
-                              "Confrontation directe"}
-                          </span>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Matchs terminés</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayChampionship.stats.completedMatches}
+                          </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-brand-green-400">3.</span>
-                          <span className="text-white">
-                            {displayChampionship.classificationRules.tertiary === "pointsFor" &&
-                              "Points pour"}
-                            {displayChampionship.classificationRules.tertiary === "pointsAgainst" &&
-                              "Points contre"}
-                          </span>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Points totaux</p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {displayChampionship.stats.totalPoints}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-body-xs text-brand-green-300 mb-1">
+                            Meilleur marqueur
+                          </p>
+                          <p className="text-heading-s font-bold text-brand-orange-pure">
+                            {(displayChampionship.stats.topScorer as any)?.fullName || "Non défini"}
+                          </p>
                         </div>
                       </div>
+                    </CardContent>
+                  </Card>
 
-                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">
-                        Points par Match
-                      </h4>
-                      <div className="space-y-2 mb-6">
-                        <p>
-                          <span className="text-brand-green-400">Victoire:</span>{" "}
-                          {displayChampionship.winPoints} points
-                        </p>
-                        <p>
-                          <span className="text-brand-green-400">Match nul:</span>{" "}
-                          {displayChampionship.drawPoints} point
-                        </p>
-                        <p>
-                          <span className="text-brand-green-400">Défaite:</span>{" "}
-                          {displayChampionship.lossPoints} point
-                        </p>
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <CardHeader>
+                      <h3 className="text-heading-s font-bold text-white">Règles de Classement</h3>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-body-s text-brand-green-300">
+                            Critère principal:
+                          </span>
+                          <Badge variant="gold">
+                            {displayChampionship.classificationRules.primary}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-body-s text-brand-green-300">
+                            Critère secondaire:
+                          </span>
+                          <Badge variant="secondary">
+                            {displayChampionship.classificationRules.secondary}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-body-s text-brand-green-300">
+                            Critère tertiaire:
+                          </span>
+                          <Badge variant="secondary">
+                            {displayChampionship.classificationRules.tertiary}
+                          </Badge>
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-brand-green-700/50">
+                          <p className="text-body-xs text-brand-green-400 mb-2">
+                            Système de points:
+                          </p>
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="text-center">
+                              <p className="text-body-xs text-brand-green-300">Victoire</p>
+                              <Badge variant="success">{displayChampionship.winPoints} pts</Badge>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-body-xs text-brand-green-300">Nul</p>
+                              <Badge variant="secondary">{displayChampionship.drawPoints} pt</Badge>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-body-xs text-brand-green-300">Défaite</p>
+                              <Badge variant="danger">{displayChampionship.lossPoints} pt</Badge>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-
-                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">
-                        Format
-                      </h4>
-                      <p>
-                        {displayChampionship.format === "round-robin" &&
-                          "Tous les participants jouent contre tous les autres participants."}
-                        {displayChampionship.format === "league" &&
-                          "Ligue avec rencontres aller-retour."}
-                        {displayChampionship.format === "groups" &&
-                          "Phase de poules suivie d'une phase finale."}
-                        {displayChampionship.format === "knockout" && "Élimination directe."}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabPanel>
             </Tabs>
           </div>

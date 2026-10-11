@@ -20,341 +20,7 @@ import {
 import { PlayerCard, ClubCard } from "../components/domain";
 import { Club, Player, Team, ChampionshipClassification, ChampionshipTeam } from "../types";
 import { api } from "../api";
-
-// Mock data for development
-const mockClub: Club = {
-  id: "club-001",
-  name: "Club des Essarts",
-  nickname: "Les Essartiates",
-  code: "ESS",
-  logo: "/images/clubs/essarts.png",
-  address: "123 Rue du Palet, 85140 Les Essarts",
-  city: "Les Essarts",
-  postalCode: "85140",
-  league: "Deux-Sèvres",
-  division: "D1",
-  status: "active",
-  playersCount: 25,
-  teamsCount: 8,
-  contactEmail: "contact@palet-essarts.fr",
-  contactPhone: "+33 2 51 65 43 21",
-  website: "https://palet-essarts.fr",
-  social: {
-    facebook: "https://facebook.com/paletessarts",
-    twitter: "https://twitter.com/paletessarts",
-    instagram: "https://instagram.com/paletessarts",
-  },
-  createdAt: new Date("2020-01-15"),
-  updatedAt: new Date("2026-10-01"),
-};
-
-const mockPlayers: Player[] = [
-  {
-    id: "player-001",
-    firstName: "Jean",
-    lastName: "Martin",
-    fullName: "Jean Martin",
-    alias: "Le Maestro",
-    email: "jean.martin@palet.fr",
-    photo: "/images/players/jean-martin.jpg",
-    status: "active",
-    birthDate: new Date("1985-03-15"),
-    age: 41,
-    birthPlace: "Les Essarts",
-    nationality: "Français",
-    dominantHand: "right",
-    playStyle: "Précision",
-    phone: "+33 6 12 34 56 78",
-    address: "123 Rue du Palet, 85140 Les Essarts",
-    city: "Les Essarts",
-    postalCode: "85140",
-    club: mockClub,
-    clubId: "club-001",
-    clubNumber: "ESS-001",
-    category: "Senior",
-    licenseNumber: "PV-2026-001",
-    licenseDate: new Date("2026-01-01"),
-    licenseStatus: "valid",
-    registrationDate: new Date("2020-01-15"),
-    createdAt: new Date("2020-01-15"),
-    updatedAt: new Date("2026-10-09"),
-    stats: {
-      matchesPlayed: 150,
-      wins: 105,
-      draws: 20,
-      losses: 25,
-      totalPoints: 1575,
-      averagePoints: 10.5,
-      pointsPerManche: 3.5,
-      bestScore: 15,
-      bestStreak: 15,
-      maxWinStreak: 8,
-      winRate: 70,
-      accuracy: 85,
-      currentRank: 1,
-      currentDivision: "D1",
-      currentPoints: 45,
-      previousRank: 2,
-      rankTrend: "up",
-      newHighlights: 5,
-      byPosition: {
-        first: { matches: 80, points: 840, winRate: 72 },
-        second: { matches: 70, points: 735, winRate: 68 },
-      },
-      byCompetition: {},
-      bySeason: {},
-    },
-    trophies: { total: 12, list: [] },
-    badges: { total: 8, categories: [] },
-    records: { total: 3, list: [] },
-    currentTeams: [],
-    pastTeams: [],
-    frequentTeammates: [],
-    matchHistory: { wins: 105, losses: 25, draws: 20, total: 150 },
-    competitionStats: [],
-    recentActivities: [],
-    preferences: {
-      language: "fr",
-      timezone: "Europe/Paris",
-      distanceUnit: "metric",
-      notifications: {
-        email: { results: true, news: true, reminders: true },
-        push: { results: true, matches: true },
-      },
-    },
-    social: { facebook: null, twitter: null, instagram: null },
-    lastActiveAt: new Date("2026-10-08"),
-    // createdAt: new Date('2019-03-10'),
-    // updatedAt: new Date('2026-10-09'),
-  },
-  {
-    id: "player-002",
-    firstName: "Pierre",
-    lastName: "Durand",
-    fullName: "Pierre Durand",
-    alias: "Le Rocket",
-    email: "pierre.durand@palet.fr",
-    photo: "/images/players/pierre-durand.jpg",
-    status: "active",
-    birthDate: new Date("1990-07-22"),
-    age: 36,
-    birthPlace: "La Roche-sur-Yon",
-    nationality: "Français",
-    dominantHand: "left",
-    playStyle: "Puissance",
-    phone: "+33 6 23 45 67 89",
-    address: "456 Rue de la Plaque, 85000 La Roche-sur-Yon",
-    city: "La Roche-sur-Yon",
-    postalCode: "85000",
-    club: mockClub,
-    clubId: "club-001",
-    clubNumber: "ESS-002",
-    category: "Senior",
-    licenseNumber: "PV-2026-002",
-    licenseDate: new Date("2026-01-01"),
-    licenseStatus: "valid",
-    registrationDate: new Date("2019-03-10"),
-    stats: {
-      matchesPlayed: 120,
-      wins: 85,
-      draws: 15,
-      losses: 20,
-      totalPoints: 1275,
-      averagePoints: 10.625,
-      pointsPerManche: 3.53,
-      bestScore: 14,
-      bestStreak: 12,
-      maxWinStreak: 7,
-      winRate: 70.83,
-      accuracy: 82,
-      currentRank: 3,
-      currentDivision: "D1",
-      currentPoints: 38,
-      previousRank: 5,
-      rankTrend: "up",
-      newHighlights: 3,
-      byPosition: {
-        first: { matches: 60, points: 637, winRate: 71 },
-        second: { matches: 60, points: 638, winRate: 70.67 },
-      },
-      byCompetition: {},
-      bySeason: {},
-    },
-    trophies: { total: 8, list: [] },
-    badges: { total: 6, categories: [] },
-    records: { total: 2, list: [] },
-    currentTeams: [],
-    pastTeams: [],
-    frequentTeammates: [],
-    matchHistory: { wins: 85, losses: 20, draws: 15, total: 120 },
-    competitionStats: [],
-    recentActivities: [],
-    preferences: {
-      language: "fr",
-      timezone: "Europe/Paris",
-      distanceUnit: "metric",
-      notifications: {
-        email: { results: true, news: true, reminders: true },
-        push: { results: true, matches: true },
-      },
-    },
-    social: { facebook: null, twitter: null, instagram: null },
-    lastActiveAt: new Date("2026-10-07"),
-    createdAt: new Date("2021-02-15"),
-    updatedAt: new Date("2026-10-09"),
-  },
-  {
-    id: "player-003",
-    firstName: "Marie",
-    lastName: "Dupont",
-    fullName: "Marie Dupont",
-    alias: "La Précise",
-    email: "marie.dupont@palet.fr",
-    photo: "/images/players/marie-dupont.jpg",
-    status: "active",
-    birthDate: new Date("1995-11-03"),
-    age: 30,
-    birthPlace: "Cholet",
-    nationality: "Française",
-    dominantHand: "right",
-    playStyle: "Précision",
-    phone: "+33 6 34 56 78 90",
-    address: "789 Rue du Jeu, 85140 Les Essarts",
-    city: "Les Essarts",
-    postalCode: "85140",
-    club: mockClub,
-    clubId: "club-001",
-    clubNumber: "ESS-003",
-    category: "Senior",
-    licenseNumber: "PV-2026-003",
-    licenseDate: new Date("2026-01-01"),
-    licenseStatus: "valid",
-    registrationDate: new Date("2021-02-15"),
-    stats: {
-      matchesPlayed: 90,
-      wins: 65,
-      draws: 10,
-      losses: 15,
-      totalPoints: 975,
-      averagePoints: 10.83,
-      pointsPerManche: 3.6,
-      bestScore: 15,
-      bestStreak: 10,
-      maxWinStreak: 6,
-      winRate: 72.22,
-      accuracy: 88,
-      currentRank: 2,
-      currentDivision: "D1",
-      currentPoints: 42,
-      previousRank: 1,
-      rankTrend: "down",
-      newHighlights: 4,
-      byPosition: {
-        first: { matches: 45, points: 487, winRate: 73 },
-        second: { matches: 45, points: 488, winRate: 71.43 },
-      },
-      byCompetition: {},
-      bySeason: {},
-    },
-    trophies: { total: 6, list: [] },
-    badges: { total: 5, categories: [] },
-    records: { total: 1, list: [] },
-    currentTeams: [],
-    pastTeams: [],
-    frequentTeammates: [],
-    matchHistory: { wins: 65, losses: 15, draws: 10, total: 90 },
-    competitionStats: [],
-    recentActivities: [],
-    preferences: {
-      language: "fr",
-      timezone: "Europe/Paris",
-      distanceUnit: "metric",
-      notifications: {
-        email: { results: true, news: true, reminders: true },
-        push: { results: true, matches: true },
-      },
-    },
-    social: { facebook: null, twitter: null, instagram: null },
-    lastActiveAt: new Date("2026-10-09"),
-    createdAt: new Date("2021-02-15"),
-    updatedAt: new Date("2026-10-09"),
-  },
-];
-
-const mockTeams: Team[] = [
-  {
-    id: "team-001",
-    name: "Équipe 1 - D1",
-    club: mockClub,
-    clubId: "club-001",
-    captain: mockPlayers[0]!,
-    captainId: "player-001",
-    players: [mockPlayers[0]!, mockPlayers[1]!],
-    logo: null,
-    stats: {
-      matches: 20,
-      wins: 15,
-      draws: 3,
-      losses: 2,
-      pointsFor: 180,
-      pointsAgainst: 120,
-      diff: 60,
-      points: 48,
-      winRate: 75,
-    },
-    status: "active",
-    competitions: [],
-    createdAt: new Date("2025-09-01"),
-    updatedAt: new Date("2026-10-01"),
-  },
-  {
-    id: "team-002",
-    name: "Équipe 2 - D1",
-    club: mockClub,
-    clubId: "club-001",
-    captain: mockPlayers[2]!,
-    captainId: "player-003",
-    players: [mockPlayers[2]!, mockPlayers[0]!],
-    logo: null,
-    stats: {
-      matches: 20,
-      wins: 12,
-      draws: 5,
-      losses: 3,
-      pointsFor: 170,
-      pointsAgainst: 140,
-      diff: 30,
-      points: 41,
-      winRate: 60,
-    },
-    status: "active",
-    competitions: [],
-    createdAt: new Date("2025-09-01"),
-    updatedAt: new Date("2026-10-01"),
-  },
-];
-
-const mockClassification: ChampionshipClassification = {
-  division: "D1",
-  journee: 5,
-  updatedAt: new Date("2026-10-08"),
-  teams: [
-    {
-      position: 1,
-      team: mockTeams[0]!,
-      stats: mockTeams[0]!.stats,
-      form: ["win", "win", "win", "win", "draw"],
-      status: "qualified",
-    },
-    {
-      position: 2,
-      team: mockTeams[1]!,
-      stats: mockTeams[1]!.stats,
-      form: ["win", "win", "draw", "win", "loss"],
-      status: "qualified",
-    },
-  ],
-};
+import { mockClub, mockClubPlayers, mockClubTeams, mockClassification } from "../data/mocks";
 
 const ClubDetail: React.FC = () => {
   const { clubId } = useParams<{ clubId: string }>();
@@ -585,8 +251,8 @@ const ClubDetail: React.FC = () => {
           <div className="max-w-7xl mx-auto">
             <Tabs defaultValue="effectif">
               <TabList>
-                <Tab value="effectif" label="Effectif ({displayClub.playersCount})" />
-                <Tab value="equipes" label="Équipes ({displayClub.teamsCount})" />
+                <Tab value="effectif" label={`Effectif (${displayClub.playersCount})`} />
+                <Tab value="equipes" label={`Équipes (${displayClub.teamsCount})`} />
                 <Tab value="classement" label="Classement" />
                 <Tab value="actualites" label="Actualités" />
               </TabList>
@@ -594,7 +260,7 @@ const ClubDetail: React.FC = () => {
               {/* Effectif */}
               <TabPanel value="effectif" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mockPlayers.map((player) => (
+                  {mockClubPlayers.map((player) => (
                     <PlayerCard key={player.id} player={player} showClub={false} />
                   ))}
                 </div>
@@ -603,7 +269,7 @@ const ClubDetail: React.FC = () => {
               {/* Équipes */}
               <TabPanel value="equipes" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {mockTeams.map((team) => (
+                  {mockClubTeams.map((team) => (
                     <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -613,7 +279,7 @@ const ClubDetail: React.FC = () => {
                                 id: team.id,
                                 name: team.name,
                                 logo: team.logo ?? undefined,
-                                abbreviation: (team.club as any)?.code,
+                                abbreviation: team.club.code,
                               }}
                               size="m"
                             />
@@ -646,13 +312,13 @@ const ClubDetail: React.FC = () => {
                           <div className="text-center">
                             <p className="text-body-xs text-brand-green-300">Win Rate</p>
                             <p className="text-heading-s font-bold text-brand-orange-pure">
-                              {team.stats.winRate}%
+                              {(team.stats.winRate * 100).toFixed(0)}%
                             </p>
                           </div>
                         </div>
                         <Link to={`/teams/${team.id}`} className="inline-block mt-4">
                           <Button variant="gold" size="sm">
-                            Voir l'équipe
+                            Voir l&apos;équipe
                           </Button>
                         </Link>
                       </CardContent>
@@ -702,7 +368,7 @@ const ClubDetail: React.FC = () => {
                                       id: team.team.id,
                                       name: team.team.name,
                                       logo: team.team.logo ?? undefined,
-                                      abbreviation: (team.team.club as any)?.code,
+                                      abbreviation: team.team.club.code,
                                     }}
                                     size="xs"
                                   />
