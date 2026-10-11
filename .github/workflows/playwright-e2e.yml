@@ -17,6 +17,10 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-jammy
 
+    env:
+      HOME: /root
+      CI: 'true'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,24 +33,10 @@ jobs:
       - name: Install jq for JSON parsing
         run: apt-get update && apt-get install -y jq
 
-      - name: Set HOME directory for Playwright
-        run: export HOME=/root
-
       - name: Verify Playwright browsers
         run: |
           cd web
           npx playwright install || true
-        env:
-          HOME: /root
-
-      - name: Run Playwright tests with screenshots
-        id: playwright
-        run: |
-          cd web
-          npx playwright test --reporter=json,html
-        env:
-          CI: 'true'
-          HOME: /root
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -74,7 +64,6 @@ jobs:
       - name: Generate GitHub Step Summary with Screenshots
         if: always()
         run: |
-          export HOME=/root
           cd web
           
           # Create summary header
