@@ -465,7 +465,9 @@ const PlayerDetail: React.FC = () => {
                     {displayPlayer.fullName}
                   </h1>
                   {displayPlayer.alias && (
-                    <span className="text-heading-m text-brand-green-300">({displayPlayer.alias})</span>
+                    <span className="text-heading-m text-brand-green-300">
+                      ({displayPlayer.alias})
+                    </span>
                   )}
                 </div>
 
@@ -714,10 +716,14 @@ const PlayerDetail: React.FC = () => {
                         {Object.entries(displayPlayer.stats.byCompetition).map(
                           ([compName, stats]) => (
                             <div key={compName} className="bg-brand-green-800/50 rounded p-3">
-                              <p className="text-body-s font-semibold text-brand-orange-700">{compName}</p>
+                              <p className="text-body-s font-semibold text-brand-orange-700">
+                                {compName}
+                              </p>
                               <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
                                 <div>
-                                  <p className="text-brand-green-300">Points: {stats.totalPoints}</p>
+                                  <p className="text-brand-green-300">
+                                    Points: {stats.totalPoints}
+                                  </p>
                                 </div>
                                 <div>
                                   <p className="text-brand-green-300">
@@ -746,7 +752,9 @@ const PlayerDetail: React.FC = () => {
                       <div className="space-y-3">
                         {Object.entries(displayPlayer.stats.bySeason).map(([season, stats]) => (
                           <div key={season} className="bg-brand-green-800/50 rounded p-3">
-                            <p className="text-body-s font-semibold text-brand-orange-700">{season}</p>
+                            <p className="text-body-s font-semibold text-brand-orange-700">
+                              {season}
+                            </p>
                             <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
                               <div>
                                 <p className="text-brand-green-300">Classement: {stats.rank}°</p>
@@ -858,7 +866,10 @@ const PlayerDetail: React.FC = () => {
               <TabPanel value="trophees" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {displayPlayer.trophies.list.map((trophy) => (
-                    <Card key={trophy.id} className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <Card
+                      key={trophy.id}
+                      className="bg-brand-green-900/50 border-brand-green-700/50"
+                    >
                       <CardContent className="text-center p-6">
                         <div className="mb-4">
                           <span className="text-4xl">🏆</span>
@@ -866,7 +877,9 @@ const PlayerDetail: React.FC = () => {
                         <h3 className="text-heading-s font-bold text-brand-orange-700 mb-2">
                           {trophy.name}
                         </h3>
-                        <p className="text-body-xs text-brand-green-300 mb-1">{trophy.competition}</p>
+                        <p className="text-body-xs text-brand-green-300 mb-1">
+                          {trophy.competition}
+                        </p>
                         <p className="text-body-xs text-brand-green-400 mb-1">
                           {trophy.type === "champion" && "Champion"}
                           {trophy.type === "winner" && "Vainqueur"}
@@ -1005,7 +1018,10 @@ const PlayerDetail: React.FC = () => {
               <TabPanel value="records" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {displayPlayer.records.list.map((record) => (
-                    <Card key={record.id} className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <Card
+                      key={record.id}
+                      className="bg-brand-green-900/50 border-brand-green-700/50"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0">
@@ -1033,7 +1049,9 @@ const PlayerDetail: React.FC = () => {
                   {displayPlayer.records.list.length === 0 && (
                     <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-3">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-brand-green-300">Aucun record pour le moment.</p>
+                        <p className="text-body-m text-brand-green-300">
+                          Aucun record pour le moment.
+                        </p>
                       </CardContent>
                     </Card>
                   )}

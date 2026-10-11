@@ -187,11 +187,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
       {/* Actions */}
       {showActions && (
         <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-2 border-t border-brand-green-700/50">
-          <Button
-            size="xs"
-            fullWidth={true}
-            variant="gold"
-          >
+          <Button size="xs" fullWidth={true} variant="gold">
             Voir le profil
           </Button>
         </div>

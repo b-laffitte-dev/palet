@@ -48,7 +48,9 @@ const Connexion: React.FC = () => {
               <h1 className="text-heading-l font-bold text-white uppercase tracking-wide">
                 CDSP 79
               </h1>
-              <p className="text-body-s text-brand-green-300 mt-2">Fédération des joueurs et clubs</p>
+              <p className="text-body-s text-brand-green-300 mt-2">
+                Fédération des joueurs et clubs
+              </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -119,7 +121,10 @@ const Connexion: React.FC = () => {
                   <span className="text-body-s text-brand-green-200">Se souvenir de moi</span>
                 </label>
 
-                <button type="button" className="text-body-s text-brand-orange-pure hover:text-brand-orange-400">
+                <button
+                  type="button"
+                  className="text-body-s text-brand-orange-pure hover:text-brand-orange-400"
+                >
                   Mot de passe oublié ?
                 </button>
               </div>

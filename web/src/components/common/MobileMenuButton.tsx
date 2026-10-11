@@ -9,7 +9,8 @@ const mobileMenuButtonVariants = cva(
     variants: {
       variant: {
         default: "bg-transparent text-brand-green-300 hover:bg-brand-green-800/50",
-        outline: "border border-neutral-600 bg-transparent text-brand-green-300 hover:bg-brand-green-800/50",
+        outline:
+          "border border-neutral-600 bg-transparent text-brand-green-300 hover:bg-brand-green-800/50",
         solid: "bg-brand-green-700 text-white hover:bg-brand-green-600",
       },
       size: {

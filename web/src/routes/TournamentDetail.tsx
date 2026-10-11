@@ -916,7 +916,10 @@ const TournamentDetail: React.FC = () => {
                 {displayTournament.registeredTeams > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {mockTeams.map((team) => (
-                      <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
+                      <Card
+                        key={team.id}
+                        className="bg-brand-green-900/50 border-brand-green-700/50"
+                      >
                         <CardHeader>
                           <div className="flex items-center gap-3">
                             <TeamAvatar
@@ -990,7 +993,10 @@ const TournamentDetail: React.FC = () => {
               <TabPanel value="phases" className="py-6">
                 <div className="space-y-4">
                   {displayTournament.phases.map((phase) => (
-                    <Card key={phase.id} className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <Card
+                      key={phase.id}
+                      className="bg-brand-green-900/50 border-brand-green-700/50"
+                    >
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <h3 className="text-heading-s font-bold text-white">
@@ -1101,7 +1107,9 @@ const TournamentDetail: React.FC = () => {
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">Matériel</h4>
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">
+                            Matériel
+                          </h4>
                           <p className="text-body-s text-brand-green-300">
                             {displayTournament.material === "fonte" &&
                               "Palets en fonte - Distance: 3,80m"}
@@ -1114,7 +1122,9 @@ const TournamentDetail: React.FC = () => {
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">Format</h4>
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">
+                            Format
+                          </h4>
                           <p className="text-body-s text-brand-green-300">
                             {displayTournament.format === "knockout" &&
                               "Tournoi en élimination directe"}

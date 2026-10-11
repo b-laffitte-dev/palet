@@ -433,9 +433,33 @@ const mockFeaturedMatch: Match = {
 };
 
 const mockLiveScores = [
-  { id: "s-1", team1Name: "Niort PC", team2Name: "Bressuire", team1Score: 45, team2Score: 38, status: "in_progress" as const, currentManche: 18 },
-  { id: "s-2", team1Name: "Thouars", team2Name: "Parthenay", team1Score: 52, team2Score: 52, status: "in_progress" as const, currentManche: 21 },
-  { id: "s-3", team1Name: "Melle", team2Name: "Coulonges", team1Score: 61, team2Score: 44, status: "completed" as const, currentManche: 24 },
+  {
+    id: "s-1",
+    team1Name: "Niort PC",
+    team2Name: "Bressuire",
+    team1Score: 45,
+    team2Score: 38,
+    status: "in_progress" as const,
+    currentManche: 18,
+  },
+  {
+    id: "s-2",
+    team1Name: "Thouars",
+    team2Name: "Parthenay",
+    team1Score: 52,
+    team2Score: 52,
+    status: "in_progress" as const,
+    currentManche: 21,
+  },
+  {
+    id: "s-3",
+    team1Name: "Melle",
+    team2Name: "Coulonges",
+    team1Score: 61,
+    team2Score: 44,
+    status: "completed" as const,
+    currentManche: 24,
+  },
 ];
 
 const mockTournaments: Tournament[] = [
@@ -632,7 +656,10 @@ const Home: React.FC = () => {
     <Layout hasLiveMatches={liveScores.length > 0} liveMatchesCount={liveScores.length}>
       <div className="flex-1">
         {/* Hero Section - Top 14 style */}
-        <section className="w-full bg-gradient-brand relative overflow-hidden" aria-labelledby="hero-heading">
+        <section
+          className="w-full bg-gradient-brand relative overflow-hidden"
+          aria-labelledby="hero-heading"
+        >
           <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)] py-[var(--spacing-8)] lg:px-[var(--spacing-8)] lg:py-[var(--spacing-16)]">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-8)] items-center">
               {/* Hero Content */}
@@ -684,7 +711,10 @@ const Home: React.FC = () => {
 
         {/* Live Scores Ticker */}
         {liveScores.length > 0 && (
-          <section className="bg-[var(--bg-darker)] border-b border-border-dark py-[var(--spacing-2)] sticky top-[120px] z-[var(--z-sticky)]" aria-labelledby="live-scores-heading">
+          <section
+            className="bg-[var(--bg-darker)] border-b border-border-dark py-[var(--spacing-2)] sticky top-[120px] z-[var(--z-sticky)]"
+            aria-labelledby="live-scores-heading"
+          >
             <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)]">
               <div className="flex items-center gap-[var(--spacing-4)]">
                 <h2
@@ -764,7 +794,10 @@ const Home: React.FC = () => {
               </section>
 
               {/* News Section */}
-              <section className="mt-[var(--spacing-12)] bg-brand-green/30 rounded-[var(--radius-xl)] p-[var(--spacing-6)] lg:p-[var(--spacing-8)]" aria-labelledby="news-heading">
+              <section
+                className="mt-[var(--spacing-12)] bg-brand-green/30 rounded-[var(--radius-xl)] p-[var(--spacing-6)] lg:p-[var(--spacing-8)]"
+                aria-labelledby="news-heading"
+              >
                 <div className="flex items-center justify-between mb-[var(--spacing-4)]">
                   <h2
                     id="news-heading"
@@ -801,7 +834,11 @@ const Home: React.FC = () => {
                         </p>
                         <div className="mt-[var(--spacing-3)] flex items-center justify-between text-[var(--text-body-xs)] text-text-tertiary">
                           <span>14 Octobre 2026</span>
-                          <Button variant="ghost" size="xs" className="text-brand-green-400 hover:text-brand-green">
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            className="text-brand-green-400 hover:text-brand-green"
+                          >
                             Lire la suite
                           </Button>
                         </div>
@@ -890,7 +927,10 @@ const Home: React.FC = () => {
               </section>
 
               {/* Stats Summary */}
-              <section className="bg-gradient-to-br from-brand-green to-brand-green-dark rounded-[var(--radius-xl)] p-[var(--spacing-6)]" aria-labelledby="stats-heading">
+              <section
+                className="bg-gradient-to-br from-brand-green to-brand-green-dark rounded-[var(--radius-xl)] p-[var(--spacing-6)]"
+                aria-labelledby="stats-heading"
+              >
                 <h2
                   id="stats-heading"
                   className="text-[var(--text-heading-sm)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wider)] mb-[var(--spacing-4)]"
@@ -909,7 +949,11 @@ const Home: React.FC = () => {
                       key={index}
                       className="text-center p-[var(--spacing-3)] bg-[rgba(255,255,255,0.05)] rounded-[var(--radius-lg)]"
                     >
-                      <Icon name={stat.icon} size="l" className="text-brand-orange mx-auto mb-[var(--spacing-2)]" />
+                      <Icon
+                        name={stat.icon}
+                        size="l"
+                        className="text-brand-orange mx-auto mb-[var(--spacing-2)]"
+                      />
                       <div className="text-[var(--text-display-xs)] font-[var(--font-weight-bold)] text-white mb-[2px]">
                         {stat.value}
                       </div>
@@ -925,7 +969,10 @@ const Home: React.FC = () => {
         </div>
 
         {/* Partners Section */}
-        <section className="bg-brand-green/20 py-[var(--spacing-8)] lg:py-[var(--spacing-12)] mt-[var(--spacing-8)]" aria-labelledby="partners-heading">
+        <section
+          className="bg-brand-green/20 py-[var(--spacing-8)] lg:py-[var(--spacing-12)] mt-[var(--spacing-8)]"
+          aria-labelledby="partners-heading"
+        >
           <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)] lg:px-[var(--spacing-8)]">
             <h2
               id="partners-heading"

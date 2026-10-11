@@ -512,7 +512,9 @@ const ClubDetail: React.FC = () => {
               <div className="flex-shrink-0">
                 <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
                   <p className="text-body-xs text-brand-green-400 mb-1">Code Club</p>
-                  <p className="text-heading-l font-bold text-brand-orange-pure">{displayClub.code}</p>
+                  <p className="text-heading-l font-bold text-brand-orange-pure">
+                    {displayClub.code}
+                  </p>
                 </div>
               </div>
             </div>
@@ -537,19 +539,25 @@ const ClubDetail: React.FC = () => {
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-brand-green-300 mb-1">Équipes</p>
-                  <p className="text-heading-m font-bold text-brand-orange-pure">{displayClub.teamsCount}</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayClub.teamsCount}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-brand-green-300 mb-1">Division</p>
-                  <p className="text-heading-m font-bold text-brand-orange-pure">{displayClub.division}</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayClub.division}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-brand-green-300 mb-1">Ligue</p>
-                  <p className="text-heading-m font-bold text-brand-orange-pure">{displayClub.league}</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
+                    {displayClub.league}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
@@ -704,7 +712,9 @@ const ClubDetail: React.FC = () => {
                               <td className="p-3 text-brand-green-300">{team.stats.matches}</td>
                               <td className="p-3 text-brand-green-300">{team.stats.wins}</td>
                               <td className="p-3 text-brand-green-300">{team.stats.losses}</td>
-                              <td className="p-3 text-brand-orange-pure font-bold">{team.stats.points}</td>
+                              <td className="p-3 text-brand-orange-pure font-bold">
+                                {team.stats.points}
+                              </td>
                               <td className="p-3">
                                 <div className="flex gap-1">
                                   {team.form.map((result, i) => (

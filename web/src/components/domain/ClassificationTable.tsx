@@ -61,8 +61,10 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
   const getFormIndicator = (status: "win" | "draw" | "loss" | undefined) => {
     if (!status) return <span className="w-4 h-4 rounded-sm bg-brand-green-600" />;
     if (status === "win") return <span className="w-4 h-4 rounded-sm bg-brand-green-600" />;
-    if (status === "loss") return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-danger-600" />;
-    if (status === "draw") return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-neutral-500" />;
+    if (status === "loss")
+      return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-danger-600" />;
+    if (status === "draw")
+      return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-neutral-500" />;
     return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-brand-green-600" />;
   };
 
@@ -148,7 +150,9 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
         {/* G (Gagnés) */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
-          <span className="text-body-xs sm:text-body-sm text-brand-green-400">{team.stats.wins}</span>
+          <span className="text-body-xs sm:text-body-sm text-brand-green-400">
+            {team.stats.wins}
+          </span>
         </td>
 
         {/* P (Perdus) */}

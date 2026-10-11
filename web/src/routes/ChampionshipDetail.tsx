@@ -849,7 +849,9 @@ const ChampionshipDetail: React.FC = () => {
                         </p>
                       </div>
 
-                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">Format</h4>
+                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">
+                        Format
+                      </h4>
                       <p>
                         {displayChampionship.format === "round-robin" &&
                           "Tous les participants jouent contre tous les autres participants."}

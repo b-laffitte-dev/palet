@@ -580,7 +580,8 @@ const MatchDetail: React.FC = () => {
                         </h4>
                         <div className="space-y-2">
                           <p>
-                            <span className="text-brand-green-400">Nom:</span> {displayMatch.team1.name}
+                            <span className="text-brand-green-400">Nom:</span>{" "}
+                            {displayMatch.team1.name}
                           </p>
                           <p>
                             <span className="text-brand-green-400">Classement:</span>{" "}
@@ -599,7 +600,8 @@ const MatchDetail: React.FC = () => {
                         </h4>
                         <div className="space-y-2">
                           <p>
-                            <span className="text-brand-green-400">Nom:</span> {displayMatch.team2.name}
+                            <span className="text-brand-green-400">Nom:</span>{" "}
+                            {displayMatch.team2.name}
                           </p>
                           <p>
                             <span className="text-brand-green-400">Classement:</span>{" "}
@@ -649,7 +651,9 @@ const MatchDetail: React.FC = () => {
 
                     {/* Timeline */}
                     <div className="mt-6">
-                      <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-4">Timeline</h4>
+                      <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-4">
+                        Timeline
+                      </h4>
                       <div className="space-y-2">
                         {displayMatch.startedAt && (
                           <p>
@@ -671,7 +675,8 @@ const MatchDetail: React.FC = () => {
                         )}
                         {displayMatch.duration && (
                           <p>
-                            <span className="text-brand-green-400">Durée:</span> {displayMatch.duration}
+                            <span className="text-brand-green-400">Durée:</span>{" "}
+                            {displayMatch.duration}
                           </p>
                         )}
                       </div>
@@ -730,10 +735,14 @@ const MatchDetail: React.FC = () => {
 
                         {/* Summary */}
                         <div className="mt-6 pt-4 border-t border-brand-green-700/50">
-                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-3">Résumé</h4>
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-3">
+                            Résumé
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center">
-                              <p className="text-body-xs text-brand-green-300 mb-1">Total Manches</p>
+                              <p className="text-body-xs text-brand-green-300 mb-1">
+                                Total Manches
+                              </p>
                               <p className="text-heading-s font-bold text-brand-orange-700">
                                 {displayMatch.manches.length}
                               </p>
@@ -996,7 +1005,9 @@ const MatchDetail: React.FC = () => {
                                   </p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-body-xs text-brand-green-300">Meilleure Manche</p>
+                                  <p className="text-body-xs text-brand-green-300">
+                                    Meilleure Manche
+                                  </p>
                                   <p className="text-body-s font-bold text-brand-orange-700">
                                     {playerStat.bestManche}
                                   </p>

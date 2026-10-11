@@ -174,7 +174,9 @@ export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(
         variant={getStatusVariant()}
         showDot={status === "in_progress" || status === "active"}
         dotColor={
-          status === "in_progress" || status === "active" ? "var(--color-brand-green-500)" : undefined
+          status === "in_progress" || status === "active"
+            ? "var(--color-brand-green-500)"
+            : undefined
         }
         {...props}
       >

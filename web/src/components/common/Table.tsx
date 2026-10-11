@@ -4,25 +4,28 @@ import { StatusBadge } from "./Badge";
 import { cva, type VariantProps } from "class-variance-authority";
 
 // Table container variants
-const tableContainerVariants = cva("w-full overflow-x-auto rounded-lg border border-brand-green-700", {
-  variants: {
-    variant: {
-      default: "",
-      striped: "",
-      hoverable: "",
+const tableContainerVariants = cva(
+  "w-full overflow-x-auto rounded-lg border border-brand-green-700",
+  {
+    variants: {
+      variant: {
+        default: "",
+        striped: "",
+        hoverable: "",
+      },
+      size: {
+        xs: "text-xs",
+        sm: "text-sm",
+        m: "text-base",
+        l: "text-lg",
+      },
     },
-    size: {
-      xs: "text-xs",
-      sm: "text-sm",
-      m: "text-base",
-      l: "text-lg",
+    defaultVariants: {
+      variant: "default",
+      size: "m",
     },
   },
-  defaultVariants: {
-    variant: "default",
-    size: "m",
-  },
-});
+);
 
 // Table variants
 const tableVariants = cva("w-full table-fixed", {
@@ -45,7 +48,8 @@ const tableVariants = cva("w-full table-fixed", {
 const tableCellVariants = cva("p-4 text-left align-middle", {
   variants: {
     variant: {
-      header: "bg-brand-green-800 text-brand-green-200 font-semibold uppercase tracking-wider text-xs",
+      header:
+        "bg-brand-green-800 text-brand-green-200 font-semibold uppercase tracking-wider text-xs",
       body: "bg-brand-green-900 text-white border-t border-brand-green-700/50",
       footer: "bg-brand-green-800 text-brand-green-300 font-medium",
     },

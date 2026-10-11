@@ -148,7 +148,9 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       return (
         <div className="w-full" ref={wrapperRef}>
           {label && (
-            <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">{label}</label>
+            <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">
+              {label}
+            </label>
           )}
 
           <div className="relative">
@@ -262,7 +264,9 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">{label}</label>
+          <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">
+            {label}
+          </label>
         )}
 
         <div className="relative">

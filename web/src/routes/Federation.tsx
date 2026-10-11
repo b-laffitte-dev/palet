@@ -109,7 +109,9 @@ const Federation: React.FC = () => {
                   key={fed.name}
                   className="bg-brand-green-900 rounded-lg p-6 border border-brand-green-700/50"
                 >
-                  <h3 className="text-heading-s font-bold text-brand-orange-pure mb-2">{fed.name}</h3>
+                  <h3 className="text-heading-s font-bold text-brand-orange-pure mb-2">
+                    {fed.name}
+                  </h3>
                   <p className="text-caption text-brand-green-300 mb-3">{fed.fullName}</p>
                   <p className="text-body-s text-brand-green-200 mb-4">{fed.description}</p>
                   <p className="text-caption text-brand-green-400 mb-4">{fed.role}</p>

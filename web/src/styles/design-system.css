@@ -13,9 +13,9 @@
   /* ============================================ */
   /* PRIMARY BRAND COLORS - From Logo */
   /* ============================================ */
-  
+
   /* Green - Used for "Le", "DEUX-SÈVRES", "9" circle, and tree */
-  --color-brand-green: #00A651;
+  --color-brand-green: #00a651;
   --color-brand-green-50: #ecfdf5;
   --color-brand-green-100: #d1fae5;
   --color-brand-green-200: #a7f3d0;
@@ -29,7 +29,7 @@
   --color-brand-green-950: #022c22;
 
   /* Orange - Used for "7" circle and silhouette */
-  --color-brand-orange: #FF8C00;
+  --color-brand-orange: #ff8c00;
   --color-brand-orange-50: #fff7ed;
   --color-brand-orange-100: #ffedd5;
   --color-brand-orange-200: #fed7aa;
@@ -64,7 +64,7 @@
   /* ============================================ */
   /* SECONDARY COLORS */
   /* ============================================ */
-  
+
   /* Secondary Blue - for links and accents */
   --color-secondary-50: #eff6ff;
   --color-secondary-100: #dbeafe;
@@ -96,7 +96,7 @@
   /* ============================================ */
   /* SEMANTIC COLORS */
   /* ============================================ */
-  
+
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
@@ -144,7 +144,7 @@
   /* ============================================ */
   /* BACKGROUND COLORS */
   /* ============================================ */
-  
+
   /* Primary backgrounds - Dark theme for sports feel */
   --bg-primary: #000000;
   --bg-secondary: #111111;
@@ -153,7 +153,7 @@
   --bg-darker: #0a0a0a;
   --bg-light: var(--color-neutral-50);
   --bg-lighter: var(--color-neutral-100);
-  
+
   /* Brand backgrounds */
   --bg-brand: var(--color-brand-green);
   --bg-brand-light: #008a42;
@@ -164,7 +164,7 @@
   /* ============================================ */
   /* TEXT COLORS */
   /* ============================================ */
-  
+
   /* Light text on dark backgrounds */
   --text-primary: #ffffff;
   --text-secondary: var(--color-neutral-300);
@@ -181,7 +181,7 @@
   /* ============================================ */
   /* BORDER COLORS */
   /* ============================================ */
-  
+
   --border-primary: var(--color-neutral-700);
   --border-secondary: var(--color-neutral-600);
   --border-dark: var(--color-neutral-500);
@@ -192,19 +192,19 @@
   /* ============================================ */
   /* ACCENT COLORS */
   /* ============================================ */
-  
+
   --accent-green: var(--color-brand-green);
   --accent-green-light: #34d399;
   --accent-green-dark: #047857;
-  
+
   --accent-orange: var(--color-brand-orange);
   --accent-orange-light: #fb923c;
   --accent-orange-dark: #c2410c;
-  
+
   --accent-gray: var(--color-brand-gray);
   --accent-gray-light: #9ca3af;
   --accent-gray-dark: #374151;
-  
+
   --accent-blue: var(--color-secondary-600);
   --accent-blue-light: var(--color-secondary-500);
   --accent-yellow: #ffc107;
@@ -341,7 +341,7 @@
   --shadow-green-sm: 0 1px 2px 0 rgba(0, 166, 81, 0.05);
   --shadow-green-m: 0 4px 6px -1px rgba(0, 166, 81, 0.1);
   --shadow-green-l: 0 10px 15px -3px rgba(0, 166, 81, 0.15);
-  
+
   --shadow-orange-sm: 0 1px 2px 0 rgba(255, 140, 0, 0.05);
   --shadow-orange-m: 0 4px 6px -1px rgba(255, 140, 0, 0.1);
   --shadow-orange-l: 0 10px 15px -3px rgba(255, 140, 0, 0.15);

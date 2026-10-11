@@ -130,9 +130,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       px-[var(--spacing-3)] py-[var(--spacing-2)] 
                       text-[var(--text-body-sm)] font-[var(--font-weight-medium)] 
                       rounded-[var(--radius-m)] transition-all duration-200
-                      ${isActive(link.to)
-                        ? "bg-brand-green/10 text-brand-green border border-brand-green/30"
-                        : "text-text-secondary hover:bg-[var(--bg-secondary)] hover:text-brand-green"
+                      ${
+                        isActive(link.to)
+                          ? "bg-brand-green/10 text-brand-green border border-brand-green/30"
+                          : "text-text-secondary hover:bg-[var(--bg-secondary)] hover:text-brand-green"
                       }
                     `}
                   >
@@ -160,9 +161,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       px-[var(--spacing-3)] py-[var(--spacing-2)] 
                       text-[var(--text-body-sm)] font-[var(--font-weight-medium)] 
                       rounded-[var(--radius-m)] transition-all duration-200
-                      ${isActive(link.to)
-                        ? "bg-brand-green/10 text-brand-green"
-                        : "text-text-secondary hover:bg-[var(--bg-secondary)] hover:text-brand-green"
+                      ${
+                        isActive(link.to)
+                          ? "bg-brand-green/10 text-brand-green"
+                          : "text-text-secondary hover:bg-[var(--bg-secondary)] hover:text-brand-green"
                       }
                     `}
                   >

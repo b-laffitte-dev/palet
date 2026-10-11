@@ -71,9 +71,13 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
         <div className="flex-shrink-0 text-center">
           <div className="flex items-baseline gap-2">
-            <span className="text-body-l font-bold text-brand-orange-700">{match.team1Score || 0}</span>
+            <span className="text-body-l font-bold text-brand-orange-700">
+              {match.team1Score || 0}
+            </span>
             <span className="text-body-m text-brand-green-200">—</span>
-            <span className="text-body-l font-bold text-brand-orange-700">{match.team2Score || 0}</span>
+            <span className="text-body-l font-bold text-brand-orange-700">
+              {match.team2Score || 0}
+            </span>
           </div>
           <Badge variant={getStatusVariant()} className="text-xs mt-1">
             {getStatusText()}

@@ -146,7 +146,9 @@ const Joueurs: React.FC = () => {
                   />
                 ))
               ) : (
-                <p className="text-body-m text-brand-green-300 col-span-full">Aucun joueur trouvé</p>
+                <p className="text-body-m text-brand-green-300 col-span-full">
+                  Aucun joueur trouvé
+                </p>
               )}
             </div>
           </div>
@@ -161,7 +163,9 @@ const Joueurs: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
                 <p className="text-body-xs text-brand-green-300 mb-1">Total Joueurs</p>
-                <p className="text-heading-m font-bold text-brand-orange-700">{players?.length || 0}</p>
+                <p className="text-heading-m font-bold text-brand-orange-700">
+                  {players?.length || 0}
+                </p>
               </div>
               <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
                 <p className="text-body-xs text-brand-green-300 mb-1">D1</p>

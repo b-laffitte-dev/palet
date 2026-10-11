@@ -28,9 +28,7 @@ export function Layout({
   return (
     <div className="layout flex flex-col min-h-[100vh] bg-[var(--bg-dark)]">
       {/* TopBar - Federation banner at very top */}
-      {showTopBar && (
-        <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />
-      )}
+      {showTopBar && <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />}
 
       {/* Header - Main navigation and branding */}
       {showHeader && (
@@ -42,14 +40,10 @@ export function Layout({
       )}
 
       {/* Sticky Header - Appears on scroll */}
-      {showHeader && (
-        <StickyHeader />
-      )}
+      {showHeader && <StickyHeader />}
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col bg-[var(--bg-dark)]">
-        {children}
-      </main>
+      <main className="flex-1 flex flex-col bg-[var(--bg-dark)]">{children}</main>
 
       {/* Footer */}
       {showFooter && <Footer />}

@@ -17,7 +17,11 @@ export interface HeaderProps {
  * Displays logo, live scores ticker, navigation, and call-to-action
  * Fully responsive with mobile hamburger menu
  */
-export function Header({ showCTA = true, hasLiveMatches = false, liveMatchesCount = 0 }: HeaderProps) {
+export function Header({
+  showCTA = true,
+  hasLiveMatches = false,
+  liveMatchesCount = 0,
+}: HeaderProps) {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -179,7 +183,10 @@ export function Header({ showCTA = true, hasLiveMatches = false, liveMatchesCoun
 
           {/* Main Navigation - Desktop */}
           <div className="hidden lg:flex items-center justify-between px-[var(--spacing-4)] py-[var(--spacing-2)]">
-            <nav className="flex items-center gap-[var(--spacing-6)]" aria-label="Navigation principale">
+            <nav
+              className="flex items-center gap-[var(--spacing-6)]"
+              aria-label="Navigation principale"
+            >
               {mainNavLinks.map((link) => (
                 <Link
                   key={link.to}
@@ -197,7 +204,10 @@ export function Header({ showCTA = true, hasLiveMatches = false, liveMatchesCoun
               ))}
             </nav>
 
-            <nav className="flex items-center gap-[var(--spacing-6)]" aria-label="Navigation secondaire">
+            <nav
+              className="flex items-center gap-[var(--spacing-6)]"
+              aria-label="Navigation secondaire"
+            >
               {otherNavLinks.map((link) => (
                 <Link
                   key={link.to}

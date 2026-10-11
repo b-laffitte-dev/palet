@@ -639,7 +639,9 @@ const TeamDetail: React.FC = () => {
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
-                  <p className="text-heading-m font-bold text-brand-orange-700">{displayTeam.stats.wins}</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
+                    {displayTeam.stats.wins}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-green-900/50 border-brand-green-700/50">
@@ -761,7 +763,9 @@ const TeamDetail: React.FC = () => {
                                 <td className="p-3 text-brand-orange-700 font-bold">
                                   {player.stats.averagePoints.toFixed(1)}
                                 </td>
-                                <td className="p-3 text-brand-green-300">{player.stats.winRate}%</td>
+                                <td className="p-3 text-brand-green-300">
+                                  {player.stats.winRate}%
+                                </td>
                               </tr>
                             ))}
                           </tbody>
@@ -776,7 +780,10 @@ const TeamDetail: React.FC = () => {
               <TabPanel value="competitions" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {displayTeam.competitions.map((competition) => (
-                    <Card key={competition.id} className="bg-brand-green-900/50 border-brand-green-700/50">
+                    <Card
+                      key={competition.id}
+                      className="bg-brand-green-900/50 border-brand-green-700/50"
+                    >
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <h3 className="text-heading-s font-bold text-white">
@@ -912,7 +919,9 @@ const TeamDetail: React.FC = () => {
                           </p>
                         </div>
                         <div>
-                          <p className="text-body-xs text-brand-green-300 mb-1">Différence de Points</p>
+                          <p className="text-body-xs text-brand-green-300 mb-1">
+                            Différence de Points
+                          </p>
                           <p className="text-heading-s font-bold text-brand-orange-700">
                             +{displayTeam.stats.diff}
                           </p>
@@ -945,13 +954,19 @@ const TeamDetail: React.FC = () => {
                                 </p>
                               </div>
                               <div>
-                                <p className="text-brand-green-300">V: {competition.results.wins}</p>
+                                <p className="text-brand-green-300">
+                                  V: {competition.results.wins}
+                                </p>
                               </div>
                               <div>
-                                <p className="text-brand-green-300">N: {competition.results.draws}</p>
+                                <p className="text-brand-green-300">
+                                  N: {competition.results.draws}
+                                </p>
                               </div>
                               <div>
-                                <p className="text-brand-green-300">D: {competition.results.losses}</p>
+                                <p className="text-brand-green-300">
+                                  D: {competition.results.losses}
+                                </p>
                               </div>
                               <div className="md:col-span-4">
                                 <p className="text-brand-green-300">
@@ -980,7 +995,9 @@ const TeamDetail: React.FC = () => {
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-body-s text-brand-green-300">5 derniers matchs</span>
+                          <span className="text-body-s text-brand-green-300">
+                            5 derniers matchs
+                          </span>
                           <div className="flex gap-2">
                             {mockMatches.slice(0, 5).map((match, index) => (
                               <span

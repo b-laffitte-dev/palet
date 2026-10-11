@@ -90,7 +90,10 @@ const Inscription: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label htmlFor="firstName" className="text-body-s font-medium text-brand-green-200">
+                  <label
+                    htmlFor="firstName"
+                    className="text-body-s font-medium text-brand-green-200"
+                  >
                     Prénom
                   </label>
                   <input
@@ -105,7 +108,10 @@ const Inscription: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="lastName" className="text-body-s font-medium text-brand-green-200">
+                  <label
+                    htmlFor="lastName"
+                    className="text-body-s font-medium text-brand-green-200"
+                  >
                     Nom
                   </label>
                   <input
@@ -146,7 +152,10 @@ const Inscription: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label htmlFor="password" className="text-body-s font-medium text-brand-green-200">
+                  <label
+                    htmlFor="password"
+                    className="text-body-s font-medium text-brand-green-200"
+                  >
                     Mot de passe
                   </label>
                   <div className="relative">
@@ -214,11 +223,17 @@ const Inscription: React.FC = () => {
                 />
                 <label htmlFor="acceptTerms" className="text-body-s text-brand-green-200">
                   J'accepte les{" "}
-                  <button type="button" className="text-brand-orange-700 hover:text-brand-orange-600 underline">
+                  <button
+                    type="button"
+                    className="text-brand-orange-700 hover:text-brand-orange-600 underline"
+                  >
                     conditions générales
                   </button>{" "}
                   et la{" "}
-                  <button type="button" className="text-brand-orange-700 hover:text-brand-orange-600 underline">
+                  <button
+                    type="button"
+                    className="text-brand-orange-700 hover:text-brand-orange-600 underline"
+                  >
                     politique de confidentialité
                   </button>
                 </label>

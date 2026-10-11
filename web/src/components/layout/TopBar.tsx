@@ -52,9 +52,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
             <>
               {/* User Menu - Desktop */}
               <div className="hidden lg:flex items-center gap-[var(--spacing-2)]">
-                <span className="text-[var(--text-body-xs)] text-text-tertiary">
-                  Connecté
-                </span>
+                <span className="text-[var(--text-body-xs)] text-text-tertiary">Connecté</span>
                 <Link
                   to="/mon-compte"
                   className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] 
