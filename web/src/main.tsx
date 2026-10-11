@@ -53,7 +53,7 @@ function NotFoundPage() {
           <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide mb-4">
             404 - Page non trouvée
           </h1>
-          <p className="text-body-m text-primary-200 mb-6">
+          <p className="text-body-m text-brand-green-200 mb-6">
             La page que vous cherchez n'existe pas.
           </p>
           <Link to="/">

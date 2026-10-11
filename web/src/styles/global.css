@@ -1266,23 +1266,53 @@ select {
   color: var(--text-dark-tertiary);
 }
 
+/* Brand Color text utilities */
+.text-brand-green {
+  color: var(--color-brand-green);
+}
+.text-brand-green-400 {
+  color: var(--color-brand-green-400);
+}
+.text-brand-green-500 {
+  color: var(--color-brand-green-500);
+}
+.text-brand-green-600 {
+  color: var(--color-brand-green-600);
+}
+.text-brand-green-700 {
+  color: var(--color-brand-green-700);
+}
+.text-brand-orange {
+  color: var(--color-brand-orange);
+}
+.text-brand-orange-400 {
+  color: var(--color-brand-orange-400);
+}
+.text-brand-orange-500 {
+  color: var(--color-brand-orange-500);
+}
+.text-brand-gray {
+  color: var(--color-brand-gray);
+}
+
+/* Legacy color mappings (for backward compatibility) */
 .text-gold {
-  color: var(--accent-gold);
+  color: var(--accent-green);
 }
 .text-gold-400 {
-  color: var(--color-primary-400);
+  color: var(--color-brand-green-400);
 }
 .text-gold-500 {
-  color: var(--color-primary-500);
+  color: var(--color-brand-green-500);
 }
 .text-gold-600 {
-  color: var(--color-primary-600);
+  color: var(--color-brand-green-600);
 }
 .text-gold-700 {
-  color: var(--color-primary-700);
+  color: var(--color-brand-green-700);
 }
 .text-gold-pure {
-  color: var(--color-gold);
+  color: var(--color-brand-green);
 }
 
 .text-blue {
@@ -1350,26 +1380,70 @@ select {
   background-color: var(--bg-lighter);
 }
 
+/* Brand Color background utilities */
+.bg-brand-green {
+  background-color: var(--color-brand-green);
+}
+.bg-brand-green-400 {
+  background-color: var(--color-brand-green-400);
+}
+.bg-brand-green-500 {
+  background-color: var(--color-brand-green-500);
+}
+.bg-brand-green-600 {
+  background-color: var(--color-brand-green-600);
+}
+.bg-brand-green-700 {
+  background-color: var(--color-brand-green-700);
+}
+.bg-brand-green-800 {
+  background-color: var(--color-brand-green-800);
+}
+.bg-brand-green-900 {
+  background-color: var(--color-brand-green-900);
+}
+.bg-brand-green-pure {
+  background-color: var(--color-brand-green);
+}
+
+.bg-brand-orange {
+  background-color: var(--color-brand-orange);
+}
+.bg-brand-orange-400 {
+  background-color: var(--color-brand-orange-400);
+}
+.bg-brand-orange-500 {
+  background-color: var(--color-brand-orange-500);
+}
+.bg-brand-orange-600 {
+  background-color: var(--color-brand-orange-600);
+}
+
+.bg-brand-gray {
+  background-color: var(--color-brand-gray);
+}
+
+/* Legacy color mappings (for backward compatibility) */
 .bg-gold {
-  background-color: var(--accent-gold);
+  background-color: var(--accent-green);
 }
 .bg-gold-500 {
-  background-color: var(--color-primary-500);
+  background-color: var(--color-brand-green-500);
 }
 .bg-gold-600 {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-brand-green-600);
 }
 .bg-gold-700 {
-  background-color: var(--color-primary-700);
+  background-color: var(--color-brand-green-700);
 }
 .bg-gold-800 {
-  background-color: var(--color-primary-800);
+  background-color: var(--color-brand-green-800);
 }
 .bg-gold-900 {
-  background-color: var(--color-primary-900);
+  background-color: var(--color-brand-green-900);
 }
 .bg-gold-pure {
-  background-color: var(--color-gold);
+  background-color: var(--color-brand-green);
 }
 .bg-yellow {
   background-color: var(--accent-yellow);

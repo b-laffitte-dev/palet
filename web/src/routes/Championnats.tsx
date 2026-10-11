@@ -27,7 +27,7 @@ const Championnats: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -43,7 +43,7 @@ const Championnats: React.FC = () => {
             <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
               CHAMPIONNATS
             </h1>
-            <p className="text-body-m text-primary-200 mt-2">
+            <p className="text-body-m text-brand-green-200 mt-2">
               Classement et résultats des championnats en cours
             </p>
           </div>
@@ -52,7 +52,7 @@ const Championnats: React.FC = () => {
         {/* Current Championships */}
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               CHAMPIONNATS EN COURS
             </h2>
 
@@ -64,7 +64,7 @@ const Championnats: React.FC = () => {
                     <div key={championship.id} className="space-y-4">
                       <div className="flex items-center gap-4 mb-4">
                         <h3 className="text-heading-m font-bold text-white">{championship.name}</h3>
-                        <span className="text-body-s text-primary-300">
+                        <span className="text-body-s text-brand-green-300">
                           {championship.season} - Journées {championship.currentJournee || 0}/
                           {championship.totalJournees || 0}
                         </span>
@@ -83,15 +83,15 @@ const Championnats: React.FC = () => {
                   ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun championnat en cours</p>
+              <p className="text-body-m text-brand-green-300">Aucun championnat en cours</p>
             )}
           </div>
         </section>
 
         {/* Recent Matches */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               DERNIERS MATCHS
             </h2>
 
@@ -102,7 +102,7 @@ const Championnats: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun match récent</p>
+              <p className="text-body-m text-brand-green-300">Aucun match récent</p>
             )}
           </div>
         </section>

@@ -54,11 +54,11 @@ const Actualites: React.FC = () => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "official":
-        return "text-gold-700";
+        return "text-brand-orange-700";
       case "competitions":
-        return "text-primary-400";
+        return "text-brand-green-400";
       default:
-        return "text-primary-200";
+        return "text-brand-green-200";
     }
   };
 
@@ -82,7 +82,7 @@ const Actualites: React.FC = () => {
             <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
               ACTUALITÉS
             </h1>
-            <p className="text-body-m text-primary-200 mt-2">Toutes les nouvelles du CDSP 79</p>
+            <p className="text-body-m text-brand-green-200 mt-2">Toutes les nouvelles du CDSP 79</p>
           </div>
         </section>
 
@@ -92,12 +92,12 @@ const Actualites: React.FC = () => {
             {newsItems.map((item) => (
               <article
                 key={item.id}
-                className="bg-primary-900 rounded-lg p-6 border border-primary-700/50 hover:border-gold-700/50 transition-colors"
+                className="bg-brand-green-900 rounded-lg p-6 border border-brand-green-700/50 hover:border-brand-orange-700/50 transition-colors"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary-800 rounded-lg flex items-center justify-center">
-                      <Icon name="Newspaper" size="m" className="text-primary-300" />
+                    <div className="w-10 h-10 bg-brand-green-800 rounded-lg flex items-center justify-center">
+                      <Icon name="Newspaper" size="m" className="text-brand-green-300" />
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -105,7 +105,7 @@ const Actualites: React.FC = () => {
                       <span className={`text-caption font-bold ${getCategoryColor(item.category)}`}>
                         {getCategoryLabel(item.category)}
                       </span>
-                      <span className="text-caption text-primary-300">
+                      <span className="text-caption text-brand-green-300">
                         {item.date.toLocaleDateString("fr-FR", {
                           year: "numeric",
                           month: "long",
@@ -114,9 +114,9 @@ const Actualites: React.FC = () => {
                       </span>
                     </div>
                     <h3 className="text-heading-s font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-body-m text-primary-200">{item.excerpt}</p>
+                    <p className="text-body-m text-brand-green-200">{item.excerpt}</p>
                     <div className="mt-4">
-                      <button className="text-body-s text-gold-700 hover:text-gold-600 font-medium flex items-center gap-1">
+                      <button className="text-body-s text-brand-orange-700 hover:text-brand-orange-600 font-medium flex items-center gap-1">
                         Lire la suite
                         <Icon name="ArrowRight" size="xs" />
                       </button>

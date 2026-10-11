@@ -606,7 +606,7 @@ const TournamentDetail: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -655,8 +655,8 @@ const TournamentDetail: React.FC = () => {
             <div className="flex flex-col md:flex-row items-start gap-6">
               {/* Logo/Icon */}
               <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-primary-800 rounded-full flex items-center justify-center border-2 border-gold-700">
-                  <span className="text-4xl text-gold-700">🏆</span>
+                <div className="w-24 h-24 bg-brand-green-800 rounded-full flex items-center justify-center border-2 border-brand-orange-700">
+                  <span className="text-4xl text-brand-orange-700">🏆</span>
                 </div>
               </div>
 
@@ -676,36 +676,36 @@ const TournamentDetail: React.FC = () => {
                   <Badge variant="default">{displayTournament.season}</Badge>
                 </div>
 
-                <p className="text-body-m text-primary-200 mb-4 max-w-2xl">
+                <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
                   {displayTournament.description}
                 </p>
 
                 {/* Dates and Location */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Début des inscriptions:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Début des inscriptions:</span>
+                    <span className="text-brand-orange-700 font-semibold text-body-s">
                       {displayTournament.registrationStart?.toLocaleDateString("fr-FR") ||
                         "À définir"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Fin des inscriptions:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Fin des inscriptions:</span>
+                    <span className="text-brand-orange-700 font-semibold text-body-s">
                       {displayTournament.registrationEnd?.toLocaleDateString("fr-FR") ||
                         "À définir"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Dates du tournoi:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Dates du tournoi:</span>
+                    <span className="text-brand-orange-700 font-semibold text-body-s">
                       {displayTournament.startDate?.toLocaleDateString("fr-FR") || "À définir"} -
                       {displayTournament.endDate?.toLocaleDateString("fr-FR") || "À définir"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 md:col-span-3">
-                    <span className="text-primary-400">Lieu:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Lieu:</span>
+                    <span className="text-brand-orange-700 font-semibold text-body-s">
                       {displayTournament.location || "À définir"}
                     </span>
                   </div>
@@ -715,16 +715,16 @@ const TournamentDetail: React.FC = () => {
               {/* Code and Organizer */}
               <div className="flex-shrink-0">
                 <div className="space-y-4">
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Code Tournoi</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Code Tournoi</p>
+                    <p className="text-heading-m font-bold text-brand-orange-700">
                       {displayTournament.code}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Organisateur</p>
+                  <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Organisateur</p>
                     {displayTournament.organizer && "name" in displayTournament.organizer && (
-                      <p className="text-heading-xs font-bold text-gold-700">
+                      <p className="text-heading-xs font-bold text-brand-orange-700">
                         {(displayTournament.organizer as any).name}
                       </p>
                     )}
@@ -736,53 +736,53 @@ const TournamentDetail: React.FC = () => {
         </section>
 
         {/* Stats Overview */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               Informations
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Équipes Inscrites</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Équipes Inscrites</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTournament.registeredTeams} / {displayTournament.maxTeams || "Illimité"}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Format</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Format</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTournament.format}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Frais d'inscription</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Frais d'inscription</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTournament.fee ? `${displayTournament.fee} €` : "Gratuit"}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Points par manche</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Points par manche</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTournament.pointsType}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-2">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-2">
                 <CardContent className="p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Paiement requis</p>
-                  <p className="text-heading-s font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Paiement requis</p>
+                  <p className="text-heading-s font-bold text-brand-orange-700">
                     {displayTournament.paymentRequired ? "Oui" : "Non"}
                   </p>
                   {displayTournament.paymentRequired && (
                     <div className="mt-2">
-                      <p className="text-body-xs text-primary-400 mb-1">Méthodes acceptées:</p>
+                      <p className="text-body-xs text-brand-green-400 mb-1">Méthodes acceptées:</p>
                       <div className="flex flex-wrap gap-1">
                         {displayTournament.paymentMethods?.map((method) => (
                           <Badge key={method} variant="default" size="xs">
@@ -808,17 +808,17 @@ const TournamentDetail: React.FC = () => {
             {displayTournament.status === "registration" && (
               <div className="mt-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-body-s text-primary-300">
+                  <span className="text-body-s text-brand-green-300">
                     Progression des inscriptions: {displayTournament.registeredTeams}/
                     {displayTournament.maxTeams || "Illimité"}
                   </span>
-                  <span className="text-body-s text-gold-700">
+                  <span className="text-body-s text-brand-orange-700">
                     {getRegistrationProgress().toFixed(0)}%
                   </span>
                 </div>
-                <div className="h-4 bg-primary-700 rounded-full overflow-hidden">
+                <div className="h-4 bg-brand-green-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-gold-700 to-gold-500 rounded-full"
+                    className="h-full bg-gradient-to-r from-brand-orange-700 to-brand-orange-500 rounded-full"
                     style={{ width: `${getRegistrationProgress()}%` }}
                   />
                 </div>
@@ -830,14 +830,14 @@ const TournamentDetail: React.FC = () => {
         {/* Eligibility */}
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               Critères d'Éligibilité
             </h2>
-            <Card className="bg-primary-900/50 border-primary-700/50">
+            <Card className="bg-brand-green-900/50 border-brand-green-700/50">
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Licence requise:</span>
+                    <span className="text-brand-green-400">Licence requise:</span>
                     <Badge
                       variant={displayTournament.eligibility.requireLicense ? "success" : "danger"}
                     >
@@ -845,7 +845,7 @@ const TournamentDetail: React.FC = () => {
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Club requis:</span>
+                    <span className="text-brand-green-400">Club requis:</span>
                     <Badge
                       variant={displayTournament.eligibility.requireClub ? "success" : "danger"}
                     >
@@ -853,7 +853,7 @@ const TournamentDetail: React.FC = () => {
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Catégories:</span>
+                    <span className="text-brand-green-400">Catégories:</span>
                     <div className="flex flex-wrap gap-1">
                       {displayTournament.eligibility.categories.map((cat) => (
                         <Badge key={cat} variant="default" size="xs">
@@ -869,7 +869,7 @@ const TournamentDetail: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Divisions:</span>
+                    <span className="text-brand-green-400">Divisions:</span>
                     <div className="flex flex-wrap gap-1">
                       {displayTournament.eligibility.divisions.map((div) => (
                         <Badge key={div} variant="default" size="xs">
@@ -879,14 +879,14 @@ const TournamentDetail: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Joueurs max par club:</span>
-                    <span className="text-gold-700 font-semibold">
+                    <span className="text-brand-green-400">Joueurs max par club:</span>
+                    <span className="text-brand-orange-700 font-semibold">
                       {displayTournament.eligibility.maxPlayersPerClub || "Illimité"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Joueurs par équipe:</span>
-                    <span className="text-gold-700 font-semibold">
+                    <span className="text-brand-green-400">Joueurs par équipe:</span>
+                    <span className="text-brand-orange-700 font-semibold">
                       {displayTournament.eligibility.minPlayers}-
                       {displayTournament.eligibility.maxPlayers}
                     </span>
@@ -916,7 +916,7 @@ const TournamentDetail: React.FC = () => {
                 {displayTournament.registeredTeams > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {mockTeams.map((team) => (
-                      <Card key={team.id} className="bg-primary-900/50 border-primary-700/50">
+                      <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                         <CardHeader>
                           <div className="flex items-center gap-3">
                             <TeamAvatar
@@ -930,7 +930,7 @@ const TournamentDetail: React.FC = () => {
                             />
                             <div className="flex-1">
                               <h3 className="text-heading-s font-bold text-white">{team.name}</h3>
-                              <p className="text-body-xs text-primary-300">
+                              <p className="text-body-xs text-brand-green-300">
                                 {(team.club as any)?.name}
                               </p>
                             </div>
@@ -942,26 +942,26 @@ const TournamentDetail: React.FC = () => {
                         <CardContent>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300">Matchs</p>
-                              <p className="text-heading-xs font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300">Matchs</p>
+                              <p className="text-heading-xs font-bold text-brand-orange-700">
                                 {team.stats.matches}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300">Victoires</p>
-                              <p className="text-heading-xs font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300">Victoires</p>
+                              <p className="text-heading-xs font-bold text-brand-orange-700">
                                 {team.stats.wins}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300">Défaites</p>
-                              <p className="text-heading-xs font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300">Défaites</p>
+                              <p className="text-heading-xs font-bold text-brand-orange-700">
                                 {team.stats.losses}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300">Win Rate</p>
-                              <p className="text-heading-xs font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300">Win Rate</p>
+                              <p className="text-heading-xs font-bold text-brand-orange-700">
                                 {team.stats.winRate}%
                               </p>
                             </div>
@@ -976,9 +976,9 @@ const TournamentDetail: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardContent className="text-center p-8">
-                      <p className="text-body-m text-primary-300">
+                      <p className="text-body-m text-brand-green-300">
                         Aucune équipe inscrite pour le moment.
                       </p>
                     </CardContent>
@@ -990,7 +990,7 @@ const TournamentDetail: React.FC = () => {
               <TabPanel value="phases" className="py-6">
                 <div className="space-y-4">
                   {displayTournament.phases.map((phase) => (
-                    <Card key={phase.id} className="bg-primary-900/50 border-primary-700/50">
+                    <Card key={phase.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <h3 className="text-heading-s font-bold text-white">
@@ -1009,9 +1009,9 @@ const TournamentDetail: React.FC = () => {
                             {phase.groups.map((group) => (
                               <div
                                 key={group.id}
-                                className="bg-primary-800/50 rounded p-3 border border-primary-700/30"
+                                className="bg-brand-green-800/50 rounded p-3 border border-brand-green-700/30"
                               >
-                                <h4 className="text-heading-xs font-bold text-gold-700 mb-2">
+                                <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">
                                   {group.name}
                                 </h4>
                                 <div className="space-y-2">
@@ -1020,7 +1020,7 @@ const TournamentDetail: React.FC = () => {
                                       key={team.id}
                                       className="flex items-center gap-2 text-body-s"
                                     >
-                                      <span className="text-primary-400">{index + 1}.</span>
+                                      <span className="text-brand-green-400">{index + 1}.</span>
                                       <TeamAvatar
                                         team={{
                                           id: team.id,
@@ -1040,12 +1040,12 @@ const TournamentDetail: React.FC = () => {
                         )}
                         {phase.type === "knockout" && (
                           <div className="space-y-2">
-                            <p className="text-body-s text-primary-300">
+                            <p className="text-body-s text-brand-green-300">
                               {phase.matches?.length || 0} matchs prévus en élimination directe
                             </p>
                           </div>
                         )}
-                        <p className="text-body-xs text-primary-400 mt-4">
+                        <p className="text-body-xs text-brand-green-400 mt-4">
                           {phase.matches?.length || 0} matchs prévus dans cette phase
                         </p>
                       </CardContent>
@@ -1066,9 +1066,9 @@ const TournamentDetail: React.FC = () => {
                     />
                   ))}
                   {mockMatches.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">
+                        <p className="text-body-m text-brand-green-300">
                           Aucun match programmé pour le moment.
                         </p>
                       </CardContent>
@@ -1079,12 +1079,12 @@ const TournamentDetail: React.FC = () => {
 
               {/* Règlement */}
               <TabPanel value="regles" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <h3 className="text-heading-s font-bold text-white">Règlement Officiel</h3>
                   </CardHeader>
                   <CardContent>
-                    <div className="prose prose-invert max-w-none text-body-s text-primary-200">
+                    <div className="prose prose-invert max-w-none text-body-s text-brand-green-200">
                       {displayTournament.rules ? (
                         <p>{displayTournament.rules}</p>
                       ) : (
@@ -1093,16 +1093,16 @@ const TournamentDetail: React.FC = () => {
 
                       <div className="mt-6 space-y-4">
                         <div>
-                          <h4 className="text-heading-xs font-bold text-gold-700 mb-2">
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">
                             Points par manche
                           </h4>
-                          <p className="text-body-s text-primary-300">
+                          <p className="text-body-s text-brand-green-300">
                             Les matchs se jouent en {displayTournament.pointsType} points.
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-heading-xs font-bold text-gold-700 mb-2">Matériel</h4>
-                          <p className="text-body-s text-primary-300">
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">Matériel</h4>
+                          <p className="text-body-s text-brand-green-300">
                             {displayTournament.material === "fonte" &&
                               "Palets en fonte - Distance: 3,80m"}
                             {displayTournament.material === "laiton" &&
@@ -1114,8 +1114,8 @@ const TournamentDetail: React.FC = () => {
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-heading-xs font-bold text-gold-700 mb-2">Format</h4>
-                          <p className="text-body-s text-primary-300">
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">Format</h4>
+                          <p className="text-body-s text-brand-green-300">
                             {displayTournament.format === "knockout" &&
                               "Tournoi en élimination directe"}
                             {displayTournament.format === "round-robin" &&
@@ -1136,7 +1136,7 @@ const TournamentDetail: React.FC = () => {
 
         {/* Action Buttons */}
         {displayTournament.status === "registration" && (
-          <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+          <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
             <div className="max-w-7xl mx-auto">
               <div className="flex justify-center gap-4">
                 <Button variant="primary" size="l">

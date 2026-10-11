@@ -48,10 +48,10 @@ export const LiveScores: React.FC<LiveScoresProps> = ({ matches, journee = 1, cl
       <section className={`w-full ${className}`} aria-labelledby="live-scores-title">
         <div className="px-4 sm:px-6 py-3 sm:py-4 bg-[#000000]">
           <div className="flex items-center gap-2">
-            <Icon name="Clock" size="sm" className="text-gold-pure" />
+            <Icon name="Clock" size="sm" className="text-brand-orange" />
             <h2
               id="live-scores-title"
-              className="text-body-sm sm:text-body-m font-bold text-gold-pure uppercase tracking-wide"
+              className="text-body-sm sm:text-body-m font-bold text-brand-orange uppercase tracking-wide"
             >
               Scores en direct — {journee}e journée
             </h2>
@@ -74,14 +74,14 @@ export const LiveScores: React.FC<LiveScoresProps> = ({ matches, journee = 1, cl
       {/* Header */}
       <div className="px-4 sm:px-6 py-3 sm:py-4 bg-[#000000] border-b border-neutral-800">
         <div className="flex items-center gap-2">
-          <Icon name="Clock" size="sm" className="text-gold-pure flex-shrink-0" />
+          <Icon name="Clock" size="sm" className="text-brand-orange flex-shrink-0" />
           <h2
             id="live-scores-title"
-            className="text-body-sm sm:text-body-m font-bold text-gold-pure uppercase tracking-wide truncate"
+            className="text-body-sm sm:text-body-m font-bold text-brand-orange uppercase tracking-wide truncate"
           >
             Scores en direct — {journee}e journée
           </h2>
-          <span className="ml-auto text-body-xs text-gold-pure/80">
+          <span className="ml-auto text-body-xs text-brand-orange/80">
             {matches.length} match{matches.length > 1 ? "s" : ""}
           </span>
         </div>
@@ -93,7 +93,7 @@ export const LiveScores: React.FC<LiveScoresProps> = ({ matches, journee = 1, cl
           {matches.map((match) => (
             <div
               key={match.id}
-              className="live-score-card flex-shrink-0 bg-green-dark rounded-lg p-3 sm:p-4 border border-green-light hover:border-gold-pure transition-colors min-w-[160px] sm:min-w-[200px] lg:min-w-[240px]"
+              className="live-score-card flex-shrink-0 bg-green-dark rounded-lg p-3 sm:p-4 border border-green-light hover:border-brand-orange transition-colors min-w-[160px] sm:min-w-[200px] lg:min-w-[240px]"
               aria-live="polite"
             >
               <div className="flex flex-col gap-2">
@@ -111,17 +111,17 @@ export const LiveScores: React.FC<LiveScoresProps> = ({ matches, journee = 1, cl
                     <div className="flex items-baseline gap-1 sm:gap-2">
                       <span
                         className={`text-body-sm sm:text-heading-sm font-bold ${
-                          match.status === "in_progress" ? "text-gold-pure" : "text-white"
+                          match.status === "in_progress" ? "text-brand-orange" : "text-white"
                         }`}
                       >
                         {match.team1Score}
                       </span>
-                      <span className="text-body-xs sm:text-body-sm font-bold text-gold-pure/80">
+                      <span className="text-body-xs sm:text-body-sm font-bold text-brand-orange/80">
                         —
                       </span>
                       <span
                         className={`text-body-sm sm:text-heading-sm font-bold ${
-                          match.status === "in_progress" ? "text-gold-pure" : "text-white"
+                          match.status === "in_progress" ? "text-brand-orange" : "text-white"
                         }`}
                       >
                         {match.team2Score}
@@ -146,7 +146,7 @@ export const LiveScores: React.FC<LiveScoresProps> = ({ matches, journee = 1, cl
 
                 {/* Status text */}
                 <div className="flex justify-center">
-                  <span className="text-caption sm:text-body-xs text-gold-pure/80 truncate max-w-full">
+                  <span className="text-caption sm:text-body-xs text-brand-orange/80 truncate max-w-full">
                     {getStatusText(match)}
                   </span>
                 </div>

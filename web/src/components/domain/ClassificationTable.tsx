@@ -28,8 +28,8 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
   onAllClick,
 }) => {
   const getRowClassName = (status: ChampionshipTeam["status"]) => {
-    const base = "hover:bg-primary-800/30 transition-colors";
-    if (status === "qualified") return `${base} bg-primary-800/20`;
+    const base = "hover:bg-brand-green-800/30 transition-colors";
+    if (status === "qualified") return `${base} bg-brand-green-800/20`;
     if (status === "barrage") return `${base} bg-amber-900/20`;
     if (status === "relegated") return `${base} bg-red-900/20`;
     return base;
@@ -59,11 +59,11 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
   // Form indicators
   const getFormIndicator = (status: "win" | "draw" | "loss" | undefined) => {
-    if (!status) return <span className="w-4 h-4 rounded-sm bg-primary-600" />;
-    if (status === "win") return <span className="w-4 h-4 rounded-sm bg-green-600" />;
-    if (status === "loss") return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-red-600" />;
-    if (status === "draw") return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-gray-500" />;
-    return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-primary-600" />;
+    if (!status) return <span className="w-4 h-4 rounded-sm bg-brand-green-600" />;
+    if (status === "win") return <span className="w-4 h-4 rounded-sm bg-brand-green-600" />;
+    if (status === "loss") return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-danger-600" />;
+    if (status === "draw") return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-neutral-500" />;
+    return <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-brand-green-600" />;
   };
 
   // Mobile-optimized header columns
@@ -93,7 +93,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
     return (
       <tr key={team.team.id} className={getRowClassName(team.status)}>
         <td className="px-2 sm:px-3 py-2 sm:py-3 text-center">
-          <span className="text-body-sm sm:text-body-m font-bold text-gold-pure">
+          <span className="text-body-sm sm:text-body-m font-bold text-brand-orange-pure">
             {team.position}
           </span>
         </td>
@@ -101,14 +101,14 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
           <div className="flex items-center gap-2">
             <div className="hidden sm:flex">{getStatusBadge(team.status)}</div>
             <div className="min-w-0">
-              <span className="text-body-xs sm:text-body-sm font-medium text-dark-primary block truncate">
+              <span className="text-body-xs sm:text-body-sm font-medium text-white block truncate">
                 {team.team.name}
               </span>
             </div>
           </div>
         </td>
         <td className="px-2 sm:px-3 py-2 sm:py-3 text-center">
-          <span className="text-body-sm sm:text-body-m font-bold text-gold-pure">
+          <span className="text-body-sm sm:text-body-m font-bold text-brand-orange-pure">
             {team.stats.points}
           </span>
         </td>
@@ -122,7 +122,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
       <tr key={team.team.id} className={getRowClassName(team.status)}>
         {/* Position */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
-          <span className="text-body-sm sm:text-body-m font-bold text-gold-pure">
+          <span className="text-body-sm sm:text-body-m font-bold text-brand-orange-pure">
             {team.position}
           </span>
         </td>
@@ -132,7 +132,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
           <div className="flex items-center gap-2">
             {getStatusBadge(team.status)}
             <div className="min-w-0">
-              <span className="text-body-xs sm:text-body-sm font-medium text-dark-primary block truncate">
+              <span className="text-body-xs sm:text-body-sm font-medium text-white block truncate">
                 {team.team.name}
               </span>
             </div>
@@ -141,26 +141,26 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
         {/* MJ (Matches Joués) */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
-          <span className="text-body-xs sm:text-body-sm text-dark-secondary">
+          <span className="text-body-xs sm:text-body-sm text-neutral-300">
             {team.stats.matches}
           </span>
         </td>
 
         {/* G (Gagnés) */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
-          <span className="text-body-xs sm:text-body-sm text-green-600">{team.stats.wins}</span>
+          <span className="text-body-xs sm:text-body-sm text-brand-green-400">{team.stats.wins}</span>
         </td>
 
         {/* P (Perdus) */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
-          <span className="text-body-xs sm:text-body-sm text-red-600">{team.stats.losses}</span>
+          <span className="text-body-xs sm:text-body-sm text-danger-400">{team.stats.losses}</span>
         </td>
 
         {/* DIFF */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
           <span
             className={`text-body-xs sm:text-body-sm font-medium ${
-              team.stats.diff > 0 ? "text-green-600" : "text-red-600"
+              team.stats.diff > 0 ? "text-brand-green-400" : "text-danger-400"
             }`}
           >
             {team.stats.diff > 0 ? "+" : ""}
@@ -170,7 +170,7 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
         {/* PTS */}
         <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
-          <span className="text-body-xs sm:text-body-sm font-bold text-gold-pure">
+          <span className="text-body-xs sm:text-body-sm font-bold text-brand-orange-pure">
             {team.stats.points}
           </span>
         </td>
@@ -191,16 +191,16 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
   const Legend = () => (
     <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-3 sm:gap-6 text-caption sm:text-body-xs">
       <div className="flex items-center gap-1 sm:gap-2">
-        <span className="w-3 h-3 rounded-full bg-primary-600" />
-        <span className="text-primary-200">Qualifié pour la finale</span>
+        <span className="w-3 h-3 rounded-full bg-brand-green-600" />
+        <span className="text-neutral-300">Qualifié pour la finale</span>
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
-        <span className="w-3 h-3 rounded-full bg-gold-700" />
-        <span className="text-primary-200">Barrage</span>
+        <span className="w-3 h-3 rounded-full bg-brand-orange-700" />
+        <span className="text-neutral-300">Barrage</span>
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
-        <span className="w-3 h-3 rounded-full bg-red-700" />
-        <span className="text-primary-200">Relégué en D2</span>
+        <span className="w-3 h-3 rounded-full bg-danger-700" />
+        <span className="text-neutral-300">Relégué en D2</span>
       </div>
     </div>
   );
@@ -212,18 +212,18 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
         <div>
           <h2
             id="classification-title"
-            className="text-heading-sm sm:text-heading-l font-bold text-dark-primary uppercase tracking-wide"
+            className="text-heading-sm sm:text-heading-l font-bold text-white uppercase tracking-wide"
           >
             {competition}
           </h2>
-          <p className="text-body-xs sm:text-body-m text-dark-secondary">
+          <p className="text-body-xs sm:text-body-m text-neutral-300">
             Classement après {journee} journée{journee > 1 ? "s" : ""} — {season}
           </p>
         </div>
         {showAllLink && onAllClick && (
           <button
             onClick={onAllClick}
-            className="text-body-xs sm:text-body-sm text-gold-pure hover:text-gold-dark flex items-center gap-1 sm:gap-2 whitespace-nowrap"
+            className="text-body-xs sm:text-body-sm text-brand-orange-pure hover:text-brand-orange-400 flex items-center gap-1 sm:gap-2 whitespace-nowrap"
           >
             Tout le classement
             <Icon name="ArrowRight" size="xs" />

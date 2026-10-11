@@ -317,7 +317,7 @@ const MatchDetail: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -372,7 +372,7 @@ const MatchDetail: React.FC = () => {
             {isLiveMatch ? (
               <MatchHero match={displayMatch} />
             ) : (
-              <div className="bg-primary-900/50 border border-primary-700/50 rounded-lg p-6 mb-6">
+              <div className="bg-brand-green-900/50 border border-brand-green-700/50 rounded-lg p-6 mb-6">
                 <div className="flex flex-col md:flex-row items-center justify-center gap-8">
                   {/* Team 1 */}
                   <div className="text-center">
@@ -381,14 +381,14 @@ const MatchDetail: React.FC = () => {
                         <img
                           src={displayMatch.team1.logo}
                           alt={displayMatch.team1.name}
-                          className="w-16 h-16 rounded-full border-2 border-primary-700"
+                          className="w-16 h-16 rounded-full border-2 border-brand-green-700"
                         />
                       )}
                       <h2 className="text-heading-l font-bold text-white uppercase tracking-wide">
                         {displayMatch.team1.name}
                       </h2>
                     </div>
-                    <p className="text-heading-xl font-bold text-gold-700">
+                    <p className="text-heading-xl font-bold text-brand-orange-700">
                       {displayMatch.team1Score}
                     </p>
                     {displayMatch.winner === "team1" && (
@@ -400,7 +400,7 @@ const MatchDetail: React.FC = () => {
 
                   {/* VS */}
                   <div className="text-center">
-                    <p className="text-heading-xl font-bold text-primary-300">VS</p>
+                    <p className="text-heading-xl font-bold text-brand-green-300">VS</p>
                     {displayMatch.winner === null && displayMatch.status === "completed" && (
                       <Badge variant="default" className="mt-2">
                         Match Nul
@@ -420,14 +420,14 @@ const MatchDetail: React.FC = () => {
                         <img
                           src={displayMatch.team2.logo}
                           alt={displayMatch.team2.name}
-                          className="w-16 h-16 rounded-full border-2 border-primary-700"
+                          className="w-16 h-16 rounded-full border-2 border-brand-green-700"
                         />
                       )}
                       <h2 className="text-heading-l font-bold text-white uppercase tracking-wide">
                         {displayMatch.team2.name}
                       </h2>
                     </div>
-                    <p className="text-heading-xl font-bold text-gold-700">
+                    <p className="text-heading-xl font-bold text-brand-orange-700">
                       {displayMatch.team2Score}
                     </p>
                     {displayMatch.winner === "team2" && (
@@ -439,49 +439,49 @@ const MatchDetail: React.FC = () => {
                 </div>
 
                 {/* Match Info */}
-                <div className="mt-6 pt-6 border-t border-primary-700/50 flex flex-wrap justify-center gap-4">
+                <div className="mt-6 pt-6 border-t border-brand-green-700/50 flex flex-wrap justify-center gap-4">
                   <div className="text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Compétition</p>
+                    <p className="text-body-xs text-brand-green-400 mb-1">Compétition</p>
                     <p className="text-body-s font-semibold text-white">
                       {displayMatch.competition.name}
                     </p>
                   </div>
                   {displayMatch.journee && (
                     <div className="text-center">
-                      <p className="text-body-xs text-primary-400 mb-1">Journée</p>
-                      <p className="text-body-s font-semibold text-gold-700">
+                      <p className="text-body-xs text-brand-green-400 mb-1">Journée</p>
+                      <p className="text-body-s font-semibold text-brand-orange-700">
                         {displayMatch.journee}
                       </p>
                     </div>
                   )}
                   {displayMatch.phase && (
                     <div className="text-center">
-                      <p className="text-body-xs text-primary-400 mb-1">Phase</p>
-                      <p className="text-body-s font-semibold text-gold-700">
+                      <p className="text-body-xs text-brand-green-400 mb-1">Phase</p>
+                      <p className="text-body-s font-semibold text-brand-orange-700">
                         {displayMatch.phase}
                       </p>
                     </div>
                   )}
                   <div className="text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Date</p>
+                    <p className="text-body-xs text-brand-green-400 mb-1">Date</p>
                     <p className="text-body-s font-semibold text-white">
                       {displayMatch.date.toLocaleDateString("fr-FR")}
                     </p>
                   </div>
                   {displayMatch.time && (
                     <div className="text-center">
-                      <p className="text-body-xs text-primary-400 mb-1">Heure</p>
+                      <p className="text-body-xs text-brand-green-400 mb-1">Heure</p>
                       <p className="text-body-s font-semibold text-white">{displayMatch.time}</p>
                     </div>
                   )}
                   <div className="text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Lieu</p>
+                    <p className="text-body-xs text-brand-green-400 mb-1">Lieu</p>
                     <p className="text-body-s font-semibold text-white">{displayMatch.location}</p>
                   </div>
                   {displayMatch.duration && (
                     <div className="text-center">
-                      <p className="text-body-xs text-primary-400 mb-1">Durée</p>
-                      <p className="text-body-s font-semibold text-gold-700">
+                      <p className="text-body-xs text-brand-green-400 mb-1">Durée</p>
+                      <p className="text-body-s font-semibold text-brand-orange-700">
                         {displayMatch.duration}
                       </p>
                     </div>
@@ -494,46 +494,46 @@ const MatchDetail: React.FC = () => {
 
         {/* Stats Overview */}
         {displayMatch.status === "completed" && (
-          <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+          <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
             <div className="max-w-7xl mx-auto">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+              <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
                 Résultat Final
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardContent className="text-center p-4">
-                    <p className="text-body-xs text-primary-300 mb-1">Gagnant</p>
+                    <p className="text-body-xs text-brand-green-300 mb-1">Gagnant</p>
                     {displayMatch.winner ? (
-                      <p className="text-heading-s font-bold text-gold-700">
+                      <p className="text-heading-s font-bold text-brand-orange-700">
                         {displayMatch.winner === "team1"
                           ? displayMatch.team1.name
                           : displayMatch.team2.name}
                       </p>
                     ) : (
-                      <p className="text-heading-s font-bold text-primary-300">Match Nul</p>
+                      <p className="text-heading-s font-bold text-brand-green-300">Match Nul</p>
                     )}
                   </CardContent>
                 </Card>
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardContent className="text-center p-4">
-                    <p className="text-body-xs text-primary-300 mb-1">Score Final</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Score Final</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayMatch.team1Score} - {displayMatch.team2Score}
                     </p>
                   </CardContent>
                 </Card>
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardContent className="text-center p-4">
-                    <p className="text-body-xs text-primary-300 mb-1">Manches Jouées</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Manches Jouées</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayMatch.manches?.length || 0}
                     </p>
                   </CardContent>
                 </Card>
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardContent className="text-center p-4">
-                    <p className="text-body-xs text-primary-300 mb-1">Meilleure Manche</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Meilleure Manche</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayMatch.stats.bestManche?.team1} -{" "}
                       {displayMatch.stats.bestManche?.team2}
                     </p>
@@ -545,7 +545,7 @@ const MatchDetail: React.FC = () => {
               {displayMatch.verified && (
                 <div className="mt-6 flex items-center justify-center gap-4">
                   <Badge variant="success">Match vérifié</Badge>
-                  <span className="text-body-s text-primary-300">
+                  <span className="text-body-s text-brand-green-300">
                     Vérifié par {displayMatch.verifiedBy} le{" "}
                     {displayMatch.verifiedAt?.toLocaleDateString("fr-FR")}
                   </span>
@@ -568,46 +568,46 @@ const MatchDetail: React.FC = () => {
 
               {/* Détails du Match */}
               <TabPanel value="details" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <h3 className="text-heading-s font-bold text-white">Informations Complètes</h3>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <h4 className="text-heading-xs font-bold text-gold-700 mb-4">
+                        <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-4">
                           Équipe à Domicile
                         </h4>
                         <div className="space-y-2">
                           <p>
-                            <span className="text-primary-400">Nom:</span> {displayMatch.team1.name}
+                            <span className="text-brand-green-400">Nom:</span> {displayMatch.team1.name}
                           </p>
                           <p>
-                            <span className="text-primary-400">Classement:</span>{" "}
+                            <span className="text-brand-green-400">Classement:</span>{" "}
                             {displayMatch.team1.rank || "Non classé"}
                           </p>
                           {displayMatch.team1.seed && (
                             <p>
-                              <span className="text-primary-400">Seed:</span>{" "}
+                              <span className="text-brand-green-400">Seed:</span>{" "}
                               {displayMatch.team1.seed}
                             </p>
                           )}
                         </div>
 
-                        <h4 className="text-heading-xs font-bold text-gold-700 mt-6 mb-4">
+                        <h4 className="text-heading-xs font-bold text-brand-orange-700 mt-6 mb-4">
                           Équipe à l'Extérieur
                         </h4>
                         <div className="space-y-2">
                           <p>
-                            <span className="text-primary-400">Nom:</span> {displayMatch.team2.name}
+                            <span className="text-brand-green-400">Nom:</span> {displayMatch.team2.name}
                           </p>
                           <p>
-                            <span className="text-primary-400">Classement:</span>{" "}
+                            <span className="text-brand-green-400">Classement:</span>{" "}
                             {displayMatch.team2.rank || "Non classé"}
                           </p>
                           {displayMatch.team2.seed && (
                             <p>
-                              <span className="text-primary-400">Seed:</span>{" "}
+                              <span className="text-brand-green-400">Seed:</span>{" "}
                               {displayMatch.team2.seed}
                             </p>
                           )}
@@ -615,32 +615,32 @@ const MatchDetail: React.FC = () => {
                       </div>
 
                       <div>
-                        <h4 className="text-heading-xs font-bold text-gold-700 mb-4">
+                        <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-4">
                           Informations de la Compétition
                         </h4>
                         <div className="space-y-2">
                           <p>
-                            <span className="text-primary-400">Type:</span>{" "}
+                            <span className="text-brand-green-400">Type:</span>{" "}
                             {displayMatch.competition.type === "championship" && "Championnat"}
                             {displayMatch.competition.type === "tournament" && "Tournoi"}
                             {displayMatch.competition.type === "cup" && "Coupe"}
                             {displayMatch.competition.type === "friendly" && "Amical"}
                           </p>
                           <p>
-                            <span className="text-primary-400">Catégorie:</span>{" "}
+                            <span className="text-brand-green-400">Catégorie:</span>{" "}
                             {displayMatch.competition.category === "individual" && "Individuel"}
                             {displayMatch.competition.category === "doublette" && "Doublette"}
                             {displayMatch.competition.category === "triplette" && "Triplette"}
                           </p>
                           <p>
-                            <span className="text-primary-400">Matériel:</span>{" "}
+                            <span className="text-brand-green-400">Matériel:</span>{" "}
                             {displayMatch.competition.material === "fonte" && "Fonte"}
                             {displayMatch.competition.material === "laiton" && "Laiton"}
                             {displayMatch.competition.material === "bois" && "Bois"}
                             {displayMatch.competition.material === "mixte" && "Mixte"}
                           </p>
                           <p>
-                            <span className="text-primary-400">Saison:</span>{" "}
+                            <span className="text-brand-green-400">Saison:</span>{" "}
                             {displayMatch.competition.season}
                           </p>
                         </div>
@@ -649,29 +649,29 @@ const MatchDetail: React.FC = () => {
 
                     {/* Timeline */}
                     <div className="mt-6">
-                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">Timeline</h4>
+                      <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-4">Timeline</h4>
                       <div className="space-y-2">
                         {displayMatch.startedAt && (
                           <p>
-                            <span className="text-primary-400">Début:</span>{" "}
+                            <span className="text-brand-green-400">Début:</span>{" "}
                             {displayMatch.startedAt.toLocaleString("fr-FR")}
                           </p>
                         )}
                         {displayMatch.endedAt && (
                           <p>
-                            <span className="text-primary-400">Fin:</span>{" "}
+                            <span className="text-brand-green-400">Fin:</span>{" "}
                             {displayMatch.endedAt.toLocaleString("fr-FR")}
                           </p>
                         )}
                         {displayMatch.verifiedAt && (
                           <p>
-                            <span className="text-primary-400">Vérifié le:</span>{" "}
+                            <span className="text-brand-green-400">Vérifié le:</span>{" "}
                             {displayMatch.verifiedAt.toLocaleString("fr-FR")}
                           </p>
                         )}
                         {displayMatch.duration && (
                           <p>
-                            <span className="text-primary-400">Durée:</span> {displayMatch.duration}
+                            <span className="text-brand-green-400">Durée:</span> {displayMatch.duration}
                           </p>
                         )}
                       </div>
@@ -682,7 +682,7 @@ const MatchDetail: React.FC = () => {
 
               {/* Manches */}
               <TabPanel value="manches" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <h3 className="text-heading-s font-bold text-white">Résultats par Manche</h3>
                   </CardHeader>
@@ -692,12 +692,12 @@ const MatchDetail: React.FC = () => {
                         {displayMatch.manches.map((manche, index) => (
                           <div
                             key={manche.number}
-                            className={`bg-primary-800/50 rounded p-4 border border-primary-700/30 ${
+                            className={`bg-brand-green-800/50 rounded p-4 border border-brand-green-700/30 ${
                               manche.winner === "team1"
-                                ? "border-l-4 border-l-gold-700"
+                                ? "border-l-4 border-l-brand-orange-700"
                                 : manche.winner === "team2"
                                   ? "border-l-4 border-l-green-500"
-                                  : "border-l-4 border-l-primary-500"
+                                  : "border-l-4 border-l-brand-green-500"
                             }`}
                           >
                             <div className="flex items-center justify-between">
@@ -720,7 +720,7 @@ const MatchDetail: React.FC = () => {
                                 )}
                               </div>
                               <div className="text-center">
-                                <p className="text-heading-m font-bold text-gold-700">
+                                <p className="text-heading-m font-bold text-brand-orange-700">
                                   {manche.team1} - {manche.team2}
                                 </p>
                               </div>
@@ -729,34 +729,34 @@ const MatchDetail: React.FC = () => {
                         ))}
 
                         {/* Summary */}
-                        <div className="mt-6 pt-4 border-t border-primary-700/50">
-                          <h4 className="text-heading-xs font-bold text-gold-700 mb-3">Résumé</h4>
+                        <div className="mt-6 pt-4 border-t border-brand-green-700/50">
+                          <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-3">Résumé</h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300 mb-1">Total Manches</p>
-                              <p className="text-heading-s font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300 mb-1">Total Manches</p>
+                              <p className="text-heading-s font-bold text-brand-orange-700">
                                 {displayMatch.manches.length}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300 mb-1">
+                              <p className="text-body-xs text-brand-green-300 mb-1">
                                 Gagnées par {displayMatch.team1.name}
                               </p>
-                              <p className="text-heading-s font-bold text-gold-700">
+                              <p className="text-heading-s font-bold text-brand-orange-700">
                                 {displayMatch.manches.filter((m) => m.winner === "team1").length}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300 mb-1">
+                              <p className="text-body-xs text-brand-green-300 mb-1">
                                 Gagnées par {displayMatch.team2.name}
                               </p>
-                              <p className="text-heading-s font-bold text-gold-700">
+                              <p className="text-heading-s font-bold text-brand-orange-700">
                                 {displayMatch.manches.filter((m) => m.winner === "team2").length}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300 mb-1">Nulles</p>
-                              <p className="text-heading-s font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300 mb-1">Nulles</p>
+                              <p className="text-heading-s font-bold text-brand-orange-700">
                                 {displayMatch.manches.filter((m) => m.winner === null).length}
                               </p>
                             </div>
@@ -764,7 +764,7 @@ const MatchDetail: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-body-m text-primary-300 text-center py-4">
+                      <p className="text-body-m text-brand-green-300 text-center py-4">
                         Aucun détail de manche disponible pour ce match.
                       </p>
                     )}
@@ -776,7 +776,7 @@ const MatchDetail: React.FC = () => {
               <TabPanel value="joueurs" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Équipe 1 */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <div className="flex items-center gap-3">
                         {displayMatch.team1.logo && (
@@ -797,7 +797,7 @@ const MatchDetail: React.FC = () => {
                           {displayMatch.team1.players.map((player) => (
                             <div
                               key={player.id}
-                              className="flex items-center gap-3 p-2 bg-primary-800/50 rounded"
+                              className="flex items-center gap-3 p-2 bg-brand-green-800/50 rounded"
                             >
                               <UserAvatar
                                 user={{
@@ -811,7 +811,7 @@ const MatchDetail: React.FC = () => {
                                 <p className="text-body-s font-semibold text-white">
                                   {player.fullName}
                                 </p>
-                                <p className="text-body-xs text-primary-300">
+                                <p className="text-body-xs text-brand-green-300">
                                   {(player.club as any)?.name} - {player.clubNumber}
                                 </p>
                               </div>
@@ -829,7 +829,7 @@ const MatchDetail: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <p className="text-body-s text-primary-300">
+                        <p className="text-body-s text-brand-green-300">
                           Aucune information sur les joueurs disponibles.
                         </p>
                       )}
@@ -837,7 +837,7 @@ const MatchDetail: React.FC = () => {
                   </Card>
 
                   {/* Équipe 2 */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <div className="flex items-center gap-3">
                         {displayMatch.team2.logo && (
@@ -858,7 +858,7 @@ const MatchDetail: React.FC = () => {
                           {displayMatch.team2.players.map((player) => (
                             <div
                               key={player.id}
-                              className="flex items-center gap-3 p-2 bg-primary-800/50 rounded"
+                              className="flex items-center gap-3 p-2 bg-brand-green-800/50 rounded"
                             >
                               <UserAvatar
                                 user={{
@@ -872,7 +872,7 @@ const MatchDetail: React.FC = () => {
                                 <p className="text-body-s font-semibold text-white">
                                   {player.fullName}
                                 </p>
-                                <p className="text-body-xs text-primary-300">
+                                <p className="text-body-xs text-brand-green-300">
                                   {(player.club as any)?.name} - {player.clubNumber}
                                 </p>
                               </div>
@@ -890,7 +890,7 @@ const MatchDetail: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <p className="text-body-s text-primary-300">
+                        <p className="text-body-s text-brand-green-300">
                           Aucune information sur les joueurs disponibles.
                         </p>
                       )}
@@ -903,7 +903,7 @@ const MatchDetail: React.FC = () => {
               <TabPanel value="statistiques" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Statistiques Match */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">Statistiques du Match</h3>
                     </CardHeader>
@@ -911,24 +911,24 @@ const MatchDetail: React.FC = () => {
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">Total Manches</p>
-                            <p className="text-heading-s font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300 mb-1">Total Manches</p>
+                            <p className="text-heading-s font-bold text-brand-orange-700">
                               {displayMatch.manches?.length || 0}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">
+                            <p className="text-body-xs text-brand-green-300 mb-1">
                               Points Moyens/Manche
                             </p>
-                            <p className="text-heading-s font-bold text-gold-700">
+                            <p className="text-heading-s font-bold text-brand-orange-700">
                               {displayMatch.stats.avgPointsPerManche.toFixed(1)}
                             </p>
                           </div>
                         </div>
 
                         {displayMatch.stats.bestManche && (
-                          <div className="bg-primary-800/50 rounded p-3">
-                            <h4 className="text-heading-xs font-bold text-gold-700 mb-2">
+                          <div className="bg-brand-green-800/50 rounded p-3">
+                            <h4 className="text-heading-xs font-bold text-brand-orange-700 mb-2">
                               Meilleure Manche
                             </h4>
                             <p className="text-body-s text-white">
@@ -936,7 +936,7 @@ const MatchDetail: React.FC = () => {
                               {displayMatch.stats.bestManche.team1} -{" "}
                               {displayMatch.stats.bestManche.team2}
                             </p>
-                            <p className="text-body-xs text-primary-300">
+                            <p className="text-body-xs text-brand-green-300">
                               Gagnée par:{" "}
                               {displayMatch.stats.bestManche.winner === "team1"
                                 ? displayMatch.team1.name
@@ -947,7 +947,7 @@ const MatchDetail: React.FC = () => {
 
                         {displayMatch.duration && (
                           <div>
-                            <p className="text-body-xs text-primary-300 mb-1">Durée du match</p>
+                            <p className="text-body-xs text-brand-green-300 mb-1">Durée du match</p>
                             <p className="text-body-s font-semibold text-white">
                               {displayMatch.duration}
                             </p>
@@ -959,7 +959,7 @@ const MatchDetail: React.FC = () => {
 
                   {/* Statistiques Joueurs */}
                   {displayMatch.stats.playerStats && displayMatch.stats.playerStats.length > 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <h3 className="text-heading-s font-bold text-white">
                           Statistiques des Joueurs
@@ -968,7 +968,7 @@ const MatchDetail: React.FC = () => {
                       <CardContent>
                         <div className="space-y-3">
                           {displayMatch.stats.playerStats.map((playerStat, index) => (
-                            <div key={index} className="bg-primary-800/50 rounded p-3">
+                            <div key={index} className="bg-brand-green-800/50 rounded p-3">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   <UserAvatar
@@ -984,20 +984,20 @@ const MatchDetail: React.FC = () => {
                                   </p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-body-xs text-primary-300">Points</p>
-                                  <p className="text-body-s font-bold text-gold-700">
+                                  <p className="text-body-xs text-brand-green-300">Points</p>
+                                  <p className="text-body-s font-bold text-brand-orange-700">
                                     {playerStat.points}
                                   </p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-body-xs text-primary-300">Précision</p>
-                                  <p className="text-body-s font-bold text-gold-700">
+                                  <p className="text-body-xs text-brand-green-300">Précision</p>
+                                  <p className="text-body-s font-bold text-brand-orange-700">
                                     {playerStat.accuracy}%
                                   </p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-body-xs text-primary-300">Meilleure Manche</p>
-                                  <p className="text-body-s font-bold text-gold-700">
+                                  <p className="text-body-xs text-brand-green-300">Meilleure Manche</p>
+                                  <p className="text-body-s font-bold text-brand-orange-700">
                                     {playerStat.bestManche}
                                   </p>
                                 </div>
@@ -1012,7 +1012,7 @@ const MatchDetail: React.FC = () => {
 
                 {/* MEILLEUR JOUEUR */}
                 {displayMatch.stats.playerStats && displayMatch.stats.playerStats.length > 0 && (
-                  <Card className="bg-primary-900/50 border-primary-700/50 mt-4">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 mt-4">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
                         Meilleur Joueur du Match
@@ -1033,33 +1033,33 @@ const MatchDetail: React.FC = () => {
                                   photo: bestPlayer.player.photo ?? undefined,
                                 }}
                                 size="l"
-                                className="border-2 border-gold-700"
+                                className="border-2 border-brand-orange-700"
                               />
                               <div>
                                 <p className="text-body-s font-semibold text-white">
                                   {bestPlayer.player.fullName}
                                 </p>
-                                <p className="text-body-xs text-primary-300">
+                                <p className="text-body-xs text-brand-green-300">
                                   {(bestPlayer.player.club as any)?.name}
                                 </p>
                                 <div className="grid grid-cols-3 gap-4 mt-2">
                                   <div className="text-center">
-                                    <p className="text-body-xs text-primary-300">Points</p>
-                                    <p className="text-heading-xs font-bold text-gold-700">
+                                    <p className="text-body-xs text-brand-green-300">Points</p>
+                                    <p className="text-heading-xs font-bold text-brand-orange-700">
                                       {bestPlayer.points}
                                     </p>
                                   </div>
                                   <div className="text-center">
-                                    <p className="text-body-xs text-primary-300">Précision</p>
-                                    <p className="text-heading-xs font-bold text-gold-700">
+                                    <p className="text-body-xs text-brand-green-300">Précision</p>
+                                    <p className="text-heading-xs font-bold text-brand-orange-700">
                                       {bestPlayer.accuracy}%
                                     </p>
                                   </div>
                                   <div className="text-center">
-                                    <p className="text-body-xs text-primary-300">
+                                    <p className="text-body-xs text-brand-green-300">
                                       Meilleure Manche
                                     </p>
-                                    <p className="text-heading-xs font-bold text-gold-700">
+                                    <p className="text-heading-xs font-bold text-brand-orange-700">
                                       {bestPlayer.bestManche}
                                     </p>
                                   </div>
@@ -1079,7 +1079,7 @@ const MatchDetail: React.FC = () => {
 
         {/* Action Buttons */}
         {displayMatch.status === "completed" && displayMatch.canEdit && (
-          <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+          <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
             <div className="max-w-7xl mx-auto">
               <div className="flex justify-center gap-4">
                 <Button variant="outline" size="l">

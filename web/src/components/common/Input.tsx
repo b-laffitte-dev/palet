@@ -9,10 +9,10 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary-900 border border-primary-700 text-white placeholder:text-primary-400 focus:border-gold-700 focus:ring-gold-700/50",
-        ghost: "bg-transparent border-0 text-white placeholder:text-primary-400 focus:ring-0",
+          "bg-brand-green-900 border border-brand-green-700 text-white placeholder:text-brand-green-400 focus:border-brand-orange-700 focus:ring-brand-orange-700/50",
+        ghost: "bg-transparent border-0 text-white placeholder:text-brand-green-400 focus:ring-0",
         outline:
-          "bg-transparent border border-primary-700 text-white placeholder:text-primary-400 focus:border-gold-700 focus:ring-gold-700/50",
+          "bg-transparent border border-brand-green-700 text-white placeholder:text-brand-green-400 focus:border-brand-orange-700 focus:ring-brand-orange-700/50",
       },
       size: {
         xs: "px-2 py-1 text-xs",
@@ -78,7 +78,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-body-s font-medium text-primary-200 mb-1.5">{label}</label>
+          <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">{label}</label>
         )}
 
         <div className="relative">
@@ -86,7 +86,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <Icon
               name={leftIcon}
               size={iconSize}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300 pointer-events-none"
             />
           )}
 
@@ -108,7 +108,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <Icon
               name={rightIcon}
               size={iconSize}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-300 pointer-events-none"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-green-300 pointer-events-none"
             />
           )}
         </div>
@@ -121,7 +121,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
 
         {helpText && !error && (
-          <p id={`${props.id}-help`} className="text-caption text-primary-400 mt-1">
+          <p id={`${props.id}-help`} className="text-caption text-brand-green-400 mt-1">
             {helpText}
           </p>
         )}

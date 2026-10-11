@@ -24,11 +24,11 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
   const getTypeColor = (type: Tournament["type"]) => {
     switch (type) {
       case "tournament":
-        return "border-gold-700 bg-gradient-to-br from-gold-900/20 to-gold-800/10";
+        return "border-brand-orange-700 bg-gradient-to-br from-brand-orange-900/20 to-brand-orange-800/10";
       case "cup":
-        return "border-primary-600 bg-gradient-to-br from-primary-800/20 to-primary-700/10";
+        return "border-brand-green-600 bg-gradient-to-br from-brand-green-800/20 to-brand-green-700/10";
       default:
-        return "border-primary-700";
+        return "border-brand-green-700";
     }
   };
 
@@ -111,11 +111,11 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
 
   return (
     <article
-      className={`tournament-card-responsive flex flex-col bg-primary-900 rounded-lg overflow-hidden border ${getTypeColor(tournament.type)} ${className}`}
+      className={`tournament-card-responsive flex flex-col bg-brand-green-900 rounded-lg overflow-hidden border ${getTypeColor(tournament.type)} ${className}`}
     >
       {/* Header */}
       <Link to={`/tournois/${tournament.id}`} className="block">
-        <div className={`px-3 sm:px-4 py-2 sm:py-3 ${"bg-primary-800/20"}`}>
+        <div className={`px-3 sm:px-4 py-2 sm:py-3 ${"bg-brand-green-800/20"}`}>
           <div className="flex items-center gap-2">
             <Badge variant="primary" className="text-xs">
               {getTypeLabel(tournament.type)}
@@ -130,7 +130,7 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
               </Badge>
             )}
           </div>
-          <h3 className="text-body-sm sm:text-heading-sm font-bold text-white truncate mt-2 hover:text-gold-700 transition-colors">
+          <h3 className="text-body-sm sm:text-heading-sm font-bold text-white truncate mt-2 hover:text-brand-orange-700 transition-colors">
             {tournament.name}
           </h3>
         </div>
@@ -141,7 +141,7 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
         {/* Category and Material */}
         <div className="flex flex-wrap gap-1">
           {tournament.category && (
-            <Badge variant="gold" className="text-xs">
+            <Badge variant="secondary" className="text-xs">
               {tournament.category === "doublette"
                 ? "Doublette"
                 : tournament.category === "triplette"
@@ -164,30 +164,30 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
 
         {/* Info row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-body-xs sm:text-body-sm">
-          <div className="flex items-center gap-1 text-primary-200">
-            <Icon name="MapPin" size="xs" className="text-gold-pure/80" />
+          <div className="flex items-center gap-1 text-brand-green-200">
+            <Icon name="MapPin" size="xs" className="text-brand-orange-pure/80" />
             <span>{tournament.location}</span>
           </div>
-          <div className="flex items-center gap-1 text-primary-200">
-            <Icon name="Calendar" size="xs" className="text-gold-pure/80" />
+          <div className="flex items-center gap-1 text-brand-green-200">
+            <Icon name="Calendar" size="xs" className="text-brand-orange-pure/80" />
             <span>{formatDate(tournament.startDate, tournament.endDate)}</span>
           </div>
         </div>
 
         {/* Progress and stats */}
-        <div className="space-y-2 pt-2 border-t border-primary-700/50">
+        <div className="space-y-2 pt-2 border-t border-brand-green-700/50">
           {/* Registration progress */}
           {tournament.maxTeams && tournament.status === "registration" && (
             <div>
-              <div className="flex justify-between text-caption sm:text-body-xs text-primary-300 mb-1">
+              <div className="flex justify-between text-caption sm:text-body-xs text-brand-green-300 mb-1">
                 <span>Inscriptions</span>
                 <span>
                   {tournament.registeredTeams}/{tournament.maxTeams}
                 </span>
               </div>
-              <div className="h-2 bg-primary-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-brand-green-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gold-700 rounded-full transition-all duration-500"
+                  className="h-full bg-brand-orange-700 rounded-full transition-all duration-500"
                   style={{ width: `${getProgress()}%` }}
                 />
               </div>
@@ -196,8 +196,8 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
 
           {/* Team count */}
           {tournament.maxTeams && tournament.status !== "registration" && (
-            <div className="flex items-center gap-2 text-primary-200">
-              <Icon name="Users" size="xs" className="text-gold-pure/80" />
+            <div className="flex items-center gap-2 text-brand-green-200">
+              <Icon name="Users" size="xs" className="text-brand-orange-pure/80" />
               <span className="text-body-xs sm:text-body-sm">
                 {tournament.registeredTeams} équipes inscrites
               </span>
@@ -205,18 +205,18 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({
           )}
 
           {/* Season */}
-          <div className="flex items-center gap-1 text-primary-300">
-            <Icon name="Trophy" size="xs" className="text-gold-pure/80" />
+          <div className="flex items-center gap-1 text-brand-green-300">
+            <Icon name="Trophy" size="xs" className="text-brand-orange-pure/80" />
             <span className="text-body-xs sm:text-body-sm">{tournament.season}</span>
           </div>
         </div>
       </div>
 
       {/* Footer with status and actions */}
-      <div className="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-primary-800/50 border-t border-primary-700/50">
+      <div className="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-brand-green-800/50 border-t border-brand-green-700/50">
         <div>{getStatusBadge(tournament.status)}</div>
         {showActions && (
-          <Button size="xs" variant="gold" className="text-gold-pure hover:text-gold-dark">
+          <Button size="xs" variant="gold" className="hover:text-brand-orange-dark">
             Voir plus
           </Button>
         )}

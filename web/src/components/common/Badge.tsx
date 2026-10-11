@@ -9,13 +9,13 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: "bg-neutral-100 text-neutral-800",
-        primary: "bg-primary-100 text-primary-800",
-        secondary: "bg-secondary-100 text-secondary-800",
+        primary: "bg-brand-green-100 text-brand-green-800",
+        secondary: "bg-brand-orange-100 text-brand-orange-800",
         success: "bg-success-100 text-success-800",
         warning: "bg-warning-100 text-warning-800",
         danger: "bg-danger-100 text-danger-800",
         info: "bg-info-100 text-info-800",
-        gold: "bg-primary-500 text-white",
+        gold: "bg-brand-green-500 text-white",
         subtle: "bg-neutral-200 text-neutral-700",
       },
       size: {
@@ -32,7 +32,7 @@ const badgeVariants = cva(
     compoundVariants: [
       {
         variant: "gold",
-        className: "shadow-gold-sm",
+        className: "shadow-brand-orange-sm",
       },
     ],
     defaultVariants: {
@@ -77,7 +77,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
             style={{
               width: "6px",
               height: "6px",
-              backgroundColor: dotColor,
+              backgroundColor: dotColor || "var(--color-brand-green)",
               borderRadius: "50%",
               marginRight: "4px",
               flexShrink: 0,
@@ -174,7 +174,7 @@ export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(
         variant={getStatusVariant()}
         showDot={status === "in_progress" || status === "active"}
         dotColor={
-          status === "in_progress" || status === "active" ? "var(--color-primary-500)" : undefined
+          status === "in_progress" || status === "active" ? "var(--color-brand-green-500)" : undefined
         }
         {...props}
       >

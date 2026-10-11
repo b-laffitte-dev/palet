@@ -62,22 +62,22 @@ const Inscription: React.FC = () => {
 
   return (
     <Layout showHeader={false}>
-      <main className="flex-1 flex items-center justify-center min-h-screen bg-primary-900">
+      <main className="flex-1 flex items-center justify-center min-h-screen bg-brand-green-900">
         <div className="w-full max-w-2xl px-4 py-8">
-          <div className="bg-primary-800 rounded-lg p-8 border border-primary-700/50">
+          <div className="bg-brand-green-800 rounded-lg p-8 border border-brand-green-700/50">
             {/* Logo */}
             <div className="text-center mb-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-primary-900 rounded-full border-4 border-gold-700 flex items-center justify-center">
-                <Icon name="Target" size="xxl" className="text-gold-700" />
+              <div className="w-20 h-20 mx-auto mb-4 bg-brand-green-900 rounded-full border-4 border-brand-orange-700 flex items-center justify-center">
+                <Icon name="Target" size="xxl" className="text-brand-orange-700" />
               </div>
               <h1 className="text-heading-l font-bold text-white uppercase tracking-wide">
                 PALET VENDÉEN
               </h1>
-              <p className="text-body-s text-primary-300 mt-2">Créer votre compte</p>
+              <p className="text-body-s text-brand-green-300 mt-2">Créer votre compte</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <h2 className="text-heading-s font-bold text-gold-700 uppercase tracking-wide text-center mb-6">
+              <h2 className="text-heading-s font-bold text-brand-orange-700 uppercase tracking-wide text-center mb-6">
                 INSCRIPTION
               </h2>
 
@@ -90,7 +90,7 @@ const Inscription: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label htmlFor="firstName" className="text-body-s font-medium text-primary-200">
+                  <label htmlFor="firstName" className="text-body-s font-medium text-brand-green-200">
                     Prénom
                   </label>
                   <input
@@ -101,11 +101,11 @@ const Inscription: React.FC = () => {
                     onChange={handleChange}
                     placeholder="Jean"
                     required
-                    className="w-full bg-primary-900 border border-primary-700 rounded-lg px-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                    className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg px-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-700"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="lastName" className="text-body-s font-medium text-primary-200">
+                  <label htmlFor="lastName" className="text-body-s font-medium text-brand-green-200">
                     Nom
                   </label>
                   <input
@@ -116,20 +116,20 @@ const Inscription: React.FC = () => {
                     onChange={handleChange}
                     placeholder="Dupont"
                     required
-                    className="w-full bg-primary-900 border border-primary-700 rounded-lg px-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                    className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg px-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-700"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="email" className="text-body-s font-medium text-primary-200">
+                <label htmlFor="email" className="text-body-s font-medium text-brand-green-200">
                   Adresse email
                 </label>
                 <div className="relative">
                   <Icon
                     name="Mail"
                     size="m"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                   />
                   <input
                     type="email"
@@ -139,21 +139,21 @@ const Inscription: React.FC = () => {
                     onChange={handleChange}
                     placeholder="votre@email.com"
                     required
-                    className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                    className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-700"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label htmlFor="password" className="text-body-s font-medium text-primary-200">
+                  <label htmlFor="password" className="text-body-s font-medium text-brand-green-200">
                     Mot de passe
                   </label>
                   <div className="relative">
                     <Icon
                       name="Lock"
                       size="m"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                     />
                     <input
                       type="password"
@@ -164,15 +164,15 @@ const Inscription: React.FC = () => {
                       placeholder="••••••••"
                       required
                       minLength={8}
-                      className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                      className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-700"
                     />
                   </div>
-                  <p className="text-caption text-primary-400">Minimum 8 caractères</p>
+                  <p className="text-caption text-brand-green-400">Minimum 8 caractères</p>
                 </div>
                 <div className="space-y-2">
                   <label
                     htmlFor="confirmPassword"
-                    className="text-body-s font-medium text-primary-200"
+                    className="text-body-s font-medium text-brand-green-200"
                   >
                     Confirmer le mot de passe
                   </label>
@@ -180,7 +180,7 @@ const Inscription: React.FC = () => {
                     <Icon
                       name="Lock"
                       size="m"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                     />
                     <input
                       type="password"
@@ -190,7 +190,7 @@ const Inscription: React.FC = () => {
                       onChange={handleChange}
                       placeholder="••••••••"
                       required
-                      className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                      className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-700"
                     />
                   </div>
                   {formData.password &&
@@ -210,15 +210,15 @@ const Inscription: React.FC = () => {
                   id="acceptTerms"
                   checked={acceptTerms}
                   onChange={(e) => setAcceptTerms(e.target.checked)}
-                  className="w-4 h-4 accent-gold-700 mt-1"
+                  className="w-4 h-4 accent-brand-orange-700 mt-1"
                 />
-                <label htmlFor="acceptTerms" className="text-body-s text-primary-200">
+                <label htmlFor="acceptTerms" className="text-body-s text-brand-green-200">
                   J'accepte les{" "}
-                  <button type="button" className="text-gold-700 hover:text-gold-600 underline">
+                  <button type="button" className="text-brand-orange-700 hover:text-brand-orange-600 underline">
                     conditions générales
                   </button>{" "}
                   et la{" "}
-                  <button type="button" className="text-gold-700 hover:text-gold-600 underline">
+                  <button type="button" className="text-brand-orange-700 hover:text-brand-orange-600 underline">
                     politique de confidentialité
                   </button>
                 </label>
@@ -235,8 +235,8 @@ const Inscription: React.FC = () => {
                 Créer mon compte
               </Button>
 
-              <div className="text-center pt-4 border-t border-primary-700/50">
-                <p className="text-body-s text-primary-300 mb-4">Vous avez déjà un compte ?</p>
+              <div className="text-center pt-4 border-t border-brand-green-700/50">
+                <p className="text-body-s text-brand-green-300 mb-4">Vous avez déjà un compte ?</p>
                 <Button
                   variant="outline"
                   size="m"
@@ -250,7 +250,7 @@ const Inscription: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <p className="text-center text-caption text-primary-400 mt-8">
+          <p className="text-center text-caption text-brand-green-400 mt-8">
             © 2026 CDSP 79 - Tous droits réservés
           </p>
         </div>

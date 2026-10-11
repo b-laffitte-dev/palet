@@ -90,7 +90,7 @@ const Federation: React.FC = () => {
             <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
               FÉDÉRATION
             </h1>
-            <p className="text-body-m text-primary-200 mt-2">
+            <p className="text-body-m text-brand-green-200 mt-2">
               Informations officielles et documents fédéraux
             </p>
           </div>
@@ -99,7 +99,7 @@ const Federation: React.FC = () => {
         {/* Federation Section */}
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
               ORGANISMES OFFICIELS
             </h2>
 
@@ -107,21 +107,21 @@ const Federation: React.FC = () => {
               {federations.map((fed) => (
                 <div
                   key={fed.name}
-                  className="bg-primary-900 rounded-lg p-6 border border-primary-700/50"
+                  className="bg-brand-green-900 rounded-lg p-6 border border-brand-green-700/50"
                 >
-                  <h3 className="text-heading-s font-bold text-gold-700 mb-2">{fed.name}</h3>
-                  <p className="text-caption text-primary-300 mb-3">{fed.fullName}</p>
-                  <p className="text-body-s text-primary-200 mb-4">{fed.description}</p>
-                  <p className="text-caption text-primary-400 mb-4">{fed.role}</p>
+                  <h3 className="text-heading-s font-bold text-brand-orange-pure mb-2">{fed.name}</h3>
+                  <p className="text-caption text-brand-green-300 mb-3">{fed.fullName}</p>
+                  <p className="text-body-s text-brand-green-200 mb-4">{fed.description}</p>
+                  <p className="text-caption text-brand-green-400 mb-4">{fed.role}</p>
                   <div className="space-y-2">
                     {fed.website && (
-                      <Button variant="ghost" size="sm" className="w-full justify-start">
+                      <Button variant="gold" size="sm" className="w-full justify-start">
                         <Icon name="Globe" size="xs" className="mr-2" />
                         Site web
                       </Button>
                     )}
                     {fed.contact && (
-                      <Button variant="ghost" size="sm" className="w-full justify-start">
+                      <Button variant="gold" size="sm" className="w-full justify-start">
                         <Icon name="Mail" size="xs" className="mr-2" />
                         {fed.contact}
                       </Button>
@@ -134,10 +134,10 @@ const Federation: React.FC = () => {
         </section>
 
         {/* Documents Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+              <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide">
                 DOCUMENTS OFFICIELS
               </h2>
               <Button variant="secondary" size="sm">
@@ -146,20 +146,20 @@ const Federation: React.FC = () => {
               </Button>
             </div>
 
-            <div className="bg-primary-900 rounded-lg overflow-hidden border border-primary-700/50">
+            <div className="bg-brand-green-900 rounded-lg overflow-hidden border border-brand-green-700/50">
               <table className="w-full">
-                <thead className="bg-primary-800">
+                <thead className="bg-brand-green-800">
                   <tr>
-                    <th className="text-left p-4 text-caption font-bold text-primary-300 uppercase">
+                    <th className="text-left p-4 text-caption font-bold text-brand-green-300 uppercase">
                       Document
                     </th>
-                    <th className="text-left p-4 text-caption font-bold text-primary-300 uppercase">
+                    <th className="text-left p-4 text-caption font-bold text-brand-green-300 uppercase">
                       Type
                     </th>
-                    <th className="text-left p-4 text-caption font-bold text-primary-300 uppercase">
+                    <th className="text-left p-4 text-caption font-bold text-brand-green-300 uppercase">
                       Date
                     </th>
-                    <th className="text-right p-4 text-caption font-bold text-primary-300 uppercase">
+                    <th className="text-right p-4 text-caption font-bold text-brand-green-300 uppercase">
                       Actions
                     </th>
                   </tr>
@@ -168,30 +168,30 @@ const Federation: React.FC = () => {
                   {documents.map((doc) => (
                     <tr
                       key={doc.name}
-                      className="border-t border-primary-700/50 hover:bg-primary-800/50"
+                      className="border-t border-brand-green-700/50 hover:bg-brand-green-800/50"
                     >
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <Icon
                             name={getIconForType(doc.type) as any}
                             size="m"
-                            className="text-primary-300"
+                            className="text-brand-green-300"
                           />
                           <span className="text-body-m text-white">{doc.name}</span>
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className="text-body-s text-primary-200">
+                        <span className="text-body-s text-brand-green-200">
                           {doc.type.toUpperCase()}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="text-body-s text-primary-200">
+                        <span className="text-body-s text-brand-green-200">
                           {doc.date.toLocaleDateString("fr-FR")}
                         </span>
                       </td>
                       <td className="p-4 text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="gold" size="sm">
                           <Icon name="Download" size="xs" className="mr-2" />
                           Télécharger
                         </Button>
@@ -207,7 +207,7 @@ const Federation: React.FC = () => {
         {/* Links Section */}
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
               LIENS UTILES
             </h2>
 
@@ -234,18 +234,18 @@ const Federation: React.FC = () => {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 hover:border-gold-700/50 transition-colors group"
+                  className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 hover:border-brand-orange-700/50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <Icon
                       name={link.icon as any}
                       size="m"
-                      className="text-gold-700 group-hover:text-gold-600"
+                      className="text-brand-orange-pure group-hover:text-brand-orange-400"
                     />
-                    <span className="text-body-m text-white group-hover:text-gold-700">
+                    <span className="text-body-m text-white group-hover:text-brand-orange-pure">
                       {link.title}
                     </span>
-                    <Icon name="ExternalLink" size="xs" className="text-primary-300 ml-auto" />
+                    <Icon name="ExternalLink" size="xs" className="text-brand-green-300 ml-auto" />
                   </div>
                 </a>
               ))}

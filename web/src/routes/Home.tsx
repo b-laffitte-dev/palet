@@ -6,182 +6,407 @@ import {
   ClassificationTable,
   TournamentCard,
   PlayerCard,
+  ClubCard,
 } from "../components";
-import { Tournament, ChampionshipClassification, Match, Player, Competition, Team } from "../types";
+import { Tournament, ChampionshipClassification, Match, Player, Team } from "../types";
 import { Icon } from "../components/common/Icon";
 import Button from "../components/common/Button";
-import { LiveScoreMatch } from "../components/domain/LiveScores";
+import { Link } from "react-router-dom";
 
-// Mock competition
-const mockCompetition: Competition = {
-  id: "comp-1",
-  name: "FINALE CHAMPIONNAT 79",
-  code: "FINAL-26",
-  type: "championship",
-  category: "doublette",
-  material: "fonte",
-  season: "2026-2027",
-  description: "Finale du Championnat 79 — Division 1 Palet Fonte",
-  location: "Niort",
-  divisions: ["D1"],
-  format: "knockout",
-  registrationStart: null,
-  registrationEnd: null,
-  startDate: new Date(),
-  endDate: new Date(),
-  status: "in_progress",
-  currentJournee: 15,
-  totalJournees: 18,
-  currentPhase: "Finale",
-  maxTeams: null,
-  registeredTeams: 0,
-  teams: [],
-  pointsType: "15",
-  winPoints: 2,
-  drawPoints: 1,
-  lossPoints: 0,
-  autoRegistration: false,
-  manualValidation: false,
-  isPublic: true,
-  isArchived: false,
-  stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
-  organizer: {
-    id: "c-cdsp79",
-    name: "CDSP 79",
-    nickname: null,
-    code: "CDSP79",
-    logo: null,
-    address: null,
-    city: "Niort",
-    postalCode: "79000",
-    league: "Deux-Sèvres",
-    division: "Commission",
-    status: "active",
-    playersCount: 0,
-    teamsCount: 0,
-    contactEmail: "cdsp79@sportrural.fr",
-    contactPhone: null,
-    website: null,
-    social: { facebook: null, twitter: null, instagram: null },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  organizerId: "c-cdsp79",
-  createdAt: new Date(),
+// Simplified mock data with proper types
+const mockClassification: ChampionshipClassification = {
+  division: "Division 1",
+  journee: 15,
   updatedAt: new Date(),
+  teams: [
+    {
+      position: 1,
+      team: {
+        id: "t1",
+        name: "Niort Palet Club",
+        players: [],
+        captain: null,
+        captainId: null,
+        club: {
+          id: "c1",
+          name: "Niort Palet",
+          nickname: "NPC",
+          code: "NPC",
+          logo: null,
+          address: null,
+          city: "Niort",
+          postalCode: "79000",
+          league: "Deux-Sèvres",
+          division: "D1",
+          status: "active",
+          playersCount: 40,
+          teamsCount: 8,
+          contactEmail: null,
+          contactPhone: null,
+          website: null,
+          social: { facebook: null, twitter: null, instagram: null },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        clubId: "c1",
+        logo: null,
+        stats: {
+          matches: 15,
+          wins: 12,
+          draws: 1,
+          losses: 2,
+          pointsFor: 450,
+          pointsAgainst: 350,
+          diff: 100,
+          points: 37,
+          winRate: 0.8,
+        },
+        status: "active",
+        competitions: [] as Team["competitions"],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      stats: {
+        matches: 15,
+        wins: 12,
+        draws: 1,
+        losses: 2,
+        pointsFor: 450,
+        pointsAgainst: 350,
+        diff: 100,
+        points: 37,
+        winRate: 0.8,
+      },
+      form: ["win", "win", "win", "win", "loss"],
+      status: "qualified",
+    },
+    {
+      position: 2,
+      team: {
+        id: "t2",
+        name: "Bressuire Palet",
+        players: [],
+        captain: null,
+        captainId: null,
+        club: {
+          id: "c2",
+          name: "Bressuire Palet",
+          nickname: "BP",
+          code: "BP",
+          logo: null,
+          address: null,
+          city: "Bressuire",
+          postalCode: "79300",
+          league: "Deux-Sèvres",
+          division: "D1",
+          status: "active",
+          playersCount: 35,
+          teamsCount: 7,
+          contactEmail: null,
+          contactPhone: null,
+          website: null,
+          social: { facebook: null, twitter: null, instagram: null },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        clubId: "c2",
+        logo: null,
+        stats: {
+          matches: 15,
+          wins: 10,
+          draws: 2,
+          losses: 3,
+          pointsFor: 420,
+          pointsAgainst: 340,
+          diff: 80,
+          points: 32,
+          winRate: 0.67,
+        },
+        status: "active",
+        competitions: [] as Team["competitions"],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      stats: {
+        matches: 15,
+        wins: 10,
+        draws: 2,
+        losses: 3,
+        pointsFor: 420,
+        pointsAgainst: 340,
+        diff: 80,
+        points: 32,
+        winRate: 0.67,
+      },
+      form: ["win", "win", "loss", "win", "win"],
+      status: "qualified",
+    },
+    {
+      position: 3,
+      team: {
+        id: "t3",
+        name: "Thouars Palet",
+        players: [],
+        captain: null,
+        captainId: null,
+        club: {
+          id: "c3",
+          name: "Thouars Palet",
+          nickname: "TP",
+          code: "TP",
+          logo: null,
+          address: null,
+          city: "Thouars",
+          postalCode: "79100",
+          league: "Deux-Sèvres",
+          division: "D1",
+          status: "active",
+          playersCount: 30,
+          teamsCount: 6,
+          contactEmail: null,
+          contactPhone: null,
+          website: null,
+          social: { facebook: null, twitter: null, instagram: null },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        clubId: "c3",
+        logo: null,
+        stats: {
+          matches: 15,
+          wins: 8,
+          draws: 2,
+          losses: 5,
+          pointsFor: 360,
+          pointsAgainst: 322,
+          diff: 38,
+          points: 26,
+          winRate: 0.53,
+        },
+        status: "active",
+        competitions: [] as Team["competitions"],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      stats: {
+        matches: 15,
+        wins: 8,
+        draws: 2,
+        losses: 5,
+        pointsFor: 360,
+        pointsAgainst: 322,
+        diff: 38,
+        points: 26,
+        winRate: 0.53,
+      },
+      form: ["win", "draw", "win", "win", "loss"],
+      status: "barrage",
+    },
+    {
+      position: 4,
+      team: {
+        id: "t4",
+        name: "Parthenay Palet",
+        players: [],
+        captain: null,
+        captainId: null,
+        club: {
+          id: "c4",
+          name: "Parthenay Palet",
+          nickname: null,
+          code: "PP",
+          logo: null,
+          address: null,
+          city: "Parthenay",
+          postalCode: "79200",
+          league: "Deux-Sèvres",
+          division: "D1",
+          status: "active",
+          playersCount: 25,
+          teamsCount: 5,
+          contactEmail: null,
+          contactPhone: null,
+          website: null,
+          social: { facebook: null, twitter: null, instagram: null },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        clubId: "c4",
+        logo: null,
+        stats: {
+          matches: 15,
+          wins: 7,
+          draws: 1,
+          losses: 7,
+          pointsFor: 320,
+          pointsAgainst: 300,
+          diff: 20,
+          points: 24,
+          winRate: 0.47,
+        },
+        status: "active",
+        competitions: [] as Team["competitions"],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      stats: {
+        matches: 15,
+        wins: 7,
+        draws: 1,
+        losses: 7,
+        pointsFor: 320,
+        pointsAgainst: 300,
+        diff: 20,
+        points: 24,
+        winRate: 0.47,
+      },
+      form: ["loss", "win", "win", "draw", "win"],
+      status: "safe",
+    },
+    {
+      position: 5,
+      team: {
+        id: "t5",
+        name: "Melle Palet",
+        players: [],
+        captain: null,
+        captainId: null,
+        club: {
+          id: "c5",
+          name: "Melle Palet",
+          nickname: null,
+          code: "MP",
+          logo: null,
+          address: null,
+          city: "Melle",
+          postalCode: "79500",
+          league: "Deux-Sèvres",
+          division: "D1",
+          status: "active",
+          playersCount: 20,
+          teamsCount: 4,
+          contactEmail: null,
+          contactPhone: null,
+          website: null,
+          social: { facebook: null, twitter: null, instagram: null },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        clubId: "c5",
+        logo: null,
+        stats: {
+          matches: 15,
+          wins: 6,
+          draws: 0,
+          losses: 9,
+          pointsFor: 280,
+          pointsAgainst: 340,
+          diff: -60,
+          points: 20,
+          winRate: 0.4,
+        },
+        status: "active",
+        competitions: [] as Team["competitions"],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      stats: {
+        matches: 15,
+        wins: 6,
+        draws: 0,
+        losses: 9,
+        pointsFor: 280,
+        pointsAgainst: 340,
+        diff: -60,
+        points: 20,
+        winRate: 0.4,
+      },
+      form: ["win", "loss", "win", "loss", "loss"],
+      status: "relegated",
+    },
+  ],
 };
 
-// Mock teams
-const mockTeam1: Team = {
-  id: "team-1",
-  name: "Niort Palet Club",
-  club: {
-    id: "c-np",
-    name: "Niort Palet Club",
-    nickname: null,
-    code: "NPC",
-    logo: null,
-    address: null,
-    city: "Niort",
-    postalCode: "79000",
-    league: "Deux-Sèvres",
-    division: "D1",
-    status: "active",
-    playersCount: 40,
-    teamsCount: 8,
-    contactEmail: null,
-    contactPhone: null,
-    website: null,
-    social: { facebook: null, twitter: null, instagram: null },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  clubId: "c-np",
-  captain: null,
-  captainId: null,
-  players: [],
-  logo: null,
-  stats: {
-    matches: 0,
-    wins: 0,
-    draws: 0,
-    losses: 0,
-    pointsFor: 0,
-    pointsAgainst: 0,
-    diff: 0,
-    points: 0,
-    winRate: 0,
-  },
-  status: "active",
-  competitions: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const mockTeam2: Team = {
-  id: "team-2",
-  name: "Bressuire Palet",
-  club: {
-    id: "c-bp",
-    name: "Bressuire Palet",
-    nickname: null,
-    code: "BP",
-    logo: null,
-    address: null,
-    city: "Bressuire",
-    postalCode: "79300",
-    league: "Deux-Sèvres",
-    division: "D1",
-    status: "active",
-    playersCount: 35,
-    teamsCount: 7,
-    contactEmail: null,
-    contactPhone: null,
-    website: null,
-    social: { facebook: null, twitter: null, instagram: null },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  clubId: "c-bp",
-  captain: null,
-  captainId: null,
-  players: [],
-  logo: null,
-  stats: {
-    matches: 0,
-    wins: 0,
-    draws: 0,
-    losses: 0,
-    pointsFor: 0,
-    pointsAgainst: 0,
-    diff: 0,
-    points: 0,
-    winRate: 0,
-  },
-  status: "active",
-  competitions: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-// Mock data for development
 const mockFeaturedMatch: Match = {
   id: "match-1",
   competitionId: "comp-1",
-  competition: mockCompetition,
+  competition: {
+    id: "comp-1",
+    name: "CHAMPIONNAT 79",
+    code: "C79",
+    type: "championship",
+    category: "doublette",
+    material: "fonte",
+    season: "2026-2027",
+    description: "Championnat Départemental",
+    location: "Niort",
+    divisions: ["D1"],
+    format: "league",
+    registrationStart: null,
+    registrationEnd: null,
+    startDate: new Date(),
+    endDate: new Date(),
+    status: "in_progress",
+    currentJournee: 15,
+    totalJournees: 18,
+    currentPhase: "League",
+    maxTeams: null,
+    registeredTeams: 0,
+    teams: [],
+    pointsType: "15",
+    winPoints: 2,
+    drawPoints: 1,
+    lossPoints: 0,
+    autoRegistration: false,
+    manualValidation: false,
+    isPublic: true,
+    isArchived: false,
+    stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
+    organizer: {
+      id: "c-cdsp79",
+      name: "CDSP 79",
+      nickname: null,
+      code: "CDSP79",
+      logo: null,
+      address: null,
+      city: "Niort",
+      postalCode: "79000",
+      league: "Deux-Sèvres",
+      division: "Commission",
+      status: "active",
+      playersCount: 0,
+      teamsCount: 0,
+      contactEmail: "cdsp79@sportrural.fr",
+      contactPhone: null,
+      website: null,
+      social: { facebook: null, twitter: null, instagram: null },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    organizerId: "c-cdsp79",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
   type: "championship",
   journee: 15,
-  phase: "Finale",
+  phase: "Journée 15",
   round: null,
   team1: {
     id: "team-1",
-    name: "NIORT PALET CLUB",
+    name: "NIORT PALET",
     logo: null,
     players: [],
-    rank: null,
-    seed: null,
-  },
-  team2: { id: "team-2", name: "BRESSUIRE PALET", logo: null, players: [], rank: null, seed: null },
+    rank: 1,
+    seed: 1,
+  } as Match["team1"],
+  team2: {
+    id: "team-2",
+    name: "BRESSUIRE PALET",
+    logo: null,
+    players: [],
+    rank: 2,
+    seed: 2,
+  } as Match["team2"],
   team1Score: 72,
   team2Score: 68,
   winner: null,
@@ -208,286 +433,10 @@ const mockFeaturedMatch: Match = {
 };
 
 const mockLiveScores = [
-  {
-    id: "s-1",
-    team1Name: "Niort PC",
-    team2Name: "Bressuire",
-    team1Score: 45,
-    team2Score: 38,
-    status: "in_progress" as const,
-    currentManche: 18,
-  },
-  {
-    id: "s-2",
-    team1Name: "Thouars",
-    team2Name: "Parthenay",
-    team1Score: 52,
-    team2Score: 52,
-    status: "in_progress" as const,
-    currentManche: 21,
-  },
-  {
-    id: "s-3",
-    team1Name: "Melle",
-    team2Name: "Coulonges",
-    team1Score: 61,
-    team2Score: 44,
-    status: "completed" as const,
-    currentManche: 24,
-  },
+  { id: "s-1", team1Name: "Niort PC", team2Name: "Bressuire", team1Score: 45, team2Score: 38, status: "in_progress" as const, currentManche: 18 },
+  { id: "s-2", team1Name: "Thouars", team2Name: "Parthenay", team1Score: 52, team2Score: 52, status: "in_progress" as const, currentManche: 21 },
+  { id: "s-3", team1Name: "Melle", team2Name: "Coulonges", team1Score: 61, team2Score: 44, status: "completed" as const, currentManche: 24 },
 ];
-
-const mockClassification: ChampionshipClassification = {
-  division: "Division 1",
-  journee: 12,
-  updatedAt: new Date(),
-  teams: [
-    {
-      position: 1,
-      team: {
-        id: "t1",
-        name: "Niort Palet Club",
-        players: [],
-        captain: null,
-        captainId: null,
-        club: {
-          id: "c-np",
-          name: "Niort Palet Club",
-          nickname: null,
-          code: "NPC",
-          logo: null,
-          address: null,
-          city: "Niort",
-          postalCode: "79000",
-          league: "Deux-Sèvres",
-          division: "D1",
-          status: "active",
-          playersCount: 40,
-          teamsCount: 8,
-          contactEmail: null,
-          contactPhone: null,
-          website: null,
-          social: { facebook: null, twitter: null, instagram: null },
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        clubId: "c-np",
-        logo: null,
-        stats: {
-          matches: 12,
-          wins: 10,
-          draws: 0,
-          losses: 2,
-          pointsFor: 400,
-          pointsAgainst: 316,
-          diff: 84,
-          points: 30,
-          winRate: 0.83,
-        },
-        status: "active",
-        competitions: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      stats: {
-        matches: 12,
-        wins: 10,
-        draws: 0,
-        losses: 2,
-        pointsFor: 400,
-        pointsAgainst: 316,
-        diff: 84,
-        points: 30,
-        winRate: 0.83,
-      },
-      form: ["win", "win", "win", "win", "loss"],
-      status: "qualified" as const,
-    },
-    {
-      position: 2,
-      team: {
-        id: "t2",
-        name: "Bressuire Palet",
-        players: [],
-        captain: null,
-        captainId: null,
-        club: {
-          id: "c-bp",
-          name: "Bressuire Palet",
-          nickname: null,
-          code: "BP",
-          logo: null,
-          address: null,
-          city: "Bressuire",
-          postalCode: "79300",
-          league: "Deux-Sèvres",
-          division: "D1",
-          status: "active",
-          playersCount: 35,
-          teamsCount: 7,
-          contactEmail: null,
-          contactPhone: null,
-          website: null,
-          social: { facebook: null, twitter: null, instagram: null },
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        clubId: "c-bp",
-        logo: null,
-        stats: {
-          matches: 12,
-          wins: 9,
-          draws: 0,
-          losses: 3,
-          pointsFor: 380,
-          pointsAgainst: 319,
-          diff: 61,
-          points: 28,
-          winRate: 0.75,
-        },
-        status: "active",
-        competitions: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      stats: {
-        matches: 12,
-        wins: 9,
-        draws: 0,
-        losses: 3,
-        pointsFor: 380,
-        pointsAgainst: 319,
-        diff: 61,
-        points: 28,
-        winRate: 0.75,
-      },
-      form: ["win", "win", "loss", "win", "win"],
-      status: "qualified" as const,
-    },
-    {
-      position: 3,
-      team: {
-        id: "t3",
-        name: "Thouars Palet",
-        players: [],
-        captain: null,
-        captainId: null,
-        club: {
-          id: "c-tp",
-          name: "Thouars Palet",
-          nickname: null,
-          code: "TP",
-          logo: null,
-          address: null,
-          city: "Thouars",
-          postalCode: "79100",
-          league: "Deux-Sèvres",
-          division: "D1",
-          status: "active",
-          playersCount: 30,
-          teamsCount: 6,
-          contactEmail: null,
-          contactPhone: null,
-          website: null,
-          social: { facebook: null, twitter: null, instagram: null },
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        clubId: "c-tp",
-        logo: null,
-        stats: {
-          matches: 12,
-          wins: 8,
-          draws: 0,
-          losses: 4,
-          pointsFor: 360,
-          pointsAgainst: 322,
-          diff: 38,
-          points: 26,
-          winRate: 0.67,
-        },
-        status: "active",
-        competitions: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      stats: {
-        matches: 12,
-        wins: 8,
-        draws: 0,
-        losses: 4,
-        pointsFor: 360,
-        pointsAgainst: 322,
-        diff: 38,
-        points: 26,
-        winRate: 0.67,
-      },
-      form: ["win", "draw", "win", "win", "loss"],
-      status: "barrage" as const,
-    },
-    {
-      position: 4,
-      team: {
-        id: "t4",
-        name: "Parthenay Palet",
-        players: [],
-        captain: null,
-        captainId: null,
-        club: {
-          id: "c-pp",
-          name: "Parthenay Palet",
-          nickname: null,
-          code: "PP",
-          logo: null,
-          address: null,
-          city: "Parthenay",
-          postalCode: "79200",
-          league: "Deux-Sèvres",
-          division: "D1",
-          status: "active",
-          playersCount: 25,
-          teamsCount: 5,
-          contactEmail: null,
-          contactPhone: null,
-          website: null,
-          social: { facebook: null, twitter: null, instagram: null },
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        clubId: "c-pp",
-        logo: null,
-        stats: {
-          matches: 12,
-          wins: 7,
-          draws: 0,
-          losses: 5,
-          pointsFor: 320,
-          pointsAgainst: 300,
-          diff: 20,
-          points: 24,
-          winRate: 0.58,
-        },
-        status: "active",
-        competitions: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      stats: {
-        matches: 12,
-        wins: 7,
-        draws: 0,
-        losses: 5,
-        pointsFor: 320,
-        pointsAgainst: 300,
-        diff: 20,
-        points: 24,
-        winRate: 0.58,
-      },
-      form: ["loss", "win", "win", "draw", "win"],
-      status: "safe" as const,
-    },
-  ],
-};
 
 const mockTournaments: Tournament[] = [
   {
@@ -512,7 +461,7 @@ const mockTournaments: Tournament[] = [
     currentPhase: null,
     maxTeams: 64,
     registeredTeams: 32,
-    teams: [],
+    teams: [] as Team[],
     pointsType: "13",
     winPoints: 2,
     drawPoints: 1,
@@ -550,7 +499,7 @@ const mockTournaments: Tournament[] = [
     brackets: null,
     fee: 10,
     paymentRequired: true,
-    paymentMethods: ["card", "paypal"],
+    paymentMethods: ["card"],
     rules: null,
     eligibility: {
       requireLicense: true,
@@ -561,150 +510,6 @@ const mockTournaments: Tournament[] = [
       minPlayers: 1,
       maxPlayers: 64,
     },
-  },
-  {
-    id: "tour-2",
-    name: "Championnat 79 — J13",
-    code: "C79-J13",
-    type: "tournament",
-    category: "doublette",
-    material: "fonte",
-    season: "2026-2027",
-    description: "Championnat Départemental Deux-Sèvres",
-    location: "Bressuire (79)",
-    divisions: ["D1"],
-    format: "league",
-    registrationStart: null,
-    registrationEnd: null,
-    startDate: new Date("2026-10-29"),
-    endDate: new Date("2026-10-29"),
-    status: "in_progress",
-    currentJournee: 13,
-    totalJournees: 18,
-    currentPhase: "League",
-    maxTeams: 48,
-    registeredTeams: 48,
-    teams: [],
-    pointsType: "13",
-    winPoints: 2,
-    drawPoints: 1,
-    lossPoints: 0,
-    autoRegistration: false,
-    manualValidation: true,
-    isPublic: true,
-    isArchived: false,
-    stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
-    organizer: {
-      id: "c-cdsp79",
-      name: "CDSP 79",
-      nickname: null,
-      code: "CDSP79",
-      logo: null,
-      address: null,
-      city: "Niort",
-      postalCode: "79000",
-      league: "Deux-Sèvres",
-      division: "Commission",
-      status: "active",
-      playersCount: 0,
-      teamsCount: 0,
-      contactEmail: "cdsp79@sportrural.fr",
-      contactPhone: null,
-      website: null,
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    organizerId: "c-cdsp79",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    phases: [],
-    brackets: null,
-    fee: null,
-    paymentRequired: false,
-    paymentMethods: [],
-    rules: null,
-    eligibility: {
-      requireLicense: true,
-      requireClub: true,
-      categories: ["doublette"],
-      divisions: ["D1"],
-      maxPlayersPerClub: null,
-      minPlayers: 2,
-      maxPlayers: 48,
-    },
-  },
-  {
-    id: "tour-3",
-    name: "Coupe 79 — Phase Finale",
-    code: "C79-FINAL",
-    type: "cup",
-    category: "doublette",
-    material: "fonte",
-    season: "2026-2027",
-    description: "Coupe Départementale Deux-Sèvres",
-    location: "Thouars — 4 terrains",
-    divisions: ["D1", "D2"],
-    format: "knockout",
-    registrationStart: null,
-    registrationEnd: null,
-    startDate: new Date("2026-11-15"),
-    endDate: new Date("2026-11-17"),
-    status: "pending",
-    currentJournee: null,
-    totalJournees: null,
-    currentPhase: null,
-    maxTeams: 64,
-    registeredTeams: 0,
-    teams: [],
-    pointsType: "15",
-    winPoints: 2,
-    drawPoints: 1,
-    lossPoints: 0,
-    autoRegistration: false,
-    manualValidation: true,
-    isPublic: true,
-    isArchived: false,
-    stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
-    organizer: {
-      id: "c-cdsp79",
-      name: "CDSP 79",
-      nickname: null,
-      code: "CDSP79",
-      logo: null,
-      address: null,
-      city: "Niort",
-      postalCode: "79000",
-      league: "Deux-Sèvres",
-      division: "Commission",
-      status: "active",
-      playersCount: 0,
-      teamsCount: 0,
-      contactEmail: "cdsp79@sportrural.fr",
-      contactPhone: null,
-      website: null,
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    organizerId: "c-cdsp79",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    fee: 20,
-    paymentRequired: true,
-    paymentMethods: ["card"],
-    rules: null,
-    eligibility: {
-      requireLicense: true,
-      requireClub: true,
-      categories: ["doublette"],
-      divisions: ["D1", "D2"],
-      maxPlayersPerClub: 3,
-      minPlayers: 2,
-      maxPlayers: 64,
-    },
-    phases: [],
-    brackets: null,
   },
 ];
 
@@ -730,8 +535,8 @@ const mockPlayers: Player[] = [
     postalCode: null,
     club: {
       id: "c1",
-      name: "Niort Palet Club",
-      nickname: null,
+      name: "Niort Palet",
+      nickname: "NPC",
       code: "NPC",
       logo: null,
       address: null,
@@ -810,374 +615,347 @@ const mockPlayers: Player[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
-  {
-    id: "p2",
-    firstName: "Pierre",
-    lastName: "Baudry",
-    fullName: "Pierre Baudry",
-    alias: null,
-    email: "pierre@test.com",
-    photo: null,
-    status: "active",
-    birthDate: new Date("1992-05-15"),
-    age: 33,
-    birthPlace: null,
-    nationality: "FR",
-    dominantHand: "right",
-    playStyle: null,
-    phone: null,
-    address: null,
-    city: null,
-    postalCode: null,
-    club: {
-      id: "c2",
-      name: "Bressuire Palet",
-      nickname: null,
-      code: "BP",
-      logo: null,
-      address: null,
-      city: "Bressuire",
-      postalCode: "79300",
-      league: "Deux-Sèvres",
-      division: "D1",
-      status: "active",
-      playersCount: 35,
-      teamsCount: 7,
-      contactEmail: null,
-      contactPhone: null,
-      website: null,
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    clubId: "c2",
-    clubNumber: null,
-    category: "senior",
-    licenseNumber: "79002",
-    licenseDate: new Date(),
-    licenseStatus: "valid",
-    registrationDate: new Date(),
-    stats: {
-      matchesPlayed: 22,
-      wins: 16,
-      draws: 1,
-      losses: 5,
-      totalPoints: 445,
-      averagePoints: 20.2,
-      pointsPerManche: 10.8,
-      bestScore: 92,
-      bestStreak: 7,
-      maxWinStreak: 7,
-      winRate: 0.71,
-      accuracy: 0.74,
-      currentRank: 2,
-      currentDivision: "D1",
-      currentPoints: 28,
-      previousRank: 1,
-      rankTrend: "down",
-      newHighlights: 2,
-      byPosition: { first: { matches: 0, points: 0 }, second: { matches: 0, points: 0 } },
-      byCompetition: {},
-      bySeason: {},
-    },
-    trophies: { total: 3, list: [] },
-    badges: { total: 2, categories: [] },
-    records: { total: 1, list: [] },
-    currentTeams: [],
-    pastTeams: [],
-    frequentTeammates: [],
-    matchHistory: {
-      wins: 16,
-      losses: 5,
-      draws: 1,
-      total: 22,
-      recentMatches: [],
-      byCompetition: {},
-      bySeason: {},
-    },
-    competitionStats: [],
-    recentActivities: [],
-    preferences: {
-      language: "fr",
-      timezone: "Europe/Paris",
-      distanceUnit: "metric",
-      notifications: {
-        email: { results: true, news: true, reminders: true },
-        push: { results: true, matches: true },
-      },
-    },
-    social: { facebook: null, twitter: null, instagram: null },
-    lastActiveAt: new Date(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "p3",
-    firstName: "Anaïs",
-    lastName: "Léger",
-    fullName: "Anaïs Léger",
-    alias: null,
-    email: "anais@test.com",
-    photo: null,
-    status: "active",
-    birthDate: new Date("1995-08-20"),
-    age: 30,
-    birthPlace: null,
-    nationality: "FR",
-    dominantHand: "right",
-    playStyle: null,
-    phone: null,
-    address: null,
-    city: null,
-    postalCode: null,
-    club: {
-      id: "c3",
-      name: "Thouars Palet",
-      nickname: null,
-      code: "TP",
-      logo: null,
-      address: null,
-      city: "Thouars",
-      postalCode: "79100",
-      league: "Deux-Sèvres",
-      division: "D1",
-      status: "active",
-      playersCount: 30,
-      teamsCount: 6,
-      contactEmail: null,
-      contactPhone: null,
-      website: null,
-      social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    clubId: "c3",
-    clubNumber: null,
-    category: "senior",
-    licenseNumber: "79003",
-    licenseDate: new Date(),
-    licenseStatus: "valid",
-    registrationDate: new Date(),
-    stats: {
-      matchesPlayed: 18,
-      wins: 12,
-      draws: 3,
-      losses: 3,
-      totalPoints: 398,
-      averagePoints: 22.1,
-      pointsPerManche: 11.1,
-      bestScore: 78,
-      bestStreak: 6,
-      maxWinStreak: 6,
-      winRate: 0.71,
-      accuracy: 0.76,
-      currentRank: 3,
-      currentDivision: "D1",
-      currentPoints: 26,
-      previousRank: 4,
-      rankTrend: "up",
-      newHighlights: 5,
-      byPosition: { first: { matches: 0, points: 0 }, second: { matches: 0, points: 0 } },
-      byCompetition: {},
-      bySeason: {},
-    },
-    trophies: { total: 2, list: [] },
-    badges: { total: 4, categories: [] },
-    records: { total: 3, list: [] },
-    currentTeams: [],
-    pastTeams: [],
-    frequentTeammates: [],
-    matchHistory: {
-      wins: 12,
-      losses: 3,
-      draws: 3,
-      total: 18,
-      recentMatches: [],
-      byCompetition: {},
-      bySeason: {},
-    },
-    competitionStats: [],
-    recentActivities: [],
-    preferences: {
-      language: "fr",
-      timezone: "Europe/Paris",
-      distanceUnit: "metric",
-      notifications: {
-        email: { results: true, news: true, reminders: true },
-        push: { results: true, matches: true },
-      },
-    },
-    social: { facebook: null, twitter: null, instagram: null },
-    lastActiveAt: new Date(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
 ];
 
 /**
- * Home Page - Main landing page for CDSP 79 application
- * Displays live matches, scores, classification, tournaments, and top players for Palet Fonte Deux-Sèvres
+ * Home Page - Top 14 inspired structure for CDSP 79
+ * Layout mimics https://top14.lnr.fr/ with featured matches, classifications, news, etc.
  */
 const Home: React.FC = () => {
-  // Use mock data directly - disable API calls until backend is ready
+  const classification = mockClassification;
   const featuredMatch = mockFeaturedMatch;
   const liveScores = mockLiveScores;
-  const classification = mockClassification;
   const tournaments = mockTournaments;
   const players = mockPlayers;
 
   return (
-    <Layout>
-      <main className="flex-1">
-        {/* Hero Match Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8" aria-labelledby="featured-match-heading">
-          <h1 className="sr-only">CDSP 79 - Palet Fonte Deux-Sèvres - Accueil</h1>
-          <div className="max-w-7xl mx-auto">
-            {featuredMatch && <MatchHero match={featuredMatch} />}
-          </div>
-        </section>
-
-        {/* Live Scores Section */}
-        <section className="px-4 py-4 lg:px-8 lg:py-6" aria-labelledby="live-scores-heading">
-          <div className="max-w-7xl mx-auto">
-            {liveScores && liveScores.length > 0 && (
-              <LiveScores matches={liveScores} journee={12} />
-            )}
-          </div>
-        </section>
-
-        {/* Classification Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8" aria-labelledby="classification-heading">
-          <div className="max-w-7xl mx-auto">
-            {classification && (
-              <ClassificationTable
-                teams={classification.teams}
-                competition="CHAMPIONNAT — DIVISION 1"
-                journee={classification.journee}
-                season="2024-2025"
-                showAllLink={true}
-                onAllClick={() => {
-                  /* Navigate to classification page */
-                }}
-              />
-            )}
-          </div>
-        </section>
-
-        {/* Tournaments Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8" aria-labelledby="tournaments-heading">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2
-                  id="tournaments-heading"
-                  className="text-heading-l font-bold text-primary uppercase tracking-wide"
+    <Layout hasLiveMatches={liveScores.length > 0} liveMatchesCount={liveScores.length}>
+      <div className="flex-1">
+        {/* Hero Section - Top 14 style */}
+        <section className="w-full bg-gradient-brand relative overflow-hidden" aria-labelledby="hero-heading">
+          <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)] py-[var(--spacing-8)] lg:px-[var(--spacing-8)] lg:py-[var(--spacing-16)]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-8)] items-center">
+              {/* Hero Content */}
+              <div className="text-center lg:text-left">
+                <h1
+                  id="hero-heading"
+                  className="text-[var(--text-display-m)] lg:text-[var(--text-display-l)] font-[var(--font-weight-black)] text-white mb-[var(--spacing-4)] leading-tight"
                 >
-                  COMPÉTITIONS À VENIR
-                </h2>
-                <p className="text-body-m text-secondary">
-                  Championnat 79, Coupe 79, Challenges CDSP
+                  CHAMPIONNAT DÉPARTEMENTAL 79
+                </h1>
+                <p className="text-[var(--text-body-xl)] lg:text-[var(--text-heading-l)] text-brand-green-400 font-[var(--font-weight-semibold)] mb-[var(--spacing-6)]">
+                  Division 1 Palet Fonte — Saison 2026/2027
                 </p>
+                <div className="flex flex-col sm:flex-row gap-[var(--spacing-4)] justify-center lg:justify-start">
+                  <Link
+                    to="/classement"
+                    className="inline-flex items-center justify-center gap-[var(--spacing-2)] px-[var(--spacing-6)] py-[var(--spacing-3)] bg-brand-green text-black text-[var(--text-body-sm)] font-[var(--font-weight-bold)] rounded-[var(--radius-m)] uppercase tracking-[var(--letter-spacing-wide)] hover:bg-brand-green-400 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    <Icon name="Trophy" size="sm" />
+                    Classement
+                  </Link>
+                  <Link
+                    to="/calendrier-et-resultats"
+                    className="inline-flex items-center justify-center gap-[var(--spacing-2)] px-[var(--spacing-6)] py-[var(--spacing-3)] bg-transparent border-2 border-brand-green text-brand-green text-[var(--text-body-sm)] font-[var(--font-weight-bold)] rounded-[var(--radius-m)] uppercase tracking-[var(--letter-spacing-wide)] hover:bg-brand-green hover:text-black transition-all duration-200"
+                  >
+                    <Icon name="Calendar" size="sm" />
+                    Calendrier
+                  </Link>
+                </div>
               </div>
-              <Button variant="ghost" size="sm">
-                <Icon name="ArrowRight" size="sm" />
-              </Button>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {tournaments &&
-                tournaments
-                  .slice(0, 3)
-                  .map((tournament) => (
+              {/* Featured Match Card */}
+              <div className="flex justify-center lg:justify-end">
+                {featuredMatch && (
+                  <div className="max-w-md w-full">
+                    <MatchHero match={featuredMatch} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* Decorative elements */}
+          <div className="absolute bottom-0 left-0 right-0 h-[100px] pointer-events-none">
+            <svg viewBox="0 0 1440 100" className="w-full h-full" preserveAspectRatio="none">
+              <path d="M0,100 L720,20 L1440,100 L1440,100 L0,100 Z" fill="var(--bg-dark)" />
+            </svg>
+          </div>
+        </section>
+
+        {/* Live Scores Ticker */}
+        {liveScores.length > 0 && (
+          <section className="bg-[var(--bg-darker)] border-b border-border-dark py-[var(--spacing-2)] sticky top-[120px] z-[var(--z-sticky)]" aria-labelledby="live-scores-heading">
+            <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)]">
+              <div className="flex items-center gap-[var(--spacing-4)]">
+                <h2
+                  id="live-scores-heading"
+                  className="text-[var(--text-body-sm)] font-[var(--font-weight-bold)] text-brand-green uppercase tracking-[var(--letter-spacing-wider)] whitespace-nowrap"
+                >
+                  <Icon name="Zap" size="sm" className="inline" />
+                  Scores en Direct
+                </h2>
+                <div className="flex-1 overflow-x-auto">
+                  <LiveScores matches={liveScores} />
+                </div>
+                <Link
+                  to="/calendrier-et-resultats"
+                  className="text-[var(--text-body-xs)] font-[var(--font-weight-medium)] text-text-tertiary hover:text-brand-green transition-colors whitespace-nowrap uppercase tracking-wider"
+                >
+                  TOUS LES MATCHS
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Main Content */}
+        <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)] py-[var(--spacing-8)] lg:px-[var(--spacing-8)] lg:py-[var(--spacing-8)]">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-[var(--spacing-8)]">
+            {/* Left Column - Classification */}
+            <div className="lg:col-span-2">
+              <section aria-labelledby="classification-heading">
+                <div className="flex items-center justify-between mb-[var(--spacing-4)]">
+                  <h2
+                    id="classification-heading"
+                    className="text-[var(--text-heading-l)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wide)]"
+                  >
+                    <Icon name="Trophy" size="m" className="inline mr-[var(--spacing-2)]" />
+                    Classement
+                  </h2>
+                  <Link
+                    to="/classement"
+                    className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] text-brand-green-400 hover:text-brand-green transition-colors uppercase tracking-wider"
+                  >
+                    VOIR TOUT
+                  </Link>
+                </div>
+                <ClassificationTable
+                  teams={classification.teams}
+                  competition="CHAMPIONNAT 79 — DIVISION 1"
+                  journee={classification.journee}
+                  season="2026-2027"
+                  showAllLink={false}
+                  onAllClick={() => {}}
+                />
+              </section>
+
+              {/* Tournaments Section */}
+              <section className="mt-[var(--spacing-12)]" aria-labelledby="tournaments-heading">
+                <div className="flex items-center justify-between mb-[var(--spacing-4)]">
+                  <h2
+                    id="tournaments-heading"
+                    className="text-[var(--text-heading-l)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wide)]"
+                  >
+                    <Icon name="Award" size="m" className="inline mr-[var(--spacing-2)]" />
+                    Compétitions
+                  </h2>
+                  <Link
+                    to="/tournois"
+                    className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] text-brand-green-400 hover:text-brand-green transition-colors uppercase tracking-wider"
+                  >
+                    VOIR TOUT
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--spacing-4)]">
+                  {tournaments.slice(0, 2).map((tournament) => (
                     <TournamentCard key={tournament.id} tournament={tournament} />
                   ))}
-            </div>
-          </div>
-        </section>
+                </div>
+              </section>
 
-        {/* Best Players Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8" aria-labelledby="players-heading">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2
-                  id="players-heading"
-                  className="text-heading-l font-bold text-primary uppercase tracking-wide"
-                >
-                  LES MEILLEURS JOUEURS
-                </h2>
-                <p className="text-body-m text-secondary">Statistiques de la saison</p>
-              </div>
-              <Button variant="ghost" size="sm">
-                <Icon name="ArrowRight" size="sm" />
-              </Button>
+              {/* News Section */}
+              <section className="mt-[var(--spacing-12)] bg-brand-green/30 rounded-[var(--radius-xl)] p-[var(--spacing-6)] lg:p-[var(--spacing-8)]" aria-labelledby="news-heading">
+                <div className="flex items-center justify-between mb-[var(--spacing-4)]">
+                  <h2
+                    id="news-heading"
+                    className="text-[var(--text-heading-l)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wide)]"
+                  >
+                    <Icon name="FileText" size="m" className="inline mr-[var(--spacing-2)]" />
+                    Actualités
+                  </h2>
+                  <Link
+                    to="/actualites"
+                    className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] text-brand-green-400 hover:text-brand-green transition-colors uppercase tracking-wider"
+                  >
+                    TOUS LES ARTICLES
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-4)]">
+                  {[1, 2, 3].map((item) => (
+                    <div
+                      key={item}
+                      className="bg-[var(--bg-secondary)] rounded-[var(--radius-lg)] overflow-hidden transition-all duration-200 hover:shadow-lg"
+                    >
+                      <div className="h-40 bg-gradient-to-br from-brand-green to-brand-green-dark flex items-center justify-center">
+                        <Icon name="Calendar" size="xl" className="text-brand-orange opacity-50" />
+                      </div>
+                      <div className="p-[var(--spacing-4)]">
+                        <span className="inline-block px-[var(--spacing-2)] py-[var(--spacing-1)] bg-brand-green/10 text-brand-green text-[var(--text-body-xs)] font-[var(--font-weight-semibold)] rounded-[var(--radius-sm)] uppercase tracking-wider mb-[var(--spacing-2)]">
+                          Championnat
+                        </span>
+                        <h3 className="text-[var(--text-heading-sm)] font-[var(--font-weight-bold)] text-white mb-[var(--spacing-2)] hover:text-brand-green transition-colors">
+                          Résultats de la journée 15
+                        </h3>
+                        <p className="text-[var(--text-body-sm)] text-text-tertiary line-clamp-2">
+                          Découvrez les résultats complets de la 15ème journée du championnat 79.
+                        </p>
+                        <div className="mt-[var(--spacing-3)] flex items-center justify-between text-[var(--text-body-xs)] text-text-tertiary">
+                          <span>14 Octobre 2026</span>
+                          <Button variant="ghost" size="xs" className="text-brand-green-400 hover:text-brand-green">
+                            Lire la suite
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {players &&
-                players
-                  .slice(0, 3)
-                  .map((player, index) => (
+            {/* Right Column - Stats and Top Players */}
+            <div className="space-y-[var(--spacing-8)]">
+              {/* Next Matches */}
+              <section aria-labelledby="next-matches-heading">
+                <div className="flex items-center justify-between mb-[var(--spacing-4)]">
+                  <h2
+                    id="next-matches-heading"
+                    className="text-[var(--text-heading-sm)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wide)]"
+                  >
+                    <Icon name="Calendar" size="sm" className="inline mr-[var(--spacing-2)]" />
+                    Prochains matchs
+                  </h2>
+                  <Link
+                    to="/calendrier-et-resultats"
+                    className="text-[var(--text-body-xs)] font-[var(--font-weight-medium)] text-brand-green-400 hover:text-brand-green transition-colors uppercase"
+                  >
+                    VOIR TOUT
+                  </Link>
+                </div>
+                <div className="space-y-[var(--spacing-2)]">
+                  {[1, 2, 3].map((item) => (
+                    <div
+                      key={item}
+                      className="bg-[var(--bg-secondary)] rounded-[var(--radius-lg)] p-[var(--spacing-3)] flex items-center gap-[var(--spacing-3)] hover:bg-[var(--bg-tertiary)] transition-colors"
+                    >
+                      <div className="w-8 h-8 bg-brand-green rounded-full flex items-center justify-center flex-shrink-0">
+                        <Icon name="Calendar" size="xs" className="text-black" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[var(--text-body-xs)] text-text-tertiary mb-[2px]">
+                          Journée {15 + item}
+                        </div>
+                        <div className="text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-white truncate">
+                          Niort PC vs Bressuire
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[var(--text-body-xs)] text-text-tertiary">
+                          Dimanche
+                        </div>
+                        <div className="text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-brand-green-400">
+                          15h00
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Top Players */}
+              <section aria-labelledby="top-players-heading">
+                <div className="flex items-center justify-between mb-[var(--spacing-4)]">
+                  <h2
+                    id="top-players-heading"
+                    className="text-[var(--text-heading-sm)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wide)]"
+                  >
+                    <Icon name="Star" size="sm" className="inline mr-[var(--spacing-2)]" />
+                    Meilleurs joueurs
+                  </h2>
+                  <Link
+                    to="/joueurs"
+                    className="text-[var(--text-body-xs)] font-[var(--font-weight-medium)] text-brand-green-400 hover:text-brand-green transition-colors uppercase"
+                  >
+                    VOIR TOUT
+                  </Link>
+                </div>
+                <div className="space-y-[var(--spacing-3)]">
+                  {players.slice(0, 3).map((player, index) => (
                     <PlayerCard
                       key={player.id}
                       player={player}
                       accent={index === 0 ? "gold" : index === 1 ? "primary" : "amber"}
                     />
                   ))}
+                </div>
+              </section>
+
+              {/* Stats Summary */}
+              <section className="bg-gradient-to-br from-brand-green to-brand-green-dark rounded-[var(--radius-xl)] p-[var(--spacing-6)]" aria-labelledby="stats-heading">
+                <h2
+                  id="stats-heading"
+                  className="text-[var(--text-heading-sm)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wider)] mb-[var(--spacing-4)]"
+                >
+                  <Icon name="BarChart3" size="sm" className="inline mr-[var(--spacing-2)]" />
+                  Statistiques
+                </h2>
+                <div className="grid grid-cols-2 gap-[var(--spacing-3)]">
+                  {[
+                    { label: "Matchs joués", value: "180", icon: "Calendar" as const },
+                    { label: "Buts marqués", value: "4 500", icon: "Target" as const },
+                    { label: "Joueurs actifs", value: "250", icon: "Users" as const },
+                    { label: "Clubs engagés", value: "12", icon: "Home" as const },
+                  ].map((stat, index) => (
+                    <div
+                      key={index}
+                      className="text-center p-[var(--spacing-3)] bg-[rgba(255,255,255,0.05)] rounded-[var(--radius-lg)]"
+                    >
+                      <Icon name={stat.icon} size="l" className="text-brand-orange mx-auto mb-[var(--spacing-2)]" />
+                      <div className="text-[var(--text-display-xs)] font-[var(--font-weight-bold)] text-white mb-[2px]">
+                        {stat.value}
+                      </div>
+                      <div className="text-[var(--text-body-xs)] text-text-tertiary uppercase tracking-wider">
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Spaces Section */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-gold/10" aria-labelledby="spaces-heading">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-6">
-              <h2
-                id="spaces-heading"
-                className="text-heading-l font-bold text-gold-500 uppercase tracking-wide text-center"
-              >
-                NOS ESPACES CDSP 79
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Partners Section */}
+        <section className="bg-brand-green/20 py-[var(--spacing-8)] lg:py-[var(--spacing-12)] mt-[var(--spacing-8)]" aria-labelledby="partners-heading">
+          <div className="max-w-[1440px] mx-auto px-[var(--spacing-4)] lg:px-[var(--spacing-8)]">
+            <h2
+              id="partners-heading"
+              className="text-[var(--text-heading-l)] font-[var(--font-weight-bold)] text-white uppercase tracking-[var(--letter-spacing-wide)] text-center mb-[var(--spacing-6)]"
+            >
+              <Icon name="Handshake" size="m" className="inline mr-[var(--spacing-2)]" />
+              Partenaires
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-[var(--spacing-4)]">
               {[
-                {
-                  icon: "Target" as const,
-                  title: "Espace CDSP",
-                  description: "Gestion, règlements, documents",
-                },
-                {
-                  icon: "Home" as const,
-                  title: "Espace Club",
-                  description: "Effectifs, résultats, feuilles de match",
-                },
-                {
-                  icon: "User" as const,
-                  title: "Espace Joueur",
-                  description: "Profil, stats, palmarès",
-                },
-                {
-                  icon: "Award" as const,
-                  title: "Espace Supporter",
-                  description: "Classements, actualités",
-                },
-              ].map((space, index) => (
+                { name: "Conseil Départemental 79" },
+                { name: "Fédération Sport Rural" },
+                { name: "FFTB" },
+                { name: "Crédit Agricole" },
+                { name: "Région Nouvelle-Aquitaine" },
+                { name: "Ville de Niort" },
+              ].map((partner, index) => (
                 <div
                   key={index}
-                  className="bg-dark rounded-lg p-4 text-center hover:bg-secondary transition-colors border border-border-secondary/50 cursor-pointer"
+                  className="bg-[var(--bg-secondary)] rounded-[var(--radius-lg)] p-[var(--spacing-4)] flex items-center justify-center h-20 hover:bg-[var(--bg-tertiary)] transition-colors"
                 >
-                  <div className="w-12 h-12 mx-auto mb-3 bg-secondary rounded-lg flex items-center justify-center">
-                    <Icon name={space.icon} size="xl" className="text-gold-500" />
-                  </div>
-                  <h3 className="text-heading-xs font-bold text-primary mb-1">{space.title}</h3>
-                  <p className="text-caption text-tertiary">{space.description}</p>
+                  <span className="text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-white text-center">
+                    {partner.name}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </Layout>
   );
 };

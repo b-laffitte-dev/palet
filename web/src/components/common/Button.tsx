@@ -8,14 +8,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800",
+        primary: "bg-brand-green-600 text-white hover:bg-brand-green-700 active:bg-brand-green-800",
         secondary: "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300",
         outline:
           "border border-neutral-300 bg-transparent text-neutral-700 hover:bg-neutral-50 active:bg-neutral-100",
         ghost: "bg-transparent text-neutral-600 hover:bg-neutral-100 active:bg-neutral-200",
-        gold: "bg-gold-600 text-white hover:bg-gold-700 active:bg-gold-800",
+        gold: "bg-brand-orange-600 text-white hover:bg-brand-orange-700 active:bg-brand-orange-800",
         danger: "bg-danger-600 text-white hover:bg-danger-700 active:bg-danger-800",
-        link: "bg-transparent text-primary-600 hover:text-primary-700 hover:underline p-0",
+        link: "bg-transparent text-brand-green-600 hover:text-brand-green-700 hover:underline p-0",
       },
       size: {
         xs: "px-2 py-1 text-xs gap-1",
@@ -40,10 +40,10 @@ const buttonVariants = cva(
         variant: "primary",
         className: "shadow-sm hover:shadow-md active:shadow-none",
       },
-      // Gold button with special styling
+      // Brand orange button with special styling
       {
         variant: "gold",
-        className: "shadow-gold-sm hover:shadow-gold-m active:shadow-gold-l",
+        className: "shadow-orange-sm hover:shadow-orange-m active:shadow-orange-l",
       },
       // Ghost button on dark background
       {

@@ -172,14 +172,14 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
         {/* Left side - Page size selector and info */}
         <div className="flex items-center gap-4 flex-wrap">
           {showTotalItems && totalItems > 0 && (
-            <span className="text-primary-300">
+            <span className="text-brand-green-300">
               {startItem}-{endItem} sur {totalItems}
             </span>
           )}
 
           {showPageSizeSelector && (
             <div className="flex items-center gap-2">
-              <span className="text-primary-300">Afficher</span>
+              <span className="text-brand-green-300">Afficher</span>
               <Select
                 size={selectSize}
                 variant="outline"
@@ -225,7 +225,7 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
                 variant={currentPage === page ? "primary" : "ghost"}
                 onClick={() => handlePageChange(page)}
                 disabled={disabled}
-                className={currentPage === page ? "bg-primary-600 text-white" : ""}
+                className={currentPage === page ? "bg-brand-green-600 text-white" : ""}
                 aria-current={currentPage === page ? "page" : undefined}
                 aria-label={`Aller à la page ${page}`}
               >
@@ -234,7 +234,7 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
             ) : (
               <span
                 key={`ellipsis-${index}`}
-                className="px-3 py-2 text-primary-400 pointer-events-none"
+                className="px-3 py-2 text-brand-green-400 pointer-events-none"
               >
                 ...
               </span>
@@ -341,7 +341,7 @@ export const PaginationInfo: React.FC<PaginationInfoProps> = ({
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <span className={`text-primary-300 text-sm ${className || ""}`}>
+    <span className={`text-brand-green-300 text-sm ${className || ""}`}>
       {startItem}-{endItem} sur {totalItems}
     </span>
   );

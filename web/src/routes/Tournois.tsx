@@ -19,7 +19,7 @@ const Tournois: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -41,7 +41,7 @@ const Tournois: React.FC = () => {
             <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
               TOURNOIS
             </h1>
-            <p className="text-body-m text-primary-200 mt-2">
+            <p className="text-body-m text-brand-green-200 mt-2">
               Tous les tournois et coupes du CDSP 79
             </p>
           </div>
@@ -51,10 +51,10 @@ const Tournois: React.FC = () => {
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+              <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide">
                 TOURNOIS À VENIR
               </h2>
-              <span className="text-body-s text-primary-300">
+              <span className="text-body-s text-brand-green-300">
                 {upcomingTournaments.length} tournois
               </span>
             </div>
@@ -66,19 +66,19 @@ const Tournois: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun tournoi à venir</p>
+              <p className="text-body-m text-brand-green-300">Aucun tournoi à venir</p>
             )}
           </div>
         </section>
 
         {/* In Progress Tournaments */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+              <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide">
                 EN COURS
               </h2>
-              <span className="text-body-s text-primary-300">
+              <span className="text-body-s text-brand-green-300">
                 {inProgressTournaments.length} tournois
               </span>
             </div>
@@ -90,7 +90,7 @@ const Tournois: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun tournoi en cours</p>
+              <p className="text-body-m text-brand-green-300">Aucun tournoi en cours</p>
             )}
           </div>
         </section>
@@ -99,10 +99,10 @@ const Tournois: React.FC = () => {
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+              <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide">
                 TOURNOIS TERMINÉS
               </h2>
-              <span className="text-body-s text-primary-300">
+              <span className="text-body-s text-brand-green-300">
                 {completedTournaments.length} tournois
               </span>
             </div>
@@ -114,7 +114,7 @@ const Tournois: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun tournoi terminé</p>
+              <p className="text-body-m text-brand-green-300">Aucun tournoi terminé</p>
             )}
           </div>
         </section>

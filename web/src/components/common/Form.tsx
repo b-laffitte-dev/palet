@@ -153,7 +153,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-body-s font-medium text-primary-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
+            className={`block text-body-s font-medium text-brand-green-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
           >
             {label}
           </label>
@@ -191,7 +191,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         {helpText && !error && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -237,7 +237,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-body-s font-medium text-primary-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
+            className={`block text-body-s font-medium text-brand-green-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
           >
             {label}
           </label>
@@ -274,7 +274,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         {helpText && !error && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -321,7 +321,7 @@ const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-body-s font-medium text-primary-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
+            className={`block text-body-s font-medium text-brand-green-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
           >
             {label}
           </label>
@@ -338,7 +338,7 @@ const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
           required={required}
           rows={rows}
           maxLength={maxLength}
-          className={`w-full px-4 py-2 bg-primary-900 border ${!!error ? "border-danger-700" : "border-primary-700"} rounded-lg text-white placeholder:text-primary-400 focus:outline-none focus:ring-2 focus:ring-gold-700/50 focus:border-gold-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-vertical ${className || ""}`}
+          className={`w-full px-4 py-2 bg-brand-green-900 border ${!!error ? "border-danger-700" : "border-brand-green-700"} rounded-lg text-white placeholder:text-brand-green-400 focus:outline-none focus:ring-2 focus:ring-brand-orange-700/50 focus:border-brand-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-vertical ${className || ""}`}
           aria-describedby={helpText ? `${id}-help` : error ? `${id}-error` : undefined}
           {...props}
         />
@@ -355,7 +355,7 @@ const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
               </p>
             )}
             <p
-              className={`text-caption text-primary-400 mt-1 ${maxLength && characterCount > maxLength ? "text-danger-400" : ""}`}
+              className={`text-caption text-brand-green-400 mt-1 ${maxLength && characterCount > maxLength ? "text-danger-400" : ""}`}
             >
               {characterCount}/{maxLength}
             </p>
@@ -375,7 +375,7 @@ const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
         {helpText && !error && !showCounter && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -439,7 +439,7 @@ const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
             onChange={handleChange}
             disabled={disabled || readOnly}
             required={required}
-            className={`rounded border-primary-600 bg-transparent focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${getSizeClasses()} ${className || ""}`}
+            className={`rounded border-brand-green-600 bg-transparent focus:ring-2 focus:ring-brand-orange-500 focus:border-brand-orange-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${getSizeClasses()} ${className || ""}`}
             aria-describedby={helpText ? `${id}-help` : error ? `${id}-error` : undefined}
             {...props}
           />
@@ -447,7 +447,7 @@ const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
           {label && (
             <label
               htmlFor={id}
-              className={`text-body-s text-primary-200 cursor-pointer ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${labelClassName || ""}`}
+              className={`text-body-s text-brand-green-200 cursor-pointer ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${labelClassName || ""}`}
             >
               {label}
               {required && <span className="text-danger-500 ml-1">*</span>}
@@ -468,7 +468,7 @@ const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
         {helpText && !error && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -529,7 +529,7 @@ const RadioField = forwardRef<HTMLInputElement, RadioFieldProps>(
       <div className={formFieldVariants({ disabled })}>
         {label && (
           <label
-            className={`block text-body-s font-medium text-primary-200 mb-2 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
+            className={`block text-body-s font-medium text-brand-green-200 mb-2 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
           >
             {label}
           </label>
@@ -548,13 +548,13 @@ const RadioField = forwardRef<HTMLInputElement, RadioFieldProps>(
                 onChange={() => handleChange(option.value)}
                 disabled={disabled || readOnly || option.disabled}
                 required={required}
-                className={`rounded-full border-primary-600 bg-transparent focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${getSizeClasses()} ${className || ""}`}
+                className={`rounded-full border-brand-green-600 bg-transparent focus:ring-2 focus:ring-brand-orange-500 focus:border-brand-orange-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${getSizeClasses()} ${className || ""}`}
                 {...props}
               />
 
               <label
                 htmlFor={`${id}-${option.value}`}
-                className={`text-body-s text-primary-200 cursor-pointer ${disabled || readOnly || option.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`text-body-s text-brand-green-200 cursor-pointer ${disabled || readOnly || option.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {option.icon && (
                   <Icon
@@ -582,7 +582,7 @@ const RadioField = forwardRef<HTMLInputElement, RadioFieldProps>(
         {helpText && !error && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -653,14 +653,14 @@ const SwitchField = forwardRef<HTMLInputElement, SwitchFieldProps>(
             {label && (
               <label
                 htmlFor={id}
-                className={`text-body-s font-medium text-primary-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
+                className={`text-body-s font-medium text-brand-green-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
               >
                 {label}
               </label>
             )}
 
             {switchLabel && (
-              <label htmlFor={id} className="text-body-s text-primary-300">
+              <label htmlFor={id} className="text-body-s text-brand-green-300">
                 {switchLabel}
               </label>
             )}
@@ -672,7 +672,7 @@ const SwitchField = forwardRef<HTMLInputElement, SwitchFieldProps>(
             aria-checked={value}
             onClick={() => !disabled && !readOnly && onChange?.(!value)}
             disabled={disabled || readOnly}
-            className={`relative inline-flex items-center ${getSizeClasses()} rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${value ? "bg-gold-500" : "bg-primary-600"} ${className || ""}`}
+            className={`relative inline-flex items-center ${getSizeClasses()} rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${value ? "bg-brand-orange-500" : "bg-brand-green-600"} ${className || ""}`}
           >
             <span
               className={`absolute ${getThumbSize()} bg-white rounded-full shadow-md transition-transform ${value ? "translate-x-full" : "translate-x-0"}`}
@@ -693,7 +693,7 @@ const SwitchField = forwardRef<HTMLInputElement, SwitchFieldProps>(
         {helpText && !error && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -748,7 +748,7 @@ const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-body-s font-medium text-primary-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
+            className={`block text-body-s font-medium text-brand-green-200 ${required ? 'after:content-["*"] after:text-danger-500 after:ml-1' : ""} ${labelClassName || ""}`}
           >
             {label}
           </label>
@@ -766,7 +766,7 @@ const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
           required={required}
           min={min ? formatDate(min) : undefined}
           max={max ? formatDate(max) : undefined}
-          className={`w-full px-4 py-2 bg-primary-900 border ${!!error ? "border-danger-700" : "border-primary-700"} rounded-lg text-white placeholder:text-primary-400 focus:outline-none focus:ring-2 focus:ring-gold-700/50 focus:border-gold-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className || ""}`}
+          className={`w-full px-4 py-2 bg-brand-green-900 border ${!!error ? "border-danger-700" : "border-brand-green-700"} rounded-lg text-white placeholder:text-brand-green-400 focus:outline-none focus:ring-2 focus:ring-brand-orange-700/50 focus:border-brand-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className || ""}`}
           aria-describedby={helpText ? `${id}-help` : error ? `${id}-error` : undefined}
           {...props}
         />
@@ -784,7 +784,7 @@ const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
         {helpText && !error && (
           <p
             id={`${id}-help`}
-            className={`text-caption text-primary-400 mt-1 ${helpTextClassName || ""}`}
+            className={`text-caption text-brand-green-400 mt-1 ${helpTextClassName || ""}`}
           >
             {helpText}
           </p>
@@ -856,7 +856,7 @@ const Form = forwardRef<HTMLFormElement, FormProps>(
 
         {/* Form footer with buttons */}
         {(submitButton || submitText || showCancel) && (
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-primary-700/50">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-brand-green-700/50">
             {showCancel && onCancel && (
               <Button
                 type="button"
@@ -917,7 +917,7 @@ const FieldGroup = forwardRef<HTMLDivElement, FieldGroupProps>(
         {label && (
           <div className="flex flex-col gap-1">
             <h3 className="text-h6 font-semibold text-white">{label}</h3>
-            {description && <p className="text-body-s text-primary-300">{description}</p>}
+            {description && <p className="text-body-s text-brand-green-300">{description}</p>}
           </div>
         )}
         <div className={formContainerVariants({ layout })}>{children}</div>

@@ -2,34 +2,52 @@ import { ReactNode } from "react";
 import { TopBar } from "./TopBar";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { StickyHeader } from "./StickyHeader";
 
 export interface LayoutProps {
   children: ReactNode;
   showHeader?: boolean;
   showFooter?: boolean;
   showTopBar?: boolean;
+  hasLiveMatches?: boolean;
+  liveMatchesCount?: number;
 }
 
+/**
+ * Layout - Main application layout with Top 14 inspired structure
+ * Contains TopBar, Header (with navigation), StickyHeader (on scroll), and Footer
+ */
 export function Layout({
   children,
   showHeader = true,
   showFooter = true,
   showTopBar = true,
+  hasLiveMatches = false,
+  liveMatchesCount = 0,
 }: LayoutProps) {
-  // Disable live matches API call until backend endpoint is available
-  const hasLiveMatches = false;
-  const liveMatchesCount = 0;
-
   return (
     <div className="layout flex flex-col min-h-[100vh] bg-[var(--bg-dark)]">
-      {/* TopBar */}
-      {showTopBar && <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />}
+      {/* TopBar - Federation banner at very top */}
+      {showTopBar && (
+        <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />
+      )}
 
-      {/* Header */}
-      {showHeader && <Header showCTA={!hasLiveMatches} />}
+      {/* Header - Main navigation and branding */}
+      {showHeader && (
+        <Header
+          showCTA={!hasLiveMatches}
+          hasLiveMatches={hasLiveMatches}
+          liveMatchesCount={liveMatchesCount}
+        />
+      )}
+
+      {/* Sticky Header - Appears on scroll */}
+      {showHeader && (
+        <StickyHeader />
+      )}
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col bg-[var(--bg-dark)] px-[var(--spacing-4)] py-[var(--spacing-4)] sm:px-[var(--spacing-6)] sm:py-[var(--spacing-6)] lg:px-[var(--spacing-8)] lg:py-[var(--spacing-8)] transition-all duration-200">
+      <main className="flex-1 flex flex-col bg-[var(--bg-dark)]">
         {children}
       </main>
 

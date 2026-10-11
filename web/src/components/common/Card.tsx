@@ -10,8 +10,8 @@ const cardVariants = cva("border border-neutral-200 bg-white rounded-lg overflow
       hoverable: "hover:shadow-md transition-shadow",
       interactive:
         "hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer active:translate-y-0 active:shadow-sm",
-      primary: "bg-primary-600 text-white border-primary-600",
-      secondary: "bg-secondary-600 text-white border-secondary-600",
+      primary: "bg-brand-green-600 text-white border-brand-green-600",
+      secondary: "bg-brand-orange-600 text-white border-brand-orange-600",
       subtle: "bg-neutral-50 border-neutral-200",
     },
     padding: {
@@ -171,7 +171,7 @@ const styles = {
   footer: {
     padding: "var(--spacing-3)",
     backgroundColor: "var(--bg-secondary)",
-    borderTop: "1px solid var(--border-primary)",
+    borderTop: "1px solid var(--border-neutral-700)",
   } as React.CSSProperties,
 };
 

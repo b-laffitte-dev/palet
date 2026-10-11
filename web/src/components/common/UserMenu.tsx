@@ -70,7 +70,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
       {/* User Avatar Button */}
       <button
         onClick={toggleMenu}
-        className="user-menu-button flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-gold-700 bg-black text-gold-700 hover:bg-gold-900/20 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+        className="user-menu-button flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-brand-orange-700 bg-black text-brand-orange-pure hover:bg-brand-orange-900/20 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange-500 focus-visible:ring-offset-2"
         aria-label="Menu utilisateur"
         aria-expanded={isOpen}
         type="button"
@@ -87,16 +87,16 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
       {/* Dropdown Menu */}
       {isOpen && (
         <div
-          className="user-menu-dropdown absolute right-0 mt-2 w-56 bg-primary-800 rounded-lg shadow-xl border border-primary-700/50 z-[var(--z-popover)] animation-fade-in"
+          className="user-menu-dropdown absolute right-0 mt-2 w-56 bg-brand-green-800 rounded-lg shadow-xl border border-brand-green-700/50 z-[var(--z-popover)] animation-fade-in"
           role="menu"
           aria-label="Menu utilisateur"
         >
           {/* User Info Header */}
-          <div className="px-4 py-3 border-b border-primary-700/50">
+          <div className="px-4 py-3 border-b border-brand-green-700/50">
             <p className="text-body-sm font-semibold text-white truncate">
               {user.firstName} {user.lastName}
             </p>
-            <p className="text-body-xs text-primary-300 truncate">{user.email}</p>
+            <p className="text-body-xs text-brand-green-300 truncate">{user.email}</p>
           </div>
 
           {/* Menu Items */}
@@ -104,7 +104,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
             <Link
               to={`/joueurs/${user.id}`}
               onClick={closeMenu}
-              className="user-menu-item flex items-center gap-3 px-4 py-2 text-body-sm text-primary-200 hover:bg-primary-700/50 hover:text-white transition-colors"
+              className="user-menu-item flex items-center gap-3 px-4 py-2 text-body-sm text-brand-green-200 hover:bg-brand-green-700/50 hover:text-white transition-colors"
               role="menuitem"
             >
               <Icon name="User" size="sm" className="shrink-0" />
@@ -115,7 +115,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
               <Link
                 to="/admin"
                 onClick={closeMenu}
-                className="user-menu-item flex items-center gap-3 px-4 py-2 text-body-sm text-primary-200 hover:bg-primary-700/50 hover:text-white transition-colors"
+                className="user-menu-item flex items-center gap-3 px-4 py-2 text-body-sm text-brand-green-200 hover:bg-brand-green-700/50 hover:text-white transition-colors"
                 role="menuitem"
               >
                 <Icon name="Settings" size="sm" className="shrink-0" />
@@ -123,7 +123,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
               </Link>
             )}
 
-            <div className="border-t border-primary-700/50 my-2" role="separator" />
+            <div className="border-t border-brand-green-700/50 my-2" role="separator" />
 
             <button
               onClick={handleLogout}

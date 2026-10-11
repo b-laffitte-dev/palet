@@ -34,26 +34,26 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
   const getAccentColor = () => {
     switch (accent) {
       case "gold":
-        return "border-gold-700 bg-gradient-to-br from-gold-900/20 to-gold-800/10";
+        return "border-brand-orange-700 bg-gradient-to-br from-brand-orange-900/20 to-brand-orange-800/10";
       case "primary":
-        return "border-primary-600 bg-gradient-to-br from-primary-800/20 to-primary-700/10";
+        return "border-brand-green-600 bg-gradient-to-br from-brand-green-800/20 to-brand-green-700/10";
       case "amber":
         return "border-amber-700 bg-gradient-to-br from-amber-900/20 to-amber-800/10";
       default:
-        return "border-primary-700";
+        return "border-brand-green-700";
     }
   };
 
   const getAccentBorder = () => {
     switch (accent) {
       case "gold":
-        return "border-gold-700";
+        return "border-brand-orange-700";
       case "primary":
-        return "border-primary-600";
+        return "border-brand-green-600";
       case "amber":
         return "border-amber-700";
       default:
-        return "border-primary-700";
+        return "border-brand-green-700";
     }
   };
 
@@ -67,10 +67,10 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
     return (
       <Link
         to={`/joueurs/${player.id}`}
-        className={`flex items-center gap-3 p-3 sm:p-4 bg-primary-900 rounded-lg border border-primary-700/50 hover:bg-primary-800/50 transition-colors ${className}`}
+        className={`flex items-center gap-3 p-3 sm:p-4 bg-brand-green-900 rounded-lg border border-brand-green-700/50 hover:bg-brand-green-800/50 transition-colors ${className}`}
       >
         <div
-          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${getAccentBorder()} border-2 flex items-center justify-center bg-primary-800 overflow-hidden flex-shrink-0`}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${getAccentBorder()} border-2 flex items-center justify-center bg-brand-green-800 overflow-hidden flex-shrink-0`}
         >
           {player.photo ? (
             <img
@@ -80,7 +80,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
               loading="lazy"
             />
           ) : (
-            <span className="text-body-xs sm:text-body-sm font-black text-gold-700">
+            <span className="text-body-xs sm:text-body-sm font-black text-brand-orange-700">
               {getInitials(player)}
             </span>
           )}
@@ -91,20 +91,20 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
           </h3>
           <div className="flex items-center gap-1 sm:gap-2">
             {player.alias && (
-              <span className="text-caption sm:text-body-xs text-primary-300 truncate">
+              <span className="text-caption sm:text-body-xs text-brand-green-300 truncate">
                 ({player.alias})
               </span>
             )}
             {showClub && player.club && (
-              <span className="text-caption sm:text-body-xs text-primary-300 truncate">
+              <span className="text-caption sm:text-body-xs text-brand-green-300 truncate">
                 {player.club.name}
               </span>
             )}
           </div>
         </div>
         <div className="text-center flex-shrink-0">
-          <p className="text-caption sm:text-body-xs text-primary-300">Victoires</p>
-          <p className="text-body-xs sm:text-body-sm font-bold text-gold-700">
+          <p className="text-caption sm:text-body-xs text-brand-green-300">Victoires</p>
+          <p className="text-body-xs sm:text-body-sm font-bold text-brand-orange-700">
             {player.stats.winRate.toFixed(0)}%
           </p>
         </div>
@@ -114,18 +114,18 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
 
   return (
     <article
-      className={`player-card-responsive flex flex-col bg-primary-900 rounded-lg overflow-hidden border ${getAccentColor()} ${className}`}
+      className={`player-card-responsive flex flex-col bg-brand-green-900 rounded-lg overflow-hidden border ${getAccentColor()} ${className}`}
     >
       {/* Accent border on top */}
       <div
-        className={`h-1 ${accent === "gold" ? "bg-gold-700" : accent === "primary" ? "bg-primary-600" : "bg-amber-700"}`}
+        className={`h-1 ${accent === "gold" ? "bg-brand-orange-700" : accent === "primary" ? "bg-brand-green-600" : "bg-amber-700"}`}
       />
 
       {/* Avatar section */}
       <Link to={`/joueurs/${player.id}`} className="block pt-2">
         <div className="relative mx-auto -mt-12 sm:-mt-14 mb-3 sm:mb-4 hover:scale-105 transition-transform">
           <div
-            className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full ${getAccentBorder()} border-2 sm:border-4 flex items-center justify-center bg-primary-800 overflow-hidden`}
+            className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full ${getAccentBorder()} border-2 sm:border-4 flex items-center justify-center bg-brand-green-800 overflow-hidden`}
           >
             {player.photo ? (
               <img
@@ -135,7 +135,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
                 loading="lazy"
               />
             ) : (
-              <span className="text-heading-xs sm:text-heading-sm font-black text-gold-700">
+              <span className="text-heading-xs sm:text-heading-sm font-black text-brand-orange-700">
                 {getInitials(player)}
               </span>
             )}
@@ -147,36 +147,36 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
       <div className="flex-1 px-3 sm:px-4 pb-3 sm:pb-4 space-y-2">
         {/* Name */}
         <Link to={`/joueurs/${player.id}`} className="block">
-          <h3 className="text-body-sm sm:text-heading-s font-bold text-white text-center truncate hover:text-gold-700 transition-colors">
+          <h3 className="text-body-sm sm:text-heading-s font-bold text-white text-center truncate hover:text-brand-orange-700 transition-colors">
             {player.firstName} {player.lastName}
           </h3>
         </Link>
 
         {/* Club */}
         {showClub && player.club && (
-          <p className="text-body-xs sm:text-body-sm text-primary-200 text-center truncate">
+          <p className="text-body-xs sm:text-body-sm text-brand-green-200 text-center truncate">
             {player.club.name}
           </p>
         )}
 
         {player.alias && (
-          <p className="text-caption sm:text-body-xs text-primary-300 text-center truncate">
+          <p className="text-caption sm:text-body-xs text-brand-green-300 text-center truncate">
             "{player.alias}"
           </p>
         )}
 
         {/* Stats */}
-        <div className="pt-2 border-t border-primary-700/50">
+        <div className="pt-2 border-t border-brand-green-700/50">
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <div className="text-center">
-              <p className="text-caption sm:text-body-xs text-primary-300">Victoires</p>
-              <p className="text-body-sm sm:text-body-m font-bold text-gold-700">
+              <p className="text-caption sm:text-body-xs text-brand-green-300">Victoires</p>
+              <p className="text-body-sm sm:text-body-m font-bold text-brand-orange-700">
                 {player.stats.winRate.toFixed(0)}%
               </p>
             </div>
             <div className="text-center">
-              <p className="text-caption sm:text-body-xs text-primary-300">Matchs</p>
-              <p className="text-body-sm sm:text-body-m font-bold text-gold-700">
+              <p className="text-caption sm:text-body-xs text-brand-green-300">Matchs</p>
+              <p className="text-body-sm sm:text-body-m font-bold text-brand-orange-700">
                 {player.stats.matchesPlayed}
               </p>
             </div>
@@ -186,12 +186,11 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
 
       {/* Actions */}
       {showActions && (
-        <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-2 border-t border-primary-700/50">
+        <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-2 border-t border-brand-green-700/50">
           <Button
             size="xs"
             fullWidth={true}
-            variant="outline"
-            className="text-gold-pure border-gold-700 hover:bg-gold-900/20"
+            variant="gold"
           >
             Voir le profil
           </Button>

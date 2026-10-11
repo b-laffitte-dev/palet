@@ -35,18 +35,18 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
 
   return (
     <section
-      className={`match-hero-responsive w-full bg-green-dark rounded-lg overflow-hidden ${className}`}
+      className={`match-hero-responsive w-full bg-brand-green-900 rounded-lg overflow-hidden ${className}`}
       aria-labelledby="match-hero-title"
     >
       {/* Header */}
-      <div className="px-4 sm:px-6 py-3 sm:py-4 bg-green-dark">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 bg-brand-green-900">
         <h2
           id="match-hero-title"
-          className="text-heading-sm sm:text-heading-m font-bold text-gold-pure uppercase tracking-wide truncate"
+          className="text-heading-sm sm:text-heading-m font-bold text-brand-orange-pure uppercase tracking-wide truncate"
         >
           {match.competition.name} — {match.type}
         </h2>
-        <p className="text-body-xs sm:text-body-sm text-gold-pure/80 mt-1 truncate">
+        <p className="text-body-xs sm:text-body-sm text-brand-orange-pure/80 mt-1 truncate">
           {match.date
             ? new Date(match.date).toLocaleDateString("fr-FR", {
                 weekday: "long",
@@ -65,7 +65,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
         {/* Team 1 */}
         <div className="flex-1 flex flex-col items-center gap-2 sm:gap-3 lg:gap-4">
           <div className="relative">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-40 lg:h-40 rounded-full bg-green-dark border-2 sm:border-4 border-gold-pure flex flex-col items-center justify-center transition-all duration-200">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-40 lg:h-40 rounded-full bg-brand-green-900 border-2 sm:border-4 border-brand-orange-pure flex flex-col items-center justify-center transition-all duration-200">
               {match.team1?.logo ? (
                 <img
                   src={match.team1.logo}
@@ -74,11 +74,11 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
                 />
               ) : (
                 <>
-                  <span className="text-heading-xs sm:text-heading-sm lg:text-heading-xl font-black text-gold-pure">
+                  <span className="text-heading-xs sm:text-heading-sm lg:text-heading-xl font-black text-brand-orange-pure">
                     {match.team1?.name?.charAt(0) || "?"}
                   </span>
                   {match.team1?.name && (
-                    <span className="text-caption sm:text-body-xs font-bold text-gold-pure/80 text-center">
+                    <span className="text-caption sm:text-body-xs font-bold text-brand-orange-pure/80 text-center">
                       {match.team1.name.split(" ")[0] || "Team"}
                     </span>
                   )}
@@ -90,7 +90,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
             {match.team1?.name || "Équipe 1"}
           </span>
           {match.team1?.seed && (
-            <span className="text-body-xs sm:text-body-sm text-gold-pure/80">
+            <span className="text-body-xs sm:text-body-sm text-brand-orange-pure/80">
               Tête de série: {match.team1.seed}
             </span>
           )}
@@ -103,19 +103,19 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
             <Badge variant={getStatusVariant()}>{getStatusText()}</Badge>
           </div>
 
-          <div className="flex items-baseline gap-1 sm:gap-2 bg-gold-pure px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl shadow-lg">
+          <div className="flex items-baseline gap-1 sm:gap-2 bg-brand-orange-pure px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl shadow-lg">
             <span
-              className="text-heading-xl sm:text-display-sm lg:text-display-m font-black text-green-dark"
+              className="text-heading-xl sm:text-display-sm lg:text-display-m font-black text-brand-green-900"
               aria-live="polite"
               aria-atomic="true"
             >
               {match.team1Score || 0}
             </span>
-            <span className="text-body-sm sm:text-heading-s lg:text-heading-l font-bold text-green-dark">
+            <span className="text-body-sm sm:text-heading-s lg:text-heading-l font-bold text-brand-green-900">
               —
             </span>
             <span
-              className="text-heading-xl sm:text-display-sm lg:text-display-m font-black text-green-dark"
+              className="text-heading-xl sm:text-display-sm lg:text-display-m font-black text-brand-green-900"
               aria-live="polite"
               aria-atomic="true"
             >
@@ -124,7 +124,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
           </div>
 
           {/* Status and info */}
-          <div className="hidden lg:flex items-center gap-2 bg-green-darker px-4 py-2 rounded-full">
+          <div className="hidden lg:flex items-center gap-2 bg-brand-green-900/80 px-4 py-2 rounded-full">
             {match.status === "in_progress" && (
               <>
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
@@ -141,8 +141,8 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
           {/* Manche info */}
           {match.status === "in_progress" && match.currentManche && (
             <div className="flex items-center gap-1 mt-2 lg:mt-0">
-              <Icon name="Target" size="xs" className="text-gold-pure/80" />
-              <span className="text-caption sm:text-body-xs text-gold-pure/80">
+              <Icon name="Target" size="xs" className="text-brand-orange-pure/80" />
+              <span className="text-caption sm:text-body-xs text-brand-orange-pure/80">
                 Manche {match.currentManche}
                 {match.stats?.totalManches ? ` / ${match.stats.totalManches}` : ""}
                 {match.bestOf ? ` (Meilleur sur ${match.bestOf})` : ""}
@@ -154,7 +154,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
         {/* Team 2 */}
         <div className="flex-1 flex flex-col items-center gap-2 sm:gap-3 lg:gap-4">
           <div className="relative">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-40 lg:h-40 rounded-full bg-green-dark border-2 sm:border-4 border-gold-pure flex flex-col items-center justify-center transition-all duration-200">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-40 lg:h-40 rounded-full bg-brand-green-900 border-2 sm:border-4 border-brand-orange-pure flex flex-col items-center justify-center transition-all duration-200">
               {match.team2?.logo ? (
                 <img
                   src={match.team2.logo}
@@ -163,11 +163,11 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
                 />
               ) : (
                 <>
-                  <span className="text-heading-xs sm:text-heading-sm lg:text-heading-xl font-black text-gold-pure">
+                  <span className="text-heading-xs sm:text-heading-sm lg:text-heading-xl font-black text-brand-orange-pure">
                     {match.team2?.name?.charAt(0) || "?"}
                   </span>
                   {match.team2?.name && (
-                    <span className="text-caption sm:text-body-xs font-bold text-gold-pure/80 text-center">
+                    <span className="text-caption sm:text-body-xs font-bold text-brand-orange-pure/80 text-center">
                       {match.team2.name.split(" ")[0] || "Team"}
                     </span>
                   )}
@@ -179,7 +179,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
             {match.team2?.name || "Équipe 2"}
           </span>
           {match.team2?.seed && (
-            <span className="text-body-xs sm:text-body-sm text-gold-pure/80">
+            <span className="text-body-xs sm:text-body-sm text-brand-orange-pure/80">
               Tête de série: {match.team2.seed}
             </span>
           )}
@@ -189,7 +189,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
       {/* Status for mobile */}
       {match.status !== "in_progress" && (
         <div className="lg:hidden px-4 pb-4">
-          <Badge variant={getStatusVariant()} className="w-full justify-center">
+          <Badge variant={getStatusVariant()} className="w-full justify-center text-xs">
             {getStatusText()}
           </Badge>
         </div>
@@ -197,7 +197,7 @@ export const MatchHero: React.FC<MatchHeroProps> = ({ match, className = "" }) =
 
       {/* Additional info */}
       <div className="px-4 sm:px-6 pb-4 lg:hidden">
-        <div className="flex flex-wrap justify-center gap-2 text-body-xs sm:text-body-sm text-gold-pure/80">
+        <div className="flex flex-wrap justify-center gap-2 text-body-xs sm:text-body-sm text-brand-orange-pure/80">
           {match.currentManche && (
             <span>
               Manche {match.currentManche}

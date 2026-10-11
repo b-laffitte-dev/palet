@@ -19,7 +19,7 @@ const Clubs: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -39,7 +39,7 @@ const Clubs: React.FC = () => {
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">CLUBS</h1>
-            <p className="text-body-m text-primary-200 mt-2">
+            <p className="text-body-m text-brand-green-200 mt-2">
               Annuaire des clubs de Palet Fonte Deux-Sèvres
             </p>
           </div>
@@ -49,10 +49,10 @@ const Clubs: React.FC = () => {
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+              <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide">
                 DIVISION 1
               </h2>
-              <span className="text-body-s text-primary-300">{division1Clubs.length} clubs</span>
+              <span className="text-body-s text-brand-green-300">{division1Clubs.length} clubs</span>
             </div>
 
             {division1Clubs.length > 0 ? (
@@ -62,19 +62,19 @@ const Clubs: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun club en Division 1</p>
+              <p className="text-body-m text-brand-green-300">Aucun club en Division 1</p>
             )}
           </div>
         </section>
 
         {/* Division 2 */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+              <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide">
                 DIVISION 2
               </h2>
-              <span className="text-body-s text-primary-300">{division2Clubs.length} clubs</span>
+              <span className="text-body-s text-brand-green-300">{division2Clubs.length} clubs</span>
             </div>
 
             {division2Clubs.length > 0 ? (
@@ -84,7 +84,7 @@ const Clubs: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">Aucun club en Division 2</p>
+              <p className="text-body-m text-brand-green-300">Aucun club en Division 2</p>
             )}
           </div>
         </section>
@@ -94,10 +94,10 @@ const Clubs: React.FC = () => {
           <section className="px-4 py-6 lg:px-8 lg:py-8">
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
+                <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide">
                   AUTRES DIVISIONS
                 </h2>
-                <span className="text-body-s text-primary-300">{otherClubs.length} clubs</span>
+                <span className="text-body-s text-brand-green-300">{otherClubs.length} clubs</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -110,27 +110,27 @@ const Clubs: React.FC = () => {
         )}
 
         {/* Stats */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
               STATISTIQUES
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">Total Clubs</p>
-                <p className="text-heading-m font-bold text-gold-700">{clubs?.length || 0}</p>
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">Total Clubs</p>
+                <p className="text-heading-m font-bold text-brand-orange-pure">{clubs?.length || 0}</p>
               </div>
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">D1</p>
-                <p className="text-heading-m font-bold text-gold-700">{division1Clubs.length}</p>
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">D1</p>
+                <p className="text-heading-m font-bold text-brand-orange-pure">{division1Clubs.length}</p>
               </div>
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">D2</p>
-                <p className="text-heading-m font-bold text-gold-700">{division2Clubs.length}</p>
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">D2</p>
+                <p className="text-heading-m font-bold text-brand-orange-pure">{division2Clubs.length}</p>
               </div>
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">Autres</p>
-                <p className="text-heading-m font-bold text-gold-700">{otherClubs.length}</p>
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">Autres</p>
+                <p className="text-heading-m font-bold text-brand-orange-pure">{otherClubs.length}</p>
               </div>
             </div>
           </div>

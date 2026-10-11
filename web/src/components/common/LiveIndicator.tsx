@@ -19,20 +19,20 @@ const styles = {
     alignItems: "center",
     gap: "var(--spacing-2)",
     padding: "var(--spacing-1) var(--spacing-3)",
-    backgroundColor: "rgba(217, 119, 6, 0.15)",
+    backgroundColor: "rgba(255, 140, 0, 0.15)",
     borderRadius: "var(--radius-full)",
     fontSize: "var(--text-body-xs)",
     fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-primary-500)",
+    color: "var(--color-brand-orange-500)",
     animation: "pulse 2s ease-in-out infinite",
   } as React.CSSProperties,
 
   dot: {
     width: "8px",
     height: "8px",
-    backgroundColor: "var(--color-primary-500)",
+    backgroundColor: "var(--color-brand-orange-500)",
     borderRadius: "var(--radius-full)",
-    boxShadow: "0 0 6px var(--color-primary-500)",
+    boxShadow: "0 0 6px var(--color-brand-orange-500)",
   } as React.CSSProperties,
 
   text: {
@@ -40,7 +40,7 @@ const styles = {
   } as React.CSSProperties,
 
   count: {
-    backgroundColor: "var(--color-primary-600)",
+    backgroundColor: "var(--color-brand-orange-600)",
     color: "white",
     padding: "var(--spacing-0.5) var(--spacing-2)",
     borderRadius: "var(--radius-full)",

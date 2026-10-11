@@ -34,7 +34,7 @@ export function Footer({ className = "" }: FooterProps) {
 
   return (
     <footer
-      className={`bg-[#000000] color-[var(--text-secondary)] pt-[var(--spacing-12)] pb-[var(--spacing-6)] border-t border-border-dark ${className}`}
+      className={`bg-[var(--bg-dark)] text-[var(--text-secondary)] pt-[var(--spacing-12)] pb-[var(--spacing-6)] border-t border-border-dark ${className}`}
     >
       <div className="container w-full max-w-[var(--container-max)] mx-auto px-[var(--container-padding)]">
         {/* Main Footer Content */}
@@ -43,16 +43,16 @@ export function Footer({ className = "" }: FooterProps) {
           <div className="brand-section display-flex flex-direction-column gap-[var(--spacing-4)]">
             <Link
               to="/"
-              className="logo-link inline-flex align-items-center gap-[var(--spacing-2)] color-[var(--color-primary-400)] no-underline font-size-[var(--text-heading-m)] font-[var(--font-weight-bold)]"
+              className="logo-link inline-flex align-items-center gap-[var(--spacing-2)] text-[var(--color-brand-green-400)] no-underline font-size-[var(--text-heading-m)] font-[var(--font-weight-bold)]"
             >
-              <div className="w-10 h-10 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center bg-black">
-                <span className="text-[var(--text-body-sm)] font-[var(--font-weight-black)] text-[var(--color-gold)]">
+              <div className="w-10 h-10 rounded-full border-2 border-[var(--color-brand-green)] flex items-center justify-center bg-[var(--bg-dark)]">
+                <span className="text-[var(--text-body-sm)] font-[var(--font-weight-black)] text-[var(--color-brand-green)]">
                   PC
                 </span>
               </div>
-              <span className="logo-text color-[var(--text-primary)]">CDSP 79</span>
+              <span className="logo-text text-[var(--text-primary)]">CDSP 79</span>
             </Link>
-            <p className="description font-size-[var(--text-body-sm)] line-height-[var(--line-height-relaxed)] color-[var(--color-neutral-400)] max-w-[300px]">
+            <p className="description font-size-[var(--text-body-sm)] line-height-[var(--line-height-relaxed)] text-[var(--color-neutral-400)] max-w-[300px]">
               Commission Deux-Sévrienne du Palet. Suivez le Championnat 79, la Coupe 79, et les
               résultats du palet fonte en temps réel.
             </p>
@@ -63,7 +63,7 @@ export function Footer({ className = "" }: FooterProps) {
                   href={link.to}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-link color-[var(--color-neutral-400)] transition-colors hover:color-[var(--color-primary-400)]"
+                  className="social-link text-[var(--color-neutral-400)] transition-colors hover:text-[var(--color-brand-green-400)]"
                   aria-label={link.label}
                 >
                   <Icon name={link.icon as any} size="m" />
@@ -82,12 +82,12 @@ export function Footer({ className = "" }: FooterProps) {
 
         {/* Footer Bottom - Copyright */}
         <div className="bottom-bar flex items-center justify-between pt-[var(--spacing-6)] border-t border-border-secondary">
-          <div className="copyright font-size-[var(--text-body-xs)] color-[var(--text-light)]">
+          <div className="copyright font-size-[var(--text-body-xs)] text-[var(--text-light)]">
             © {currentYear} CDSP 79 — Tous droits réservés
           </div>
-          <div className="footer-meta flex items-center gap-[var(--spacing-2)] font-size-[var(--text-body-xs)] color-[var(--text-light)]">
+          <div className="footer-meta flex items-center gap-[var(--spacing-2)] font-size-[var(--text-body-xs)] text-[var(--text-light)]">
             <span>CDSP 79 | FNSMR | CRSMR Nouvelle-Aquitaine</span>
-            <span className="meta-separator color-[var(--text-tertiary)]">|</span>
+            <span className="meta-separator text-[var(--text-tertiary)]">|</span>
             <span>Version 1.0.0</span>
           </div>
         </div>
@@ -104,7 +104,7 @@ export interface FooterNavSectionProps {
 function FooterNavSection({ title, links }: FooterNavSectionProps) {
   return (
     <div className="nav-section flex flex-col gap-[var(--spacing-3)]">
-      <h3 className="nav-section-title font-size-[var(--text-body-sm)] font-[var(--font-weight-semibold)] color-[var(--text-primary)] uppercase letter-[var(--letter-spacing-wide)]">
+      <h3 className="nav-section-title font-size-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-[var(--text-primary)] uppercase letter-[var(--letter-spacing-wide)]">
         {title}
       </h3>
       <ul className="nav-section-list list-style-none m-0 p-0 flex flex-col gap-[var(--spacing-2)]">
@@ -112,7 +112,7 @@ function FooterNavSection({ title, links }: FooterNavSectionProps) {
           <li key={link.to} className="nav-section-item">
             <Link
               to={link.to}
-              className="nav-section-link font-size-[var(--text-body-sm)] color-[var(--text-tertiary)] no-underline transition-colors hover:color-[var(--color-primary-400)]"
+              className="nav-section-link font-size-[var(--text-body-sm)] text-[var(--text-tertiary)] no-underline transition-colors hover:text-[var(--color-brand-green-400)]"
             >
               {link.label}
             </Link>

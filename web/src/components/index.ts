@@ -33,6 +33,9 @@ export {
 export { Icon } from "./common/Icon";
 export type { IconName } from "./common/Icon";
 
+export { Logo } from "./common/Logo";
+export type { LogoProps } from "./common/Logo";
+
 export {
   Badge,
   StatusBadge,

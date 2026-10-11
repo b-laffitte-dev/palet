@@ -418,7 +418,7 @@ const PlayerDetail: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -449,7 +449,7 @@ const PlayerDetail: React.FC = () => {
                     photo: displayPlayer.photo ?? undefined,
                   }}
                   size="xl"
-                  className="border-4 border-gold-700"
+                  className="border-4 border-brand-orange-700"
                 />
                 {displayPlayer.club && (
                   <div className="mt-4 text-center">
@@ -465,7 +465,7 @@ const PlayerDetail: React.FC = () => {
                     {displayPlayer.fullName}
                   </h1>
                   {displayPlayer.alias && (
-                    <span className="text-heading-m text-primary-300">({displayPlayer.alias})</span>
+                    <span className="text-heading-m text-brand-green-300">({displayPlayer.alias})</span>
                   )}
                 </div>
 
@@ -486,34 +486,34 @@ const PlayerDetail: React.FC = () => {
                   </Badge>
                 </div>
 
-                <p className="text-body-m text-primary-200 mb-4 max-w-2xl">
+                <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
                   Né le {new Date(displayPlayer.birthDate).toLocaleDateString("fr-FR")} à{" "}
                   {displayPlayer.birthPlace} ({displayPlayer.age} ans)
                 </p>
 
                 {/* Stats Summary */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Matchs Joués</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Matchs Joués</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayPlayer.stats.matchesPlayed}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Victoires</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayPlayer.stats.wins}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Taux de Victoire</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Taux de Victoire</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayPlayer.stats.winRate}%
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Points Moyens</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Points Moyens</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayPlayer.stats.averagePoints.toFixed(1)}
                     </p>
                   </div>
@@ -524,10 +524,10 @@ const PlayerDetail: React.FC = () => {
                   <div className="flex items-center gap-4">
                     {displayPlayer.email && (
                       <div className="flex items-center gap-2">
-                        <span className="text-primary-400">Email:</span>
+                        <span className="text-brand-green-400">Email:</span>
                         <a
                           href={`mailto:${displayPlayer.email}`}
-                          className="text-gold-700 hover:underline text-body-s"
+                          className="text-brand-orange-700 hover:underline text-body-s"
                         >
                           {displayPlayer.email}
                         </a>
@@ -535,10 +535,10 @@ const PlayerDetail: React.FC = () => {
                     )}
                     {displayPlayer.phone && (
                       <div className="flex items-center gap-2">
-                        <span className="text-primary-400">Téléphone:</span>
+                        <span className="text-brand-green-400">Téléphone:</span>
                         <a
                           href={`tel:${displayPlayer.phone}`}
-                          className="text-gold-700 hover:underline text-body-s"
+                          className="text-brand-orange-700 hover:underline text-body-s"
                         >
                           {displayPlayer.phone}
                         </a>
@@ -551,7 +551,7 @@ const PlayerDetail: React.FC = () => {
                         href={displayPlayer.social.facebook}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary-400 hover:text-gold-700"
+                        className="text-brand-green-400 hover:text-brand-orange-700"
                       >
                         Facebook
                       </a>
@@ -561,7 +561,7 @@ const PlayerDetail: React.FC = () => {
                         href={displayPlayer.social.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary-400 hover:text-gold-700"
+                        className="text-brand-green-400 hover:text-brand-orange-700"
                       >
                         Twitter
                       </a>
@@ -571,7 +571,7 @@ const PlayerDetail: React.FC = () => {
                         href={displayPlayer.social.instagram}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary-400 hover:text-gold-700"
+                        className="text-brand-green-400 hover:text-brand-orange-700"
                       >
                         Instagram
                       </a>
@@ -582,10 +582,10 @@ const PlayerDetail: React.FC = () => {
 
               {/* Rank */}
               <div className="flex-shrink-0">
-                <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                  <p className="text-body-xs text-primary-400 mb-1">Classement Actuel</p>
+                <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                  <p className="text-body-xs text-brand-green-400 mb-1">Classement Actuel</p>
                   <div className="flex items-center justify-center gap-2">
-                    <span className="text-heading-xl font-bold text-gold-700">
+                    <span className="text-heading-xl font-bold text-brand-orange-700">
                       {displayPlayer.stats.currentRank}
                     </span>
                     {displayPlayer.stats.rankTrend === "up" && (
@@ -595,10 +595,10 @@ const PlayerDetail: React.FC = () => {
                       <span className="text-red-400">↓</span>
                     )}
                   </div>
-                  <p className="text-body-xs text-primary-300 mt-1">
+                  <p className="text-body-xs text-brand-green-300 mt-1">
                     {displayPlayer.stats.currentDivision}
                   </p>
-                  <p className="text-body-xs text-primary-400 mt-2">
+                  <p className="text-body-xs text-brand-green-400 mt-2">
                     {displayPlayer.stats.currentPoints} pts
                   </p>
                 </div>
@@ -608,26 +608,26 @@ const PlayerDetail: React.FC = () => {
         </section>
 
         {/* Progress Bar - Win Rate */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               Statistiques Détaillées
             </h2>
 
             {/* Win Rate Progress */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-body-s text-primary-300">
+                <span className="text-body-s text-brand-green-300">
                   Taux de Victoire: {displayPlayer.stats.winRate}%
                 </span>
-                <span className="text-body-s text-gold-700">
+                <span className="text-body-s text-brand-orange-700">
                   {displayPlayer.stats.wins}V - {displayPlayer.stats.draws}N -{" "}
                   {displayPlayer.stats.losses}D
                 </span>
               </div>
-              <div className="h-4 bg-primary-700 rounded-full overflow-hidden">
+              <div className="h-4 bg-brand-green-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gold-700 rounded-full"
+                  className="h-full bg-brand-orange-700 rounded-full"
                   style={{ width: `${displayPlayer.stats.winRate}%` }}
                 />
               </div>
@@ -636,14 +636,14 @@ const PlayerDetail: React.FC = () => {
             {/* Accuracy Progress */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-body-s text-primary-300">
+                <span className="text-body-s text-brand-green-300">
                   Précision: {displayPlayer.stats.accuracy}%
                 </span>
-                <span className="text-body-s text-gold-700">
+                <span className="text-body-s text-brand-orange-700">
                   Meilleur score: {displayPlayer.stats.bestScore}
                 </span>
               </div>
-              <div className="h-4 bg-primary-700 rounded-full overflow-hidden">
+              <div className="h-4 bg-brand-green-700 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-green-500 rounded-full"
                   style={{ width: `${displayPlayer.stats.accuracy}%` }}
@@ -653,34 +653,34 @@ const PlayerDetail: React.FC = () => {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Meilleure Série</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Meilleure Série</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayPlayer.stats.bestStreak}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Points/Manche</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Points/Manche</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayPlayer.stats.pointsPerManche.toFixed(1)}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Total Points</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Total Points</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayPlayer.stats.totalPoints}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Matchs Nuls</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Nuls</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayPlayer.stats.draws}
                   </p>
                 </CardContent>
@@ -705,7 +705,7 @@ const PlayerDetail: React.FC = () => {
               <TabPanel value="statistiques" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Par Compétition */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">Par Compétition</h3>
                     </CardHeader>
@@ -713,19 +713,19 @@ const PlayerDetail: React.FC = () => {
                       <div className="space-y-3">
                         {Object.entries(displayPlayer.stats.byCompetition).map(
                           ([compName, stats]) => (
-                            <div key={compName} className="bg-primary-800/50 rounded p-3">
-                              <p className="text-body-s font-semibold text-gold-700">{compName}</p>
+                            <div key={compName} className="bg-brand-green-800/50 rounded p-3">
+                              <p className="text-body-s font-semibold text-brand-orange-700">{compName}</p>
                               <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
                                 <div>
-                                  <p className="text-primary-300">Points: {stats.totalPoints}</p>
+                                  <p className="text-brand-green-300">Points: {stats.totalPoints}</p>
                                 </div>
                                 <div>
-                                  <p className="text-primary-300">
+                                  <p className="text-brand-green-300">
                                     Victoires: {(stats as any).wins || "N/A"}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-primary-300">
+                                  <p className="text-brand-green-300">
                                     Win Rate: {(stats as any).winRate || "N/A"}%
                                   </p>
                                 </div>
@@ -738,24 +738,24 @@ const PlayerDetail: React.FC = () => {
                   </Card>
 
                   {/* Par Saison */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">Par Saison</h3>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
                         {Object.entries(displayPlayer.stats.bySeason).map(([season, stats]) => (
-                          <div key={season} className="bg-primary-800/50 rounded p-3">
-                            <p className="text-body-s font-semibold text-gold-700">{season}</p>
+                          <div key={season} className="bg-brand-green-800/50 rounded p-3">
+                            <p className="text-body-s font-semibold text-brand-orange-700">{season}</p>
                             <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
                               <div>
-                                <p className="text-primary-300">Classement: {stats.rank}°</p>
+                                <p className="text-brand-green-300">Classement: {stats.rank}°</p>
                               </div>
                               <div>
-                                <p className="text-primary-300">Victoires: {stats.wins}</p>
+                                <p className="text-brand-green-300">Victoires: {stats.wins}</p>
                               </div>
                               <div>
-                                <p className="text-primary-300">Points: {stats.totalPoints}</p>
+                                <p className="text-brand-green-300">Points: {stats.totalPoints}</p>
                               </div>
                             </div>
                           </div>
@@ -765,26 +765,26 @@ const PlayerDetail: React.FC = () => {
                   </Card>
 
                   {/* Par Position */}
-                  <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-2">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-2">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">Par Position</h3>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {Object.entries(displayPlayer.stats.byPosition).map(([position, stats]) => (
-                          <div key={position} className="bg-primary-800/50 rounded p-3">
-                            <p className="text-body-s font-semibold text-gold-700">
+                          <div key={position} className="bg-brand-green-800/50 rounded p-3">
+                            <p className="text-body-s font-semibold text-brand-orange-700">
                               Position: {position}
                             </p>
                             <div className="grid grid-cols-3 gap-2 mt-2 text-body-xs">
                               <div>
-                                <p className="text-primary-300">Matchs: {stats.matches}</p>
+                                <p className="text-brand-green-300">Matchs: {stats.matches}</p>
                               </div>
                               <div>
-                                <p className="text-primary-300">Points: {stats.points}</p>
+                                <p className="text-brand-green-300">Points: {stats.points}</p>
                               </div>
                               <div>
-                                <p className="text-primary-300">Win Rate: {stats.winRate}%</p>
+                                <p className="text-brand-green-300">Win Rate: {stats.winRate}%</p>
                               </div>
                             </div>
                           </div>
@@ -797,7 +797,7 @@ const PlayerDetail: React.FC = () => {
 
               {/* Historique des Matchs */}
               <TabPanel value="historique" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <h3 className="text-heading-s font-bold text-white">
                       Derniers Matchs ({mockMatches.length})
@@ -808,7 +808,7 @@ const PlayerDetail: React.FC = () => {
                       {mockMatches.map((match) => (
                         <div
                           key={match.id}
-                          className="bg-primary-800/50 rounded p-4 flex items-center justify-between"
+                          className="bg-brand-green-800/50 rounded p-4 flex items-center justify-between"
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
@@ -825,12 +825,12 @@ const PlayerDetail: React.FC = () => {
                                 <Badge variant="default">À venir</Badge>
                               )}
                             </div>
-                            <p className="text-body-xs text-primary-300">
+                            <p className="text-body-xs text-brand-green-300">
                               Journée {match.journee} - {match.date.toLocaleDateString("fr-FR")}
                             </p>
                             <div className="flex items-center gap-2 mt-2">
                               <span className="text-body-s text-white">{match.team1.name}</span>
-                              <span className="text-body-s text-gold-700 font-bold">
+                              <span className="text-body-s text-brand-orange-700 font-bold">
                                 {match.team1Score} - {match.team2Score}
                               </span>
                               <span className="text-body-s text-white">{match.team2.name}</span>
@@ -858,29 +858,29 @@ const PlayerDetail: React.FC = () => {
               <TabPanel value="trophees" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {displayPlayer.trophies.list.map((trophy) => (
-                    <Card key={trophy.id} className="bg-primary-900/50 border-primary-700/50">
+                    <Card key={trophy.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardContent className="text-center p-6">
                         <div className="mb-4">
                           <span className="text-4xl">🏆</span>
                         </div>
-                        <h3 className="text-heading-s font-bold text-gold-700 mb-2">
+                        <h3 className="text-heading-s font-bold text-brand-orange-700 mb-2">
                           {trophy.name}
                         </h3>
-                        <p className="text-body-xs text-primary-300 mb-1">{trophy.competition}</p>
-                        <p className="text-body-xs text-primary-400 mb-1">
+                        <p className="text-body-xs text-brand-green-300 mb-1">{trophy.competition}</p>
+                        <p className="text-body-xs text-brand-green-400 mb-1">
                           {trophy.type === "champion" && "Champion"}
                           {trophy.type === "winner" && "Vainqueur"}
                           {trophy.type === "finalist" && "Finaliste"}
                           {trophy.type === "semifinalist" && "Demi-finaliste"}
                         </p>
-                        <p className="text-body-xs text-primary-300">Saison {trophy.year}</p>
+                        <p className="text-body-xs text-brand-green-300">Saison {trophy.year}</p>
                       </CardContent>
                     </Card>
                   ))}
                   {displayPlayer.trophies.list.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-3">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-3">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">
+                        <p className="text-body-m text-brand-green-300">
                           Aucun trophée pour le moment.
                         </p>
                       </CardContent>
@@ -893,7 +893,7 @@ const PlayerDetail: React.FC = () => {
               <TabPanel value="equipes" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Équipes actuelles */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
                         Équipes Actuelles ({displayPlayer.currentTeams.length})
@@ -905,11 +905,11 @@ const PlayerDetail: React.FC = () => {
                           {displayPlayer.currentTeams.map((team) => (
                             <div
                               key={team.id}
-                              className="bg-primary-800/50 rounded p-3 flex items-center justify-between"
+                              className="bg-brand-green-800/50 rounded p-3 flex items-center justify-between"
                             >
                               <div>
                                 <p className="text-body-s font-semibold text-white">{team.name}</p>
-                                <p className="text-body-xs text-primary-300">
+                                <p className="text-body-xs text-brand-green-300">
                                   {team.stats.wins}V - {team.stats.losses}D
                                 </p>
                               </div>
@@ -918,13 +918,13 @@ const PlayerDetail: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <p className="text-body-s text-primary-300">Aucune équipe actuelle.</p>
+                        <p className="text-body-s text-brand-green-300">Aucune équipe actuelle.</p>
                       )}
                     </CardContent>
                   </Card>
 
                   {/* Équipes passées */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
                         Équipes Passées ({displayPlayer.pastTeams.length})
@@ -936,14 +936,14 @@ const PlayerDetail: React.FC = () => {
                           {displayPlayer.pastTeams.map((team) => (
                             <div
                               key={team.id}
-                              className="bg-primary-800/50 rounded p-3 flex items-center justify-between"
+                              className="bg-brand-green-800/50 rounded p-3 flex items-center justify-between"
                             >
                               <div>
                                 <p className="text-body-s font-semibold text-white">{team.name}</p>
-                                <p className="text-body-xs text-primary-300">
+                                <p className="text-body-xs text-brand-green-300">
                                   Saison: {team.season}
                                 </p>
-                                <p className="text-body-xs text-primary-300">
+                                <p className="text-body-xs text-brand-green-300">
                                   {team.stats.wins}V - {team.stats.losses}D
                                 </p>
                               </div>
@@ -952,7 +952,7 @@ const PlayerDetail: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <p className="text-body-s text-primary-300">Aucune équipe passée.</p>
+                        <p className="text-body-s text-brand-green-300">Aucune équipe passée.</p>
                       )}
                     </CardContent>
                   </Card>
@@ -960,7 +960,7 @@ const PlayerDetail: React.FC = () => {
 
                 {/* Coéquipiers fréquents */}
                 {displayPlayer.frequentTeammates.length > 0 && (
-                  <Card className="bg-primary-900/50 border-primary-700/50 mt-4">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 mt-4">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">Coéquipiers Fréquents</h3>
                     </CardHeader>
@@ -969,7 +969,7 @@ const PlayerDetail: React.FC = () => {
                         {displayPlayer.frequentTeammates.map((teammate, index) => (
                           <div
                             key={index}
-                            className="bg-primary-800/50 rounded p-3 flex items-center gap-3"
+                            className="bg-brand-green-800/50 rounded p-3 flex items-center gap-3"
                           >
                             <UserAvatar
                               user={{
@@ -983,13 +983,13 @@ const PlayerDetail: React.FC = () => {
                               <p className="text-body-s font-semibold text-white">
                                 {teammate.player.fullName}
                               </p>
-                              <p className="text-body-xs text-primary-300">
+                              <p className="text-body-xs text-brand-green-300">
                                 {teammate.count} matchs ensemble
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300">Win Rate</p>
-                              <p className="text-body-s font-bold text-gold-700">
+                              <p className="text-body-xs text-brand-green-300">Win Rate</p>
+                              <p className="text-body-s font-bold text-brand-orange-700">
                                 {teammate.winRate}%
                               </p>
                             </div>
@@ -1005,21 +1005,21 @@ const PlayerDetail: React.FC = () => {
               <TabPanel value="records" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {displayPlayer.records.list.map((record) => (
-                    <Card key={record.id} className="bg-primary-900/50 border-primary-700/50">
+                    <Card key={record.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0">
                             <span className="text-2xl">🎯</span>
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-heading-s font-bold text-gold-700 mb-1">
+                            <h3 className="text-heading-s font-bold text-brand-orange-700 mb-1">
                               {record.type}
                             </h3>
                             <p className="text-body-s text-white mb-2">{record.value}</p>
-                            <p className="text-body-xs text-primary-300 mb-1">
+                            <p className="text-body-xs text-brand-green-300 mb-1">
                               {record.tournament}
                             </p>
-                            <p className="text-body-xs text-primary-400">
+                            <p className="text-body-xs text-brand-green-400">
                               {new Date(record.date).toLocaleDateString("fr-FR")}
                             </p>
                           </div>
@@ -1031,9 +1031,9 @@ const PlayerDetail: React.FC = () => {
                     </Card>
                   ))}
                   {displayPlayer.records.list.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-3">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-3">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">Aucun record pour le moment.</p>
+                        <p className="text-body-m text-brand-green-300">Aucun record pour le moment.</p>
                       </CardContent>
                     </Card>
                   )}

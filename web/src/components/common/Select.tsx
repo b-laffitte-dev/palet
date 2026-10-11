@@ -9,10 +9,10 @@ const selectVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary-900 border border-primary-700 text-white placeholder:text-primary-400 focus:border-gold-700 focus:ring-gold-700/50",
-        ghost: "bg-transparent border-0 text-white placeholder:text-primary-400 focus:ring-0",
+          "bg-brand-green-900 border border-brand-green-700 text-white placeholder:text-brand-green-400 focus:border-brand-orange-pure focus:ring-brand-orange-700/50",
+        ghost: "bg-transparent border-0 text-white placeholder:text-brand-green-400 focus:ring-0",
         outline:
-          "bg-transparent border border-primary-700 text-white placeholder:text-primary-400 focus:border-gold-700 focus:ring-gold-700/50",
+          "bg-transparent border border-brand-green-700 text-white placeholder:text-brand-green-400 focus:border-brand-orange-pure focus:ring-brand-orange-700/50",
       },
       size: {
         xs: "px-2 py-1 text-xs",
@@ -148,7 +148,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       return (
         <div className="w-full" ref={wrapperRef}>
           {label && (
-            <label className="block text-body-s font-medium text-primary-200 mb-1.5">{label}</label>
+            <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">{label}</label>
           )}
 
           <div className="relative">
@@ -160,7 +160,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 <Icon
                   name={leftIcon}
                   size={iconSize}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300 pointer-events-none"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300 pointer-events-none"
                 />
               )}
 
@@ -171,26 +171,26 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 <Icon
                   name={isOpen ? "ChevronUp" : "ChevronDown"}
                   size={iconSize}
-                  className="text-primary-300"
+                  className="text-brand-green-300"
                 />
               </div>
 
               {isOpen && (
-                <div className="absolute top-full left-0 mt-1 w-full min-w-[200px] bg-primary-800 border border-primary-700 rounded-lg shadow-lg z-50">
+                <div className="absolute top-full left-0 mt-1 w-full min-w-[200px] bg-brand-green-800 border border-brand-green-700 rounded-lg shadow-lg z-50">
                   {searchable && (
-                    <div className="p-2 border-b border-primary-700">
+                    <div className="p-2 border-b border-brand-green-700">
                       <div className="relative">
                         <Icon
                           name="Search"
                           size="sm"
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                         />
                         <input
                           type="text"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                           placeholder="Rechercher..."
-                          className="w-full pl-10 pr-4 py-2 bg-primary-900 border border-primary-700 rounded-md text-white placeholder:text-primary-400 focus:outline-none focus:ring-2 focus:ring-gold-700/50 text-sm"
+                          className="w-full pl-10 pr-4 py-2 bg-brand-green-900 border border-brand-green-700 rounded-md text-white placeholder:text-brand-green-400 focus:outline-none focus:ring-2 focus:ring-brand-orange-700/50 text-sm"
                           autoFocus
                         />
                       </div>
@@ -205,14 +205,14 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                           type="button"
                           onClick={() => handleSelect(option.value)}
                           disabled={option.disabled || disabled}
-                          className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${value === option.value ? "bg-primary-700" : ""}`}
+                          className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-brand-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${value === option.value ? "bg-brand-green-700" : ""}`}
                         >
                           {option.icon && <Icon name={option.icon} size="sm" />}
                           <span>{option.label}</span>
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-2 text-center text-primary-400 text-sm">
+                      <div className="px-4 py-2 text-center text-brand-green-400 text-sm">
                         Aucune option trouvée
                       </div>
                     )}
@@ -250,7 +250,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           )}
 
           {helpText && !error && (
-            <p id={`${props.id}-help`} className="text-caption text-primary-400 mt-1">
+            <p id={`${props.id}-help`} className="text-caption text-brand-green-400 mt-1">
               {helpText}
             </p>
           )}
@@ -262,7 +262,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-body-s font-medium text-primary-200 mb-1.5">{label}</label>
+          <label className="block text-body-s font-medium text-brand-green-200 mb-1.5">{label}</label>
         )}
 
         <div className="relative">
@@ -270,7 +270,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <Icon
               name={leftIcon}
               size={iconSize}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300 pointer-events-none"
             />
           )}
 
@@ -305,7 +305,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <Icon
               name={rightIcon}
               size={iconSize}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-300 pointer-events-none"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-green-300 pointer-events-none"
             />
           )}
         </div>
@@ -318,7 +318,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         )}
 
         {helpText && !error && (
-          <p id={`${props.id}-help`} className="text-caption text-primary-400 mt-1">
+          <p id={`${props.id}-help`} className="text-caption text-brand-green-400 mt-1">
             {helpText}
           </p>
         )}

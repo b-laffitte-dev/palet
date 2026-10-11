@@ -19,7 +19,7 @@ const toastVariants = cva(
         error: "bg-danger-500 text-white",
         warning: "bg-warning-500 text-white",
         info: "bg-info-500 text-white",
-        primary: "bg-primary-500 text-white",
+        primary: "bg-brand-green-500 text-white",
         secondary: "bg-secondary-500 text-white",
       },
       position: {

@@ -23,7 +23,7 @@ const modalVariants = cva("fixed inset-0 z-50 flex items-center justify-center p
 });
 
 // Modal content variants
-const modalContentVariants = cva("bg-primary-800 rounded-xl shadow-2xl overflow-hidden", {
+const modalContentVariants = cva("bg-brand-green-800 rounded-xl shadow-2xl overflow-hidden", {
   variants: {
     size: {
       xs: "w-full",
@@ -210,10 +210,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-primary-700">
+            <div className="flex items-center justify-between p-6 border-b border-brand-green-700">
               <div className="flex-1">
                 {title && <h2 className="text-h4 font-bold text-white mb-1">{title}</h2>}
-                {description && <p className="text-body-s text-primary-300">{description}</p>}
+                {description && <p className="text-body-s text-brand-green-300">{description}</p>}
               </div>
 
               {showCloseButton && onClose && (
@@ -249,7 +249,7 @@ export interface ModalHeaderProps {
 
 export const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
   ({ children, className, ...props }, ref) => (
-    <div ref={ref} className={`p-6 border-b border-primary-700 ${className || ""}`} {...props}>
+    <div ref={ref} className={`p-6 border-b border-brand-green-700 ${className || ""}`} {...props}>
       {children}
     </div>
   ),
@@ -283,7 +283,7 @@ export const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
   ({ children, className, ...props }, ref) => (
     <div
       ref={ref}
-      className={`p-6 border-t border-primary-700 flex items-center justify-end gap-3 ${className || ""}`}
+      className={`p-6 border-t border-brand-green-700 flex items-center justify-end gap-3 ${className || ""}`}
       {...props}
     >
       {children}

@@ -37,22 +37,22 @@ const Connexion: React.FC = () => {
 
   return (
     <Layout showHeader={false}>
-      <main className="flex-1 flex items-center justify-center min-h-screen bg-primary-900">
+      <main className="flex-1 flex items-center justify-center min-h-screen bg-brand-green-900">
         <div className="w-full max-w-md px-4 py-8">
-          <div className="bg-primary-800 rounded-lg p-8 border border-primary-700/50">
+          <div className="bg-brand-green-800 rounded-lg p-8 border border-brand-green-700/50">
             {/* Logo */}
             <div className="text-center mb-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-primary-900 rounded-full border-4 border-gold-700 flex items-center justify-center">
-                <Icon name="Target" size="xxl" className="text-gold-700" />
+              <div className="w-20 h-20 mx-auto mb-4 bg-brand-green-900 rounded-full border-4 border-brand-orange-700 flex items-center justify-center">
+                <Icon name="Target" size="xxl" className="text-brand-orange-pure" />
               </div>
               <h1 className="text-heading-l font-bold text-white uppercase tracking-wide">
                 CDSP 79
               </h1>
-              <p className="text-body-s text-primary-300 mt-2">Fédération des joueurs et clubs</p>
+              <p className="text-body-s text-brand-green-300 mt-2">Fédération des joueurs et clubs</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <h2 className="text-heading-s font-bold text-gold-700 uppercase tracking-wide text-center mb-6">
+              <h2 className="text-heading-s font-bold text-brand-orange-pure uppercase tracking-wide text-center mb-6">
                 CONNEXION
               </h2>
 
@@ -64,14 +64,14 @@ const Connexion: React.FC = () => {
               )}
 
               <div className="space-y-2">
-                <label htmlFor="email" className="text-body-s font-medium text-primary-200">
+                <label htmlFor="email" className="text-body-s font-medium text-brand-green-200">
                   Adresse email
                 </label>
                 <div className="relative">
                   <Icon
                     name="Mail"
                     size="m"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                   />
                   <input
                     type="email"
@@ -80,20 +80,20 @@ const Connexion: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="votre@email.com"
                     required
-                    className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                    className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-pure"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="text-body-s font-medium text-primary-200">
+                <label htmlFor="password" className="text-body-s font-medium text-brand-green-200">
                   Mot de passe
                 </label>
                 <div className="relative">
                   <Icon
                     name="Lock"
                     size="m"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                   />
                   <input
                     type="password"
@@ -103,7 +103,7 @@ const Connexion: React.FC = () => {
                     placeholder="••••••••"
                     required
                     minLength={8}
-                    className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
+                    className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-brand-green-400 focus:outline-none focus:border-brand-orange-pure"
                   />
                 </div>
               </div>
@@ -114,12 +114,12 @@ const Connexion: React.FC = () => {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 accent-gold-700"
+                    className="w-4 h-4 accent-brand-orange-pure"
                   />
-                  <span className="text-body-s text-primary-200">Se souvenir de moi</span>
+                  <span className="text-body-s text-brand-green-200">Se souvenir de moi</span>
                 </label>
 
-                <button type="button" className="text-body-s text-gold-700 hover:text-gold-600">
+                <button type="button" className="text-body-s text-brand-orange-pure hover:text-brand-orange-400">
                   Mot de passe oublié ?
                 </button>
               </div>
@@ -134,8 +134,8 @@ const Connexion: React.FC = () => {
                 Se connecter
               </Button>
 
-              <div className="text-center pt-4 border-t border-primary-700/50">
-                <p className="text-body-s text-primary-300 mb-4">Vous n'avez pas de compte ?</p>
+              <div className="text-center pt-4 border-t border-brand-green-700/50">
+                <p className="text-body-s text-brand-green-300 mb-4">Vous n'avez pas de compte ?</p>
                 <Button
                   variant="outline"
                   size="m"
@@ -149,7 +149,7 @@ const Connexion: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <p className="text-center text-caption text-primary-400 mt-8">
+          <p className="text-center text-caption text-brand-green-400 mt-8">
             © 2026 CDSP 79 - Tous droits réservés
           </p>
         </div>

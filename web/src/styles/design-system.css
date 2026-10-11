@@ -1,38 +1,71 @@
-/* Palet Vendéen Design System - CSS Variables */
+/* CDSP 79 Design System - CSS Variables */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 @import url("./responsive.css");
 @import url("./global.css");
 @import url("./components.css");
 
 /* ============================================ */
-/* COLOR SYSTEM - Palet Vendéen Theme */
+/* COLOR SYSTEM - CDSP 79 Brand Colors */
+/* Based on the official logo: Le PALET en DEUX-SÈVRES */
 /* ============================================ */
 
 :root {
-  /* Primary Colors - Pure Gold Theme (mockup colors) */
-  --color-primary-50: #fefce8;
-  --color-primary-100: #fef3c7;
-  --color-primary-200: #fde68a;
-  --color-primary-300: #fcd34d;
-  --color-primary-400: #fbbf24;
-  --color-primary-500: #f59e0b;
-  --color-primary-600: #d97706;
-  --color-primary-700: #b45309;
-  --color-primary-800: #92400e;
-  --color-primary-900: #78350f;
-  --color-primary-950: #3f1902;
+  /* ============================================ */
+  /* PRIMARY BRAND COLORS - From Logo */
+  /* ============================================ */
+  
+  /* Green - Used for "Le", "DEUX-SÈVRES", "9" circle, and tree */
+  --color-brand-green: #00A651;
+  --color-brand-green-50: #ecfdf5;
+  --color-brand-green-100: #d1fae5;
+  --color-brand-green-200: #a7f3d0;
+  --color-brand-green-300: #6ee7b7;
+  --color-brand-green-400: #34d399;
+  --color-brand-green-500: #10b981;
+  --color-brand-green-600: #059669;
+  --color-brand-green-700: #047857;
+  --color-brand-green-800: #065f46;
+  --color-brand-green-900: #064e3b;
+  --color-brand-green-950: #022c22;
 
-  /* Pure Gold - exact from mockup */
-  --color-gold: #ffd700;
-  --color-gold-light: #ffec8b;
-  --color-gold-dark: #c6a600;
+  /* Orange - Used for "7" circle and silhouette */
+  --color-brand-orange: #FF8C00;
+  --color-brand-orange-50: #fff7ed;
+  --color-brand-orange-100: #ffedd5;
+  --color-brand-orange-200: #fed7aa;
+  --color-brand-orange-300: #fdba74;
+  --color-brand-orange-400: #fb923c;
+  --color-brand-orange-500: #f97316;
+  --color-brand-orange-600: #ea580c;
+  --color-brand-orange-700: #c2410c;
+  --color-brand-orange-800: #9a3412;
+  --color-brand-orange-900: #7c2d12;
+  --color-brand-orange-950: #431407;
 
-  /* Deep Green - exact from mockup (#1a3d2e) */
+  /* Gray - Used for "PALET en" and star */
+  --color-brand-gray: #666666;
+  --color-brand-gray-50: #f9fafb;
+  --color-brand-gray-100: #f3f4f6;
+  --color-brand-gray-200: #e5e7eb;
+  --color-brand-gray-300: #d1d5db;
+  --color-brand-gray-400: #9ca3af;
+  --color-brand-gray-500: #6b7280;
+  --color-brand-gray-600: #4b5563;
+  --color-brand-gray-700: #374151;
+  --color-brand-gray-800: #1f2937;
+  --color-brand-gray-900: #111827;
+  --color-brand-gray-950: #030712;
+
+  /* Light Green - for backgrounds and accents */
+  --color-green-light: #2d5a3d;
   --color-green-dark: #1a3d2e;
   --color-green-darker: #004d2b;
-  --color-green-light: #2d5a3d;
 
-  /* Secondary Colors - Deep Blue */
+  /* ============================================ */
+  /* SECONDARY COLORS */
+  /* ============================================ */
+  
+  /* Secondary Blue - for links and accents */
   --color-secondary-50: #eff6ff;
   --color-secondary-100: #dbeafe;
   --color-secondary-200: #bfdbfe;
@@ -45,7 +78,9 @@
   --color-secondary-900: #1e3a8a;
   --color-secondary-950: #172554;
 
-  /* Neutral Colors */
+  /* ============================================ */
+  /* NEUTRAL COLORS */
+  /* ============================================ */
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f5f5f5;
   --color-neutral-200: #e5e5e5;
@@ -58,7 +93,10 @@
   --color-neutral-900: #171717;
   --color-neutral-950: #0a0a0a;
 
-  /* Semantic Colors */
+  /* ============================================ */
+  /* SEMANTIC COLORS */
+  /* ============================================ */
+  
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
@@ -103,41 +141,70 @@
   --color-info-800: #1e40af;
   --color-info-900: #1e3a8a;
 
-  /* Background Colors - Match mockup exactly */
-  --bg-primary: var(--color-neutral-900);
-  --bg-secondary: var(--color-neutral-800);
-  --bg-tertiary: var(--color-neutral-700);
+  /* ============================================ */
+  /* BACKGROUND COLORS */
+  /* ============================================ */
+  
+  /* Primary backgrounds - Dark theme for sports feel */
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-tertiary: #1a1a1a;
   --bg-dark: #000000;
   --bg-darker: #0a0a0a;
   --bg-light: var(--color-neutral-50);
   --bg-lighter: var(--color-neutral-100);
-  --bg-green: var(--color-green-dark);
+  
+  /* Brand backgrounds */
+  --bg-brand: var(--color-brand-green);
+  --bg-brand-light: #008a42;
+  --bg-brand-dark: #006a32;
+  --bg-green-dark: var(--color-green-dark);
   --bg-green-light: var(--color-green-light);
 
-  /* Text Colors - High contrast for readability on dark backgrounds */
-  --text-primary: var(--color-neutral-50);
+  /* ============================================ */
+  /* TEXT COLORS */
+  /* ============================================ */
+  
+  /* Light text on dark backgrounds */
+  --text-primary: #ffffff;
   --text-secondary: var(--color-neutral-300);
   --text-tertiary: var(--color-neutral-400);
   --text-light: var(--color-neutral-500);
   --text-lighter: var(--color-neutral-600);
   --text-inverse: var(--color-neutral-900);
 
-  /* Dark mode text colors (for light backgrounds) */
+  /* Dark text on light backgrounds */
   --text-dark-primary: var(--color-neutral-900);
   --text-dark-secondary: var(--color-neutral-600);
   --text-dark-tertiary: var(--color-neutral-500);
 
-  /* Border Colors */
+  /* ============================================ */
+  /* BORDER COLORS */
+  /* ============================================ */
+  
   --border-primary: var(--color-neutral-700);
   --border-secondary: var(--color-neutral-600);
   --border-dark: var(--color-neutral-500);
   --border-light: var(--color-neutral-200);
-  --border-gold: var(--color-primary-500);
+  --border-brand-green: var(--color-brand-green);
+  --border-brand-orange: var(--color-brand-orange);
 
-  /* Accent Colors */
-  --accent-gold: var(--color-gold);
-  --accent-gold-light: var(--color-gold-light);
-  --accent-gold-dark: var(--color-gold-dark);
+  /* ============================================ */
+  /* ACCENT COLORS */
+  /* ============================================ */
+  
+  --accent-green: var(--color-brand-green);
+  --accent-green-light: #34d399;
+  --accent-green-dark: #047857;
+  
+  --accent-orange: var(--color-brand-orange);
+  --accent-orange-light: #fb923c;
+  --accent-orange-dark: #c2410c;
+  
+  --accent-gray: var(--color-brand-gray);
+  --accent-gray-light: #9ca3af;
+  --accent-gray-dark: #374151;
+  
   --accent-blue: var(--color-secondary-600);
   --accent-blue-light: var(--color-secondary-500);
   --accent-yellow: #ffc107;
@@ -148,7 +215,6 @@
 /* ============================================ */
 
 /* Font Families */
-
 :root {
   --font-family-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-family-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
@@ -272,9 +338,13 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 24px 38px -10px rgb(0 0 0 / 0.25);
 
-  --shadow-gold-sm: 0 1px 2px 0 rgba(217, 119, 6, 0.05);
-  --shadow-gold-m: 0 4px 6px -1px rgba(217, 119, 6, 0.1);
-  --shadow-gold-l: 0 10px 15px -3px rgba(217, 119, 6, 0.15);
+  --shadow-green-sm: 0 1px 2px 0 rgba(0, 166, 81, 0.05);
+  --shadow-green-m: 0 4px 6px -1px rgba(0, 166, 81, 0.1);
+  --shadow-green-l: 0 10px 15px -3px rgba(0, 166, 81, 0.15);
+  
+  --shadow-orange-sm: 0 1px 2px 0 rgba(255, 140, 0, 0.05);
+  --shadow-orange-m: 0 4px 6px -1px rgba(255, 140, 0, 0.1);
+  --shadow-orange-l: 0 10px 15px -3px rgba(255, 140, 0, 0.15);
 }
 
 /* ============================================ */
@@ -403,13 +473,13 @@ a {
 
 /* Selection styling */
 ::selection {
-  background-color: var(--color-primary-200);
-  color: var(--color-primary-900);
+  background-color: var(--color-brand-green);
+  color: var(--color-neutral-900);
 }
 
 /* Focus visible for keyboard users */
 :focus-visible {
-  outline: 2px solid var(--color-primary-500);
+  outline: 2px solid var(--color-brand-green);
   outline-offset: 2px;
 }
 
@@ -418,7 +488,7 @@ a {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--color-primary-600);
+  background: var(--color-brand-green);
   color: white;
   padding: 8px 16px;
   z-index: 100;
@@ -504,20 +574,35 @@ a {
 .text-dark-tertiary {
   color: var(--text-dark-tertiary);
 }
-.text-gold {
-  color: var(--accent-gold);
+
+/* Brand Color utilities - Green */
+.text-brand-green {
+  color: var(--color-brand-green);
 }
-.text-gold-400 {
-  color: var(--color-primary-400);
+.text-brand-green-400 {
+  color: var(--color-brand-green-400);
 }
-.text-gold-500 {
-  color: var(--color-primary-500);
+.text-brand-green-500 {
+  color: var(--color-brand-green-500);
 }
-.text-gold-600 {
-  color: var(--color-primary-600);
+.text-brand-green-600 {
+  color: var(--color-brand-green-600);
 }
-.text-gold-700 {
-  color: var(--color-primary-700);
+
+/* Brand Color utilities - Orange */
+.text-brand-orange {
+  color: var(--color-brand-orange);
+}
+.text-brand-orange-400 {
+  color: var(--color-brand-orange-400);
+}
+.text-brand-orange-500 {
+  color: var(--color-brand-orange-500);
+}
+
+/* Brand Color utilities - Gray */
+.text-brand-gray {
+  color: var(--color-brand-gray);
 }
 
 /* Text size utilities */
@@ -554,35 +639,41 @@ a {
 }
 
 /* Accent utilities */
-.bg-gold {
-  background-color: var(--accent-gold);
+.bg-brand-green {
+  background-color: var(--accent-green);
 }
-.bg-gold-pure {
-  background-color: var(--color-gold);
+.bg-brand-green-pure {
+  background-color: var(--color-brand-green);
 }
-.bg-gold-500 {
-  background-color: var(--color-primary-500);
+.bg-brand-green-500 {
+  background-color: var(--color-brand-green-500);
 }
-.bg-gold-600 {
-  background-color: var(--color-primary-600);
+.bg-brand-green-600 {
+  background-color: var(--color-brand-green-600);
 }
-.bg-gold-700 {
-  background-color: var(--color-primary-700);
+.text-brand-green {
+  color: var(--accent-green);
 }
-.bg-gold-800 {
-  background-color: var(--color-primary-800);
+
+.bg-brand-orange {
+  background-color: var(--accent-orange);
 }
-.text-gold {
-  color: var(--accent-gold);
+.bg-brand-orange-pure {
+  background-color: var(--color-brand-orange);
 }
-.text-gold-pure {
-  color: var(--color-gold);
+.bg-brand-orange-500 {
+  background-color: var(--color-brand-orange-500);
 }
-.text-blue {
-  color: var(--accent-blue);
+.text-brand-orange {
+  color: var(--accent-orange);
 }
-.bg-blue {
-  background-color: var(--accent-blue);
+
+/* Gray utilities */
+.bg-brand-gray {
+  background-color: var(--color-brand-gray);
+}
+.text-brand-gray {
+  color: var(--color-brand-gray);
 }
 
 /* Green utilities */
@@ -599,12 +690,12 @@ a {
   color: var(--color-green-dark);
 }
 
-/* Red/Danger utilities */
-.bg-red-800 {
-  background-color: var(--color-danger-800);
+/* Blue utilities */
+.text-blue {
+  color: var(--accent-blue);
 }
-.bg-red-600 {
-  background-color: var(--color-danger-600);
+.bg-blue {
+  background-color: var(--accent-blue);
 }
 
 /* Yellow utility */
@@ -617,31 +708,35 @@ a {
 
 /* Background opacity utilities */
 .bg-primary-600 {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-brand-green-600);
 }
 .bg-primary-700 {
-  background-color: var(--color-primary-700);
+  background-color: var(--color-brand-green-700);
 }
 .bg-primary-800\/20 {
-  background-color: rgba(146, 64, 14, 0.2);
+  background-color: rgba(6, 95, 70, 0.2);
 }
 .bg-primary-800\/30 {
-  background-color: rgba(45, 26, 13, 0.3);
+  background-color: rgba(26, 61, 46, 0.3);
 }
 .bg-primary-900 {
-  background-color: var(--color-primary-900);
+  background-color: var(--color-brand-green-900);
 }
 .bg-primary-800 {
-  background-color: var(--color-primary-800);
+  background-color: var(--color-brand-green-800);
 }
-.bg-gold\/10 {
-  background-color: rgba(245, 158, 11, 0.1);
+
+.bg-brand-green\/10 {
+  background-color: rgba(0, 166, 81, 0.1);
 }
-.bg-gold\/20 {
-  background-color: rgba(245, 158, 11, 0.2);
+.bg-brand-green\/20 {
+  background-color: rgba(0, 166, 81, 0.2);
 }
-.bg-gold-900\/50 {
-  background-color: rgba(180, 83, 9, 0.5);
+.bg-brand-green\/30 {
+  background-color: rgba(0, 166, 81, 0.3);
+}
+.bg-brand-green-900\/50 {
+  background-color: rgba(6, 78, 59, 0.5);
 }
 
 /* Amber/Warning opacity utilities - for barrage rows */
@@ -664,18 +759,18 @@ a {
 .bg-primary-800\/20:hover,
 .bg-amber-900\/20:hover,
 .bg-red-900\/20:hover {
-  background-color: rgba(45, 26, 13, 0.3) !important;
+  background-color: rgba(26, 61, 46, 0.3) !important;
 }
 
-/* Text colors for primary palette */
-.text-primary-200 {
-  color: var(--color-primary-200);
+/* Text colors for brand palette */
+.text-brand-green-300 {
+  color: var(--color-brand-green-300);
 }
-.text-primary-300 {
-  color: var(--color-primary-300);
+.text-brand-green-400 {
+  color: var(--color-brand-green-400);
 }
-.text-primary-700 {
-  color: var(--color-primary-700);
+.text-brand-green-700 {
+  color: var(--color-brand-green-700);
 }
 
 /* Success/Green text and background colors */
@@ -715,21 +810,29 @@ a {
 }
 
 /* Border colors */
-.border-gold-700 {
-  border-color: var(--color-primary-700);
+.border-green-700 {
+  border-color: var(--color-brand-green-700);
 }
 .border-primary-700\/50 {
-  border-color: rgba(180, 83, 9, 0.5);
+  border-color: rgba(6, 78, 59, 0.5);
 }
 
 /* Hover text color utilities */
-.hover\:text-gold-dark:hover {
-  color: var(--color-gold-dark);
+.hover\:text-green-dark:hover {
+  color: var(--color-brand-green);
 }
 
 /* Gradient utilities */
 .bg-gradient-to-r {
-  background: linear-gradient(to right, var(--color-primary-800), var(--color-primary-900));
+  background: linear-gradient(to right, var(--color-brand-green-800), var(--color-brand-green-900));
+}
+
+.bg-gradient-brand {
+  background: linear-gradient(135deg, var(--color-brand-green), var(--color-brand-orange));
+}
+
+.bg-gradient-green-to-black {
+  background: linear-gradient(to right, var(--color-brand-green), var(--bg-dark));
 }
 
 /* Spacing utilities */
@@ -998,7 +1101,7 @@ a {
 
   a,
   a:visited {
-    color: var(--color-primary-700);
+    color: var(--color-brand-green-700);
     text-decoration: underline;
   }
 }

@@ -15,9 +15,9 @@ const tabsContainerVariants = cva("flex items-center", {
   variants: {
     variant: {
       default: "gap-2",
-      pills: "gap-2 bg-primary-800 p-1 rounded-xl",
-      underline: "gap-8 border-b border-primary-700",
-      segmented: "gap-0 bg-primary-800 rounded-xl p-1",
+      pills: "gap-2 bg-brand-green-800 p-1 rounded-xl",
+      underline: "gap-8 border-b border-brand-green-700",
+      segmented: "gap-0 bg-brand-green-800 rounded-xl p-1",
     },
     size: {
       xs: "text-xs",
@@ -44,8 +44,8 @@ const tabVariants = cva(
         segmented: "rounded-lg",
       },
       state: {
-        active: "text-white bg-primary-700",
-        inactive: "text-primary-300 hover:text-white hover:bg-primary-700/50",
+        active: "text-white bg-brand-green-700",
+        inactive: "text-brand-green-300 hover:text-white hover:bg-brand-green-700/50",
       },
       size: {
         xs: "px-2 py-1 text-xs",
@@ -58,27 +58,27 @@ const tabVariants = cva(
       {
         variant: "underline",
         state: "active",
-        className: "border-primary-500",
+        className: "border-brand-green-500",
       },
       {
         variant: "underline",
         state: "inactive",
-        className: "border-transparent hover:border-primary-500",
+        className: "border-transparent hover:border-brand-green-500",
       },
       {
         variant: "pills",
         state: "active",
-        className: "bg-white text-primary-900",
+        className: "bg-white text-brand-green-900",
       },
       {
         variant: "segmented",
         state: "active",
-        className: "bg-primary-600 text-white shadow-sm",
+        className: "bg-brand-green-600 text-white shadow-sm",
       },
       {
         variant: "segmented",
         state: "inactive",
-        className: "text-primary-300 hover:bg-primary-700/50",
+        className: "text-brand-green-300 hover:bg-brand-green-700/50",
       },
     ],
     defaultVariants: {
@@ -141,7 +141,7 @@ const Tab = forwardRef<HTMLButtonElement, TabProps>(
         {icon && <Icon name={icon} size={size as TabSize} />}
         {label && <span>{label}</span>}
         {badge && (
-          <span className="px-2 py-0.5 bg-gold-500 text-gold-900 text-xs font-bold rounded-full">
+          <span className="px-2 py-0.5 bg-brand-orange-pure text-black text-xs font-bold rounded-full">
             {badge}
           </span>
         )}

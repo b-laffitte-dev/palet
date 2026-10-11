@@ -376,7 +376,7 @@ const ClubDetail: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -403,7 +403,7 @@ const ClubDetail: React.FC = () => {
                 <img
                   src={displayClub.logo || "/images/clubs/default.png"}
                   alt={displayClub.name}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-gold-700"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-brand-orange-700"
                 />
               </div>
 
@@ -414,7 +414,7 @@ const ClubDetail: React.FC = () => {
                     {displayClub.name}
                   </h1>
                   {displayClub.nickname && (
-                    <span className="text-heading-m text-primary-300">
+                    <span className="text-heading-m text-brand-green-300">
                       ({displayClub.nickname})
                     </span>
                   )}
@@ -430,7 +430,7 @@ const ClubDetail: React.FC = () => {
                   <Badge variant="default">{displayClub.league}</Badge>
                 </div>
 
-                <p className="text-body-m text-primary-200 mb-4 max-w-2xl">
+                <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
                   {displayClub.address}, {displayClub.postalCode} {displayClub.city}
                 </p>
 
@@ -438,10 +438,10 @@ const ClubDetail: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {displayClub.contactEmail && (
                     <div className="flex items-center gap-2">
-                      <span className="text-primary-400">Email:</span>
+                      <span className="text-brand-green-400">Email:</span>
                       <a
                         href={`mailto:${displayClub.contactEmail}`}
-                        className="text-gold-700 hover:underline text-body-s"
+                        className="text-brand-orange-pure hover:underline text-body-s"
                       >
                         {displayClub.contactEmail}
                       </a>
@@ -449,10 +449,10 @@ const ClubDetail: React.FC = () => {
                   )}
                   {displayClub.contactPhone && (
                     <div className="flex items-center gap-2">
-                      <span className="text-primary-400">Téléphone:</span>
+                      <span className="text-brand-green-400">Téléphone:</span>
                       <a
                         href={`tel:${displayClub.contactPhone}`}
-                        className="text-gold-700 hover:underline text-body-s"
+                        className="text-brand-orange-pure hover:underline text-body-s"
                       >
                         {displayClub.contactPhone}
                       </a>
@@ -460,12 +460,12 @@ const ClubDetail: React.FC = () => {
                   )}
                   {displayClub.website && (
                     <div className="flex items-center gap-2">
-                      <span className="text-primary-400">Site web:</span>
+                      <span className="text-brand-green-400">Site web:</span>
                       <a
                         href={displayClub.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gold-700 hover:underline text-body-s"
+                        className="text-brand-orange-pure hover:underline text-body-s"
                       >
                         {displayClub.website.replace(/^https?:\/\//, "")}
                       </a>
@@ -480,7 +480,7 @@ const ClubDetail: React.FC = () => {
                       href={displayClub.social.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-400 hover:text-gold-700"
+                      className="text-brand-green-400 hover:text-brand-orange-pure"
                     >
                       Facebook
                     </a>
@@ -490,7 +490,7 @@ const ClubDetail: React.FC = () => {
                       href={displayClub.social.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-400 hover:text-gold-700"
+                      className="text-brand-green-400 hover:text-brand-orange-pure"
                     >
                       Twitter
                     </a>
@@ -500,7 +500,7 @@ const ClubDetail: React.FC = () => {
                       href={displayClub.social.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-400 hover:text-gold-700"
+                      className="text-brand-green-400 hover:text-brand-orange-pure"
                     >
                       Instagram
                     </a>
@@ -510,9 +510,9 @@ const ClubDetail: React.FC = () => {
 
               {/* Code */}
               <div className="flex-shrink-0">
-                <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                  <p className="text-body-xs text-primary-400 mb-1">Code Club</p>
-                  <p className="text-heading-l font-bold text-gold-700">{displayClub.code}</p>
+                <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                  <p className="text-body-xs text-brand-green-400 mb-1">Code Club</p>
+                  <p className="text-heading-l font-bold text-brand-orange-pure">{displayClub.code}</p>
                 </div>
               </div>
             </div>
@@ -520,49 +520,49 @@ const ClubDetail: React.FC = () => {
         </section>
 
         {/* Stats Overview */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
               Statistiques du Club
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Joueurs</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Joueurs</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayClub.playersCount}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Équipes</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayClub.teamsCount}</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Équipes</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">{displayClub.teamsCount}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Division</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayClub.division}</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Division</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">{displayClub.division}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Ligue</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayClub.league}</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Ligue</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">{displayClub.league}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Fondé en</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Fondé en</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {new Date(displayClub.createdAt).getFullYear()}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Statut</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Statut</p>
                   <Badge variant={displayClub.status === "active" ? "success" : "warning"}>
                     {displayClub.status === "active" ? "Actif" : "Inactif"}
                   </Badge>
@@ -596,7 +596,7 @@ const ClubDetail: React.FC = () => {
               <TabPanel value="equipes" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {mockTeams.map((team) => (
-                    <Card key={team.id} className="bg-primary-900/50 border-primary-700/50">
+                    <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -611,12 +611,12 @@ const ClubDetail: React.FC = () => {
                             />
                             <div>
                               <h3 className="text-heading-s font-bold text-white">{team.name}</h3>
-                              <p className="text-body-xs text-primary-300">
+                              <p className="text-body-xs text-brand-green-300">
                                 Capitaine: {team.captain?.fullName}
                               </p>
                             </div>
                           </div>
-                          <Badge variant="default">
+                          <Badge variant="secondary">
                             {team.stats.wins}V - {team.stats.losses}D
                           </Badge>
                         </div>
@@ -624,26 +624,26 @@ const ClubDetail: React.FC = () => {
                       <CardContent>
                         <div className="grid grid-cols-3 gap-4">
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Matchs</p>
-                            <p className="text-heading-s font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Matchs</p>
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.matches}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Victoires</p>
-                            <p className="text-heading-s font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Victoires</p>
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.wins}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Win Rate</p>
-                            <p className="text-heading-s font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Win Rate</p>
+                            <p className="text-heading-s font-bold text-brand-orange-pure">
                               {team.stats.winRate}%
                             </p>
                           </div>
                         </div>
                         <Link to={`/teams/${team.id}`} className="inline-block mt-4">
-                          <Button variant="outline" size="sm">
+                          <Button variant="gold" size="sm">
                             Voir l'équipe
                           </Button>
                         </Link>
@@ -655,7 +655,7 @@ const ClubDetail: React.FC = () => {
 
               {/* Classement */}
               <TabPanel value="classement" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <h3 className="text-heading-s font-bold text-white">
                       Classement {mockClassification.division} - Journée{" "}
@@ -666,7 +666,7 @@ const ClubDetail: React.FC = () => {
                     <div className="overflow-x-auto">
                       <table className="w-full text-body-s">
                         <thead>
-                          <tr className="border-b border-primary-700/50 text-primary-300">
+                          <tr className="border-b border-brand-green-700/50 text-brand-green-300">
                             <th className="text-left p-3">Position</th>
                             <th className="text-left p-3">Équipe</th>
                             <th className="text-left p-3">Joués</th>
@@ -680,10 +680,10 @@ const ClubDetail: React.FC = () => {
                           {mockClassification.teams.map((team, index) => (
                             <tr
                               key={team.team.id}
-                              className="border-b border-primary-700/20 hover:bg-primary-800/50"
+                              className="border-b border-brand-green-700/20 hover:bg-brand-green-800/50"
                             >
                               <td className="p-3">
-                                <Badge variant={team.position === 1 ? "gold" : "default"}>
+                                <Badge variant={team.position === 1 ? "gold" : "secondary"}>
                                   {team.position}
                                 </Badge>
                               </td>
@@ -701,10 +701,10 @@ const ClubDetail: React.FC = () => {
                                   <span className="text-white">{team.team.name}</span>
                                 </div>
                               </td>
-                              <td className="p-3 text-primary-300">{team.stats.matches}</td>
-                              <td className="p-3 text-primary-300">{team.stats.wins}</td>
-                              <td className="p-3 text-primary-300">{team.stats.losses}</td>
-                              <td className="p-3 text-gold-700 font-bold">{team.stats.points}</td>
+                              <td className="p-3 text-brand-green-300">{team.stats.matches}</td>
+                              <td className="p-3 text-brand-green-300">{team.stats.wins}</td>
+                              <td className="p-3 text-brand-green-300">{team.stats.losses}</td>
+                              <td className="p-3 text-brand-orange-pure font-bold">{team.stats.points}</td>
                               <td className="p-3">
                                 <div className="flex gap-1">
                                   {team.form.map((result, i) => (
@@ -712,10 +712,10 @@ const ClubDetail: React.FC = () => {
                                       key={i}
                                       className={`px-2 py-1 rounded text-xs ${
                                         result === "win"
-                                          ? "bg-green-900/50 text-green-400"
+                                          ? "bg-brand-green-900/50 text-brand-green-400"
                                           : result === "draw"
                                             ? "bg-amber-900/50 text-amber-400"
-                                            : "bg-red-900/50 text-red-400"
+                                            : "bg-danger-900/50 text-danger-400"
                                       }`}
                                     >
                                       {result === "win" ? "V" : result === "draw" ? "N" : "D"}
@@ -734,9 +734,9 @@ const ClubDetail: React.FC = () => {
 
               {/* Actualités */}
               <TabPanel value="actualites" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardContent className="text-center p-8">
-                    <p className="text-body-m text-primary-300">
+                    <p className="text-body-m text-brand-green-300">
                       Les actualités du club seront affichées ici.
                     </p>
                   </CardContent>

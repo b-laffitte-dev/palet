@@ -45,16 +45,16 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   };
 
   const getStatusColor = () => {
-    if (match.status === "in_progress") return "border-gold-700 bg-gold-900/10";
+    if (match.status === "in_progress") return "border-brand-orange-700 bg-brand-orange-900/10";
     if (match.status === "completed") return "border-green-700 bg-green-900/10";
-    return "border-primary-700";
+    return "border-brand-green-700";
   };
 
   if (compact) {
     return (
       <Link
         to={`/matchs/${match.id}`}
-        className={`flex items-center gap-4 p-3 rounded-lg border ${getStatusColor()} ${className} ${onClick ? "cursor-pointer hover:bg-primary-800/50 transition-colors" : ""}`}
+        className={`flex items-center gap-4 p-3 rounded-lg border ${getStatusColor()} ${className} ${onClick ? "cursor-pointer hover:bg-brand-green-800/50 transition-colors" : ""}`}
         onClick={onClick}
         aria-live="polite"
       >
@@ -71,9 +71,9 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
         <div className="flex-shrink-0 text-center">
           <div className="flex items-baseline gap-2">
-            <span className="text-body-l font-bold text-gold-700">{match.team1Score || 0}</span>
-            <span className="text-body-m text-primary-200">—</span>
-            <span className="text-body-l font-bold text-gold-700">{match.team2Score || 0}</span>
+            <span className="text-body-l font-bold text-brand-orange-700">{match.team1Score || 0}</span>
+            <span className="text-body-m text-brand-green-200">—</span>
+            <span className="text-body-l font-bold text-brand-orange-700">{match.team2Score || 0}</span>
           </div>
           <Badge variant={getStatusVariant()} className="text-xs mt-1">
             {getStatusText()}
@@ -91,8 +91,8 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     >
       {/* Header */}
       {showTournament && (
-        <div className="px-4 py-2 bg-primary-800/50">
-          <p className="text-body-xs font-medium text-primary-200 uppercase truncate">
+        <div className="px-4 py-2 bg-brand-green-800/50">
+          <p className="text-body-xs font-medium text-brand-green-200 uppercase truncate">
             {match.competition.name}
           </p>
         </div>
@@ -122,15 +122,15 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             <div className="flex items-baseline gap-2">
               <span
                 className={`text-heading-m font-bold ${
-                  match.status === "in_progress" ? "text-gold-700" : "text-white"
+                  match.status === "in_progress" ? "text-brand-orange-700" : "text-white"
                 }`}
               >
                 {match.team1Score || 0}
               </span>
-              <span className="text-body-l text-primary-200">—</span>
+              <span className="text-body-l text-brand-green-200">—</span>
               <span
                 className={`text-heading-m font-bold ${
-                  match.status === "in_progress" ? "text-gold-700" : "text-white"
+                  match.status === "in_progress" ? "text-brand-orange-700" : "text-white"
                 }`}
               >
                 {match.team2Score || 0}
@@ -160,8 +160,8 @@ export const MatchCard: React.FC<MatchCardProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2 bg-primary-800/30 border-t border-primary-700/50">
-        <p className="text-caption text-primary-200 truncate">
+      <div className="px-4 py-2 bg-brand-green-800/30 border-t border-brand-green-700/50">
+        <p className="text-caption text-brand-green-200 truncate">
           <Icon name="MapPin" size="xs" className="inline mr-1" />
           {match.location || "Lieu non précisé"}
           {match.date && <span className="mx-2">·</span>}

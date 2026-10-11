@@ -973,13 +973,13 @@ footer {
   }
 
   .mobile-nav a:hover {
-    color: var(--color-gold);
-    background-color: rgba(255, 215, 0, 0.05);
+    color: var(--color-brand-green);
+    background-color: rgba(0, 166, 81, 0.05);
   }
 
   .mobile-nav a.active {
-    color: var(--color-gold);
-    border-bottom-color: var(--color-gold);
+    color: var(--color-brand-green);
+    border-bottom-color: var(--color-brand-green);
   }
 
   .mobile-nav-close {
@@ -996,7 +996,7 @@ footer {
   }
 
   .mobile-nav-close:hover {
-    color: var(--color-gold);
+    color: var(--color-brand-green);
   }
 
   /* Mobile menu overlay */
@@ -1599,7 +1599,7 @@ footer {
 
   .bg-gold,
   .bg-gold-600 {
-    background-color: var(--color-primary-700) !important;
+    background-color: var(--color-brand-green-700) !important;
   }
 
   .text-gold,

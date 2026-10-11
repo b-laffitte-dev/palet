@@ -496,7 +496,7 @@ const TeamDetail: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -528,7 +528,7 @@ const TeamDetail: React.FC = () => {
                     abbreviation: (displayTeam.club as any)?.code,
                   }}
                   size="xl"
-                  className="border-4 border-gold-700"
+                  className="border-4 border-brand-orange-700"
                 />
                 <div className="mt-4 text-center">
                   <ClubCard club={displayTeam.club} compact={true} />
@@ -551,7 +551,7 @@ const TeamDetail: React.FC = () => {
                   <Badge variant="default">{displayTeam.captain?.fullName} (Capitaine)</Badge>
                 </div>
 
-                <p className="text-body-m text-primary-200 mb-4 max-w-2xl">
+                <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
                   Équipe représentant le {(displayTeam.club as any)?.name} en{" "}
                   {displayTeam.competitions[0]?.competition?.type === "championship"
                     ? "championnat"
@@ -561,27 +561,27 @@ const TeamDetail: React.FC = () => {
 
                 {/* Stats Summary */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Matchs Joués</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Matchs Joués</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayTeam.stats.matches}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Victoires</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayTeam.stats.wins}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Taux de Victoire</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Taux de Victoire</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayTeam.stats.winRate}%
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-3 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-300 mb-1">Points</p>
-                    <p className="text-heading-s font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-3 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-300 mb-1">Points</p>
+                    <p className="text-heading-s font-bold text-brand-orange-700">
                       {displayTeam.stats.points}
                     </p>
                   </div>
@@ -591,27 +591,27 @@ const TeamDetail: React.FC = () => {
               {/* Additional Info */}
               <div className="flex-shrink-0">
                 <div className="space-y-4">
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Joueurs</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Joueurs</p>
+                    <p className="text-heading-m font-bold text-brand-orange-700">
                       {displayTeam.players.length}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Points Pour</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Points Pour</p>
+                    <p className="text-heading-m font-bold text-brand-orange-700">
                       {displayTeam.stats.pointsFor}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Points Contre</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Points Contre</p>
+                    <p className="text-heading-m font-bold text-brand-orange-700">
                       {displayTeam.stats.pointsAgainst}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Différence</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Différence</p>
+                    <p className="text-heading-m font-bold text-brand-orange-700">
                       +{displayTeam.stats.diff}
                     </p>
                   </div>
@@ -622,54 +622,54 @@ const TeamDetail: React.FC = () => {
         </section>
 
         {/* Stats Overview */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               Statistiques de l'Équipe
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Matchs</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTeam.stats.matches}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Victoires</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayTeam.stats.wins}</p>
+                  <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">{displayTeam.stats.wins}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Nuls</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Nuls</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTeam.stats.draws}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Défaites</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Défaites</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTeam.stats.losses}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Win Rate</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Win Rate</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTeam.stats.winRate}%
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Classement</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Classement</p>
+                  <p className="text-heading-m font-bold text-brand-orange-700">
                     {displayTeam.competitions[0]?.results.position || "N/A"}
                   </p>
                 </CardContent>
@@ -705,9 +705,9 @@ const TeamDetail: React.FC = () => {
                     />
                   ))}
                   {displayTeam.players.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-3">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-3">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">
+                        <p className="text-body-m text-brand-green-300">
                           Aucune information sur les joueurs disponibles.
                         </p>
                       </CardContent>
@@ -717,7 +717,7 @@ const TeamDetail: React.FC = () => {
 
                 {/* Statistiques Joueurs dans l'équipe */}
                 {displayTeam.players.length > 0 && (
-                  <Card className="bg-primary-900/50 border-primary-700/50 mt-6">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 mt-6">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
                         Statistiques des Joueurs
@@ -727,7 +727,7 @@ const TeamDetail: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-body-s">
                           <thead>
-                            <tr className="border-b border-primary-700/50 text-primary-300">
+                            <tr className="border-b border-brand-green-700/50 text-brand-green-300">
                               <th className="text-left p-3">Joueur</th>
                               <th className="text-left p-3">Matchs</th>
                               <th className="text-left p-3">Victoires</th>
@@ -739,7 +739,7 @@ const TeamDetail: React.FC = () => {
                             {displayTeam.players.map((player) => (
                               <tr
                                 key={player.id}
-                                className="border-b border-primary-700/20 hover:bg-primary-800/50"
+                                className="border-b border-brand-green-700/20 hover:bg-brand-green-800/50"
                               >
                                 <td className="p-3">
                                   <div className="flex items-center gap-2">
@@ -754,14 +754,14 @@ const TeamDetail: React.FC = () => {
                                     <span className="text-white">{player.fullName}</span>
                                   </div>
                                 </td>
-                                <td className="p-3 text-primary-300">
+                                <td className="p-3 text-brand-green-300">
                                   {player.stats.matchesPlayed}
                                 </td>
-                                <td className="p-3 text-primary-300">{player.stats.wins}</td>
-                                <td className="p-3 text-gold-700 font-bold">
+                                <td className="p-3 text-brand-green-300">{player.stats.wins}</td>
+                                <td className="p-3 text-brand-orange-700 font-bold">
                                   {player.stats.averagePoints.toFixed(1)}
                                 </td>
-                                <td className="p-3 text-primary-300">{player.stats.winRate}%</td>
+                                <td className="p-3 text-brand-green-300">{player.stats.winRate}%</td>
                               </tr>
                             ))}
                           </tbody>
@@ -776,7 +776,7 @@ const TeamDetail: React.FC = () => {
               <TabPanel value="competitions" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {displayTeam.competitions.map((competition) => (
-                    <Card key={competition.id} className="bg-primary-900/50 border-primary-700/50">
+                    <Card key={competition.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <h3 className="text-heading-s font-bold text-white">
@@ -802,31 +802,31 @@ const TeamDetail: React.FC = () => {
                       <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">Matchs</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300 mb-1">Matchs</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-700">
                               {competition.results.matches}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">Victoires</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300 mb-1">Victoires</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-700">
                               {competition.results.wins}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">Points</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300 mb-1">Points</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-700">
                               {competition.results.points}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">Position</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300 mb-1">Position</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-700">
                               {competition.results.position || "N/A"}
                             </p>
                           </div>
                         </div>
-                        <p className="text-body-xs text-primary-300 mb-2">
+                        <p className="text-body-xs text-brand-green-300 mb-2">
                           Saison: {competition.season}
                         </p>
                         {competition.competition?.type === "championship" && (
@@ -847,9 +847,9 @@ const TeamDetail: React.FC = () => {
                     </Card>
                   ))}
                   {displayTeam.competitions.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-2">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-2">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">
+                        <p className="text-body-m text-brand-green-300">
                           Cette équipe ne participe à aucune compétition pour le moment.
                         </p>
                       </CardContent>
@@ -870,9 +870,9 @@ const TeamDetail: React.FC = () => {
                     />
                   ))}
                   {mockMatches.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">
+                        <p className="text-body-m text-brand-green-300">
                           Aucun match programmé pour le moment.
                         </p>
                       </CardContent>
@@ -885,35 +885,35 @@ const TeamDetail: React.FC = () => {
               <TabPanel value="statistiques" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Performances Globales */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">Performances Globales</h3>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-body-xs text-primary-300 mb-1">
+                          <p className="text-body-xs text-brand-green-300 mb-1">
                             Meilleure Série de Victoires
                           </p>
-                          <p className="text-heading-s font-bold text-gold-700">
+                          <p className="text-heading-s font-bold text-brand-orange-700">
                             {displayTeam.stats.winRate / 10}
                           </p>
                         </div>
                         <div>
-                          <p className="text-body-xs text-primary-300 mb-1">Points Totaux</p>
-                          <p className="text-heading-s font-bold text-gold-700">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Points Totaux</p>
+                          <p className="text-heading-s font-bold text-brand-orange-700">
                             {displayTeam.stats.pointsFor}
                           </p>
                         </div>
                         <div>
-                          <p className="text-body-xs text-primary-300 mb-1">Points Encassés</p>
-                          <p className="text-heading-s font-bold text-gold-700">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Points Encassés</p>
+                          <p className="text-heading-s font-bold text-brand-orange-700">
                             {displayTeam.stats.pointsAgainst}
                           </p>
                         </div>
                         <div>
-                          <p className="text-body-xs text-primary-300 mb-1">Différence de Points</p>
-                          <p className="text-heading-s font-bold text-gold-700">
+                          <p className="text-body-xs text-brand-green-300 mb-1">Différence de Points</p>
+                          <p className="text-heading-s font-bold text-brand-orange-700">
                             +{displayTeam.stats.diff}
                           </p>
                         </div>
@@ -922,7 +922,7 @@ const TeamDetail: React.FC = () => {
                   </Card>
 
                   {/* Analyse par Compétition */}
-                  <Card className="bg-primary-900/50 border-primary-700/50">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
                         Analyse par Compétition
@@ -933,28 +933,28 @@ const TeamDetail: React.FC = () => {
                         {displayTeam.competitions.map((competition) => (
                           <div
                             key={competition.id}
-                            className="bg-primary-800/50 rounded p-3 border border-primary-700/30"
+                            className="bg-brand-green-800/50 rounded p-3 border border-brand-green-700/30"
                           >
-                            <h4 className="text-body-s font-semibold text-gold-700 mb-2">
+                            <h4 className="text-body-s font-semibold text-brand-orange-700 mb-2">
                               {competition.competition?.name}
                             </h4>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-body-xs">
                               <div>
-                                <p className="text-primary-300">
+                                <p className="text-brand-green-300">
                                   Matchs: {competition.results.matches}
                                 </p>
                               </div>
                               <div>
-                                <p className="text-primary-300">V: {competition.results.wins}</p>
+                                <p className="text-brand-green-300">V: {competition.results.wins}</p>
                               </div>
                               <div>
-                                <p className="text-primary-300">N: {competition.results.draws}</p>
+                                <p className="text-brand-green-300">N: {competition.results.draws}</p>
                               </div>
                               <div>
-                                <p className="text-primary-300">D: {competition.results.losses}</p>
+                                <p className="text-brand-green-300">D: {competition.results.losses}</p>
                               </div>
                               <div className="md:col-span-4">
-                                <p className="text-primary-300">
+                                <p className="text-brand-green-300">
                                   Position: {competition.results.position || "N/A"}
                                 </p>
                               </div>
@@ -962,7 +962,7 @@ const TeamDetail: React.FC = () => {
                           </div>
                         ))}
                         {displayTeam.competitions.length === 0 && (
-                          <p className="text-body-s text-primary-300 text-center">
+                          <p className="text-body-s text-brand-green-300 text-center">
                             Aucune compétition pour analyser les statistiques.
                           </p>
                         )}
@@ -971,7 +971,7 @@ const TeamDetail: React.FC = () => {
                   </Card>
 
                   {/* Historique des Résultats */}
-                  <Card className="bg-primary-900/50 border-primary-700/50 md:col-span-2">
+                  <Card className="bg-brand-green-900/50 border-brand-green-700/50 md:col-span-2">
                     <CardHeader>
                       <h3 className="text-heading-s font-bold text-white">
                         Historique des Résultats
@@ -980,7 +980,7 @@ const TeamDetail: React.FC = () => {
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-body-s text-primary-300">5 derniers matchs</span>
+                          <span className="text-body-s text-brand-green-300">5 derniers matchs</span>
                           <div className="flex gap-2">
                             {mockMatches.slice(0, 5).map((match, index) => (
                               <span
@@ -992,7 +992,7 @@ const TeamDetail: React.FC = () => {
                                     : match.winner === "team2" &&
                                         match.team2.players === displayTeam.players
                                       ? "bg-red-900/50 text-red-400"
-                                      : "bg-primary-700/50 text-primary-300"
+                                      : "bg-brand-green-700/50 text-brand-green-300"
                                 }`}
                               >
                                 {match.winner === "team1" &&
@@ -1015,7 +1015,7 @@ const TeamDetail: React.FC = () => {
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-body-s text-primary-300">Forme</span>
+                          <span className="text-body-s text-brand-green-300">Forme</span>
                           <div className="flex gap-1">
                             {Array.from({ length: 5 }).map((_, index) => {
                               const match = mockMatches[index];
@@ -1052,7 +1052,7 @@ const TeamDetail: React.FC = () => {
                                 );
                               }
                               return (
-                                <span key={index} className="text-primary-400">
+                                <span key={index} className="text-brand-green-400">
                                   N
                                 </span>
                               );

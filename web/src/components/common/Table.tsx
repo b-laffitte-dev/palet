@@ -4,7 +4,7 @@ import { StatusBadge } from "./Badge";
 import { cva, type VariantProps } from "class-variance-authority";
 
 // Table container variants
-const tableContainerVariants = cva("w-full overflow-x-auto rounded-lg border border-primary-700", {
+const tableContainerVariants = cva("w-full overflow-x-auto rounded-lg border border-brand-green-700", {
   variants: {
     variant: {
       default: "",
@@ -45,9 +45,9 @@ const tableVariants = cva("w-full table-fixed", {
 const tableCellVariants = cva("p-4 text-left align-middle", {
   variants: {
     variant: {
-      header: "bg-primary-800 text-primary-200 font-semibold uppercase tracking-wider text-xs",
-      body: "bg-primary-900 text-white border-t border-primary-700/50",
-      footer: "bg-primary-800 text-primary-300 font-medium",
+      header: "bg-brand-green-800 text-brand-green-200 font-semibold uppercase tracking-wider text-xs",
+      body: "bg-brand-green-900 text-white border-t border-brand-green-700/50",
+      footer: "bg-brand-green-800 text-brand-green-300 font-medium",
     },
     size: {
       xs: "px-2 py-1",
@@ -169,8 +169,8 @@ const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
       <tr
         ref={ref}
         className={`{
-          ${selected ? "bg-primary-700/50" : ""}
-          ${hoverable ? "hover:bg-primary-700/30 transition-colors cursor-pointer" : ""}
+          ${selected ? "bg-brand-green-700/50" : ""}
+          ${hoverable ? "hover:bg-brand-green-700/30 transition-colors cursor-pointer" : ""}
           ${onClick ? "cursor-pointer" : ""}
           ${className || ""}
         }`}
@@ -230,7 +230,7 @@ const TableHeadCell = forwardRef<HTMLTableCellElement, TableHeadCellProps>(
             <Icon
               name={getSortIcon()}
               size={size === "xs" ? "xs" : size === "l" ? "l" : "m"}
-              className={`text-primary-400 ${sortDirection ? "text-primary-200" : ""}`}
+              className={`text-brand-green-400 ${sortDirection ? "text-brand-green-200" : ""}`}
             />
           )}
         </div>
@@ -324,10 +324,10 @@ export const TableEmpty: React.FC<TableEmptyProps> = ({
     <TableRow>
       <TableCell colSpan={colSpan} className={`text-center py-12 ${className || ""}`}>
         <div className="flex flex-col items-center justify-center gap-4">
-          <Icon name={icon} size="xl" className="text-primary-500" />
+          <Icon name={icon} size="xl" className="text-brand-green-500" />
           <div className="flex flex-col items-center">
             <h3 className="text-h5 font-semibold text-white">{message}</h3>
-            {description && <p className="text-primary-300 text-body-s mt-1">{description}</p>}
+            {description && <p className="text-brand-green-300 text-body-s mt-1">{description}</p>}
           </div>
           {action && <div className="mt-4">{action}</div>}
         </div>
@@ -407,7 +407,7 @@ function SortableTable<T extends Record<string, any>>(
             <TableRow key={index} className="animate-pulse">
               {columns.map((column) => (
                 <TableCell key={String(column.key)}>
-                  <div className="h-4 bg-primary-700 rounded w-3/4" />
+                  <div className="h-4 bg-brand-green-700 rounded w-3/4" />
                 </TableCell>
               ))}
             </TableRow>
@@ -532,7 +532,7 @@ function SelectableTable<T extends Record<string, any>>(
               }}
               onChange={handleSelectAll}
               disabled={selectAllDisabled}
-              className="w-4 h-4 rounded border-primary-600 bg-transparent focus:ring-2 focus:ring-gold-500"
+              className="w-4 h-4 rounded border-brand-green-600 bg-transparent focus:ring-2 focus:ring-brand-orange-500"
               aria-label="Sélectionner tout"
             />
           ),
@@ -549,7 +549,7 @@ function SelectableTable<T extends Record<string, any>>(
       keyExtractor={props.keyExtractor}
       rowClassName={(item) => {
         const id = props.keyExtractor ? props.keyExtractor(item) : (item as any).id;
-        return isSelected(id) ? "bg-primary-700/30" : "";
+        return isSelected(id) ? "bg-brand-green-700/30" : "";
       }}
     />
   );

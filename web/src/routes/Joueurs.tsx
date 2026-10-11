@@ -49,7 +49,7 @@ const Joueurs: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -65,7 +65,7 @@ const Joueurs: React.FC = () => {
             <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
               JOUEURS
             </h1>
-            <p className="text-body-m text-primary-200 mt-2">
+            <p className="text-body-m text-brand-green-200 mt-2">
               Classement et statistiques des joueurs de Palet Fonte Deux-Sèvres
             </p>
           </div>
@@ -80,14 +80,14 @@ const Joueurs: React.FC = () => {
                   <Icon
                     name="Search"
                     size="m"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green-300"
                   />
                   <input
                     type="text"
                     placeholder="Rechercher un joueur ou un club..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-300 focus:outline-none focus:border-gold-700"
+                    className="w-full bg-brand-green-900 border border-brand-green-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-brand-green-300 focus:outline-none focus:border-brand-orange-700"
                   />
                 </div>
               </div>
@@ -146,38 +146,38 @@ const Joueurs: React.FC = () => {
                   />
                 ))
               ) : (
-                <p className="text-body-m text-primary-300 col-span-full">Aucun joueur trouvé</p>
+                <p className="text-body-m text-brand-green-300 col-span-full">Aucun joueur trouvé</p>
               )}
             </div>
           </div>
         </section>
 
         {/* Stats */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-700 uppercase tracking-wide mb-6">
               STATISTIQUES
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">Total Joueurs</p>
-                <p className="text-heading-m font-bold text-gold-700">{players?.length || 0}</p>
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">Total Joueurs</p>
+                <p className="text-heading-m font-bold text-brand-orange-700">{players?.length || 0}</p>
               </div>
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">D1</p>
-                <p className="text-heading-m font-bold text-gold-700">
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">D1</p>
+                <p className="text-heading-m font-bold text-brand-orange-700">
                   {players?.filter((p) => p.stats.currentDivision === "D1").length || 0}
                 </p>
               </div>
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">D2</p>
-                <p className="text-heading-m font-bold text-gold-700">
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">D2</p>
+                <p className="text-heading-m font-bold text-brand-orange-700">
                   {players?.filter((p) => p.stats.currentDivision === "D2").length || 0}
                 </p>
               </div>
-              <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
-                <p className="text-body-xs text-primary-300 mb-1">Autres</p>
-                <p className="text-heading-m font-bold text-gold-700">
+              <div className="bg-brand-green-900 rounded-lg p-4 text-center border border-brand-green-700/50">
+                <p className="text-body-xs text-brand-green-300 mb-1">Autres</p>
+                <p className="text-heading-m font-bold text-brand-orange-700">
                   {players?.filter(
                     (p) => p.stats.currentDivision !== "D1" && p.stats.currentDivision !== "D2",
                   ).length || 0}

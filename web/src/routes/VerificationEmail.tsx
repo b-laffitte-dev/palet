@@ -56,9 +56,9 @@ const VerificationEmail: React.FC = () => {
   if (isVerified) {
     return (
       <Layout showHeader={false}>
-        <main className="flex-1 flex items-center justify-center min-h-screen bg-primary-900">
+        <main className="flex-1 flex items-center justify-center min-h-screen bg-brand-green-900">
           <div className="w-full max-w-md px-4 py-8">
-            <div className="bg-primary-800 rounded-lg p-8 border border-primary-700/50 text-center">
+            <div className="bg-brand-green-800 rounded-lg p-8 border border-brand-green-700/50 text-center">
               <div className="w-20 h-20 mx-auto mb-6 bg-success-900/50 rounded-full flex items-center justify-center border-4 border-success-700">
                 <Icon name="Check" size="xxl" className="text-success-700" />
               </div>
@@ -66,7 +66,7 @@ const VerificationEmail: React.FC = () => {
               <h1 className="text-heading-m font-bold text-white uppercase tracking-wide mb-4">
                 VÉRIFICATION RÉUSSIE
               </h1>
-              <p className="text-body-m text-primary-200 mb-6">
+              <p className="text-body-m text-brand-green-200 mb-6">
                 Votre adresse email a été vérifiée avec succès.
               </p>
 
@@ -91,25 +91,25 @@ const VerificationEmail: React.FC = () => {
 
   return (
     <Layout showHeader={false}>
-      <main className="flex-1 flex items-center justify-center min-h-screen bg-primary-900">
+      <main className="flex-1 flex items-center justify-center min-h-screen bg-brand-green-900">
         <div className="w-full max-w-md px-4 py-8">
-          <div className="bg-primary-800 rounded-lg p-8 border border-primary-700/50 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-primary-900 rounded-full flex items-center justify-center border-4 border-primary-700">
-              <Icon name="Mail" size="xxl" className="text-primary-300" />
+          <div className="bg-brand-green-800 rounded-lg p-8 border border-brand-green-700/50 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 bg-brand-green-900 rounded-full flex items-center justify-center border-4 border-brand-green-700">
+              <Icon name="Mail" size="xxl" className="text-brand-green-300" />
             </div>
 
             <h1 className="text-heading-m font-bold text-white uppercase tracking-wide mb-4">
               VÉRIFIEZ VOTRE EMAIL
             </h1>
-            <p className="text-body-m text-primary-200 mb-6">
+            <p className="text-body-m text-brand-green-200 mb-6">
               Nous avons envoyé un email de vérification à l'adresse :
             </p>
 
-            <p className="text-heading-s font-bold text-gold-700 mb-6">
+            <p className="text-heading-s font-bold text-brand-orange-700 mb-6">
               {email || "votre@email.com"}
             </p>
 
-            <p className="text-body-s text-primary-300 mb-8">
+            <p className="text-body-s text-brand-green-300 mb-8">
               Cliquez sur le lien dans l'email pour activer votre compte. N'oubliez pas de vérifier
               vos spams.
             </p>
@@ -142,11 +142,11 @@ const VerificationEmail: React.FC = () => {
               Retour à l'accueil
             </Button>
 
-            <p className="text-caption text-primary-400 mt-8">
+            <p className="text-caption text-brand-green-400 mt-8">
               Vous n'avez pas reçu l'email ? Vérifiez vos spams ou{" "}
               <button
                 type="button"
-                className="text-gold-700 hover:text-gold-600 underline"
+                className="text-brand-orange-700 hover:text-brand-orange-600 underline"
                 onClick={handleResend}
               >
                 renvoyez-le

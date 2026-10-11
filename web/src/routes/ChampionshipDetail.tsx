@@ -426,7 +426,7 @@ const ChampionshipDetail: React.FC = () => {
       <Layout>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <p className="text-body-m text-primary-200">Chargement...</p>
+            <p className="text-body-m text-brand-green-200">Chargement...</p>
           </div>
         </main>
       </Layout>
@@ -461,8 +461,8 @@ const ChampionshipDetail: React.FC = () => {
             <div className="flex flex-col md:flex-row items-start gap-6">
               {/* Logo/Icon */}
               <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-primary-800 rounded-full flex items-center justify-center border-2 border-gold-700">
-                  <span className="text-4xl text-gold-700">🏅</span>
+                <div className="w-24 h-24 bg-brand-green-800 rounded-full flex items-center justify-center border-2 border-brand-orange-700">
+                  <span className="text-4xl text-brand-orange-pure">🏅</span>
                 </div>
               </div>
 
@@ -475,12 +475,12 @@ const ChampionshipDetail: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-4 mb-4">
-                  <Badge variant="default">{displayChampionship.season}</Badge>
-                  <Badge variant="default">{displayChampionship.divisions[0]}</Badge>
-                  <Badge variant="default">{displayChampionship.category}</Badge>
-                  <Badge variant="default">{displayChampionship.material}</Badge>
+                  <Badge variant="secondary">{displayChampionship.season}</Badge>
+                  <Badge variant="secondary">{displayChampionship.divisions[0]}</Badge>
+                  <Badge variant="secondary">{displayChampionship.category}</Badge>
+                  <Badge variant="secondary">{displayChampionship.material}</Badge>
                   {displayChampionship.status === "pending" && (
-                    <Badge variant="default">À venir</Badge>
+                    <Badge variant="info">À venir</Badge>
                   )}
                   {displayChampionship.status === "in_progress" && (
                     <Badge variant="warning">En cours</Badge>
@@ -493,40 +493,40 @@ const ChampionshipDetail: React.FC = () => {
                   )}
                 </div>
 
-                <p className="text-body-m text-primary-200 mb-4 max-w-2xl">
+                <p className="text-body-m text-brand-green-200 mb-4 max-w-2xl">
                   {displayChampionship.description}
                 </p>
 
                 {/* Dates and Location */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Journée actuelle:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Journée actuelle:</span>
+                    <span className="text-brand-orange-pure font-semibold text-body-s">
                       {displayChampionship.currentJournee || "Non commencé"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Total journées:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Total journées:</span>
+                    <span className="text-brand-orange-pure font-semibold text-body-s">
                       {displayChampionship.totalJournees}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-primary-400">Phase actuelle:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Phase actuelle:</span>
+                    <span className="text-brand-orange-pure font-semibold text-body-s">
                       {displayChampionship.currentPhase}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 md:col-span-3">
-                    <span className="text-primary-400">Dates:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Dates:</span>
+                    <span className="text-brand-orange-pure font-semibold text-body-s">
                       {displayChampionship.startDate?.toLocaleDateString("fr-FR") || "À définir"} -
                       {displayChampionship.endDate?.toLocaleDateString("fr-FR") || "À définir"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 md:col-span-3">
-                    <span className="text-primary-400">Lieu:</span>
-                    <span className="text-gold-700 font-semibold text-body-s">
+                    <span className="text-brand-green-400">Lieu:</span>
+                    <span className="text-brand-orange-pure font-semibold text-body-s">
                       {displayChampionship.location || "Deux-Sèvres, France"}
                     </span>
                   </div>
@@ -536,21 +536,21 @@ const ChampionshipDetail: React.FC = () => {
               {/* Code and Organizer */}
               <div className="flex-shrink-0">
                 <div className="space-y-4">
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Code Championnat</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900/50 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Code Championnat</p>
+                    <p className="text-heading-m font-bold text-brand-orange-pure">
                       {displayChampionship.code}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Organisateur</p>
-                    <p className="text-heading-xs font-bold text-gold-700">
+                  <div className="bg-brand-green-900/50 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Organisateur</p>
+                    <p className="text-heading-xs font-bold text-brand-orange-pure">
                       {(displayChampionship.organizer as any)?.name}
                     </p>
                   </div>
-                  <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
-                    <p className="text-body-xs text-primary-400 mb-1">Équipes</p>
-                    <p className="text-heading-m font-bold text-gold-700">
+                  <div className="bg-brand-green-900/50 rounded-lg p-4 border border-brand-green-700/50 text-center">
+                    <p className="text-body-xs text-brand-green-400 mb-1">Équipes</p>
+                    <p className="text-heading-m font-bold text-brand-orange-pure">
                       {displayChampionship.registeredTeams}/
                       {displayChampionship.maxTeams || "Illimité"}
                     </p>
@@ -562,29 +562,29 @@ const ChampionshipDetail: React.FC = () => {
         </section>
 
         {/* Progress */}
-        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
+        <section className="px-4 py-6 lg:px-8 lg:py-8 bg-brand-green-800/30">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
+            <h2 className="text-heading-l font-bold text-brand-orange-pure uppercase tracking-wide mb-6">
               Progression du Championnat
             </h2>
 
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-body-s text-primary-300">
+                <span className="text-body-s text-brand-green-300">
                   Journée {displayChampionship.currentJournee || 0} /{" "}
                   {displayChampionship.totalJournees}
                 </span>
-                <span className="text-body-s text-gold-700">
+                <span className="text-body-s text-brand-orange-pure">
                   {getJourneeProgress().toFixed(0)}%
                 </span>
               </div>
-              <div className="h-6 bg-primary-700 rounded-full overflow-hidden">
+              <div className="h-6 bg-brand-green-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-gold-700 to-gold-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-brand-orange-700 to-brand-orange-500 rounded-full"
                   style={{ width: `${getJourneeProgress()}%` }}
                 />
               </div>
-              <div className="flex justify-between mt-2 text-body-xs text-primary-400">
+              <div className="flex justify-between mt-2 text-body-xs text-brand-green-400">
                 <span>Début</span>
                 <span>Journée {displayChampionship.currentJournee || 0}</span>
                 <span>Fin</span>
@@ -593,42 +593,42 @@ const ChampionshipDetail: React.FC = () => {
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Matchs Totaux</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Totaux</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayChampionship.stats.totalMatches}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Matchs Termines</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Matchs Termines</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayChampionship.stats.completedMatches}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Points Totaux</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Points Totaux</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayChampionship.stats.totalPoints}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Points par Manche</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Points par Manche</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayChampionship.pointsType}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary-900/50 border-primary-700/50">
+              <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                 <CardContent className="text-center p-4">
-                  <p className="text-body-xs text-primary-300 mb-1">Durée Journée</p>
-                  <p className="text-heading-m font-bold text-gold-700">
+                  <p className="text-body-xs text-brand-green-300 mb-1">Durée Journée</p>
+                  <p className="text-heading-m font-bold text-brand-orange-pure">
                     {displayChampionship.journeeDuration || "1 semaine"}
                   </p>
                 </CardContent>
@@ -664,7 +664,7 @@ const ChampionshipDetail: React.FC = () => {
 
               {/* Journée Actuelle */}
               <TabPanel value="journee" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <h3 className="text-heading-s font-bold text-white">
@@ -690,7 +690,7 @@ const ChampionshipDetail: React.FC = () => {
                             />
                           ))
                       ) : (
-                        <p className="text-body-m text-primary-300 text-center py-4">
+                        <p className="text-body-m text-brand-green-300 text-center py-4">
                           Aucune journée en cours pour le moment.
                         </p>
                       )}
@@ -711,9 +711,9 @@ const ChampionshipDetail: React.FC = () => {
                     />
                   ))}
                   {mockMatches.length === 0 && (
-                    <Card className="bg-primary-900/50 border-primary-700/50">
+                    <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardContent className="text-center p-8">
-                        <p className="text-body-m text-primary-300">
+                        <p className="text-body-m text-brand-green-300">
                           Aucun match programmé pour le moment.
                         </p>
                       </CardContent>
@@ -726,7 +726,7 @@ const ChampionshipDetail: React.FC = () => {
               <TabPanel value="equipes" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {displayChampionship.teams.map((team) => (
-                    <Card key={team.id} className="bg-primary-900/50 border-primary-700/50">
+                    <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center gap-3">
                           <TeamAvatar
@@ -740,7 +740,7 @@ const ChampionshipDetail: React.FC = () => {
                           />
                           <div className="flex-1">
                             <h3 className="text-heading-s font-bold text-white">{team.name}</h3>
-                            <p className="text-body-xs text-primary-300">
+                            <p className="text-body-xs text-brand-green-300">
                               {(team.club as any)?.name}
                             </p>
                           </div>
@@ -749,26 +749,26 @@ const ChampionshipDetail: React.FC = () => {
                       <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Matchs</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Matchs</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-pure">
                               {team.stats.matches}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Victoires</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Victoires</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-pure">
                               {team.stats.wins}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Défaites</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Défaites</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-pure">
                               {team.stats.losses}
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300">Points</p>
-                            <p className="text-heading-xs font-bold text-gold-700">
+                            <p className="text-body-xs text-brand-green-300">Points</p>
+                            <p className="text-heading-xs font-bold text-brand-orange-pure">
                               {team.stats.points}
                             </p>
                           </div>
@@ -786,20 +786,20 @@ const ChampionshipDetail: React.FC = () => {
 
               {/* Règlement */}
               <TabPanel value="regles" className="py-6">
-                <Card className="bg-primary-900/50 border-primary-700/50">
+                <Card className="bg-brand-green-900/50 border-brand-green-700/50">
                   <CardHeader>
                     <h3 className="text-heading-s font-bold text-white">
                       Règlement du Championnat
                     </h3>
                   </CardHeader>
                   <CardContent>
-                    <div className="prose prose-invert max-w-none text-body-s text-primary-200">
-                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">
+                    <div className="prose prose-invert max-w-none text-body-s text-brand-green-200">
+                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">
                         Règles de Classement
                       </h4>
                       <div className="space-y-3 mb-6">
                         <div className="flex items-center gap-2">
-                          <span className="text-primary-400">1.</span>
+                          <span className="text-brand-green-400">1.</span>
                           <span className="text-white">
                             {displayChampionship.classificationRules.primary === "points" &&
                               "Points"}
@@ -810,7 +810,7 @@ const ChampionshipDetail: React.FC = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-primary-400">2.</span>
+                          <span className="text-brand-green-400">2.</span>
                           <span className="text-white">
                             {displayChampionship.classificationRules.secondary === "diff" &&
                               "Différence de points"}
@@ -821,7 +821,7 @@ const ChampionshipDetail: React.FC = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-primary-400">3.</span>
+                          <span className="text-brand-green-400">3.</span>
                           <span className="text-white">
                             {displayChampionship.classificationRules.tertiary === "pointsFor" &&
                               "Points pour"}
@@ -831,25 +831,25 @@ const ChampionshipDetail: React.FC = () => {
                         </div>
                       </div>
 
-                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">
+                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">
                         Points par Match
                       </h4>
                       <div className="space-y-2 mb-6">
                         <p>
-                          <span className="text-primary-400">Victoire:</span>{" "}
+                          <span className="text-brand-green-400">Victoire:</span>{" "}
                           {displayChampionship.winPoints} points
                         </p>
                         <p>
-                          <span className="text-primary-400">Match nul:</span>{" "}
+                          <span className="text-brand-green-400">Match nul:</span>{" "}
                           {displayChampionship.drawPoints} point
                         </p>
                         <p>
-                          <span className="text-primary-400">Défaite:</span>{" "}
+                          <span className="text-brand-green-400">Défaite:</span>{" "}
                           {displayChampionship.lossPoints} point
                         </p>
                       </div>
 
-                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">Format</h4>
+                      <h4 className="text-heading-xs font-bold text-brand-orange-pure mb-4">Format</h4>
                       <p>
                         {displayChampionship.format === "round-robin" &&
                           "Tous les participants jouent contre tous les autres participants."}

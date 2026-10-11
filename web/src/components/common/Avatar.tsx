@@ -19,14 +19,14 @@ const avatarVariants = cva(
         "3xl": "w-20 h-20 text-3xl",
       },
       variant: {
-        default: "bg-primary-700 text-white",
-        primary: "bg-primary-600 text-white",
-        secondary: "bg-secondary-600 text-white",
+        default: "bg-brand-green-700 text-white",
+        primary: "bg-brand-green-600 text-white",
+        secondary: "bg-brand-orange-600 text-white",
         success: "bg-success-600 text-white",
         warning: "bg-warning-600 text-white",
         danger: "bg-danger-600 text-white",
         info: "bg-info-600 text-white",
-        gold: "bg-gold-600 text-white",
+        gold: "bg-brand-orange-600 text-white",
         neutral: "bg-neutral-600 text-white",
       },
       shape: {
@@ -279,7 +279,7 @@ const Avatar = forwardRef<HTMLImageElement, AvatarProps>(
         {/* Avatar content */}
         {loading && !imageLoaded ? (
           <div
-            className={`${baseClasses} bg-primary-800`}
+            className={`${baseClasses} bg-brand-green-800`}
             style={{ borderRadius: getBorderRadius() }}
           >
             <div className="animate-spin">
@@ -324,13 +324,13 @@ const Avatar = forwardRef<HTMLImageElement, AvatarProps>(
         {/* Status indicator */}
         {status && (
           <div
-            className="absolute block rounded-full border-2 border-primary-800"
+            className="absolute block rounded-full border-2 border-brand-green-800"
             style={{
               ...getStatusPosition(),
               width: `${getSizeInPx() * 0.25}px`,
               height: `${getSizeInPx() * 0.25}px`,
               backgroundColor: getStatusColor(),
-              borderColor: "var(--color-primary-800)",
+              borderColor: "var(--color-brand-green-800)",
             }}
           />
         )}
@@ -526,7 +526,7 @@ export const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(
           )}
 
           {showDescription && (description || user.email) && (
-            <span className={`text-sm text-primary-300 ${descriptionClassName || ""}`}>
+            <span className={`text-sm text-brand-green-300 ${descriptionClassName || ""}`}>
               {description || user.email}
             </span>
           )}
