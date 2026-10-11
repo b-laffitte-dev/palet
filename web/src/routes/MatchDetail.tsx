@@ -1,60 +1,73 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Layout } from '../components/layout/Layout';
-import { Card, CardHeader, CardContent, CardFooter, Badge, Avatar, Button, Tabs, TabList, TabPanel, Tab, UserAvatar } from '../components';
-import { PlayerCard, ClubCard, MatchHero, LiveScores } from '../components/domain';
-import { Match, Player, Team } from '../types';
-import { api } from '../api';
+import React from "react";
+import { useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Layout } from "../components/layout/Layout";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  Badge,
+  Avatar,
+  Button,
+  Tabs,
+  TabList,
+  TabPanel,
+  Tab,
+  UserAvatar,
+} from "../components";
+import { PlayerCard, ClubCard, MatchHero, LiveScores } from "../components/domain";
+import { Match, Player, Team } from "../types";
+import { api } from "../api";
 
 // Mock data for development
 const mockPlayer: Player = {
-  id: 'player-001',
-  firstName: 'Jean',
-  lastName: 'Martin',
-  fullName: 'Jean Martin',
-  alias: 'Le Maestro',
-  email: 'jean.martin@palet.fr',
-  photo: '/images/players/jean-martin.jpg',
-  status: 'active',
-  birthDate: new Date('1985-03-15'),
+  id: "player-001",
+  firstName: "Jean",
+  lastName: "Martin",
+  fullName: "Jean Martin",
+  alias: "Le Maestro",
+  email: "jean.martin@palet.fr",
+  photo: "/images/players/jean-martin.jpg",
+  status: "active",
+  birthDate: new Date("1985-03-15"),
   age: 41,
-  birthPlace: 'Les Essarts',
-  nationality: 'Français',
-  dominantHand: 'right',
-  playStyle: 'Précision',
-  phone: '+33 6 12 34 56 78',
-  address: '123 Rue du Palet, 85140 Les Essarts',
-  city: 'Les Essarts',
-  postalCode: '85140',
+  birthPlace: "Les Essarts",
+  nationality: "Français",
+  dominantHand: "right",
+  playStyle: "Précision",
+  phone: "+33 6 12 34 56 78",
+  address: "123 Rue du Palet, 85140 Les Essarts",
+  city: "Les Essarts",
+  postalCode: "85140",
   club: {
-    id: 'club-001',
-    name: 'Club des Essarts',
-    nickname: 'Les Essartiates',
-    code: 'ESS',
-    logo: '/images/clubs/essarts.png',
-    address: '123 Rue du Palet, 85140 Les Essarts',
-    city: 'Les Essarts',
-    postalCode: '85140',
-    league: 'Deux-Sèvres',
-    division: 'D1',
-    status: 'active',
+    id: "club-001",
+    name: "Club des Essarts",
+    nickname: "Les Essartiates",
+    code: "ESS",
+    logo: "/images/clubs/essarts.png",
+    address: "123 Rue du Palet, 85140 Les Essarts",
+    city: "Les Essarts",
+    postalCode: "85140",
+    league: "Deux-Sèvres",
+    division: "D1",
+    status: "active",
     playersCount: 25,
     teamsCount: 8,
-    contactEmail: 'contact@palet-essarts.fr',
-    contactPhone: '+33 2 51 65 43 21',
-    website: 'https://palet-essarts.fr',
+    contactEmail: "contact@palet-essarts.fr",
+    contactPhone: "+33 2 51 65 43 21",
+    website: "https://palet-essarts.fr",
     social: { facebook: null, twitter: null, instagram: null },
-    createdAt: new Date('2020-01-15'),
-    updatedAt: new Date('2026-10-01'),
+    createdAt: new Date("2020-01-15"),
+    updatedAt: new Date("2026-10-01"),
   },
-  clubId: 'club-001',
-  clubNumber: 'ESS-001',
-  category: 'Senior',
-  licenseNumber: 'PV-2026-001',
-  licenseDate: new Date('2026-01-01'),
-  licenseStatus: 'valid',
-  registrationDate: new Date('2020-01-15'),
+  clubId: "club-001",
+  clubNumber: "ESS-001",
+  category: "Senior",
+  licenseNumber: "PV-2026-001",
+  licenseDate: new Date("2026-01-01"),
+  licenseStatus: "valid",
+  registrationDate: new Date("2020-01-15"),
   stats: {
     matchesPlayed: 150,
     wins: 105,
@@ -69,10 +82,10 @@ const mockPlayer: Player = {
     winRate: 70,
     accuracy: 85,
     currentRank: 1,
-    currentDivision: 'D1',
+    currentDivision: "D1",
     currentPoints: 45,
     previousRank: 2,
-    rankTrend: 'up',
+    rankTrend: "up",
     newHighlights: 5,
     byPosition: {
       first: { matches: 80, points: 840, winRate: 72 },
@@ -91,166 +104,166 @@ const mockPlayer: Player = {
   competitionStats: [],
   recentActivities: [],
   preferences: {
-    language: 'fr',
-    timezone: 'Europe/Paris',
-    distanceUnit: 'metric',
+    language: "fr",
+    timezone: "Europe/Paris",
+    distanceUnit: "metric",
     notifications: {
       email: { results: true, news: true, reminders: true },
       push: { results: true, matches: true },
     },
   },
   social: { facebook: null, twitter: null, instagram: null },
-  lastActiveAt: new Date('2026-10-09'),
-  createdAt: new Date('2020-01-15'),
-  updatedAt: new Date('2026-10-09'),
+  lastActiveAt: new Date("2026-10-09"),
+  createdAt: new Date("2020-01-15"),
+  updatedAt: new Date("2026-10-09"),
 };
 
 const mockPlayer2: Player = {
   ...mockPlayer,
-  id: 'player-002',
-  firstName: 'Pierre',
-  lastName: 'Durand',
-  fullName: 'Pierre Durand',
-  alias: 'Le Rocket',
+  id: "player-002",
+  firstName: "Pierre",
+  lastName: "Durand",
+  fullName: "Pierre Durand",
+  alias: "Le Rocket",
   club: {
     ...(mockPlayer.club as any),
-    id: 'club-001',
-    name: 'Club des Essarts',
-    code: 'ESS',
+    id: "club-001",
+    name: "Club des Essarts",
+    code: "ESS",
   } as any,
-  clubId: 'club-001',
-  clubNumber: 'ESS-002',
-  licenseNumber: 'PV-2026-002',
+  clubId: "club-001",
+  clubNumber: "ESS-002",
+  licenseNumber: "PV-2026-002",
 };
 
 const mockTeam1Players: Player[] = [mockPlayer, mockPlayer2];
 const mockTeam2Players: Player[] = [
   {
     ...mockPlayer,
-    id: 'player-003',
-    firstName: 'Marie',
-    lastName: 'Dupont',
-    fullName: 'Marie Dupont',
-    alias: 'La Précise',
+    id: "player-003",
+    firstName: "Marie",
+    lastName: "Dupont",
+    fullName: "Marie Dupont",
+    alias: "La Précise",
     club: {
-      id: 'club-002',
-      name: 'Palet du Marais Champagnelais',
-      nickname: 'Les Maraisiens',
-      code: 'MAR',
-      logo: '/images/clubs/marais.png',
-      address: '456 Rue de la Plaque, 85170 Le Poiré-sur-Vie',
-      city: 'Le Poiré-sur-Vie',
-      postalCode: '85170',
-      league: 'Deux-Sèvres',
-      division: 'D1',
-      status: 'active',
+      id: "club-002",
+      name: "Palet du Marais Champagnelais",
+      nickname: "Les Maraisiens",
+      code: "MAR",
+      logo: "/images/clubs/marais.png",
+      address: "456 Rue de la Plaque, 85170 Le Poiré-sur-Vie",
+      city: "Le Poiré-sur-Vie",
+      postalCode: "85170",
+      league: "Deux-Sèvres",
+      division: "D1",
+      status: "active",
       playersCount: 20,
       teamsCount: 6,
-      contactEmail: 'contact@palet-marais.fr',
-      contactPhone: '+33 2 51 65 43 22',
-      website: 'https://palet-marais.fr',
+      contactEmail: "contact@palet-marais.fr",
+      contactPhone: "+33 2 51 65 43 22",
+      website: "https://palet-marais.fr",
       social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date('2018-03-20'),
-      updatedAt: new Date('2026-10-01'),
+      createdAt: new Date("2018-03-20"),
+      updatedAt: new Date("2026-10-01"),
     },
-    clubId: 'club-002',
-    clubNumber: 'MAR-001',
-    licenseNumber: 'PV-2026-003',
-    createdAt: new Date('2021-01-01'),
-    updatedAt: new Date('2026-10-09'),
+    clubId: "club-002",
+    clubNumber: "MAR-001",
+    licenseNumber: "PV-2026-003",
+    createdAt: new Date("2021-01-01"),
+    updatedAt: new Date("2026-10-09"),
   },
   {
     ...mockPlayer,
-    id: 'player-004',
-    firstName: 'Thomas',
-    lastName: 'Lemoine',
-    fullName: 'Thomas Lemoine',
+    id: "player-004",
+    firstName: "Thomas",
+    lastName: "Lemoine",
+    fullName: "Thomas Lemoine",
     alias: null,
     club: {
-      id: 'club-002',
-      name: 'Palet du Marais Champagnelais',
-      nickname: 'Les Maraisiens',
-      code: 'MAR',
-      logo: '/images/clubs/marais.png',
-      address: '456 Rue de la Plaque, 85170 Le Poiré-sur-Vie',
-      city: 'Le Poiré-sur-Vie',
-      postalCode: '85170',
-      league: 'Deux-Sèvres',
-      division: 'D1',
-      status: 'active',
+      id: "club-002",
+      name: "Palet du Marais Champagnelais",
+      nickname: "Les Maraisiens",
+      code: "MAR",
+      logo: "/images/clubs/marais.png",
+      address: "456 Rue de la Plaque, 85170 Le Poiré-sur-Vie",
+      city: "Le Poiré-sur-Vie",
+      postalCode: "85170",
+      league: "Deux-Sèvres",
+      division: "D1",
+      status: "active",
       playersCount: 20,
       teamsCount: 6,
-      contactEmail: 'contact@palet-marais.fr',
-      contactPhone: '+33 2 51 65 43 22',
-      website: 'https://palet-marais.fr',
+      contactEmail: "contact@palet-marais.fr",
+      contactPhone: "+33 2 51 65 43 22",
+      website: "https://palet-marais.fr",
       social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date('2018-03-20'),
-      updatedAt: new Date('2026-10-01'),
+      createdAt: new Date("2018-03-20"),
+      updatedAt: new Date("2026-10-01"),
     },
-    clubId: 'club-002',
-    clubNumber: 'MAR-002',
-    licenseNumber: 'PV-2026-004',
+    clubId: "club-002",
+    clubNumber: "MAR-002",
+    licenseNumber: "PV-2026-004",
   },
 ];
 
 const mockMatch: Match = {
-  id: 'match-001',
-  competitionId: 'championship-001',
+  id: "match-001",
+  competitionId: "championship-001",
   competition: {
-    id: 'championship-001',
-    name: 'Championnat 79 D1 2026-2027',
-    code: 'D1-2026-2027',
-    type: 'championship',
-    category: 'doublette',
-    material: 'fonte',
-    season: '2026-2027',
+    id: "championship-001",
+    name: "Championnat 79 D1 2026-2027",
+    code: "D1-2026-2027",
+    type: "championship",
+    category: "doublette",
+    material: "fonte",
+    season: "2026-2027",
   } as any,
-  type: 'championship',
+  type: "championship",
   journee: 5,
-  phase: 'Phase Aller',
-  round: 'Round 5',
+  phase: "Phase Aller",
+  round: "Round 5",
   team1: {
-    id: 'team-001',
-    name: 'Équipe 1 - Essarts',
-    logo: '/images/clubs/essarts.png',
+    id: "team-001",
+    name: "Équipe 1 - Essarts",
+    logo: "/images/clubs/essarts.png",
     players: mockTeam1Players,
     rank: 1,
     seed: 1,
   },
   team2: {
-    id: 'team-002',
-    name: 'Équipe 1 - Marais',
-    logo: '/images/clubs/marais.png',
+    id: "team-002",
+    name: "Équipe 1 - Marais",
+    logo: "/images/clubs/marais.png",
     players: mockTeam2Players,
     rank: 2,
     seed: 2,
   },
   team1Score: 15,
   team2Score: 12,
-  winner: 'team1',
+  winner: "team1",
   manches: [
-    { number: 1, team1: 8, team2: 5, winner: 'team1' },
+    { number: 1, team1: 8, team2: 5, winner: "team1" },
     { number: 2, team1: 7, team2: 7, winner: null },
-    { number: 3, team1: 7, team2: 3, winner: 'team1' },
+    { number: 3, team1: 7, team2: 3, winner: "team1" },
   ],
   bestOf: 3,
   currentManche: null,
   currentScores: null,
-  status: 'completed',
+  status: "completed",
   verified: true,
-  verifiedBy: 'Jean Dupont',
-  verifiedAt: new Date('2026-10-08T14:30:00'),
-  date: new Date('2026-10-08T14:00:00'),
-  time: '14:00',
-  location: 'Salle de Palet - Les Essarts',
-  duration: '1h15',
+  verifiedBy: "Jean Dupont",
+  verifiedAt: new Date("2026-10-08T14:30:00"),
+  date: new Date("2026-10-08T14:00:00"),
+  time: "14:00",
+  location: "Salle de Palet - Les Essarts",
+  duration: "1h15",
   canEdit: false,
   isLive: false,
   isRecent: true,
   stats: {
     totalManches: 3,
     avgPointsPerManche: 6.67,
-    bestManche: { number: 1, team1: 8, team2: 5, winner: 'team1' },
+    bestManche: { number: 1, team1: 8, team2: 5, winner: "team1" },
     playerStats: [
       {
         player: mockPlayer,
@@ -278,17 +291,17 @@ const mockMatch: Match = {
       },
     ],
   },
-  startedAt: new Date('2026-10-08T14:00:00'),
-  endedAt: new Date('2026-10-08T15:15:00'),
-  createdAt: new Date('2026-10-01'),
-  updatedAt: new Date('2026-10-08T15:15:00'),
+  startedAt: new Date("2026-10-08T14:00:00"),
+  endedAt: new Date("2026-10-08T15:15:00"),
+  createdAt: new Date("2026-10-01"),
+  updatedAt: new Date("2026-10-08T15:15:00"),
 };
 
 const MatchDetail: React.FC = () => {
   const { matchId } = useParams<{ matchId: string }>();
 
   const { data: match, isLoading } = useQuery<Match>({
-    queryKey: ['match', matchId],
+    queryKey: ["match", matchId],
     queryFn: async () => {
       const response = await api().GET<Match>(`/api/matches/${matchId}`);
       return response.data;
@@ -325,15 +338,15 @@ const MatchDetail: React.FC = () => {
   };
 
   // Check if match is live
-  const isLiveMatch = displayMatch.status === 'in_progress' || displayMatch.isLive;
+  const isLiveMatch = displayMatch.status === "in_progress" || displayMatch.isLive;
 
   // Get winner info
   const getWinnerInfo = () => {
     if (!displayMatch.winner) return null;
-    const winner = displayMatch.winner === 'team1' ? displayMatch.team1 : displayMatch.team2;
+    const winner = displayMatch.winner === "team1" ? displayMatch.team1 : displayMatch.team2;
     return {
       name: winner.name,
-      score: displayMatch.winner === 'team1' ? displayMatch.team1Score : displayMatch.team2Score,
+      score: displayMatch.winner === "team1" ? displayMatch.team1Score : displayMatch.team2Score,
     };
   };
 
@@ -344,18 +357,20 @@ const MatchDetail: React.FC = () => {
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 mb-4">
-              <Link to={displayMatch.competition.type === 'championship' ? '/championnats' : '/tournois'}>
+              <Link
+                to={
+                  displayMatch.competition.type === "championship" ? "/championnats" : "/tournois"
+                }
+              >
                 <Button variant="ghost" size="sm" leftIcon="ArrowLeft">
-                  Retour aux {displayMatch.competition.type === 'championship' ? 'championnats' : 'tournois'}
+                  Retour aux{" "}
+                  {displayMatch.competition.type === "championship" ? "championnats" : "tournois"}
                 </Button>
               </Link>
             </div>
 
             {isLiveMatch ? (
-              <MatchHero
-                match={displayMatch}
-                
-              />
+              <MatchHero match={displayMatch} />
             ) : (
               <div className="bg-primary-900/50 border border-primary-700/50 rounded-lg p-6 mb-6">
                 <div className="flex flex-col md:flex-row items-center justify-center gap-8">
@@ -376,7 +391,7 @@ const MatchDetail: React.FC = () => {
                     <p className="text-heading-xl font-bold text-gold-700">
                       {displayMatch.team1Score}
                     </p>
-                    {displayMatch.winner === 'team1' && (
+                    {displayMatch.winner === "team1" && (
                       <Badge variant="success" className="mt-2">
                         Vainqueur
                       </Badge>
@@ -386,12 +401,12 @@ const MatchDetail: React.FC = () => {
                   {/* VS */}
                   <div className="text-center">
                     <p className="text-heading-xl font-bold text-primary-300">VS</p>
-                    {displayMatch.winner === null && displayMatch.status === 'completed' && (
+                    {displayMatch.winner === null && displayMatch.status === "completed" && (
                       <Badge variant="default" className="mt-2">
                         Match Nul
                       </Badge>
                     )}
-                    {displayMatch.status === 'scheduled' && (
+                    {displayMatch.status === "scheduled" && (
                       <Badge variant="info" className="mt-2">
                         À venir
                       </Badge>
@@ -415,7 +430,7 @@ const MatchDetail: React.FC = () => {
                     <p className="text-heading-xl font-bold text-gold-700">
                       {displayMatch.team2Score}
                     </p>
-                    {displayMatch.winner === 'team2' && (
+                    {displayMatch.winner === "team2" && (
                       <Badge variant="success" className="mt-2">
                         Vainqueur
                       </Badge>
@@ -427,24 +442,30 @@ const MatchDetail: React.FC = () => {
                 <div className="mt-6 pt-6 border-t border-primary-700/50 flex flex-wrap justify-center gap-4">
                   <div className="text-center">
                     <p className="text-body-xs text-primary-400 mb-1">Compétition</p>
-                    <p className="text-body-s font-semibold text-white">{displayMatch.competition.name}</p>
+                    <p className="text-body-s font-semibold text-white">
+                      {displayMatch.competition.name}
+                    </p>
                   </div>
                   {displayMatch.journee && (
                     <div className="text-center">
                       <p className="text-body-xs text-primary-400 mb-1">Journée</p>
-                      <p className="text-body-s font-semibold text-gold-700">{displayMatch.journee}</p>
+                      <p className="text-body-s font-semibold text-gold-700">
+                        {displayMatch.journee}
+                      </p>
                     </div>
                   )}
                   {displayMatch.phase && (
                     <div className="text-center">
                       <p className="text-body-xs text-primary-400 mb-1">Phase</p>
-                      <p className="text-body-s font-semibold text-gold-700">{displayMatch.phase}</p>
+                      <p className="text-body-s font-semibold text-gold-700">
+                        {displayMatch.phase}
+                      </p>
                     </div>
                   )}
                   <div className="text-center">
                     <p className="text-body-xs text-primary-400 mb-1">Date</p>
                     <p className="text-body-s font-semibold text-white">
-                      {displayMatch.date.toLocaleDateString('fr-FR')}
+                      {displayMatch.date.toLocaleDateString("fr-FR")}
                     </p>
                   </div>
                   {displayMatch.time && (
@@ -460,7 +481,9 @@ const MatchDetail: React.FC = () => {
                   {displayMatch.duration && (
                     <div className="text-center">
                       <p className="text-body-xs text-primary-400 mb-1">Durée</p>
-                      <p className="text-body-s font-semibold text-gold-700">{displayMatch.duration}</p>
+                      <p className="text-body-s font-semibold text-gold-700">
+                        {displayMatch.duration}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -470,7 +493,7 @@ const MatchDetail: React.FC = () => {
         </section>
 
         {/* Stats Overview */}
-        {displayMatch.status === 'completed' && (
+        {displayMatch.status === "completed" && (
           <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
             <div className="max-w-7xl mx-auto">
               <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
@@ -482,7 +505,9 @@ const MatchDetail: React.FC = () => {
                     <p className="text-body-xs text-primary-300 mb-1">Gagnant</p>
                     {displayMatch.winner ? (
                       <p className="text-heading-s font-bold text-gold-700">
-                        {displayMatch.winner === 'team1' ? displayMatch.team1.name : displayMatch.team2.name}
+                        {displayMatch.winner === "team1"
+                          ? displayMatch.team1.name
+                          : displayMatch.team2.name}
                       </p>
                     ) : (
                       <p className="text-heading-s font-bold text-primary-300">Match Nul</p>
@@ -509,7 +534,8 @@ const MatchDetail: React.FC = () => {
                   <CardContent className="text-center p-4">
                     <p className="text-body-xs text-primary-300 mb-1">Meilleure Manche</p>
                     <p className="text-heading-s font-bold text-gold-700">
-                      {displayMatch.stats.bestManche?.team1} - {displayMatch.stats.bestManche?.team2}
+                      {displayMatch.stats.bestManche?.team1} -{" "}
+                      {displayMatch.stats.bestManche?.team2}
                     </p>
                   </CardContent>
                 </Card>
@@ -520,7 +546,8 @@ const MatchDetail: React.FC = () => {
                 <div className="mt-6 flex items-center justify-center gap-4">
                   <Badge variant="success">Match vérifié</Badge>
                   <span className="text-body-s text-primary-300">
-                    Vérifié par {displayMatch.verifiedBy} le {displayMatch.verifiedAt?.toLocaleDateString('fr-FR')}
+                    Vérifié par {displayMatch.verifiedBy} le{" "}
+                    {displayMatch.verifiedAt?.toLocaleDateString("fr-FR")}
                   </span>
                 </div>
               )}
@@ -556,11 +583,13 @@ const MatchDetail: React.FC = () => {
                             <span className="text-primary-400">Nom:</span> {displayMatch.team1.name}
                           </p>
                           <p>
-                            <span className="text-primary-400">Classement:</span> {displayMatch.team1.rank || 'Non classé'}
+                            <span className="text-primary-400">Classement:</span>{" "}
+                            {displayMatch.team1.rank || "Non classé"}
                           </p>
                           {displayMatch.team1.seed && (
                             <p>
-                              <span className="text-primary-400">Seed:</span> {displayMatch.team1.seed}
+                              <span className="text-primary-400">Seed:</span>{" "}
+                              {displayMatch.team1.seed}
                             </p>
                           )}
                         </div>
@@ -573,11 +602,13 @@ const MatchDetail: React.FC = () => {
                             <span className="text-primary-400">Nom:</span> {displayMatch.team2.name}
                           </p>
                           <p>
-                            <span className="text-primary-400">Classement:</span> {displayMatch.team2.rank || 'Non classé'}
+                            <span className="text-primary-400">Classement:</span>{" "}
+                            {displayMatch.team2.rank || "Non classé"}
                           </p>
                           {displayMatch.team2.seed && (
                             <p>
-                              <span className="text-primary-400">Seed:</span> {displayMatch.team2.seed}
+                              <span className="text-primary-400">Seed:</span>{" "}
+                              {displayMatch.team2.seed}
                             </p>
                           )}
                         </div>
@@ -589,27 +620,28 @@ const MatchDetail: React.FC = () => {
                         </h4>
                         <div className="space-y-2">
                           <p>
-                            <span className="text-primary-400">Type:</span>{' '}
-                            {displayMatch.competition.type === 'championship' && 'Championnat'}
-                            {displayMatch.competition.type === 'tournament' && 'Tournoi'}
-                            {displayMatch.competition.type === 'cup' && 'Coupe'}
-                            {displayMatch.competition.type === 'friendly' && 'Amical'}
+                            <span className="text-primary-400">Type:</span>{" "}
+                            {displayMatch.competition.type === "championship" && "Championnat"}
+                            {displayMatch.competition.type === "tournament" && "Tournoi"}
+                            {displayMatch.competition.type === "cup" && "Coupe"}
+                            {displayMatch.competition.type === "friendly" && "Amical"}
                           </p>
                           <p>
-                            <span className="text-primary-400">Catégorie:</span>{' '}
-                            {displayMatch.competition.category === 'individual' && 'Individuel'}
-                            {displayMatch.competition.category === 'doublette' && 'Doublette'}
-                            {displayMatch.competition.category === 'triplette' && 'Triplette'}
+                            <span className="text-primary-400">Catégorie:</span>{" "}
+                            {displayMatch.competition.category === "individual" && "Individuel"}
+                            {displayMatch.competition.category === "doublette" && "Doublette"}
+                            {displayMatch.competition.category === "triplette" && "Triplette"}
                           </p>
                           <p>
-                            <span className="text-primary-400">Matériel:</span>{' '}
-                            {displayMatch.competition.material === 'fonte' && 'Fonte'}
-                            {displayMatch.competition.material === 'laiton' && 'Laiton'}
-                            {displayMatch.competition.material === 'bois' && 'Bois'}
-                            {displayMatch.competition.material === 'mixte' && 'Mixte'}
+                            <span className="text-primary-400">Matériel:</span>{" "}
+                            {displayMatch.competition.material === "fonte" && "Fonte"}
+                            {displayMatch.competition.material === "laiton" && "Laiton"}
+                            {displayMatch.competition.material === "bois" && "Bois"}
+                            {displayMatch.competition.material === "mixte" && "Mixte"}
                           </p>
                           <p>
-                            <span className="text-primary-400">Saison:</span> {displayMatch.competition.season}
+                            <span className="text-primary-400">Saison:</span>{" "}
+                            {displayMatch.competition.season}
                           </p>
                         </div>
                       </div>
@@ -617,23 +649,24 @@ const MatchDetail: React.FC = () => {
 
                     {/* Timeline */}
                     <div className="mt-6">
-                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">
-                        Timeline
-                      </h4>
+                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">Timeline</h4>
                       <div className="space-y-2">
                         {displayMatch.startedAt && (
                           <p>
-                            <span className="text-primary-400">Début:</span> {displayMatch.startedAt.toLocaleString('fr-FR')}
+                            <span className="text-primary-400">Début:</span>{" "}
+                            {displayMatch.startedAt.toLocaleString("fr-FR")}
                           </p>
                         )}
                         {displayMatch.endedAt && (
                           <p>
-                            <span className="text-primary-400">Fin:</span> {displayMatch.endedAt.toLocaleString('fr-FR')}
+                            <span className="text-primary-400">Fin:</span>{" "}
+                            {displayMatch.endedAt.toLocaleString("fr-FR")}
                           </p>
                         )}
                         {displayMatch.verifiedAt && (
                           <p>
-                            <span className="text-primary-400">Vérifié le:</span> {displayMatch.verifiedAt.toLocaleString('fr-FR')}
+                            <span className="text-primary-400">Vérifié le:</span>{" "}
+                            {displayMatch.verifiedAt.toLocaleString("fr-FR")}
                           </p>
                         )}
                         {displayMatch.duration && (
@@ -651,9 +684,7 @@ const MatchDetail: React.FC = () => {
               <TabPanel value="manches" className="py-6">
                 <Card className="bg-primary-900/50 border-primary-700/50">
                   <CardHeader>
-                    <h3 className="text-heading-s font-bold text-white">
-                      Résultats par Manche
-                    </h3>
+                    <h3 className="text-heading-s font-bold text-white">Résultats par Manche</h3>
                   </CardHeader>
                   <CardContent>
                     {displayMatch.manches && displayMatch.manches.length > 0 ? (
@@ -662,11 +693,11 @@ const MatchDetail: React.FC = () => {
                           <div
                             key={manche.number}
                             className={`bg-primary-800/50 rounded p-4 border border-primary-700/30 ${
-                              manche.winner === 'team1'
-                                ? 'border-l-4 border-l-gold-700'
-                                : manche.winner === 'team2'
-                                ? 'border-l-4 border-l-green-500'
-                                : 'border-l-4 border-l-primary-500'
+                              manche.winner === "team1"
+                                ? "border-l-4 border-l-gold-700"
+                                : manche.winner === "team2"
+                                  ? "border-l-4 border-l-green-500"
+                                  : "border-l-4 border-l-primary-500"
                             }`}
                           >
                             <div className="flex items-center justify-between">
@@ -674,11 +705,15 @@ const MatchDetail: React.FC = () => {
                                 <span className="text-heading-s font-bold text-white">
                                   Manche {manche.number}
                                 </span>
-                                {manche.winner === 'team1' && (
-                                  <Badge variant="success">Gagnée par {displayMatch.team1.name}</Badge>
+                                {manche.winner === "team1" && (
+                                  <Badge variant="success">
+                                    Gagnée par {displayMatch.team1.name}
+                                  </Badge>
                                 )}
-                                {manche.winner === 'team2' && (
-                                  <Badge variant="success">Gagnée par {displayMatch.team2.name}</Badge>
+                                {manche.winner === "team2" && (
+                                  <Badge variant="success">
+                                    Gagnée par {displayMatch.team2.name}
+                                  </Badge>
                                 )}
                                 {manche.winner === null && (
                                   <Badge variant="default">Match nul</Badge>
@@ -695,9 +730,7 @@ const MatchDetail: React.FC = () => {
 
                         {/* Summary */}
                         <div className="mt-6 pt-4 border-t border-primary-700/50">
-                          <h4 className="text-heading-xs font-bold text-gold-700 mb-3">
-                            Résumé
-                          </h4>
+                          <h4 className="text-heading-xs font-bold text-gold-700 mb-3">Résumé</h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center">
                               <p className="text-body-xs text-primary-300 mb-1">Total Manches</p>
@@ -706,21 +739,25 @@ const MatchDetail: React.FC = () => {
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300 mb-1">Gagnées par {displayMatch.team1.name}</p>
+                              <p className="text-body-xs text-primary-300 mb-1">
+                                Gagnées par {displayMatch.team1.name}
+                              </p>
                               <p className="text-heading-s font-bold text-gold-700">
-                                {displayMatch.manches.filter(m => m.winner === 'team1').length}
+                                {displayMatch.manches.filter((m) => m.winner === "team1").length}
                               </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-body-xs text-primary-300 mb-1">Gagnées par {displayMatch.team2.name}</p>
+                              <p className="text-body-xs text-primary-300 mb-1">
+                                Gagnées par {displayMatch.team2.name}
+                              </p>
                               <p className="text-heading-s font-bold text-gold-700">
-                                {displayMatch.manches.filter(m => m.winner === 'team2').length}
+                                {displayMatch.manches.filter((m) => m.winner === "team2").length}
                               </p>
                             </div>
                             <div className="text-center">
                               <p className="text-body-xs text-primary-300 mb-1">Nulles</p>
                               <p className="text-heading-s font-bold text-gold-700">
-                                {displayMatch.manches.filter(m => m.winner === null).length}
+                                {displayMatch.manches.filter((m) => m.winner === null).length}
                               </p>
                             </div>
                           </div>
@@ -749,7 +786,9 @@ const MatchDetail: React.FC = () => {
                             className="w-10 h-10 rounded-full"
                           />
                         )}
-                        <h3 className="text-heading-s font-bold text-white">{displayMatch.team1.name}</h3>
+                        <h3 className="text-heading-s font-bold text-white">
+                          {displayMatch.team1.name}
+                        </h3>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -761,17 +800,26 @@ const MatchDetail: React.FC = () => {
                               className="flex items-center gap-3 p-2 bg-primary-800/50 rounded"
                             >
                               <UserAvatar
-                                user={{ id: player.id, name: player.fullName, photo: player.photo ?? undefined }}
+                                user={{
+                                  id: player.id,
+                                  name: player.fullName,
+                                  photo: player.photo ?? undefined,
+                                }}
                                 size="sm"
                               />
                               <div className="flex-1">
-                                <p className="text-body-s font-semibold text-white">{player.fullName}</p>
+                                <p className="text-body-s font-semibold text-white">
+                                  {player.fullName}
+                                </p>
                                 <p className="text-body-xs text-primary-300">
                                   {(player.club as any)?.name} - {player.clubNumber}
                                 </p>
                               </div>
                               {player.club && (
-                                <Link to={`/clubs/${(player.club as any).id}`} className="flex-shrink-0">
+                                <Link
+                                  to={`/clubs/${(player.club as any).id}`}
+                                  className="flex-shrink-0"
+                                >
                                   <Button variant="ghost" size="xs">
                                     Voir le club
                                   </Button>
@@ -799,7 +847,9 @@ const MatchDetail: React.FC = () => {
                             className="w-10 h-10 rounded-full"
                           />
                         )}
-                        <h3 className="text-heading-s font-bold text-white">{displayMatch.team2.name}</h3>
+                        <h3 className="text-heading-s font-bold text-white">
+                          {displayMatch.team2.name}
+                        </h3>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -811,17 +861,26 @@ const MatchDetail: React.FC = () => {
                               className="flex items-center gap-3 p-2 bg-primary-800/50 rounded"
                             >
                               <UserAvatar
-                                user={{ id: player.id, name: player.fullName, photo: player.photo ?? undefined }}
+                                user={{
+                                  id: player.id,
+                                  name: player.fullName,
+                                  photo: player.photo ?? undefined,
+                                }}
                                 size="sm"
                               />
                               <div className="flex-1">
-                                <p className="text-body-s font-semibold text-white">{player.fullName}</p>
+                                <p className="text-body-s font-semibold text-white">
+                                  {player.fullName}
+                                </p>
                                 <p className="text-body-xs text-primary-300">
                                   {(player.club as any)?.name} - {player.clubNumber}
                                 </p>
                               </div>
                               {player.club && (
-                                <Link to={`/clubs/${(player.club as any).id}`} className="flex-shrink-0">
+                                <Link
+                                  to={`/clubs/${(player.club as any).id}`}
+                                  className="flex-shrink-0"
+                                >
                                   <Button variant="ghost" size="xs">
                                     Voir le club
                                   </Button>
@@ -858,7 +917,9 @@ const MatchDetail: React.FC = () => {
                             </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-body-xs text-primary-300 mb-1">Points Moyens/Manche</p>
+                            <p className="text-body-xs text-primary-300 mb-1">
+                              Points Moyens/Manche
+                            </p>
                             <p className="text-heading-s font-bold text-gold-700">
                               {displayMatch.stats.avgPointsPerManche.toFixed(1)}
                             </p>
@@ -871,10 +932,15 @@ const MatchDetail: React.FC = () => {
                               Meilleure Manche
                             </h4>
                             <p className="text-body-s text-white">
-                              Manche {displayMatch.stats.bestManche.number}: {displayMatch.stats.bestManche.team1} - {displayMatch.stats.bestManche.team2}
+                              Manche {displayMatch.stats.bestManche.number}:{" "}
+                              {displayMatch.stats.bestManche.team1} -{" "}
+                              {displayMatch.stats.bestManche.team2}
                             </p>
                             <p className="text-body-xs text-primary-300">
-                              Gagnée par: {displayMatch.stats.bestManche.winner === 'team1' ? displayMatch.team1.name : displayMatch.team2.name}
+                              Gagnée par:{" "}
+                              {displayMatch.stats.bestManche.winner === "team1"
+                                ? displayMatch.team1.name
+                                : displayMatch.team2.name}
                             </p>
                           </div>
                         )}
@@ -882,7 +948,9 @@ const MatchDetail: React.FC = () => {
                         {displayMatch.duration && (
                           <div>
                             <p className="text-body-xs text-primary-300 mb-1">Durée du match</p>
-                            <p className="text-body-s font-semibold text-white">{displayMatch.duration}</p>
+                            <p className="text-body-s font-semibold text-white">
+                              {displayMatch.duration}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -900,14 +968,15 @@ const MatchDetail: React.FC = () => {
                       <CardContent>
                         <div className="space-y-3">
                           {displayMatch.stats.playerStats.map((playerStat, index) => (
-                            <div
-                              key={index}
-                              className="bg-primary-800/50 rounded p-3"
-                            >
+                            <div key={index} className="bg-primary-800/50 rounded p-3">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   <UserAvatar
-                                    user={{ id: playerStat.player.id, name: playerStat.player.fullName, photo: playerStat.player.photo ?? undefined }}
+                                    user={{
+                                      id: playerStat.player.id,
+                                      name: playerStat.player.fullName,
+                                      photo: playerStat.player.photo ?? undefined,
+                                    }}
                                     size="xs"
                                   />
                                   <p className="text-body-s font-semibold text-white">
@@ -945,18 +1014,24 @@ const MatchDetail: React.FC = () => {
                 {displayMatch.stats.playerStats && displayMatch.stats.playerStats.length > 0 && (
                   <Card className="bg-primary-900/50 border-primary-700/50 mt-4">
                     <CardHeader>
-                      <h3 className="text-heading-s font-bold text-white">Meilleur Joueur du Match</h3>
+                      <h3 className="text-heading-s font-bold text-white">
+                        Meilleur Joueur du Match
+                      </h3>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center">
                         {(() => {
-                          const bestPlayer = displayMatch.stats.playerStats.reduce((prev, current) =>
-                            (prev.points > current.points ? prev : current)
+                          const bestPlayer = displayMatch.stats.playerStats.reduce(
+                            (prev, current) => (prev.points > current.points ? prev : current),
                           );
                           return (
                             <div className="flex items-center justify-center gap-4">
                               <UserAvatar
-                                user={{ id: bestPlayer.player.id, name: bestPlayer.player.fullName, photo: bestPlayer.player.photo ?? undefined }}
+                                user={{
+                                  id: bestPlayer.player.id,
+                                  name: bestPlayer.player.fullName,
+                                  photo: bestPlayer.player.photo ?? undefined,
+                                }}
                                 size="l"
                                 className="border-2 border-gold-700"
                               />
@@ -970,15 +1045,23 @@ const MatchDetail: React.FC = () => {
                                 <div className="grid grid-cols-3 gap-4 mt-2">
                                   <div className="text-center">
                                     <p className="text-body-xs text-primary-300">Points</p>
-                                    <p className="text-heading-xs font-bold text-gold-700">{bestPlayer.points}</p>
+                                    <p className="text-heading-xs font-bold text-gold-700">
+                                      {bestPlayer.points}
+                                    </p>
                                   </div>
                                   <div className="text-center">
                                     <p className="text-body-xs text-primary-300">Précision</p>
-                                    <p className="text-heading-xs font-bold text-gold-700">{bestPlayer.accuracy}%</p>
+                                    <p className="text-heading-xs font-bold text-gold-700">
+                                      {bestPlayer.accuracy}%
+                                    </p>
                                   </div>
                                   <div className="text-center">
-                                    <p className="text-body-xs text-primary-300">Meilleure Manche</p>
-                                    <p className="text-heading-xs font-bold text-gold-700">{bestPlayer.bestManche}</p>
+                                    <p className="text-body-xs text-primary-300">
+                                      Meilleure Manche
+                                    </p>
+                                    <p className="text-heading-xs font-bold text-gold-700">
+                                      {bestPlayer.bestManche}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
@@ -995,7 +1078,7 @@ const MatchDetail: React.FC = () => {
         </section>
 
         {/* Action Buttons */}
-        {displayMatch.status === 'completed' && displayMatch.canEdit && (
+        {displayMatch.status === "completed" && displayMatch.canEdit && (
           <section className="px-4 py-6 lg:px-8 lg:py-8 bg-primary-800/30">
             <div className="max-w-7xl mx-auto">
               <div className="flex justify-center gap-4">

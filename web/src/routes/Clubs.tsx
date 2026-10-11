@@ -1,15 +1,15 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../api';
-import { Layout } from '../components/layout/Layout';
-import { ClubCard } from '../components/domain';
-import { Club } from '../types';
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../api";
+import { Layout } from "../components/layout/Layout";
+import { ClubCard } from "../components/domain";
+import { Club } from "../types";
 
 const Clubs: React.FC = () => {
   const { data: clubs, isLoading } = useQuery<Club[]>({
-    queryKey: ['clubs'],
+    queryKey: ["clubs"],
     queryFn: async () => {
-      const response = await api().GET<Club[]>('/api/clubs?sort=name&order=asc');
+      const response = await api().GET<Club[]>("/api/clubs?sort=name&order=asc");
       return response.data;
     },
   });
@@ -27,9 +27,10 @@ const Clubs: React.FC = () => {
   }
 
   // Grouper les clubs par division
-  const division1Clubs = clubs?.filter((club) => club.division === 'D1') || [];
-  const division2Clubs = clubs?.filter((club) => club.division === 'D2') || [];
-  const otherClubs = clubs?.filter((club) => club.division !== 'D1' && club.division !== 'D2') || [];
+  const division1Clubs = clubs?.filter((club) => club.division === "D1") || [];
+  const division2Clubs = clubs?.filter((club) => club.division === "D2") || [];
+  const otherClubs =
+    clubs?.filter((club) => club.division !== "D1" && club.division !== "D2") || [];
 
   return (
     <Layout>
@@ -37,9 +38,7 @@ const Clubs: React.FC = () => {
         {/* Header */}
         <section className="px-4 py-6 lg:px-8 lg:py-8">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">
-              CLUBS
-            </h1>
+            <h1 className="text-heading-xl font-bold text-white uppercase tracking-wide">CLUBS</h1>
             <p className="text-body-m text-primary-200 mt-2">
               Annuaire des clubs de Palet Fonte Deux-Sèvres
             </p>
@@ -53,21 +52,17 @@ const Clubs: React.FC = () => {
               <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
                 DIVISION 1
               </h2>
-              <span className="text-body-s text-primary-300">
-                {division1Clubs.length} clubs
-              </span>
+              <span className="text-body-s text-primary-300">{division1Clubs.length} clubs</span>
             </div>
 
             {division1Clubs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {division1Clubs.map((club) => (
-                  <ClubCard key={club.id} club={club}  />
+                  <ClubCard key={club.id} club={club} />
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun club en Division 1
-              </p>
+              <p className="text-body-m text-primary-300">Aucun club en Division 1</p>
             )}
           </div>
         </section>
@@ -79,21 +74,17 @@ const Clubs: React.FC = () => {
               <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
                 DIVISION 2
               </h2>
-              <span className="text-body-s text-primary-300">
-                {division2Clubs.length} clubs
-              </span>
+              <span className="text-body-s text-primary-300">{division2Clubs.length} clubs</span>
             </div>
 
             {division2Clubs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {division2Clubs.map((club) => (
-                  <ClubCard key={club.id} club={club}  />
+                  <ClubCard key={club.id} club={club} />
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun club en Division 2
-              </p>
+              <p className="text-body-m text-primary-300">Aucun club en Division 2</p>
             )}
           </div>
         </section>
@@ -106,14 +97,12 @@ const Clubs: React.FC = () => {
                 <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide">
                   AUTRES DIVISIONS
                 </h2>
-                <span className="text-body-s text-primary-300">
-                  {otherClubs.length} clubs
-                </span>
+                <span className="text-body-s text-primary-300">{otherClubs.length} clubs</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {otherClubs.map((club) => (
-                  <ClubCard key={club.id} club={club}  />
+                  <ClubCard key={club.id} club={club} />
                 ))}
               </div>
             </div>

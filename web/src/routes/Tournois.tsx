@@ -1,15 +1,15 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../api';
-import { Layout } from '../components/layout/Layout';
-import { TournamentCard } from '../components/domain';
-import { Tournament } from '../types';
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../api";
+import { Layout } from "../components/layout/Layout";
+import { TournamentCard } from "../components/domain";
+import { Tournament } from "../types";
 
 const Tournois: React.FC = () => {
   const { data: tournaments, isLoading } = useQuery<Tournament[]>({
-    queryKey: ['tournaments'],
+    queryKey: ["tournaments"],
     queryFn: async () => {
-      const response = await api().GET<Tournament[]>('/api/tournaments?limit=20&sort=startDate');
+      const response = await api().GET<Tournament[]>("/api/tournaments?limit=20&sort=startDate");
       return response.data;
     },
   });
@@ -27,15 +27,10 @@ const Tournois: React.FC = () => {
   }
 
   // Grouper les tournois par status
-  const upcomingTournaments = tournaments?.filter(
-    (t) => t.status === 'registration' || t.status === 'pending'
-  ) || [];
-  const inProgressTournaments = tournaments?.filter(
-    (t) => t.status === 'in_progress'
-  ) || [];
-  const completedTournaments = tournaments?.filter(
-    (t) => t.status === 'completed'
-  ) || [];
+  const upcomingTournaments =
+    tournaments?.filter((t) => t.status === "registration" || t.status === "pending") || [];
+  const inProgressTournaments = tournaments?.filter((t) => t.status === "in_progress") || [];
+  const completedTournaments = tournaments?.filter((t) => t.status === "completed") || [];
 
   return (
     <Layout>
@@ -71,9 +66,7 @@ const Tournois: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun tournoi à venir
-              </p>
+              <p className="text-body-m text-primary-300">Aucun tournoi à venir</p>
             )}
           </div>
         </section>
@@ -97,9 +90,7 @@ const Tournois: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun tournoi en cours
-              </p>
+              <p className="text-body-m text-primary-300">Aucun tournoi en cours</p>
             )}
           </div>
         </section>
@@ -123,9 +114,7 @@ const Tournois: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun tournoi terminé
-              </p>
+              <p className="text-body-m text-primary-300">Aucun tournoi terminé</p>
             )}
           </div>
         </section>

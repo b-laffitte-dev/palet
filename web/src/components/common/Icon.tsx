@@ -1,11 +1,11 @@
-import * as LucideIcons from 'lucide-react';
-import { LucideIcon as LucideIconType } from 'lucide-react';
+import * as LucideIcons from "lucide-react";
+import { LucideIcon as LucideIconType } from "lucide-react";
 
 export type IconName = keyof typeof LucideIcons;
 
 export interface IconProps {
   name: IconName;
-  size?: 'xxs' | 'xs' | 'sm' | 'm' | 'l' | 'xl' | 'xxl';
+  size?: "xxs" | "xs" | "sm" | "m" | "l" | "xl" | "xxl";
   color?: string;
   className?: string;
   onClick?: () => void;
@@ -14,7 +14,7 @@ export interface IconProps {
 }
 
 // Map size names to actual sizes
-const sizeMap: Record<Exclude<IconProps['size'], undefined>, number> = {
+const sizeMap: Record<Exclude<IconProps["size"], undefined>, number> = {
   xxs: 12,
   xs: 16,
   sm: 20,
@@ -26,15 +26,15 @@ const sizeMap: Record<Exclude<IconProps['size'], undefined>, number> = {
 
 export function Icon({
   name,
-  size = 'm',
-  color = 'currentColor',
-  className = '',
+  size = "m",
+  color = "currentColor",
+  className = "",
   onClick,
   filled = false,
   strokeWidth = 2,
 }: IconProps) {
   const LucideIcon = LucideIcons[name] as LucideIconType | undefined;
-  
+
   if (!LucideIcon) {
     console.warn(`Icon "${name}" not found in lucide-react`);
     return null;
@@ -48,12 +48,12 @@ export function Icon({
       className={className}
       onClick={onClick}
       strokeWidth={filled ? 3 : strokeWidth}
-      fill={filled ? color : 'none'}
+      fill={filled ? color : "none"}
       style={{
-        display: 'inline-block',
+        display: "inline-block",
         flexShrink: 0,
-        cursor: onClick ? 'pointer' : 'default',
-        ...(onClick && { transition: 'transform 0.2s ease' }),
+        cursor: onClick ? "pointer" : "default",
+        ...(onClick && { transition: "transform 0.2s ease" }),
       }}
     />
   );

@@ -1,48 +1,42 @@
-import React, { forwardRef, ReactNode, useEffect, useCallback, useRef, useState } from 'react';
-import { Icon, IconName } from './Icon';
-import Button, { ButtonProps } from './Button';
-import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, ReactNode, useEffect, useCallback, useRef, useState } from "react";
+import { Icon, IconName } from "./Icon";
+import Button, { ButtonProps } from "./Button";
+import { cva, type VariantProps } from "class-variance-authority";
 
 // Modal variants
-const modalVariants = cva(
-  'fixed inset-0 z-50 flex items-center justify-center p-4',
-  {
-    variants: {
-      size: {
-        xs: 'max-w-xs',
-        sm: 'max-w-sm',
-        m: 'max-w-md',
-        l: 'max-w-lg',
-        xl: 'max-w-xl',
-        '2xl': 'max-w-2xl',
-        '3xl': 'max-w-3xl',
-        full: 'max-w-[90vw] max-h-[90vh]',
-      },
+const modalVariants = cva("fixed inset-0 z-50 flex items-center justify-center p-4", {
+  variants: {
+    size: {
+      xs: "max-w-xs",
+      sm: "max-w-sm",
+      m: "max-w-md",
+      l: "max-w-lg",
+      xl: "max-w-xl",
+      "2xl": "max-w-2xl",
+      "3xl": "max-w-3xl",
+      full: "max-w-[90vw] max-h-[90vh]",
     },
-    defaultVariants: {
-      size: 'm',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: "m",
+  },
+});
 
 // Modal content variants
-const modalContentVariants = cva(
-  'bg-primary-800 rounded-xl shadow-2xl overflow-hidden',
-  {
-    variants: {
-      size: {
-        xs: 'w-full',
-        sm: 'w-full',
-        m: 'w-full',
-        l: 'w-full',
-        xl: 'w-full',
-        '2xl': 'w-full',
-        '3xl': 'w-full',
-        full: 'w-full max-h-[80vh]',
-      },
+const modalContentVariants = cva("bg-primary-800 rounded-xl shadow-2xl overflow-hidden", {
+  variants: {
+    size: {
+      xs: "w-full",
+      sm: "w-full",
+      m: "w-full",
+      l: "w-full",
+      xl: "w-full",
+      "2xl": "w-full",
+      "3xl": "w-full",
+      full: "w-full max-h-[80vh]",
     },
-  }
-);
+  },
+});
 
 // Modal props
 export interface ModalProps extends VariantProps<typeof modalVariants> {
@@ -56,8 +50,8 @@ export interface ModalProps extends VariantProps<typeof modalVariants> {
   closeOnEscape?: boolean;
   showCloseButton?: boolean;
   closeIcon?: IconName;
-  closeButtonVariant?: ButtonProps['variant'];
-  size?: 'xs' | 'sm' | 'm' | 'l' | 'xl' | '2xl' | '3xl' | 'full';
+  closeButtonVariant?: ButtonProps["variant"];
+  size?: "xs" | "sm" | "m" | "l" | "xl" | "2xl" | "3xl" | "full";
   className?: string;
   contentClassName?: string;
   overlayClassName?: string;
@@ -77,16 +71,16 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       closeOnOverlayClick = true,
       closeOnEscape = true,
       showCloseButton = true,
-      closeIcon = 'X',
-      closeButtonVariant = 'ghost',
-      size = 'm',
+      closeIcon = "X",
+      closeButtonVariant = "ghost",
+      size = "m",
       className,
       contentClassName,
       overlayClassName,
       trapFocus = true,
       ...props
     },
-    ref
+    ref,
   ) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const previousActiveElement = useRef<HTMLElement | null>(null);
@@ -98,18 +92,18 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         onOpen?.();
         setIsMounted(true);
         previousActiveElement.current = document.activeElement as HTMLElement;
-        
+
         // Add body overflow hidden
-        document.body.style.overflow = 'hidden';
-        
+        document.body.style.overflow = "hidden";
+
         // Focus trap
         if (trapFocus && modalRef.current) {
           modalRef.current.focus();
         }
       } else {
         // Restore body overflow
-        document.body.style.overflow = '';
-        
+        document.body.style.overflow = "";
+
         // Focus back to previous element
         if (previousActiveElement.current) {
           previousActiveElement.current.focus();
@@ -120,68 +114,77 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
     // Cleanup on unmount
     useEffect(() => {
       return () => {
-        document.body.style.overflow = '';
+        document.body.style.overflow = "";
       };
     }, []);
 
     // Close on escape
-    const handleKeyDown = useCallback((event: KeyboardEvent) => {
-      if (closeOnEscape && event.key === 'Escape' && isOpen) {
-        onClose?.();
-      }
-    }, [closeOnEscape, isOpen, onClose]);
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent) => {
+        if (closeOnEscape && event.key === "Escape" && isOpen) {
+          onClose?.();
+        }
+      },
+      [closeOnEscape, isOpen, onClose],
+    );
 
     useEffect(() => {
       if (isOpen) {
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener("keydown", handleKeyDown);
       }
       return () => {
-        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener("keydown", handleKeyDown);
       };
     }, [isOpen, handleKeyDown]);
 
     // Close on overlay click
-    const handleOverlayClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-      if (closeOnOverlayClick && event.target === event.currentTarget && isOpen) {
-        onClose?.();
-      }
-    }, [closeOnOverlayClick, isOpen, onClose]);
+    const handleOverlayClick = useCallback(
+      (event: React.MouseEvent<HTMLDivElement>) => {
+        if (closeOnOverlayClick && event.target === event.currentTarget && isOpen) {
+          onClose?.();
+        }
+      },
+      [closeOnOverlayClick, isOpen, onClose],
+    );
 
     // Focus trap
-    const handleKeyDownFocus = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (trapFocus && event.key === 'Tab' && modalRef.current) {
-        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        
-        if (event.shiftKey) {
-          // Shift + Tab: moving backwards
-          if (focusableElements.length > 0 && document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement?.focus();
-          }
-        } else {
-          // Tab: moving forwards
-          if (focusableElements.length > 0 && document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement?.focus();
+    const handleKeyDownFocus = useCallback(
+      (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (trapFocus && event.key === "Tab" && modalRef.current) {
+          const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (event.shiftKey) {
+            // Shift + Tab: moving backwards
+            if (focusableElements.length > 0 && document.activeElement === firstElement) {
+              event.preventDefault();
+              lastElement?.focus();
+            }
+          } else {
+            // Tab: moving forwards
+            if (focusableElements.length > 0 && document.activeElement === lastElement) {
+              event.preventDefault();
+              firstElement?.focus();
+            }
           }
         }
-      }
-    }, [trapFocus]);
+      },
+      [trapFocus],
+    );
 
     // Animation styles
     const getOverlayStyle = (): React.CSSProperties => ({
       opacity: isOpen && isMounted ? 1 : 0,
-      transition: 'opacity 200ms ease',
+      transition: "opacity 200ms ease",
     });
 
     const getContentStyle = (): React.CSSProperties => ({
       opacity: isOpen && isMounted ? 1 : 0,
-      transform: isOpen && isMounted ? 'translateY(0)' : 'translateY(-20px)',
-      transition: 'opacity 200ms ease, transform 200ms ease',
+      transform: isOpen && isMounted ? "translateY(0)" : "translateY(-20px)",
+      transition: "opacity 200ms ease, transform 200ms ease",
     });
 
     if (!isMounted) return null;
@@ -195,8 +198,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         {...props}
       >
         {/* Overlay */}
-        <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${overlayClassName || ''}`} />
-        
+        <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${overlayClassName || ""}`} />
+
         {/* Modal content */}
         <div
           ref={modalRef}
@@ -209,14 +212,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           {(title || showCloseButton) && (
             <div className="flex items-center justify-between p-6 border-b border-primary-700">
               <div className="flex-1">
-                {title && (
-                  <h2 className="text-h4 font-bold text-white mb-1">{title}</h2>
-                )}
-                {description && (
-                  <p className="text-body-s text-primary-300">{description}</p>
-                )}
+                {title && <h2 className="text-h4 font-bold text-white mb-1">{title}</h2>}
+                {description && <p className="text-body-s text-primary-300">{description}</p>}
               </div>
-              
+
               {showCloseButton && onClose && (
                 <Button
                   variant={closeButtonVariant}
@@ -224,25 +223,23 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                   onClick={onClose}
                   aria-label="Fermer"
                   className="flex-shrink-0"
-                  leftIcon={closeIcon === 'X' ? undefined : closeIcon}
+                  leftIcon={closeIcon === "X" ? undefined : closeIcon}
                 >
-                  {closeIcon === 'X' && <Icon name="X" size="m" />}
+                  {closeIcon === "X" && <Icon name="X" size="m" />}
                 </Button>
               )}
             </div>
           )}
-          
+
           {/* Body */}
-          <div className="p-6">
-            {children}
-          </div>
+          <div className="p-6">{children}</div>
         </div>
       </div>
     );
-  }
+  },
 );
 
-Modal.displayName = 'Modal';
+Modal.displayName = "Modal";
 
 // Modal Header component
 export interface ModalHeaderProps {
@@ -252,17 +249,13 @@ export interface ModalHeaderProps {
 
 export const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
   ({ children, className, ...props }, ref) => (
-    <div 
-      ref={ref} 
-      className={`p-6 border-b border-primary-700 ${className || ''}`}
-      {...props}
-    >
+    <div ref={ref} className={`p-6 border-b border-primary-700 ${className || ""}`} {...props}>
       {children}
     </div>
-  )
+  ),
 );
 
-ModalHeader.displayName = 'ModalHeader';
+ModalHeader.displayName = "ModalHeader";
 
 // Modal Body component
 export interface ModalBodyProps {
@@ -272,17 +265,13 @@ export interface ModalBodyProps {
 
 export const ModalBody = forwardRef<HTMLDivElement, ModalBodyProps>(
   ({ children, className, ...props }, ref) => (
-    <div 
-      ref={ref} 
-      className={`p-6 ${className || ''}`}
-      {...props}
-    >
+    <div ref={ref} className={`p-6 ${className || ""}`} {...props}>
       {children}
     </div>
-  )
+  ),
 );
 
-ModalBody.displayName = 'ModalBody';
+ModalBody.displayName = "ModalBody";
 
 // Modal Footer component
 export interface ModalFooterProps {
@@ -292,31 +281,31 @@ export interface ModalFooterProps {
 
 export const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
   ({ children, className, ...props }, ref) => (
-    <div 
-      ref={ref} 
-      className={`p-6 border-t border-primary-700 flex items-center justify-end gap-3 ${className || ''}`}
+    <div
+      ref={ref}
+      className={`p-6 border-t border-primary-700 flex items-center justify-end gap-3 ${className || ""}`}
       {...props}
     >
       {children}
     </div>
-  )
+  ),
 );
 
-ModalFooter.displayName = 'ModalFooter';
+ModalFooter.displayName = "ModalFooter";
 
 // Convenience hooks
 export function useModal() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen(prev => !prev), []);
-  
+  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
+
   return { isOpen, open, close, toggle, setIsOpen };
 }
 
 // Modal wrapper for simple usage
-interface SimpleModalProps extends Omit<ModalProps, 'isOpen' | 'children'> {
+interface SimpleModalProps extends Omit<ModalProps, "isOpen" | "children"> {
   trigger: ReactNode;
   children: ReactNode | ((close: () => void) => ReactNode);
   closeOnTriggerClick?: boolean;
@@ -325,18 +314,11 @@ interface SimpleModalProps extends Omit<ModalProps, 'isOpen' | 'children'> {
 
 export const SimpleModal = forwardRef<HTMLDivElement, SimpleModalProps>(
   (
-    {
-      trigger,
-      children,
-      closeOnTriggerClick = true,
-      onOpen,
-      onClose: onCloseProp,
-      ...props
-    },
-    ref
+    { trigger, children, closeOnTriggerClick = true, onOpen, onClose: onCloseProp, ...props },
+    ref,
   ) => {
     const { isOpen, open, close, setIsOpen } = useModal();
-    
+
     const handleClose = () => {
       close();
       onCloseProp?.();
@@ -352,23 +334,15 @@ export const SimpleModal = forwardRef<HTMLDivElement, SimpleModalProps>(
 
     return (
       <>
-        <div onClick={handleTriggerClick}>
-          {trigger}
-        </div>
-        <Modal
-          ref={ref}
-          isOpen={isOpen}
-          onClose={handleClose}
-          onOpen={onOpen}
-          {...props}
-        >
-          {typeof children === 'function' ? children(handleClose) : children}
+        <div onClick={handleTriggerClick}>{trigger}</div>
+        <Modal ref={ref} isOpen={isOpen} onClose={handleClose} onOpen={onOpen} {...props}>
+          {typeof children === "function" ? children(handleClose) : children}
         </Modal>
       </>
     );
-  }
+  },
 );
 
-SimpleModal.displayName = 'SimpleModal';
+SimpleModal.displayName = "SimpleModal";
 
 export default Modal;

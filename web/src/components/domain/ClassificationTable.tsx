@@ -1,7 +1,7 @@
-import React from 'react';
-import { ChampionshipTeam } from '../../types';
-import { Badge } from '../common/Badge';
-import { Icon } from '../common/Icon';
+import React from "react";
+import { ChampionshipTeam } from "../../types";
+import { Badge } from "../common/Badge";
+import { Icon } from "../common/Icon";
 
 export interface ClassificationTableProps {
   teams: ChampionshipTeam[];
@@ -21,31 +21,46 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
   teams,
   competition,
   journee,
-  season = '2024-2025',
-  className = '',
+  season = "2024-2025",
+  className = "",
   showAllLink = true,
-  onAllClick
+  onAllClick,
 }) => {
-  const getRowClassName = (status: ChampionshipTeam['status']) => {
-    const base = 'hover:bg-primary-800/30 transition-colors';
-    if (status === 'qualified') return `${base} bg-primary-800/20`;
-    if (status === 'barrage') return `${base} bg-amber-900/20`;
-    if (status === 'relegated') return `${base} bg-red-900/20`;
+  const getRowClassName = (status: ChampionshipTeam["status"]) => {
+    const base = "hover:bg-primary-800/30 transition-colors";
+    if (status === "qualified") return `${base} bg-primary-800/20`;
+    if (status === "barrage") return `${base} bg-amber-900/20`;
+    if (status === "relegated") return `${base} bg-red-900/20`;
     return base;
   };
 
-  const getStatusBadge = (status: ChampionshipTeam['status']) => {
-    if (status === 'qualified') return <Badge variant="success" className="text-xs">Finale</Badge>;
-    if (status === 'barrage') return <Badge variant="warning" className="text-xs">Barrage</Badge>;
-    if (status === 'relegated') return <Badge variant="danger" className="text-xs">Descente D2</Badge>;
+  const getStatusBadge = (status: ChampionshipTeam["status"]) => {
+    if (status === "qualified")
+      return (
+        <Badge variant="success" className="text-xs">
+          Finale
+        </Badge>
+      );
+    if (status === "barrage")
+      return (
+        <Badge variant="warning" className="text-xs">
+          Barrage
+        </Badge>
+      );
+    if (status === "relegated")
+      return (
+        <Badge variant="danger" className="text-xs">
+          Descente D2
+        </Badge>
+      );
     return null;
   };
 
   // Form indicators
-  const getFormIndicator = (status: 'win' | 'draw' | 'loss') => {
-    if (status === 'win') return <span className="w-4 h-4 rounded-sm bg-green-600" />;
-    if (status === 'loss') return <span className="w-4 h-4 rounded-sm bg-red-600" />;
-    if (status === 'draw') return <span className="w-4 h-4 rounded-sm bg-gray-500" />;
+  const getFormIndicator = (status: "win" | "draw" | "loss") => {
+    if (status === "win") return <span className="w-4 h-4 rounded-sm bg-green-600" />;
+    if (status === "loss") return <span className="w-4 h-4 rounded-sm bg-red-600" />;
+    if (status === "draw") return <span className="w-4 h-4 rounded-sm bg-gray-500" />;
     return <span className="w-4 h-4 rounded-sm bg-primary-600" />;
   };
 
@@ -54,18 +69,18 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 
+          <h2
             id="classification-title"
             className="text-heading-l font-bold text-dark-primary uppercase tracking-wide"
           >
             {competition}
           </h2>
           <p className="text-body-m text-dark-secondary">
-            Classement après {journee} journée{journee > 1 ? 's' : ''} — {season}
+            Classement après {journee} journée{journee > 1 ? "s" : ""} — {season}
           </p>
         </div>
         {showAllLink && onAllClick && (
-          <button 
+          <button
             onClick={onAllClick}
             className="text-body-s text-gold-pure hover:text-gold-dark flex items-center gap-1"
           >
@@ -111,15 +126,10 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
           {/* Table Body */}
           <tbody>
             {teams.map((team) => (
-              <tr 
-                key={team.team.id}
-                className={getRowClassName(team.status)}
-              >
+              <tr key={team.team.id} className={getRowClassName(team.status)}>
                 {/* Position */}
                 <td className="px-4 py-3">
-                  <span className="text-body-l font-bold text-gold-pure">
-                    {team.position}
-                  </span>
+                  <span className="text-body-l font-bold text-gold-pure">{team.position}</span>
                 </td>
 
                 {/* Club */}
@@ -150,18 +160,19 @@ export const ClassificationTable: React.FC<ClassificationTableProps> = ({
 
                 {/* DIFF */}
                 <td className="px-4 py-3 text-center">
-                  <span className={`text-body-m font-medium ${
-                    team.stats.diff > 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {team.stats.diff > 0 ? '+' : ''}{team.stats.diff}
+                  <span
+                    className={`text-body-m font-medium ${
+                      team.stats.diff > 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {team.stats.diff > 0 ? "+" : ""}
+                    {team.stats.diff}
                   </span>
                 </td>
 
                 {/* PTS */}
                 <td className="px-4 py-3 text-center">
-                  <span className="text-body-m font-bold text-gold-pure">
-                    {team.stats.points}
-                  </span>
+                  <span className="text-body-m font-bold text-gold-pure">{team.stats.points}</span>
                 </td>
 
                 {/* Form */}

@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { TopBar } from './TopBar';
-import { Header } from './Header';
-import { Footer } from './Footer';
+import { ReactNode } from "react";
+import { TopBar } from "./TopBar";
+import { Header } from "./Header";
+import { Footer } from "./Footer";
 
 export interface LayoutProps {
   children: ReactNode;
@@ -23,17 +23,13 @@ export function Layout({
   return (
     <div style={styles.layout}>
       {/* TopBar */}
-      {showTopBar && (
-        <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />
-      )}
+      {showTopBar && <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />}
 
       {/* Header */}
       {showHeader && <Header showCTA={!hasLiveMatches} />}
 
       {/* Main Content */}
-      <main style={styles.main}>
-        {children}
-      </main>
+      <main style={styles.main}>{children}</main>
 
       {/* Footer */}
       {showFooter && <Footer />}
@@ -43,17 +39,17 @@ export function Layout({
 
 const styles = {
   layout: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    minHeight: '100vh',
-    backgroundColor: 'var(--bg-dark)',
+    display: "flex",
+    flexDirection: "column" as const,
+    minHeight: "100vh",
+    backgroundColor: "var(--bg-dark)",
   } as React.CSSProperties,
-  
+
   main: {
     flex: 1,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    backgroundColor: 'var(--bg-dark)',
+    display: "flex",
+    flexDirection: "column" as const,
+    backgroundColor: "var(--bg-dark)",
   } as React.CSSProperties,
 };
 

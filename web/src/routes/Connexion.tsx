@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { Layout } from '../components/layout/Layout';
-import { Icon } from '../components/common/Icon';
-import Button from '../components/common/Button';
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { Layout } from "../components/layout/Layout";
+import { Icon } from "../components/common/Icon";
+import Button from "../components/common/Button";
 
 const Connexion: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isLoading, error, clearError } = useAuth();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,14 +24,14 @@ const Connexion: React.FC = () => {
       // Sinon, on reste sur la page
     } catch (err) {
       // L'erreur est gérée par useAuth
-      console.error('Login error:', err);
+      console.error("Login error:", err);
     }
   };
 
   // Si déjà connecté, rediriger
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) {
-    navigate('/');
+    navigate("/");
     return null;
   }
 
@@ -48,9 +48,7 @@ const Connexion: React.FC = () => {
               <h1 className="text-heading-l font-bold text-white uppercase tracking-wide">
                 CDSP 79
               </h1>
-              <p className="text-body-s text-primary-300 mt-2">
-                Fédération des joueurs et clubs
-              </p>
+              <p className="text-body-s text-primary-300 mt-2">Fédération des joueurs et clubs</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -121,10 +119,7 @@ const Connexion: React.FC = () => {
                   <span className="text-body-s text-primary-200">Se souvenir de moi</span>
                 </label>
 
-                <button
-                  type="button"
-                  className="text-body-s text-gold-700 hover:text-gold-600"
-                >
+                <button type="button" className="text-body-s text-gold-700 hover:text-gold-600">
                   Mot de passe oublié ?
                 </button>
               </div>
@@ -140,14 +135,12 @@ const Connexion: React.FC = () => {
               </Button>
 
               <div className="text-center pt-4 border-t border-primary-700/50">
-                <p className="text-body-s text-primary-300 mb-4">
-                  Vous n'avez pas de compte ?
-                </p>
+                <p className="text-body-s text-primary-300 mb-4">Vous n'avez pas de compte ?</p>
                 <Button
                   variant="outline"
                   size="m"
                   className="w-full"
-                  onClick={() => navigate('/inscription')}
+                  onClick={() => navigate("/inscription")}
                 >
                   S'inscrire
                 </Button>

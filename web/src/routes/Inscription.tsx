@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { Layout } from '../components/layout/Layout';
-import { Icon } from '../components/common/Icon';
-import Button from '../components/common/Button';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { Layout } from "../components/layout/Layout";
+import { Icon } from "../components/common/Icon";
+import Button from "../components/common/Button";
 
 const Inscription: React.FC = () => {
   const navigate = useNavigate();
   const { register, isLoading, error, clearError } = useAuth();
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -49,14 +49,14 @@ const Inscription: React.FC = () => {
       await register(userData);
       // Si l'inscription réussit, useAuth redirige vers /verification-email
     } catch (err) {
-      console.error('Registration error:', err);
+      console.error("Registration error:", err);
     }
   };
 
   // Si déjà connecté, rediriger
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) {
-    navigate('/');
+    navigate("/");
     return null;
   }
 
@@ -73,9 +73,7 @@ const Inscription: React.FC = () => {
               <h1 className="text-heading-l font-bold text-white uppercase tracking-wide">
                 PALET VENDÉEN
               </h1>
-              <p className="text-body-s text-primary-300 mt-2">
-                Créer votre compte
-              </p>
+              <p className="text-body-s text-primary-300 mt-2">Créer votre compte</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -169,12 +167,13 @@ const Inscription: React.FC = () => {
                       className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
                     />
                   </div>
-                  <p className="text-caption text-primary-400">
-                    Minimum 8 caractères
-                  </p>
+                  <p className="text-caption text-primary-400">Minimum 8 caractères</p>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="confirmPassword" className="text-body-s font-medium text-primary-200">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="text-body-s font-medium text-primary-200"
+                  >
                     Confirmer le mot de passe
                   </label>
                   <div className="relative">
@@ -194,12 +193,14 @@ const Inscription: React.FC = () => {
                       className="w-full bg-primary-900 border border-primary-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder:text-primary-400 focus:outline-none focus:border-gold-700"
                     />
                   </div>
-                  {formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                    <p className="text-caption text-danger-400">
-                      <Icon name="AlertCircle" size="xs" className="inline mr-1" />
-                      Les mots de passe ne correspondent pas
-                    </p>
-                  )}
+                  {formData.password &&
+                    formData.confirmPassword &&
+                    formData.password !== formData.confirmPassword && (
+                      <p className="text-caption text-danger-400">
+                        <Icon name="AlertCircle" size="xs" className="inline mr-1" />
+                        Les mots de passe ne correspondent pas
+                      </p>
+                    )}
                 </div>
               </div>
 
@@ -212,11 +213,11 @@ const Inscription: React.FC = () => {
                   className="w-4 h-4 accent-gold-700 mt-1"
                 />
                 <label htmlFor="acceptTerms" className="text-body-s text-primary-200">
-                  J'accepte les{' '}
+                  J'accepte les{" "}
                   <button type="button" className="text-gold-700 hover:text-gold-600 underline">
                     conditions générales
-                  </button>{' '}
-                  et la{' '}
+                  </button>{" "}
+                  et la{" "}
                   <button type="button" className="text-gold-700 hover:text-gold-600 underline">
                     politique de confidentialité
                   </button>
@@ -235,14 +236,12 @@ const Inscription: React.FC = () => {
               </Button>
 
               <div className="text-center pt-4 border-t border-primary-700/50">
-                <p className="text-body-s text-primary-300 mb-4">
-                  Vous avez déjà un compte ?
-                </p>
+                <p className="text-body-s text-primary-300 mb-4">Vous avez déjà un compte ?</p>
                 <Button
                   variant="outline"
                   size="m"
                   className="w-full"
-                  onClick={() => navigate('/connexion')}
+                  onClick={() => navigate("/connexion")}
                 >
                   Se connecter
                 </Button>

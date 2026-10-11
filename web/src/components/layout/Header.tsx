@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { Icon } from '../common/Icon';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { Icon } from "../common/Icon";
 
 export interface HeaderProps {
   showCTA?: boolean;
@@ -17,19 +17,19 @@ export function Header({ showCTA = true }: HeaderProps) {
 
   // Navigation links
   const navLinks = [
-    { to: '/', label: 'Accueil' },
-    { to: '/championnat-79', label: 'Championnat 79' },
-    { to: '/coupe-79', label: 'Coupe 79' },
-    { to: '/challenges', label: 'Challenges' },
-    { to: '/clubs', label: 'Clubs' },
-    { to: '/joueurs', label: 'Joueurs' },
-    { to: '/documents', label: 'Documents' },
-    { to: '/actualites', label: 'Actualités' },
+    { to: "/", label: "Accueil" },
+    { to: "/championnat-79", label: "Championnat 79" },
+    { to: "/coupe-79", label: "Coupe 79" },
+    { to: "/challenges", label: "Challenges" },
+    { to: "/clubs", label: "Clubs" },
+    { to: "/joueurs", label: "Joueurs" },
+    { to: "/documents", label: "Documents" },
+    { to: "/actualites", label: "Actualités" },
   ];
 
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === "/") {
+      return location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };
@@ -42,7 +42,9 @@ export function Header({ showCTA = true }: HeaderProps) {
           <Link to="/" className="text-decoration-none">
             <div className="flex items-center gap-[var(--spacing-2)]">
               <div className="w-12 h-12 rounded-full border-4 border-[var(--color-gold)] flex items-center justify-center bg-black">
-                <span className="text-[var(--text-heading-l)] font-[var(--font-weight-black)] text-[var(--color-gold)]">PC</span>
+                <span className="text-[var(--text-heading-l)] font-[var(--font-weight-black)] text-[var(--color-gold)]">
+                  PC
+                </span>
               </div>
               <span className="text-[var(--text-heading-m)] font-[var(--font-weight-bold)] tracking-[var(--letter-spacing-tight)] text-white">
                 CDSP 79
@@ -69,7 +71,7 @@ export function Header({ showCTA = true }: HeaderProps) {
                     border-b-2 border-transparent 
                     hover:text-gold-pure hover:border-gold-pure
                     transition-colors transition-border
-                    ${isActive(link.to) ? 'text-gold-pure border-gold-pure font-semibold' : ''}
+                    ${isActive(link.to) ? "text-gold-pure border-gold-pure font-semibold" : ""}
                   `}
                 >
                   {link.label}
@@ -82,8 +84,8 @@ export function Header({ showCTA = true }: HeaderProps) {
         {/* Right Section - CTA */}
         {showCTA && !isAuthenticated && (
           <div className="flex items-center">
-            <Link 
-              to="/inscription" 
+            <Link
+              to="/inscription"
               className="
                 flex items-center gap-[var(--spacing-2)] 
                 px-[var(--spacing-4)] py-[var(--spacing-2)] 

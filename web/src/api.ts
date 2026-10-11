@@ -1,22 +1,22 @@
-import { AuthToken } from './types';
+import { AuthToken } from "./types";
 
 // Base API URL - will be configured via environment
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // Storage keys
-const TOKEN_KEY = 'palet_access_token';
+const TOKEN_KEY = "palet_access_token";
 
 // Create API client with authentication
 export function api() {
   // Get token from storage
   const getToken = (): string | null => {
-    const rememberMe = localStorage.getItem('palet_remember_me') === 'true';
-    const tokenString = rememberMe 
+    const rememberMe = localStorage.getItem("palet_remember_me") === "true";
+    const tokenString = rememberMe
       ? localStorage.getItem(TOKEN_KEY)
       : sessionStorage.getItem(TOKEN_KEY);
-    
+
     if (!tokenString) return null;
-    
+
     try {
       const token: AuthToken = JSON.parse(tokenString);
       return token.accessToken;
@@ -31,11 +31,11 @@ export function api() {
     GET: async <T>(path: string, options?: RequestInit): Promise<{ data: T; status: number }> => {
       const headers = new Headers(options?.headers);
       if (token) {
-        headers.append('Authorization', `Bearer ${token}`);
+        headers.append("Authorization", `Bearer ${token}`);
       }
-      
+
       const response = await fetch(`${BASE_URL}${path}`, {
-        method: 'GET',
+        method: "GET",
         headers,
         ...options,
       });
@@ -44,7 +44,7 @@ export function api() {
         const errorData = await response.json().catch(() => ({}));
         throw {
           status: response.status,
-          message: errorData.message || 'Request failed',
+          message: errorData.message || "Request failed",
           code: errorData.code,
         };
       }
@@ -53,15 +53,19 @@ export function api() {
       return { data, status: response.status };
     },
 
-    POST: async <T>(path: string, body?: any, options?: RequestInit): Promise<{ data: T; status: number }> => {
+    POST: async <T>(
+      path: string,
+      body?: any,
+      options?: RequestInit,
+    ): Promise<{ data: T; status: number }> => {
       const headers = new Headers(options?.headers);
-      headers.append('Content-Type', 'application/json');
+      headers.append("Content-Type", "application/json");
       if (token) {
-        headers.append('Authorization', `Bearer ${token}`);
+        headers.append("Authorization", `Bearer ${token}`);
       }
 
       const response = await fetch(`${BASE_URL}${path}`, {
-        method: 'POST',
+        method: "POST",
         headers,
         body: body ? JSON.stringify(body) : undefined,
         ...options,
@@ -71,7 +75,7 @@ export function api() {
         const errorData = await response.json().catch(() => ({}));
         throw {
           status: response.status,
-          message: errorData.message || 'Request failed',
+          message: errorData.message || "Request failed",
           code: errorData.code,
         };
       }
@@ -80,15 +84,18 @@ export function api() {
       return { data, status: response.status };
     },
 
-    PUT: async <T>(path: string, options?: RequestInit & { body?: any }): Promise<{ data: T; status: number }> => {
+    PUT: async <T>(
+      path: string,
+      options?: RequestInit & { body?: any },
+    ): Promise<{ data: T; status: number }> => {
       const headers = new Headers(options?.headers);
-      headers.append('Content-Type', 'application/json');
+      headers.append("Content-Type", "application/json");
       if (token) {
-        headers.append('Authorization', `Bearer ${token}`);
+        headers.append("Authorization", `Bearer ${token}`);
       }
 
       const response = await fetch(`${BASE_URL}${path}`, {
-        method: 'PUT',
+        method: "PUT",
         headers,
         body: options?.body ? JSON.stringify(options.body) : undefined,
         ...options,
@@ -98,7 +105,7 @@ export function api() {
         const errorData = await response.json().catch(() => ({}));
         throw {
           status: response.status,
-          message: errorData.message || 'Request failed',
+          message: errorData.message || "Request failed",
           code: errorData.code,
         };
       }
@@ -107,15 +114,18 @@ export function api() {
       return { data, status: response.status };
     },
 
-    PATCH: async <T>(path: string, options?: RequestInit & { body?: any }): Promise<{ data: T; status: number }> => {
+    PATCH: async <T>(
+      path: string,
+      options?: RequestInit & { body?: any },
+    ): Promise<{ data: T; status: number }> => {
       const headers = new Headers(options?.headers);
-      headers.append('Content-Type', 'application/json');
+      headers.append("Content-Type", "application/json");
       if (token) {
-        headers.append('Authorization', `Bearer ${token}`);
+        headers.append("Authorization", `Bearer ${token}`);
       }
 
       const response = await fetch(`${BASE_URL}${path}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers,
         body: options?.body ? JSON.stringify(options.body) : undefined,
         ...options,
@@ -125,7 +135,7 @@ export function api() {
         const errorData = await response.json().catch(() => ({}));
         throw {
           status: response.status,
-          message: errorData.message || 'Request failed',
+          message: errorData.message || "Request failed",
           code: errorData.code,
         };
       }
@@ -134,14 +144,17 @@ export function api() {
       return { data, status: response.status };
     },
 
-    DELETE: async <T>(path: string, options?: RequestInit): Promise<{ data: T; status: number }> => {
+    DELETE: async <T>(
+      path: string,
+      options?: RequestInit,
+    ): Promise<{ data: T; status: number }> => {
       const headers = new Headers(options?.headers);
       if (token) {
-        headers.append('Authorization', `Bearer ${token}`);
+        headers.append("Authorization", `Bearer ${token}`);
       }
 
       const response = await fetch(`${BASE_URL}${path}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers,
         ...options,
       });
@@ -150,12 +163,12 @@ export function api() {
         const errorData = await response.json().catch(() => ({}));
         throw {
           status: response.status,
-          message: errorData.message || 'Request failed',
+          message: errorData.message || "Request failed",
           code: errorData.code,
         };
       }
 
-      const data = await response.json().catch(() => ({} as T));
+      const data = await response.json().catch(() => ({}) as T);
       return { data, status: response.status };
     },
   };

@@ -17,41 +17,41 @@ export interface Timestamped {
 // USER & AUTHENTICATION TYPES
 // ============================================
 
-export type UserRole = 'player' | 'club_admin' | 'commission_admin' | 'super_admin' | 'arbitre';
+export type UserRole = "player" | "club_admin" | "commission_admin" | "super_admin" | "arbitre";
 
 export interface User extends Identifiable, Timestamped {
   email: string;
   username: string | null;
   firstName: string;
   lastName: string;
-  
+
   // Profile
   photo: string | null;
   bio: string | null;
   phone: string | null;
   birthDate: Date | null;
-  
+
   // Palet Info
   licenseNumber: string | null;
   clubId: string | null;
   category: string;
-  dominantHand: 'right' | 'left' | 'ambidextrous';
+  dominantHand: "right" | "left" | "ambidextrous";
   playStyle: string | null;
-  
+
   // Account
   role: UserRole;
   permissions: Permission[];
-  status: 'active' | 'inactive' | 'suspended' | 'banned';
+  status: "active" | "inactive" | "suspended" | "banned";
   emailVerified: boolean;
-  
+
   // Preferences
   preferences: UserPreferences;
-  
+
   // Security
   passwordLastChanged: Date | null;
   mfaEnabled: boolean;
   lastLogin: Date | null;
-  
+
   // Social
   social: {
     facebook: string | null;
@@ -63,7 +63,7 @@ export interface User extends Identifiable, Timestamped {
 export interface UserPreferences {
   language: string;
   timezone: string;
-  distanceUnit: 'metric' | 'imperial';
+  distanceUnit: "metric" | "imperial";
   notifications: {
     email: {
       results: boolean;
@@ -87,18 +87,24 @@ export interface PlayerMatchHistory {
   draws: number;
   total: number;
   recentMatches?: Match[];
-  byCompetition?: Record<string, {
-    wins: number;
-    losses: number;
-    draws: number;
-    total: number;
-  }>;
-  bySeason?: Record<string, {
-    wins: number;
-    losses: number;
-    draws: number;
-    total: number;
-  }>;
+  byCompetition?: Record<
+    string,
+    {
+      wins: number;
+      losses: number;
+      draws: number;
+      total: number;
+    }
+  >;
+  bySeason?: Record<
+    string,
+    {
+      wins: number;
+      losses: number;
+      draws: number;
+      total: number;
+    }
+  >;
 }
 
 // Position Stats (stats by playing position)
@@ -142,7 +148,7 @@ export interface TeamCompetition {
   competition: Competition;
   competitionId: string;
   season: string;
-  status: 'registered' | 'qualified' | 'in_progress' | 'completed' | 'disqualified';
+  status: "registered" | "qualified" | "in_progress" | "completed" | "disqualified";
   results: TeamCompetitionResults;
 }
 
@@ -186,7 +192,7 @@ export interface Permission {
   id: string;
   name: string;
   code: string;
-  category: 'competition' | 'player' | 'club' | 'system' | 'report';
+  category: "competition" | "player" | "club" | "system" | "report";
   description: string;
 }
 
@@ -194,7 +200,7 @@ export interface AuthToken {
   accessToken: string;
   refreshToken: string;
   expiresIn: number; // seconds
-  tokenType: 'Bearer';
+  tokenType: "Bearer";
 }
 
 export interface AuthState {
@@ -216,26 +222,26 @@ export interface Club extends Identifiable, Timestamped {
   nickname: string | null;
   code: string;
   logo: string | null;
-  
+
   // Location
   address: string | null;
   city: string;
   postalCode: string | null;
-  
+
   // Affiliation
   league: string; // ex: "Deux-Sèvres"
   division: string; // ex: "D1", "D2"
-  status: 'active' | 'inactive' | 'suspended';
-  
+  status: "active" | "inactive" | "suspended";
+
   // Stats
   playersCount: number;
   teamsCount: number;
-  
+
   // Contact
   contactEmail: string | null;
   contactPhone: string | null;
   website: string | null;
-  
+
   // Social
   social: {
     facebook: string | null;
@@ -255,64 +261,64 @@ export interface Player extends Identifiable, Timestamped {
   alias: string | null;
   email: string;
   photo: string | null;
-  status: 'active' | 'inactive' | 'suspended' | 'banned';
-  
+  status: "active" | "inactive" | "suspended" | "banned";
+
   // Personal info
   birthDate: Date;
   age: number;
   birthPlace: string | null;
   nationality: string;
-  dominantHand: 'right' | 'left' | 'ambidextrous';
+  dominantHand: "right" | "left" | "ambidextrous";
   playStyle: string | null;
-  
+
   // Contact info
   phone: string | null;
   address: string | null;
   city: string | null;
   postalCode: string | null;
-  
+
   // Club info
   club: Club;
   clubId: string;
   clubNumber: string | null;
   category: string;
-  
+
   // License info
   licenseNumber: string;
   licenseDate: Date;
-  licenseStatus: 'valid' | 'expired' | 'pending';
+  licenseStatus: "valid" | "expired" | "pending";
   registrationDate: Date;
-  
+
   // Stats
   stats: PlayerStats;
-  
+
   // Achievements
   trophies: PlayerTrophies;
   badges: PlayerBadges;
   records: PlayerRecords;
-  
+
   // Teams
   currentTeams: PlayerTeam[];
   pastTeams: PastPlayerTeam[];
   frequentTeammates: TeammateRelation[];
-  
+
   // History
   matchHistory: PlayerMatchHistory;
   competitionStats: CompetitionStats[];
-  
+
   // Recent activity
   recentActivities: Activity[];
-  
+
   // Preferences
   preferences: PlayerPreferences;
-  
+
   // Social
   social: {
     facebook: string | null;
     twitter: string | null;
     instagram: string | null;
   };
-  
+
   // Metadata
   lastActiveAt: Date;
 }
@@ -330,14 +336,14 @@ export interface PlayerStats {
   maxWinStreak: number;
   winRate: number;
   accuracy: number;
-  
+
   currentRank: number;
   currentDivision: string;
   currentPoints: number;
   previousRank: number;
-  rankTrend: 'up' | 'down' | 'stable';
+  rankTrend: "up" | "down" | "stable";
   newHighlights: number;
-  
+
   byPosition: PositionStats;
   byCompetition: Record<string, CompetitionStats>;
   bySeason: Record<string, SeasonStats>;
@@ -370,13 +376,13 @@ export interface Team extends Identifiable, Timestamped {
   captainId: string | null;
   players: Player[];
   logo: string | null;
-  
+
   // Stats
   stats: TeamStats;
-  
+
   // Status
-  status: 'active' | 'inactive' | 'disbanded';
-  
+  status: "active" | "inactive" | "disbanded";
+
   // Competition info
   competitions: TeamCompetition[];
 }
@@ -415,9 +421,9 @@ export interface TeammateRelation {
 // COMPETITION TYPES
 // ============================================
 
-export type CompetitionType = 'championship' | 'tournament' | 'cup' | 'friendly';
-export type CompetitionCategory = 'individual' | 'doublette' | 'triplette';
-export type CompetitionMaterial = 'fonte' | 'laiton' | 'bois' | 'mixte';
+export type CompetitionType = "championship" | "tournament" | "cup" | "friendly";
+export type CompetitionCategory = "individual" | "doublette" | "triplette";
+export type CompetitionMaterial = "fonte" | "laiton" | "bois" | "mixte";
 
 export interface Competition extends Identifiable, Timestamped {
   name: string;
@@ -426,47 +432,47 @@ export interface Competition extends Identifiable, Timestamped {
   category: CompetitionCategory;
   material: CompetitionMaterial;
   season: string;
-  
+
   // Details
   description: string | null;
   location: string | null;
-  
+
   // Structure
   divisions: string[]; // ['D1', 'D2', 'D3']
-  format: 'round-robin' | 'league' | 'groups' | 'knockout';
-  
+  format: "round-robin" | "league" | "groups" | "knockout";
+
   // Dates
   registrationStart: Date | null;
   registrationEnd: Date | null;
   startDate: Date | null;
   endDate: Date | null;
-  
+
   // Status
-  status: 'pending' | 'registration' | 'in_progress' | 'completed' | 'cancelled';
+  status: "pending" | "registration" | "in_progress" | "completed" | "cancelled";
   currentJournee: number | null;
   totalJournees: number | null;
   currentPhase: string | null;
-  
+
   // Participants
   maxTeams: number | null;
   registeredTeams: number;
   teams: Team[];
-  
+
   // Scoring
-  pointsType: '13' | '15';
+  pointsType: "13" | "15";
   winPoints: number;
   drawPoints: number;
   lossPoints: number;
-  
+
   // Settings
   autoRegistration: boolean;
   manualValidation: boolean;
   isPublic: boolean;
   isArchived: boolean;
-  
+
   // Stats
   stats: CompetitionStats;
-  
+
   // Organizer
   organizer: Club | User;
   organizerId: string;
@@ -485,23 +491,23 @@ export interface CompetitionStats {
 // ============================================
 
 export interface Championship extends Competition {
-  type: 'championship';
-  
+  type: "championship";
+
   // Championship-specific
   totalJournees: number;
   journeeDuration: string | null; // ex: "1 week"
-  
+
   // Classification rules
   classificationRules: ClassificationRules;
-  
+
   // Standings
   classification: ChampionshipClassification;
 }
 
 export interface ClassificationRules {
-  primary: 'points' | 'winRate' | 'diff';
-  secondary: 'diff' | 'pointsFor' | 'headToHead';
-  tertiary: 'pointsFor' | 'pointsAgainst';
+  primary: "points" | "winRate" | "diff";
+  secondary: "diff" | "pointsFor" | "headToHead";
+  tertiary: "pointsFor" | "pointsAgainst";
 }
 
 export interface ChampionshipClassification {
@@ -515,8 +521,8 @@ export interface ChampionshipTeam {
   position: number;
   team: Team;
   stats: TeamStats;
-  form: ('win' | 'draw' | 'loss')[];
-  status: 'qualified' | 'barrage' | 'relegated' | 'safe';
+  form: ("win" | "draw" | "loss")[];
+  status: "qualified" | "barrage" | "relegated" | "safe";
 }
 
 // ============================================
@@ -525,16 +531,16 @@ export interface ChampionshipTeam {
 
 export interface Tournament extends Competition {
   type: CompetitionType;
-  
+
   // Tournament-specific
   phases: TournamentPhase[];
   brackets: TournamentBracket[] | null;
-  
+
   // Registration
   fee: number | null;
   paymentRequired: boolean;
   paymentMethods: string[]; // ['card', 'paypal', 'transfer', 'later']
-  
+
   // Rules
   rules: string | null;
   eligibility: TournamentEligibility;
@@ -543,7 +549,7 @@ export interface Tournament extends Competition {
 export interface TournamentPhase {
   id: string;
   name: string;
-  type: 'group' | 'knockout' | 'final';
+  type: "group" | "knockout" | "final";
   order: number;
   matches: TournamentMatch[];
   groups: TournamentGroup[] | null;
@@ -563,7 +569,7 @@ export interface TournamentMatch {
   team1Score: number | null;
   team2Score: number | null;
   winner: Team | null;
-  status: 'scheduled' | 'in_progress' | 'completed' | 'postponed' | 'cancelled';
+  status: "scheduled" | "in_progress" | "completed" | "postponed" | "cancelled";
   date: Date | null;
   time: string | null;
   location: string | null;
@@ -601,48 +607,48 @@ export interface TournamentEligibility {
 export interface Match extends Identifiable, Timestamped {
   competitionId: string;
   competition: Competition;
-  
+
   // Match info
   type: CompetitionType;
   journee: number | null;
   phase: string | null;
   round: string | null;
-  
+
   // Teams
   team1: MatchTeam;
   team2: MatchTeam;
-  
+
   // Scores
   team1Score: number | null;
   team2Score: number | null;
-  winner: 'team1' | 'team2' | null;
-  
+  winner: "team1" | "team2" | null;
+
   // Manche scores
   manches: MancheScore[] | null;
   bestOf: number | null;
   currentManche: number | null;
   currentScores: CurrentScores | null;
-  
+
   // Status
-  status: 'scheduled' | 'in_progress' | 'completed' | 'postponed' | 'cancelled' | 'disputed';
+  status: "scheduled" | "in_progress" | "completed" | "postponed" | "cancelled" | "disputed";
   verified: boolean;
   verifiedBy: string | null;
   verifiedAt: Date | null;
-  
+
   // Details
   date: Date;
   time: string | null;
   location: string | null;
   duration: string | null;
-  
+
   // Metadata
   canEdit: boolean;
   isLive: boolean;
   isRecent: boolean;
-  
+
   // Stats
   stats: MatchStats;
-  
+
   // Timeline
   startedAt: Date | null;
   endedAt: Date | null;
@@ -661,7 +667,7 @@ export interface MancheScore {
   number: number;
   team1: number;
   team2: number;
-  winner: 'team1' | 'team2' | null;
+  winner: "team1" | "team2" | null;
 }
 
 export interface CurrentScores {
@@ -697,10 +703,10 @@ export interface ResultsData {
   byCompetition: Record<string, CompetitionResults>;
   byTeam: Record<string, TeamResults>;
   byPlayer: Record<string, PlayerResults>;
-  
+
   stats: ResultsStats;
   featured: FeaturedResults;
-  
+
   filters: ActiveFilters;
 }
 
@@ -722,7 +728,7 @@ export interface Standing {
   position: number;
   team: Team;
   stats: TeamStats;
-  form: ('win' | 'draw' | 'loss')[];
+  form: ("win" | "draw" | "loss")[];
 }
 
 export interface ResultsStats {
@@ -768,9 +774,9 @@ export interface Registration extends Identifiable, Timestamped {
   tournamentId: string;
   team: RegistrationTeam;
   isIndividual: boolean;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'waitlisted';
+  status: "pending" | "confirmed" | "cancelled" | "waitlisted";
   payment: RegistrationPayment | null;
-  paymentStatus: 'pending' | 'paid' | 'waived' | 'failed';
+  paymentStatus: "pending" | "paid" | "waived" | "failed";
   fee: number;
   email: string;
   phone: string | null;
@@ -790,7 +796,7 @@ export interface RegistrationPayment {
   id: string;
   method: string;
   amount: number;
-  status: 'pending' | 'paid' | 'failed' | 'refunded';
+  status: "pending" | "paid" | "failed" | "refunded";
   transactionId: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -806,53 +812,60 @@ export interface RegistrationAnswer {
 // NEWS & MEDIA TYPES
 // ============================================
 
-export type NewsCategory = 'official' | 'competitions' | 'clubs' | 'featured' | 'media';
-export type NewsType = 'announcement' | 'news' | 'preview' | 'recap' | 'interview' | 'feature' | 'gallery';
+export type NewsCategory = "official" | "competitions" | "clubs" | "featured" | "media";
+export type NewsType =
+  | "announcement"
+  | "news"
+  | "preview"
+  | "recap"
+  | "interview"
+  | "feature"
+  | "gallery";
 
 export interface NewsArticle extends Identifiable, Timestamped {
   title: string;
   slug: string;
   excerpt: string;
   content: string;
-  
+
   // Category & Type
   category: NewsCategory;
   type: NewsType;
-  
+
   // Media
   image: string | null;
   imageCaption: string | null;
   thumbnail: string | null;
-  
+
   // Author
   author: NewsAuthor;
   authorId: string;
-  
+
   // Metadata
-  status: 'draft' | 'published' | 'archived' | 'deleted';
-  visibility: 'public' | 'members' | 'admin';
+  status: "draft" | "published" | "archived" | "deleted";
+  visibility: "public" | "members" | "admin";
   priority: number;
-  
+
   // Stats
   views: number;
   likes: number;
   shares: number;
   commentsCount: number;
-  
+
   // Classification
   tags: NewsTag[];
-  
+
   // Publishing
   publishedAt: Date;
   scheduledAt: Date | null;
-  
+
   // SEO
   metaTitle: string | null;
   metaDescription: string | null;
-  
+
   // Comments
   comments: NewsComment[];
-  
+
   // Related
   relatedArticles: string[] | NewsArticle[];
 }
@@ -890,32 +903,32 @@ export interface NewsCommentAuthor {
   avatar: string | null;
 }
 
-export type MediaCategory = 'competition' | 'player' | 'club' | 'event' | 'behind-the-scenes';
+export type MediaCategory = "competition" | "player" | "club" | "event" | "behind-the-scenes";
 
 export interface MediaItem extends Identifiable, Timestamped {
   title: string;
   description: string | null;
-  type: 'photo' | 'video';
-  
+  type: "photo" | "video";
+
   // Media URLs
   url: string;
   thumbnail: string;
-  
+
   // Metadata
   category: MediaCategory;
   tags: string[];
-  
+
   // Stats
   views: number;
   likes: number;
-  
+
   // Details
   date: Date;
   uploadedBy: NewsAuthor;
-  
+
   // For videos
   duration: number | null; // in seconds
-  
+
   // For photos
   width: number | null;
   height: number | null;
@@ -926,20 +939,20 @@ export interface MediaItem extends Identifiable, Timestamped {
 // ============================================
 
 export interface Notification extends Identifiable, Timestamped {
-  type: 'match' | 'tournament' | 'club' | 'system' | 'message';
+  type: "match" | "tournament" | "club" | "system" | "message";
   title: string;
   message: string;
   data: NotificationData | null;
   userId: string;
   isRead: boolean;
   readAt: Date | null;
-  
+
   // For push notifications
   sent: boolean;
   sentAt: Date | null;
-  
+
   // Priority
-  priority: 'low' | 'normal' | 'high' | 'urgent';
+  priority: "low" | "normal" | "high" | "urgent";
 }
 
 export interface NotificationData {
@@ -958,7 +971,7 @@ export interface StatItem {
   value: string | number;
   icon?: string;
   color?: string;
-  trend?: 'up' | 'down' | 'stable';
+  trend?: "up" | "down" | "stable";
 }
 
 export interface ChartData {
@@ -1001,7 +1014,7 @@ export interface Badge {
   name: string;
   icon: string | null;
   description: string;
-  rarity: 'bronze' | 'silver' | 'gold' | 'platinum';
+  rarity: "bronze" | "silver" | "gold" | "platinum";
   date: Date;
 }
 
@@ -1018,7 +1031,7 @@ export interface Trophy {
   category: string;
   year: string;
   date: Date;
-  type: 'champion' | 'winner' | 'finalist' | 'semifinalist';
+  type: "champion" | "winner" | "finalist" | "semifinalist";
 }
 
 export interface RecordItem {
@@ -1034,7 +1047,7 @@ export interface RecordItem {
 
 export interface Activity {
   id: string;
-  type: 'match' | 'tournament' | 'achievement' | 'registration' | 'system';
+  type: "match" | "tournament" | "achievement" | "registration" | "system";
   title: string;
   message: string;
   userId: string | null;
@@ -1045,7 +1058,7 @@ export interface Activity {
 export interface FormField {
   id: string;
   label: string;
-  type: 'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'date' | 'email' | 'textarea';
+  type: "text" | "number" | "select" | "checkbox" | "radio" | "date" | "email" | "textarea";
   value: any;
   options?: { value: string; label: string }[];
   required?: boolean;
@@ -1071,7 +1084,7 @@ export interface FilterOption {
 
 export interface SortOption {
   field: string;
-  direction: 'asc' | 'desc' | 'none';
+  direction: "asc" | "desc" | "none";
 }
 
 // ============================================
@@ -1100,6 +1113,6 @@ export interface HealthCheck {
   statut: string;
   version: string;
   timestamp: Date;
-  database: 'connected' | 'disconnected';
-  cache: 'connected' | 'disconnected';
+  database: "connected" | "disconnected";
+  cache: "connected" | "disconnected";
 }

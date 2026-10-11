@@ -1,46 +1,48 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../api';
-import { Layout } from '../components/layout/Layout';
-import { PlayerCard } from '../components/domain';
-import { Player } from '../types';
-import { Icon } from '../components/common/Icon';
-import Button from '../components/common/Button';
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../api";
+import { Layout } from "../components/layout/Layout";
+import { PlayerCard } from "../components/domain";
+import { Player } from "../types";
+import { Icon } from "../components/common/Icon";
+import Button from "../components/common/Button";
 
 const Joueurs: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'rank' | 'points' | 'winRate' | 'name'>('rank');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"rank" | "points" | "winRate" | "name">("rank");
 
   const { data: players, isLoading } = useQuery<Player[]>({
-    queryKey: ['players', 'top', 50],
+    queryKey: ["players", "top", 50],
     queryFn: async () => {
-      const response = await api().GET<Player[]>('/api/players/top?limit=50');
+      const response = await api().GET<Player[]>("/api/players/top?limit=50");
       return response.data;
     },
   });
 
   // Filtrer et trier
-  const filteredPlayers = players
-    ?.filter((player) =>
-      player.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (player.club?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
-    )
-    ?.sort((a, b) => {
-      switch (sortBy) {
-        case 'rank':
-          return (a.stats.currentRank || 999) - (b.stats.currentRank || 999);
-        case 'points':
-          return (b.stats.currentPoints || 0) - (a.stats.currentPoints || 0);
-        case 'winRate':
-          return (b.stats.winRate || 0) - (a.stats.winRate || 0);
-        case 'name':
-          return a.lastName.localeCompare(b.lastName);
-        default:
-          return 0;
-      }
-    }) || [];
+  const filteredPlayers =
+    players
+      ?.filter(
+        (player) =>
+          player.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          player.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          player.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (player.club?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false),
+      )
+      ?.sort((a, b) => {
+        switch (sortBy) {
+          case "rank":
+            return (a.stats.currentRank || 999) - (b.stats.currentRank || 999);
+          case "points":
+            return (b.stats.currentPoints || 0) - (a.stats.currentPoints || 0);
+          case "winRate":
+            return (b.stats.winRate || 0) - (a.stats.winRate || 0);
+          case "name":
+            return a.lastName.localeCompare(b.lastName);
+          default:
+            return 0;
+        }
+      }) || [];
 
   if (isLoading) {
     return (
@@ -91,30 +93,30 @@ const Joueurs: React.FC = () => {
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant={sortBy === 'rank' ? 'primary' : 'secondary'}
+                  variant={sortBy === "rank" ? "primary" : "secondary"}
                   size="sm"
-                  onClick={() => setSortBy('rank')}
+                  onClick={() => setSortBy("rank")}
                 >
                   Classement
                 </Button>
                 <Button
-                  variant={sortBy === 'points' ? 'primary' : 'secondary'}
+                  variant={sortBy === "points" ? "primary" : "secondary"}
                   size="sm"
-                  onClick={() => setSortBy('points')}
+                  onClick={() => setSortBy("points")}
                 >
                   Points
                 </Button>
                 <Button
-                  variant={sortBy === 'winRate' ? 'primary' : 'secondary'}
+                  variant={sortBy === "winRate" ? "primary" : "secondary"}
                   size="sm"
-                  onClick={() => setSortBy('winRate')}
+                  onClick={() => setSortBy("winRate")}
                 >
                   % Victoires
                 </Button>
                 <Button
-                  variant={sortBy === 'name' ? 'primary' : 'secondary'}
+                  variant={sortBy === "name" ? "primary" : "secondary"}
                   size="sm"
-                  onClick={() => setSortBy('name')}
+                  onClick={() => setSortBy("name")}
                 >
                   Nom
                 </Button>
@@ -132,13 +134,19 @@ const Joueurs: React.FC = () => {
                   <PlayerCard
                     key={player.id}
                     player={player}
-                    accent={index < 3 ? (index === 0 ? 'gold' : index === 1 ? 'primary' : 'amber') : undefined}
+                    accent={
+                      index < 3
+                        ? index === 0
+                          ? "gold"
+                          : index === 1
+                            ? "primary"
+                            : "amber"
+                        : undefined
+                    }
                   />
                 ))
               ) : (
-                <p className="text-body-m text-primary-300 col-span-full">
-                  Aucun joueur trouvé
-                </p>
+                <p className="text-body-m text-primary-300 col-span-full">Aucun joueur trouvé</p>
               )}
             </div>
           </div>
@@ -158,19 +166,21 @@ const Joueurs: React.FC = () => {
               <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
                 <p className="text-body-xs text-primary-300 mb-1">D1</p>
                 <p className="text-heading-m font-bold text-gold-700">
-                  {players?.filter((p) => p.stats.currentDivision === 'D1').length || 0}
+                  {players?.filter((p) => p.stats.currentDivision === "D1").length || 0}
                 </p>
               </div>
               <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
                 <p className="text-body-xs text-primary-300 mb-1">D2</p>
                 <p className="text-heading-m font-bold text-gold-700">
-                  {players?.filter((p) => p.stats.currentDivision === 'D2').length || 0}
+                  {players?.filter((p) => p.stats.currentDivision === "D2").length || 0}
                 </p>
               </div>
               <div className="bg-primary-900 rounded-lg p-4 text-center border border-primary-700/50">
                 <p className="text-body-xs text-primary-300 mb-1">Autres</p>
                 <p className="text-heading-m font-bold text-gold-700">
-                  {players?.filter((p) => p.stats.currentDivision !== 'D1' && p.stats.currentDivision !== 'D2').length || 0}
+                  {players?.filter(
+                    (p) => p.stats.currentDivision !== "D1" && p.stats.currentDivision !== "D2",
+                  ).length || 0}
                 </p>
               </div>
             </div>

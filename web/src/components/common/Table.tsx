@@ -1,78 +1,70 @@
-import React, { forwardRef, HTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from 'react';
-import { Icon, IconName } from './Icon';
-import { StatusBadge } from './Badge';
-import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, HTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from "react";
+import { Icon, IconName } from "./Icon";
+import { StatusBadge } from "./Badge";
+import { cva, type VariantProps } from "class-variance-authority";
 
 // Table container variants
-const tableContainerVariants = cva(
-  'w-full overflow-x-auto rounded-lg border border-primary-700',
-  {
-    variants: {
-      variant: {
-        default: '',
-        striped: '',
-        hoverable: '',
-      },
-      size: {
-        xs: 'text-xs',
-        sm: 'text-sm',
-        m: 'text-base',
-        l: 'text-lg',
-      },
+const tableContainerVariants = cva("w-full overflow-x-auto rounded-lg border border-primary-700", {
+  variants: {
+    variant: {
+      default: "",
+      striped: "",
+      hoverable: "",
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'm',
+    size: {
+      xs: "text-xs",
+      sm: "text-sm",
+      m: "text-base",
+      l: "text-lg",
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "m",
+  },
+});
 
 // Table variants
-const tableVariants = cva(
-  'w-full table-fixed',
-  {
-    variants: {
-      variant: {
-        default: '',
-        striped: '',
-        hoverable: '',
-      },
-      size: {
-        xs: 'text-xs',
-        sm: 'text-sm',
-        m: 'text-base',
-        l: 'text-lg',
-      },
+const tableVariants = cva("w-full table-fixed", {
+  variants: {
+    variant: {
+      default: "",
+      striped: "",
+      hoverable: "",
     },
-  }
-);
+    size: {
+      xs: "text-xs",
+      sm: "text-sm",
+      m: "text-base",
+      l: "text-lg",
+    },
+  },
+});
 
 // Table cell variants
-const tableCellVariants = cva(
-  'p-4 text-left align-middle',
-  {
-    variants: {
-      variant: {
-        header: 'bg-primary-800 text-primary-200 font-semibold uppercase tracking-wider text-xs',
-        body: 'bg-primary-900 text-white border-t border-primary-700/50',
-        footer: 'bg-primary-800 text-primary-300 font-medium',
-      },
-      size: {
-        xs: 'px-2 py-1',
-        sm: 'px-3 py-2',
-        m: 'px-4 py-3',
-        l: 'px-6 py-4',
-      },
+const tableCellVariants = cva("p-4 text-left align-middle", {
+  variants: {
+    variant: {
+      header: "bg-primary-800 text-primary-200 font-semibold uppercase tracking-wider text-xs",
+      body: "bg-primary-900 text-white border-t border-primary-700/50",
+      footer: "bg-primary-800 text-primary-300 font-medium",
     },
-    defaultVariants: {
-      variant: 'body',
-      size: 'm',
+    size: {
+      xs: "px-2 py-1",
+      sm: "px-3 py-2",
+      m: "px-4 py-3",
+      l: "px-6 py-4",
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "body",
+    size: "m",
+  },
+});
 
 // Table props
-export interface TableProps extends HTMLAttributes<HTMLTableElement>, VariantProps<typeof tableContainerVariants> {
+export interface TableProps
+  extends HTMLAttributes<HTMLTableElement>, VariantProps<typeof tableContainerVariants> {
   children: React.ReactNode;
   striped?: boolean;
   hoverable?: boolean;
@@ -85,30 +77,34 @@ const Table = forwardRef<HTMLTableElement, TableProps>(
   (
     {
       children,
-      variant = 'default',
-      size = 'm',
+      variant = "default",
+      size = "m",
       striped = false,
       hoverable = false,
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <div className={tableContainerVariants({ variant, size, className })}>
-        <table 
+        <table
           ref={ref}
-          className={tableVariants({ variant, size, className: striped ? 'striped' : hoverable ? 'hoverable' : '' })}
+          className={tableVariants({
+            variant,
+            size,
+            className: striped ? "striped" : hoverable ? "hoverable" : "",
+          })}
           {...props}
         >
           {children}
         </table>
       </div>
     );
-  }
+  },
 );
 
-Table.displayName = 'Table';
+Table.displayName = "Table";
 
 // TableHeader props
 export interface TableHeaderProps extends HTMLAttributes<HTMLTableSectionElement> {
@@ -121,10 +117,10 @@ const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
     <thead ref={ref} {...props}>
       {children}
     </thead>
-  )
+  ),
 );
 
-TableHeader.displayName = 'TableHeader';
+TableHeader.displayName = "TableHeader";
 
 // TableBody props
 export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
@@ -137,10 +133,10 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     <tbody ref={ref} {...props}>
       {children}
     </tbody>
-  )
+  ),
 );
 
-TableBody.displayName = 'TableBody';
+TableBody.displayName = "TableBody";
 
 // TableFooter props
 export interface TableFooterProps extends HTMLAttributes<HTMLTableSectionElement> {
@@ -153,10 +149,10 @@ const TableFooter = forwardRef<HTMLTableSectionElement, TableFooterProps>(
     <tfoot ref={ref} {...props}>
       {children}
     </tfoot>
-  )
+  ),
 );
 
-TableFooter.displayName = 'TableFooter';
+TableFooter.displayName = "TableFooter";
 
 // TableRow props
 export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
@@ -168,25 +164,15 @@ export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
 
 // TableRow component
 const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
-  (
-    {
-      children,
-      selected = false,
-      onClick,
-      hoverable = false,
-      className,
-      ...props
-    },
-    ref
-  ) => {
+  ({ children, selected = false, onClick, hoverable = false, className, ...props }, ref) => {
     return (
       <tr
         ref={ref}
         className={`{
-          ${selected ? 'bg-primary-700/50' : ''}
-          ${hoverable ? 'hover:bg-primary-700/30 transition-colors cursor-pointer' : ''}
-          ${onClick ? 'cursor-pointer' : ''}
-          ${className || ''}
+          ${selected ? "bg-primary-700/50" : ""}
+          ${hoverable ? "hover:bg-primary-700/30 transition-colors cursor-pointer" : ""}
+          ${onClick ? "cursor-pointer" : ""}
+          ${className || ""}
         }`}
         onClick={onClick}
         {...props}
@@ -194,16 +180,17 @@ const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
         {children}
       </tr>
     );
-  }
+  },
 );
 
-TableRow.displayName = 'TableRow';
+TableRow.displayName = "TableRow";
 
 // TableHeadCell props
-export interface TableHeadCellProps extends ThHTMLAttributes<HTMLTableCellElement>, VariantProps<typeof tableCellVariants> {
+export interface TableHeadCellProps
+  extends ThHTMLAttributes<HTMLTableCellElement>, VariantProps<typeof tableCellVariants> {
   children: React.ReactNode;
   sortable?: boolean;
-  sortDirection?: 'asc' | 'desc' | null;
+  sortDirection?: "asc" | "desc" | null;
   onSort?: () => void;
   sortIcon?: IconName;
 }
@@ -213,20 +200,20 @@ const TableHeadCell = forwardRef<HTMLTableCellElement, TableHeadCellProps>(
   (
     {
       children,
-      variant = 'header',
-      size = 'm',
+      variant = "header",
+      size = "m",
       sortable = false,
       sortDirection = null,
       onSort,
-      sortIcon = 'ArrowUpDown',
+      sortIcon = "ArrowUpDown",
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     const getSortIcon = (): IconName => {
-      if (sortDirection === 'asc') return 'ChevronUp';
-      if (sortDirection === 'desc') return 'ChevronDown';
+      if (sortDirection === "asc") return "ChevronUp";
+      if (sortDirection === "desc") return "ChevronDown";
       return sortIcon;
     };
 
@@ -240,22 +227,23 @@ const TableHeadCell = forwardRef<HTMLTableCellElement, TableHeadCellProps>(
         <div className="flex items-center justify-between gap-2">
           <span>{children}</span>
           {sortable && (
-            <Icon 
+            <Icon
               name={getSortIcon()}
-              size={size === 'xs' ? 'xs' : size === 'l' ? 'l' : 'm'}
-              className={`text-primary-400 ${sortDirection ? 'text-primary-200' : ''}`}
+              size={size === "xs" ? "xs" : size === "l" ? "l" : "m"}
+              className={`text-primary-400 ${sortDirection ? "text-primary-200" : ""}`}
             />
           )}
         </div>
       </th>
     );
-  }
+  },
 );
 
-TableHeadCell.displayName = 'TableHeadCell';
+TableHeadCell.displayName = "TableHeadCell";
 
 // TableCell props
-export interface TableCellProps extends TdHTMLAttributes<HTMLTableCellElement>, VariantProps<typeof tableCellVariants> {
+export interface TableCellProps
+  extends TdHTMLAttributes<HTMLTableCellElement>, VariantProps<typeof tableCellVariants> {
   children: React.ReactNode;
   status?: string;
   badge?: string | React.ReactNode;
@@ -263,24 +251,9 @@ export interface TableCellProps extends TdHTMLAttributes<HTMLTableCellElement>, 
 
 // TableCell component
 const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
-  (
-    {
-      children,
-      variant = 'body',
-      size = 'm',
-      status,
-      badge,
-      className,
-      ...props
-    },
-    ref
-  ) => {
+  ({ children, variant = "body", size = "m", status, badge, className, ...props }, ref) => {
     return (
-      <td
-        ref={ref}
-        className={tableCellVariants({ variant, size, className })}
-        {...props}
-      >
+      <td ref={ref} className={tableCellVariants({ variant, size, className })} {...props}>
         {status && !badge ? (
           <StatusBadge status={status as any} />
         ) : badge ? (
@@ -290,10 +263,10 @@ const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
         )}
       </td>
     );
-  }
+  },
 );
 
-TableCell.displayName = 'TableCell';
+TableCell.displayName = "TableCell";
 
 // TableCell with actions
 interface TableCellWithActionsProps extends TableCellProps {
@@ -301,21 +274,15 @@ interface TableCellWithActionsProps extends TableCellProps {
 }
 
 const TableCellWithActions = forwardRef<HTMLTableCellElement, TableCellWithActionsProps>(
-  (
-    {
-      children,
-      actions = [],
-      variant = 'body',
-      size = 'm',
-      className,
-      ...props
-    },
-    ref
-  ) => {
+  ({ children, actions = [], variant = "body", size = "m", className, ...props }, ref) => {
     return (
       <td
         ref={ref}
-        className={tableCellVariants({ variant, size, className: `whitespace-nowrap ${className || ''}` })}
+        className={tableCellVariants({
+          variant,
+          size,
+          className: `whitespace-nowrap ${className || ""}`,
+        })}
         {...props}
       >
         <div className="flex items-center gap-4">
@@ -330,10 +297,10 @@ const TableCellWithActions = forwardRef<HTMLTableCellElement, TableCellWithActio
         </div>
       </td>
     );
-  }
+  },
 );
 
-TableCellWithActions.displayName = 'TableCellWithActions';
+TableCellWithActions.displayName = "TableCellWithActions";
 
 // Empty state component for tables
 export interface TableEmptyProps {
@@ -346,23 +313,21 @@ export interface TableEmptyProps {
 }
 
 export const TableEmpty: React.FC<TableEmptyProps> = ({
-  message = 'Aucune donnée disponible',
+  message = "Aucune donnée disponible",
   description,
-  icon = 'Database',
+  icon = "Database",
   action,
   colSpan = 1,
   className,
 }) => {
   return (
     <TableRow>
-      <TableCell colSpan={colSpan} className={`text-center py-12 ${className || ''}`}>
+      <TableCell colSpan={colSpan} className={`text-center py-12 ${className || ""}`}>
         <div className="flex flex-col items-center justify-center gap-4">
           <Icon name={icon} size="xl" className="text-primary-500" />
           <div className="flex flex-col items-center">
             <h3 className="text-h5 font-semibold text-white">{message}</h3>
-            {description && (
-              <p className="text-primary-300 text-body-s mt-1">{description}</p>
-            )}
+            {description && <p className="text-primary-300 text-body-s mt-1">{description}</p>}
           </div>
           {action && <div className="mt-4">{action}</div>}
         </div>
@@ -372,7 +337,7 @@ export const TableEmpty: React.FC<TableEmptyProps> = ({
 };
 
 // Table with sorting and filtering
-export interface SortableTableProps<T> extends Omit<TableProps, 'children'> {
+export interface SortableTableProps<T> extends Omit<TableProps, "children"> {
   data: T[];
   columns: {
     key: keyof T | string;
@@ -383,7 +348,7 @@ export interface SortableTableProps<T> extends Omit<TableProps, 'children'> {
   }[];
   keyExtractor?: (item: T) => string;
   sortBy?: keyof T | string;
-  sortDirection?: 'asc' | 'desc' | null;
+  sortDirection?: "asc" | "desc" | null;
   onSort?: (key: keyof T | string) => void;
   rowClassName?: string | ((item: T) => string);
   emptyMessage?: string;
@@ -392,7 +357,7 @@ export interface SortableTableProps<T> extends Omit<TableProps, 'children'> {
 }
 
 function SortableTable<T extends Record<string, any>>(
-  props: SortableTableProps<T>
+  props: SortableTableProps<T>,
 ): React.ReactElement {
   const {
     data,
@@ -409,13 +374,13 @@ function SortableTable<T extends Record<string, any>>(
   } = props;
 
   const handleSort = (key: keyof T | string) => {
-    const column = columns.find(c => c.key === key);
+    const column = columns.find((c) => c.key === key);
     if (column?.sortable && onSort) {
       onSort(key);
     }
   };
 
-  const getSortDirection = (key: keyof T | string): 'asc' | 'desc' | null => {
+  const getSortDirection = (key: keyof T | string): "asc" | "desc" | null => {
     if (sortBy === key) return sortDirection || null;
     return null;
   };
@@ -425,7 +390,7 @@ function SortableTable<T extends Record<string, any>>(
       <Table {...tableProps}>
         <TableHeader>
           <TableRow>
-            {columns.map(column => (
+            {columns.map((column) => (
               <TableHeadCell
                 key={String(column.key)}
                 sortable={column.sortable}
@@ -440,7 +405,7 @@ function SortableTable<T extends Record<string, any>>(
         <TableBody>
           {Array.from({ length: loadingRows }).map((_, index) => (
             <TableRow key={index} className="animate-pulse">
-              {columns.map(column => (
+              {columns.map((column) => (
                 <TableCell key={String(column.key)}>
                   <div className="h-4 bg-primary-700 rounded w-3/4" />
                 </TableCell>
@@ -457,7 +422,7 @@ function SortableTable<T extends Record<string, any>>(
       <Table {...tableProps}>
         <TableHeader>
           <TableRow>
-            {columns.map(column => (
+            {columns.map((column) => (
               <TableHeadCell
                 key={String(column.key)}
                 sortable={column.sortable}
@@ -470,8 +435,8 @@ function SortableTable<T extends Record<string, any>>(
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableEmpty 
-            message={emptyMessage || 'Aucune donnée disponible'}
+          <TableEmpty
+            message={emptyMessage || "Aucune donnée disponible"}
             colSpan={columns.length}
           />
         </TableBody>
@@ -483,7 +448,7 @@ function SortableTable<T extends Record<string, any>>(
     <Table {...tableProps}>
       <TableHeader>
         <TableRow>
-          {columns.map(column => (
+          {columns.map((column) => (
             <TableHeadCell
               key={String(column.key)}
               sortable={column.sortable}
@@ -496,12 +461,12 @@ function SortableTable<T extends Record<string, any>>(
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map(item => (
+        {data.map((item) => (
           <TableRow
             key={keyExtractor(item)}
-            className={typeof rowClassName === 'function' ? rowClassName(item) : rowClassName}
+            className={typeof rowClassName === "function" ? rowClassName(item) : rowClassName}
           >
-            {columns.map(column => (
+            {columns.map((column) => (
               <TableCell key={String(column.key)}>
                 {column.render ? column.render(item) : String(item[column.key as keyof T])}
               </TableCell>
@@ -514,7 +479,10 @@ function SortableTable<T extends Record<string, any>>(
 }
 
 // Table with row selection
-export interface SelectableTableProps<T> extends Omit<SortableTableProps<T>, 'rowClassName' | 'onSort' | 'onSelect'> {
+export interface SelectableTableProps<T> extends Omit<
+  SortableTableProps<T>,
+  "rowClassName" | "onSort" | "onSelect"
+> {
   selectedIds?: string[];
   onSelect?: (id: string) => void;
   onSelectAll?: () => void;
@@ -523,7 +491,7 @@ export interface SelectableTableProps<T> extends Omit<SortableTableProps<T>, 'ro
 }
 
 function SelectableTable<T extends Record<string, any>>(
-  props: SelectableTableProps<T>
+  props: SelectableTableProps<T>,
 ): React.ReactElement {
   const {
     data,
@@ -548,28 +516,30 @@ function SelectableTable<T extends Record<string, any>>(
 
   const isSelected = (id: string) => selectedIds.includes(id);
 
-  const tableColumns = selectable ? [
-    {
-      key: 'select',
-      label: '',
-      sortable: false,
-      className: 'w-12',
-      render: () => (
-        <input
-          type="checkbox"
-          checked={allSelected}
-          ref={el => {
-            if (el) el.indeterminate = indeterminate;
-          }}
-          onChange={handleSelectAll}
-          disabled={selectAllDisabled}
-          className="w-4 h-4 rounded border-primary-600 bg-transparent focus:ring-2 focus:ring-gold-500"
-          aria-label="Sélectionner tout"
-        />
-      ),
-    },
-    ...columns,
-  ] : columns;
+  const tableColumns = selectable
+    ? [
+        {
+          key: "select",
+          label: "",
+          sortable: false,
+          className: "w-12",
+          render: () => (
+            <input
+              type="checkbox"
+              checked={allSelected}
+              ref={(el) => {
+                if (el) el.indeterminate = indeterminate;
+              }}
+              onChange={handleSelectAll}
+              disabled={selectAllDisabled}
+              className="w-4 h-4 rounded border-primary-600 bg-transparent focus:ring-2 focus:ring-gold-500"
+              aria-label="Sélectionner tout"
+            />
+          ),
+        },
+        ...columns,
+      ]
+    : columns;
 
   return (
     <SortableTable
@@ -579,7 +549,7 @@ function SelectableTable<T extends Record<string, any>>(
       keyExtractor={props.keyExtractor}
       rowClassName={(item) => {
         const id = props.keyExtractor ? props.keyExtractor(item) : (item as any).id;
-        return isSelected(id) ? 'bg-primary-700/30' : '';
+        return isSelected(id) ? "bg-primary-700/30" : "";
       }}
     />
   );

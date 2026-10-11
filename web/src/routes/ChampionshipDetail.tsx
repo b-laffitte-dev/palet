@@ -1,39 +1,52 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Layout } from '../components/layout/Layout';
-import { Card, CardHeader, CardContent, CardFooter, Badge, Avatar, Button, Tabs, TabList, TabPanel, Tab, TeamAvatar } from '../components';
-import { ClassificationTable, MatchCard, ClubCard, TournamentCard } from '../components/domain';
-import { Championship, Team, Match, ChampionshipClassification, ChampionshipTeam } from '../types';
-import { api } from '../api';
+import React from "react";
+import { useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Layout } from "../components/layout/Layout";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  Badge,
+  Avatar,
+  Button,
+  Tabs,
+  TabList,
+  TabPanel,
+  Tab,
+  TeamAvatar,
+} from "../components";
+import { ClassificationTable, MatchCard, ClubCard, TournamentCard } from "../components/domain";
+import { Championship, Team, Match, ChampionshipClassification, ChampionshipTeam } from "../types";
+import { api } from "../api";
 
 // Mock data for development
 const mockTeams: Team[] = [
   {
-    id: 'team-001',
-    name: 'Équipe 1 - Essarts',
+    id: "team-001",
+    name: "Équipe 1 - Essarts",
     club: {
-      id: 'club-001',
-      name: 'Club des Essarts',
-      nickname: 'Les Essartiates',
-      code: 'ESS',
-      logo: '/images/clubs/essarts.png',
-      address: '123 Rue du Palet, 85140 Les Essarts',
-      city: 'Les Essarts',
-      postalCode: '85140',
-      league: 'Deux-Sèvres',
-      division: 'D1',
-      status: 'active',
+      id: "club-001",
+      name: "Club des Essarts",
+      nickname: "Les Essartiates",
+      code: "ESS",
+      logo: "/images/clubs/essarts.png",
+      address: "123 Rue du Palet, 85140 Les Essarts",
+      city: "Les Essarts",
+      postalCode: "85140",
+      league: "Deux-Sèvres",
+      division: "D1",
+      status: "active",
       playersCount: 25,
       teamsCount: 8,
-      contactEmail: 'contact@palet-essarts.fr',
-      contactPhone: '+33 2 51 65 43 21',
-      website: 'https://palet-essarts.fr',
+      contactEmail: "contact@palet-essarts.fr",
+      contactPhone: "+33 2 51 65 43 21",
+      website: "https://palet-essarts.fr",
       social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date('2020-01-15'),
-      updatedAt: new Date('2026-10-01'),
+      createdAt: new Date("2020-01-15"),
+      updatedAt: new Date("2026-10-01"),
     },
-    clubId: 'club-001',
+    clubId: "club-001",
     captain: null as any,
     captainId: null,
     players: [],
@@ -49,36 +62,36 @@ const mockTeams: Team[] = [
       points: 48,
       winRate: 75,
     },
-    status: 'active',
+    status: "active",
     competitions: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'team-002',
-    name: 'Équipe 1 - Marais',
+    id: "team-002",
+    name: "Équipe 1 - Marais",
     club: {
-      id: 'club-002',
-      name: 'Palet du Marais Champagnelais',
-      nickname: 'Les Maraisiens',
-      code: 'MAR',
-      logo: '/images/clubs/marais.png',
-      address: '456 Rue de la Plaque, 85170 Le Poiré-sur-Vie',
-      city: 'Le Poiré-sur-Vie',
-      postalCode: '85170',
-      league: 'Deux-Sèvres',
-      division: 'D1',
-      status: 'active',
+      id: "club-002",
+      name: "Palet du Marais Champagnelais",
+      nickname: "Les Maraisiens",
+      code: "MAR",
+      logo: "/images/clubs/marais.png",
+      address: "456 Rue de la Plaque, 85170 Le Poiré-sur-Vie",
+      city: "Le Poiré-sur-Vie",
+      postalCode: "85170",
+      league: "Deux-Sèvres",
+      division: "D1",
+      status: "active",
       playersCount: 20,
       teamsCount: 6,
-      contactEmail: 'contact@palet-marais.fr',
-      contactPhone: '+33 2 51 65 43 22',
-      website: 'https://palet-marais.fr',
+      contactEmail: "contact@palet-marais.fr",
+      contactPhone: "+33 2 51 65 43 22",
+      website: "https://palet-marais.fr",
       social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date('2018-03-20'),
-      updatedAt: new Date('2026-10-01'),
+      createdAt: new Date("2018-03-20"),
+      updatedAt: new Date("2026-10-01"),
     },
-    clubId: 'club-002',
+    clubId: "club-002",
     captain: null as any,
     captainId: null,
     players: [],
@@ -94,36 +107,36 @@ const mockTeams: Team[] = [
       points: 41,
       winRate: 60,
     },
-    status: 'active',
+    status: "active",
     competitions: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'team-003',
-    name: 'Équipe 1 - Herbiers',
+    id: "team-003",
+    name: "Équipe 1 - Herbiers",
     club: {
-      id: 'club-003',
-      name: 'Palet des Herbiers',
-      nickname: 'Les Herbiers',
-      code: 'HER',
-      logo: '/images/clubs/herbiers.png',
-      address: '789 Rue du Jeu, 85500 Les Herbiers',
-      city: 'Les Herbiers',
-      postalCode: '85500',
-      league: 'Deux-Sèvres',
-      division: 'D1',
-      status: 'active',
+      id: "club-003",
+      name: "Palet des Herbiers",
+      nickname: "Les Herbiers",
+      code: "HER",
+      logo: "/images/clubs/herbiers.png",
+      address: "789 Rue du Jeu, 85500 Les Herbiers",
+      city: "Les Herbiers",
+      postalCode: "85500",
+      league: "Deux-Sèvres",
+      division: "D1",
+      status: "active",
       playersCount: 18,
       teamsCount: 5,
-      contactEmail: 'contact@palet-herbiers.fr',
-      contactPhone: '+33 2 51 65 43 23',
-      website: 'https://palet-herbiers.fr',
+      contactEmail: "contact@palet-herbiers.fr",
+      contactPhone: "+33 2 51 65 43 23",
+      website: "https://palet-herbiers.fr",
       social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date('2019-05-10'),
-      updatedAt: new Date('2026-10-01'),
+      createdAt: new Date("2019-05-10"),
+      updatedAt: new Date("2026-10-01"),
     },
-    clubId: 'club-003',
+    clubId: "club-003",
     captain: null as any,
     captainId: null,
     players: [],
@@ -139,36 +152,36 @@ const mockTeams: Team[] = [
       points: 36,
       winRate: 50,
     },
-    status: 'active',
+    status: "active",
     competitions: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'team-004',
-    name: 'Équipe 1 - Luçon',
+    id: "team-004",
+    name: "Équipe 1 - Luçon",
     club: {
-      id: 'club-004',
-      name: 'Palet de Luçon',
-      nickname: 'Les Luçonnais',
-      code: 'LUC',
-      logo: '/images/clubs/lucon.png',
-      address: '321 Rue de la Barre, 85400 Luçon',
-      city: 'Luçon',
-      postalCode: '85400',
-      league: 'Deux-Sèvres',
-      division: 'D1',
-      status: 'active',
+      id: "club-004",
+      name: "Palet de Luçon",
+      nickname: "Les Luçonnais",
+      code: "LUC",
+      logo: "/images/clubs/lucon.png",
+      address: "321 Rue de la Barre, 85400 Luçon",
+      city: "Luçon",
+      postalCode: "85400",
+      league: "Deux-Sèvres",
+      division: "D1",
+      status: "active",
       playersCount: 15,
       teamsCount: 4,
-      contactEmail: 'contact@palet-lucon.fr',
-      contactPhone: '+33 2 51 65 43 24',
-      website: 'https://palet-lucon.fr',
+      contactEmail: "contact@palet-lucon.fr",
+      contactPhone: "+33 2 51 65 43 24",
+      website: "https://palet-lucon.fr",
       social: { facebook: null, twitter: null, instagram: null },
-      createdAt: new Date('2021-07-01'),
-      updatedAt: new Date('2026-10-01'),
+      createdAt: new Date("2021-07-01"),
+      updatedAt: new Date("2026-10-01"),
     },
-    clubId: 'club-004',
+    clubId: "club-004",
     captain: null as any,
     captainId: null,
     players: [],
@@ -184,7 +197,7 @@ const mockTeams: Team[] = [
       points: 28,
       winRate: 40,
     },
-    status: 'active',
+    status: "active",
     competitions: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -192,29 +205,30 @@ const mockTeams: Team[] = [
 ];
 
 const mockChampionship: Championship = {
-  id: 'championship-001',
-  name: 'Championnat 79 D1 2026-2027',
-  code: 'D1-2026-2027',
-  type: 'championship',
-  category: 'doublette',
-  material: 'fonte',
-  season: '2026-2027',
-  description: 'Le championnat départemental des Deux-Sèvres en Division 1 pour la saison 2026-2027.',
-  location: 'Deux-Sèvres, France',
-  divisions: ['D1'],
-  format: 'round-robin',
-  registrationStart: new Date('2026-08-01'),
-  registrationEnd: new Date('2026-08-31'),
-  startDate: new Date('2026-09-15'),
-  endDate: new Date('2027-05-31'),
-  status: 'in_progress',
+  id: "championship-001",
+  name: "Championnat 79 D1 2026-2027",
+  code: "D1-2026-2027",
+  type: "championship",
+  category: "doublette",
+  material: "fonte",
+  season: "2026-2027",
+  description:
+    "Le championnat départemental des Deux-Sèvres en Division 1 pour la saison 2026-2027.",
+  location: "Deux-Sèvres, France",
+  divisions: ["D1"],
+  format: "round-robin",
+  registrationStart: new Date("2026-08-01"),
+  registrationEnd: new Date("2026-08-31"),
+  startDate: new Date("2026-09-15"),
+  endDate: new Date("2027-05-31"),
+  status: "in_progress",
   currentJournee: 5,
   totalJournees: 18,
-  currentPhase: 'Phase Aller',
+  currentPhase: "Phase Aller",
   maxTeams: 12,
   registeredTeams: mockTeams.length,
   teams: mockTeams,
-  pointsType: '13',
+  pointsType: "13",
   winPoints: 3,
   drawPoints: 1,
   lossPoints: 0,
@@ -230,163 +244,163 @@ const mockChampionship: Championship = {
     topTeam: mockTeams[0]!,
   },
   organizer: mockTeams[0]!.club!,
-  organizerId: 'club-001',
+  organizerId: "club-001",
   classificationRules: {
-    primary: 'points',
-    secondary: 'diff',
-    tertiary: 'pointsFor',
+    primary: "points",
+    secondary: "diff",
+    tertiary: "pointsFor",
   },
   classification: {
-    division: 'D1',
+    division: "D1",
     journee: 5,
-    updatedAt: new Date('2026-10-08'),
+    updatedAt: new Date("2026-10-08"),
     teams: [
       {
         position: 1,
         team: mockTeams[0]!,
         stats: mockTeams[0]!.stats,
-        form: ['win', 'win', 'win', 'win', 'draw'],
-        status: 'qualified',
+        form: ["win", "win", "win", "win", "draw"],
+        status: "qualified",
       },
       {
         position: 2,
         team: mockTeams[1]!,
         stats: mockTeams[1]!.stats,
-        form: ['win', 'win', 'draw', 'win', 'loss'],
-        status: 'qualified',
+        form: ["win", "win", "draw", "win", "loss"],
+        status: "qualified",
       },
       {
         position: 3,
         team: mockTeams[2]!,
         stats: mockTeams[2]!.stats,
-        form: ['win', 'draw', 'loss', 'win', 'win'],
-        status: 'safe',
+        form: ["win", "draw", "loss", "win", "win"],
+        status: "safe",
       },
       {
         position: 4,
         team: mockTeams[3]!,
         stats: mockTeams[3]!.stats,
-        form: ['loss', 'draw', 'win', 'loss', 'draw'],
-        status: 'relegated',
+        form: ["loss", "draw", "win", "loss", "draw"],
+        status: "relegated",
       },
     ],
   },
-  journeeDuration: '1 week',
-  createdAt: new Date('2026-07-01'),
-  updatedAt: new Date('2026-10-09'),
+  journeeDuration: "1 week",
+  createdAt: new Date("2026-07-01"),
+  updatedAt: new Date("2026-10-09"),
 };
 
 const mockMatches: Match[] = [
   {
-    id: 'match-001',
-    competitionId: 'championship-001',
+    id: "match-001",
+    competitionId: "championship-001",
     competition: mockChampionship as any,
-    type: 'championship',
+    type: "championship",
     journee: 5,
-    phase: 'Phase Aller',
-    round: 'Round 5',
+    phase: "Phase Aller",
+    round: "Round 5",
     team1: {
-      id: 'team-001',
-      name: 'Équipe 1 - Essarts',
-      logo: '/images/clubs/essarts.png',
+      id: "team-001",
+      name: "Équipe 1 - Essarts",
+      logo: "/images/clubs/essarts.png",
       players: [],
       rank: 1,
       seed: 1,
     },
     team2: {
-      id: 'team-002',
-      name: 'Équipe 1 - Marais',
-      logo: '/images/clubs/marais.png',
+      id: "team-002",
+      name: "Équipe 1 - Marais",
+      logo: "/images/clubs/marais.png",
       players: [],
       rank: 2,
       seed: 2,
     },
     team1Score: 13,
     team2Score: 10,
-    winner: 'team1',
+    winner: "team1",
     manches: [
-      { number: 1, team1: 7, team2: 5, winner: 'team1' },
-      { number: 2, team1: 6, team2: 5, winner: 'team1' },
+      { number: 1, team1: 7, team2: 5, winner: "team1" },
+      { number: 2, team1: 6, team2: 5, winner: "team1" },
     ],
     bestOf: 3,
     currentManche: null,
     currentScores: null,
-    status: 'completed',
+    status: "completed",
     verified: true,
-    verifiedBy: 'arbitre-001',
-    verifiedAt: new Date('2026-10-08T14:30:00'),
-    date: new Date('2026-10-08T14:00:00'),
-    time: '14:00',
-    location: 'Salle de Palet - Les Essarts',
-    duration: '1h',
+    verifiedBy: "arbitre-001",
+    verifiedAt: new Date("2026-10-08T14:30:00"),
+    date: new Date("2026-10-08T14:00:00"),
+    time: "14:00",
+    location: "Salle de Palet - Les Essarts",
+    duration: "1h",
     canEdit: false,
     isLive: false,
     isRecent: true,
     stats: {
       totalManches: 2,
       avgPointsPerManche: 6.5,
-      bestManche: { number: 1, team1: 7, team2: 5, winner: 'team1' },
+      bestManche: { number: 1, team1: 7, team2: 5, winner: "team1" },
       playerStats: [],
     },
-    startedAt: new Date('2026-10-08T14:00:00'),
-    endedAt: new Date('2026-10-08T14:30:00'),
+    startedAt: new Date("2026-10-08T14:00:00"),
+    endedAt: new Date("2026-10-08T14:30:00"),
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'match-002',
-    competitionId: 'championship-001',
+    id: "match-002",
+    competitionId: "championship-001",
     competition: mockChampionship as any,
-    type: 'championship',
+    type: "championship",
     journee: 5,
-    phase: 'Phase Aller',
-    round: 'Round 5',
+    phase: "Phase Aller",
+    round: "Round 5",
     team1: {
-      id: 'team-003',
-      name: 'Équipe 1 - Herbiers',
-      logo: '/images/clubs/herbiers.png',
+      id: "team-003",
+      name: "Équipe 1 - Herbiers",
+      logo: "/images/clubs/herbiers.png",
       players: [],
       rank: 3,
       seed: 3,
     },
     team2: {
-      id: 'team-004',
-      name: 'Équipe 1 - Luçon',
-      logo: '/images/clubs/lucon.png',
+      id: "team-004",
+      name: "Équipe 1 - Luçon",
+      logo: "/images/clubs/lucon.png",
       players: [],
       rank: 4,
       seed: 4,
     },
     team1Score: 13,
     team2Score: 11,
-    winner: 'team1',
+    winner: "team1",
     manches: [
-      { number: 1, team1: 7, team2: 5, winner: 'team1' },
+      { number: 1, team1: 7, team2: 5, winner: "team1" },
       { number: 2, team1: 6, team2: 6, winner: null },
-      { number: 3, team1: 6, team2: 4, winner: 'team1' },
+      { number: 3, team1: 6, team2: 4, winner: "team1" },
     ],
     bestOf: 3,
     currentManche: null,
     currentScores: null,
-    status: 'completed',
+    status: "completed",
     verified: true,
-    verifiedBy: 'arbitre-001',
-    verifiedAt: new Date('2026-10-08T16:30:00'),
-    date: new Date('2026-10-08T16:00:00'),
-    time: '16:00',
-    location: 'Salle de Palet - Les Herbiers',
-    duration: '1h15',
+    verifiedBy: "arbitre-001",
+    verifiedAt: new Date("2026-10-08T16:30:00"),
+    date: new Date("2026-10-08T16:00:00"),
+    time: "16:00",
+    location: "Salle de Palet - Les Herbiers",
+    duration: "1h15",
     canEdit: false,
     isLive: false,
     isRecent: true,
     stats: {
       totalManches: 3,
       avgPointsPerManche: 5.67,
-      bestManche: { number: 3, team1: 6, team2: 4, winner: 'team1' },
+      bestManche: { number: 3, team1: 6, team2: 4, winner: "team1" },
       playerStats: [],
     },
-    startedAt: new Date('2026-10-08T16:00:00'),
-    endedAt: new Date('2026-10-08T16:30:00'),
+    startedAt: new Date("2026-10-08T16:00:00"),
+    endedAt: new Date("2026-10-08T16:30:00"),
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -396,7 +410,7 @@ const ChampionshipDetail: React.FC = () => {
   const { championshipId } = useParams<{ championshipId: string }>();
 
   const { data: championship, isLoading } = useQuery<Championship>({
-    queryKey: ['championship', championshipId],
+    queryKey: ["championship", championshipId],
     queryFn: async () => {
       const response = await api().GET<Championship>(`/api/championships/${championshipId}`);
       return response.data;
@@ -426,7 +440,7 @@ const ChampionshipDetail: React.FC = () => {
     }
     return Math.min(
       ((displayChampionship.currentJournee || 0) / displayChampionship.totalJournees) * 100,
-      100
+      100,
     );
   };
 
@@ -465,16 +479,16 @@ const ChampionshipDetail: React.FC = () => {
                   <Badge variant="default">{displayChampionship.divisions[0]}</Badge>
                   <Badge variant="default">{displayChampionship.category}</Badge>
                   <Badge variant="default">{displayChampionship.material}</Badge>
-                  {displayChampionship.status === 'pending' && (
+                  {displayChampionship.status === "pending" && (
                     <Badge variant="default">À venir</Badge>
                   )}
-                  {displayChampionship.status === 'in_progress' && (
+                  {displayChampionship.status === "in_progress" && (
                     <Badge variant="warning">En cours</Badge>
                   )}
-                  {displayChampionship.status === 'completed' && (
+                  {displayChampionship.status === "completed" && (
                     <Badge variant="success">Terminé</Badge>
                   )}
-                  {displayChampionship.status === 'cancelled' && (
+                  {displayChampionship.status === "cancelled" && (
                     <Badge variant="danger">Annulé</Badge>
                   )}
                 </div>
@@ -488,7 +502,7 @@ const ChampionshipDetail: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-primary-400">Journée actuelle:</span>
                     <span className="text-gold-700 font-semibold text-body-s">
-                      {displayChampionship.currentJournee || 'Non commencé'}
+                      {displayChampionship.currentJournee || "Non commencé"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -506,14 +520,14 @@ const ChampionshipDetail: React.FC = () => {
                   <div className="flex items-center gap-2 md:col-span-3">
                     <span className="text-primary-400">Dates:</span>
                     <span className="text-gold-700 font-semibold text-body-s">
-                      {displayChampionship.startDate?.toLocaleDateString('fr-FR') || 'À définir'} - 
-                      {displayChampionship.endDate?.toLocaleDateString('fr-FR') || 'À définir'}
+                      {displayChampionship.startDate?.toLocaleDateString("fr-FR") || "À définir"} -
+                      {displayChampionship.endDate?.toLocaleDateString("fr-FR") || "À définir"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 md:col-span-3">
                     <span className="text-primary-400">Lieu:</span>
                     <span className="text-gold-700 font-semibold text-body-s">
-                      {displayChampionship.location || 'Deux-Sèvres, France'}
+                      {displayChampionship.location || "Deux-Sèvres, France"}
                     </span>
                   </div>
                 </div>
@@ -524,7 +538,9 @@ const ChampionshipDetail: React.FC = () => {
                 <div className="space-y-4">
                   <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
                     <p className="text-body-xs text-primary-400 mb-1">Code Championnat</p>
-                    <p className="text-heading-m font-bold text-gold-700">{displayChampionship.code}</p>
+                    <p className="text-heading-m font-bold text-gold-700">
+                      {displayChampionship.code}
+                    </p>
                   </div>
                   <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
                     <p className="text-body-xs text-primary-400 mb-1">Organisateur</p>
@@ -535,7 +551,8 @@ const ChampionshipDetail: React.FC = () => {
                   <div className="bg-primary-900 rounded-lg p-4 border border-primary-700/50 text-center">
                     <p className="text-body-xs text-primary-400 mb-1">Équipes</p>
                     <p className="text-heading-m font-bold text-gold-700">
-                      {displayChampionship.registeredTeams}/{displayChampionship.maxTeams || 'Illimité'}
+                      {displayChampionship.registeredTeams}/
+                      {displayChampionship.maxTeams || "Illimité"}
                     </p>
                   </div>
                 </div>
@@ -550,11 +567,12 @@ const ChampionshipDetail: React.FC = () => {
             <h2 className="text-heading-l font-bold text-gold-700 uppercase tracking-wide mb-6">
               Progression du Championnat
             </h2>
-            
+
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-body-s text-primary-300">
-                  Journée {displayChampionship.currentJournee || 0} / {displayChampionship.totalJournees}
+                  Journée {displayChampionship.currentJournee || 0} /{" "}
+                  {displayChampionship.totalJournees}
                 </span>
                 <span className="text-body-s text-gold-700">
                   {getJourneeProgress().toFixed(0)}%
@@ -578,31 +596,41 @@ const ChampionshipDetail: React.FC = () => {
               <Card className="bg-primary-900/50 border-primary-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-primary-300 mb-1">Matchs Totaux</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayChampionship.stats.totalMatches}</p>
+                  <p className="text-heading-m font-bold text-gold-700">
+                    {displayChampionship.stats.totalMatches}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-primary-900/50 border-primary-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-primary-300 mb-1">Matchs Termines</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayChampionship.stats.completedMatches}</p>
+                  <p className="text-heading-m font-bold text-gold-700">
+                    {displayChampionship.stats.completedMatches}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-primary-900/50 border-primary-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-primary-300 mb-1">Points Totaux</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayChampionship.stats.totalPoints}</p>
+                  <p className="text-heading-m font-bold text-gold-700">
+                    {displayChampionship.stats.totalPoints}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-primary-900/50 border-primary-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-primary-300 mb-1">Points par Manche</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayChampionship.pointsType}</p>
+                  <p className="text-heading-m font-bold text-gold-700">
+                    {displayChampionship.pointsType}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="bg-primary-900/50 border-primary-700/50">
                 <CardContent className="text-center p-4">
                   <p className="text-body-xs text-primary-300 mb-1">Durée Journée</p>
-                  <p className="text-heading-m font-bold text-gold-700">{displayChampionship.journeeDuration || '1 semaine'}</p>
+                  <p className="text-heading-m font-bold text-gold-700">
+                    {displayChampionship.journeeDuration || "1 semaine"}
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -617,7 +645,10 @@ const ChampionshipDetail: React.FC = () => {
                 <Tab value="classement" label="Classement" />
                 <Tab value="journee" label="Journée Actuelle" />
                 <Tab value="matchs" label="Tous les Matchs" />
-                <Tab value="equipes" label="Équipes Participants ({displayChampionship.registeredTeams || 0})" />
+                <Tab
+                  value="equipes"
+                  label="Équipes Participants ({displayChampionship.registeredTeams || 0})"
+                />
                 <Tab value="regles" label="Règlement" />
               </TabList>
 
@@ -637,10 +668,11 @@ const ChampionshipDetail: React.FC = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <h3 className="text-heading-s font-bold text-white">
-                        Journée {displayChampionship.currentJournee || 'Non commencé'} - {displayChampionship.currentPhase}
+                        Journée {displayChampionship.currentJournee || "Non commencé"} -{" "}
+                        {displayChampionship.currentPhase}
                       </h3>
                       <Badge variant="warning">
-                        {displayChampionship.currentJournee ? 'En cours' : 'Non commencé'}
+                        {displayChampionship.currentJournee ? "En cours" : "Non commencé"}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -648,12 +680,12 @@ const ChampionshipDetail: React.FC = () => {
                     <div className="space-y-4">
                       {displayChampionship.currentJournee && mockMatches.length > 0 ? (
                         mockMatches
-                          .filter(m => m.journee === displayChampionship.currentJournee)
+                          .filter((m) => m.journee === displayChampionship.currentJournee)
                           .map((match) => (
                             <MatchCard
                               key={match.id}
                               match={match}
-                              
+
                               showTournament={false}
                             />
                           ))
@@ -674,7 +706,7 @@ const ChampionshipDetail: React.FC = () => {
                     <MatchCard
                       key={match.id}
                       match={match}
-                      
+
                       showTournament={false}
                     />
                   ))}
@@ -697,7 +729,15 @@ const ChampionshipDetail: React.FC = () => {
                     <Card key={team.id} className="bg-primary-900/50 border-primary-700/50">
                       <CardHeader>
                         <div className="flex items-center gap-3">
-                          <TeamAvatar team={{ id: team.id, name: team.name, logo: team.logo ?? undefined, abbreviation: (team.club as any)?.code }} size="m" />
+                          <TeamAvatar
+                            team={{
+                              id: team.id,
+                              name: team.name,
+                              logo: team.logo ?? undefined,
+                              abbreviation: (team.club as any)?.code,
+                            }}
+                            size="m"
+                          />
                           <div className="flex-1">
                             <h3 className="text-heading-s font-bold text-white">{team.name}</h3>
                             <p className="text-body-xs text-primary-300">
@@ -710,19 +750,27 @@ const ChampionshipDetail: React.FC = () => {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                           <div className="text-center">
                             <p className="text-body-xs text-primary-300">Matchs</p>
-                            <p className="text-heading-xs font-bold text-gold-700">{team.stats.matches}</p>
+                            <p className="text-heading-xs font-bold text-gold-700">
+                              {team.stats.matches}
+                            </p>
                           </div>
                           <div className="text-center">
                             <p className="text-body-xs text-primary-300">Victoires</p>
-                            <p className="text-heading-xs font-bold text-gold-700">{team.stats.wins}</p>
+                            <p className="text-heading-xs font-bold text-gold-700">
+                              {team.stats.wins}
+                            </p>
                           </div>
                           <div className="text-center">
                             <p className="text-body-xs text-primary-300">Défaites</p>
-                            <p className="text-heading-xs font-bold text-gold-700">{team.stats.losses}</p>
+                            <p className="text-heading-xs font-bold text-gold-700">
+                              {team.stats.losses}
+                            </p>
                           </div>
                           <div className="text-center">
                             <p className="text-body-xs text-primary-300">Points</p>
-                            <p className="text-heading-xs font-bold text-gold-700">{team.stats.points}</p>
+                            <p className="text-heading-xs font-bold text-gold-700">
+                              {team.stats.points}
+                            </p>
                           </div>
                         </div>
                         <Link to={`/teams/${team.id}`} className="inline-block">
@@ -740,7 +788,9 @@ const ChampionshipDetail: React.FC = () => {
               <TabPanel value="regles" className="py-6">
                 <Card className="bg-primary-900/50 border-primary-700/50">
                   <CardHeader>
-                    <h3 className="text-heading-s font-bold text-white">Règlement du Championnat</h3>
+                    <h3 className="text-heading-s font-bold text-white">
+                      Règlement du Championnat
+                    </h3>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-invert max-w-none text-body-s text-primary-200">
@@ -751,24 +801,32 @@ const ChampionshipDetail: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <span className="text-primary-400">1.</span>
                           <span className="text-white">
-                            {displayChampionship.classificationRules.primary === 'points' && 'Points'}
-                            {displayChampionship.classificationRules.primary === 'winRate' && 'Taux de victoire'}
-                            {displayChampionship.classificationRules.primary === 'diff' && 'Différence de points'}
+                            {displayChampionship.classificationRules.primary === "points" &&
+                              "Points"}
+                            {displayChampionship.classificationRules.primary === "winRate" &&
+                              "Taux de victoire"}
+                            {displayChampionship.classificationRules.primary === "diff" &&
+                              "Différence de points"}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-primary-400">2.</span>
                           <span className="text-white">
-                            {displayChampionship.classificationRules.secondary === 'diff' && 'Différence de points'}
-                            {displayChampionship.classificationRules.secondary === 'pointsFor' && 'Points pour'}
-                            {displayChampionship.classificationRules.secondary === 'headToHead' && 'Confrontation directe'}
+                            {displayChampionship.classificationRules.secondary === "diff" &&
+                              "Différence de points"}
+                            {displayChampionship.classificationRules.secondary === "pointsFor" &&
+                              "Points pour"}
+                            {displayChampionship.classificationRules.secondary === "headToHead" &&
+                              "Confrontation directe"}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-primary-400">3.</span>
                           <span className="text-white">
-                            {displayChampionship.classificationRules.tertiary === 'pointsFor' && 'Points pour'}
-                            {displayChampionship.classificationRules.tertiary === 'pointsAgainst' && 'Points contre'}
+                            {displayChampionship.classificationRules.tertiary === "pointsFor" &&
+                              "Points pour"}
+                            {displayChampionship.classificationRules.tertiary === "pointsAgainst" &&
+                              "Points contre"}
                           </span>
                         </div>
                       </div>
@@ -778,24 +836,28 @@ const ChampionshipDetail: React.FC = () => {
                       </h4>
                       <div className="space-y-2 mb-6">
                         <p>
-                          <span className="text-primary-400">Victoire:</span> {displayChampionship.winPoints} points
+                          <span className="text-primary-400">Victoire:</span>{" "}
+                          {displayChampionship.winPoints} points
                         </p>
                         <p>
-                          <span className="text-primary-400">Match nul:</span> {displayChampionship.drawPoints} point
+                          <span className="text-primary-400">Match nul:</span>{" "}
+                          {displayChampionship.drawPoints} point
                         </p>
                         <p>
-                          <span className="text-primary-400">Défaite:</span> {displayChampionship.lossPoints} point
+                          <span className="text-primary-400">Défaite:</span>{" "}
+                          {displayChampionship.lossPoints} point
                         </p>
                       </div>
 
-                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">
-                        Format
-                      </h4>
+                      <h4 className="text-heading-xs font-bold text-gold-700 mb-4">Format</h4>
                       <p>
-                        {displayChampionship.format === 'round-robin' && 'Tous les participants jouent contre tous les autres participants.'}
-                        {displayChampionship.format === 'league' && 'Ligue avec rencontres aller-retour.'}
-                        {displayChampionship.format === 'groups' && 'Phase de poules suivie d\'une phase finale.'}
-                        {displayChampionship.format === 'knockout' && 'Élimination directe.'}
+                        {displayChampionship.format === "round-robin" &&
+                          "Tous les participants jouent contre tous les autres participants."}
+                        {displayChampionship.format === "league" &&
+                          "Ligue avec rencontres aller-retour."}
+                        {displayChampionship.format === "groups" &&
+                          "Phase de poules suivie d'une phase finale."}
+                        {displayChampionship.format === "knockout" && "Élimination directe."}
                       </p>
                     </div>
                   </CardContent>

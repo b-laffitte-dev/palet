@@ -1,44 +1,42 @@
-import React, { forwardRef, HTMLAttributes } from 'react';
-import { Icon } from './Icon';
-import Button from './Button';
-import Select from './Select';
-import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, HTMLAttributes } from "react";
+import { Icon } from "./Icon";
+import Button from "./Button";
+import Select from "./Select";
+import { cva, type VariantProps } from "class-variance-authority";
 
 // Pagination container variants
-const paginationVariants = cva(
-  'flex items-center justify-between flex-wrap gap-4',
-  {
-    variants: {
-      size: {
-        sm: 'text-sm',
-        m: 'text-base',
-        l: 'text-lg',
-      },
+const paginationVariants = cva("flex items-center justify-between flex-wrap gap-4", {
+  variants: {
+    size: {
+      sm: "text-sm",
+      m: "text-base",
+      l: "text-lg",
     },
-    defaultVariants: {
-      size: 'm',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: "m",
+  },
+});
 
 // Pagination size type
-type PaginationSize = 'sm' | 'm' | 'l';
+type PaginationSize = "sm" | "m" | "l";
 
 // Button size type
 const buttonSizes = {
-  sm: 'sm' as const,
-  m: 'm' as const,
-  l: 'l' as const,
+  sm: "sm" as const,
+  m: "m" as const,
+  l: "l" as const,
 };
 
 const selectSizes = {
-  sm: 'sm' as const,
-  m: 'm' as const,
-  l: 'l' as const,
+  sm: "sm" as const,
+  m: "m" as const,
+  l: "l" as const,
 };
 
 // Pagination props
-export interface PaginationProps extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof paginationVariants> {
+export interface PaginationProps
+  extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof paginationVariants> {
   currentPage: number;
   totalPages: number;
   totalItems: number;
@@ -71,43 +69,43 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
       showBoundaryButtons = true,
       showSiblingButtons = true,
       siblingCount = 1,
-      size = 'm',
+      size = "m",
       disabled = false,
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     // Calculate visible pages
     const getVisiblePages = (): (number | string)[] => {
       const visiblePages: (number | string)[] = [];
-      
+
       if (totalPages <= 1) return [1];
-      
+
       // Always show first page
       if (showBoundaryButtons) {
         visiblePages.push(1);
       }
-      
+
       // Calculate range around current page
       const start = Math.max(2, currentPage - siblingCount);
       const end = Math.min(totalPages - 1, currentPage + siblingCount);
-      
+
       // Add ellipsis if needed
       if (showSiblingButtons) {
         if (start > 2) {
-          visiblePages.push('...');
+          visiblePages.push("...");
         }
-        
+
         // Add pages around current
         for (let i = start; i <= end; i++) {
           if (!visiblePages.includes(i)) {
             visiblePages.push(i);
           }
         }
-        
+
         if (end < totalPages - 1) {
-          visiblePages.push('...');
+          visiblePages.push("...");
         }
       } else {
         // Simple range without siblings
@@ -117,12 +115,12 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
           }
         }
       }
-      
+
       // Always show last page
       if (showBoundaryButtons && totalPages > 1) {
         visiblePages.push(totalPages);
       }
-      
+
       return visiblePages;
     };
 
@@ -153,28 +151,24 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
       onPageChange?.(1);
     };
 
-    const pageSizeOptionsSelect = pageSizeOptions.map(opt => ({
+    const pageSizeOptionsSelect = pageSizeOptions.map((opt) => ({
       value: opt.toString(),
       label: `${opt} / page`,
     }));
 
     // Get button and select sizes based on pagination size
-    const buttonSize = buttonSizes[size as PaginationSize] || 'm';
-    const selectSize = selectSizes[size as PaginationSize] || 'm';
-    
+    const buttonSize = buttonSizes[size as PaginationSize] || "m";
+    const selectSize = selectSizes[size as PaginationSize] || "m";
+
     // Get icon size based on pagination size
-    const iconSize = size === 'sm' ? 'sm' : size === 'l' ? 'l' : 'm';
+    const iconSize = size === "sm" ? "sm" : size === "l" ? "l" : "m";
 
     // Calculate item range
-    const startItem = ((currentPage - 1) * pageSize) + 1;
+    const startItem = (currentPage - 1) * pageSize + 1;
     const endItem = Math.min(currentPage * pageSize, totalItems);
 
     return (
-      <div 
-        ref={ref}
-        className={paginationVariants({ size, className })}
-        {...props}
-      >
+      <div ref={ref} className={paginationVariants({ size, className })} {...props}>
         {/* Left side - Page size selector and info */}
         <div className="flex items-center gap-4 flex-wrap">
           {showTotalItems && totalItems > 0 && (
@@ -182,7 +176,7 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
               {startItem}-{endItem} sur {totalItems}
             </span>
           )}
-          
+
           {showPageSizeSelector && (
             <div className="flex items-center gap-2">
               <span className="text-primary-300">Afficher</span>
@@ -197,7 +191,7 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
             </div>
           )}
         </div>
-        
+
         {/* Right side - Navigation buttons */}
         <div className="flex items-center gap-2">
           {/* First page button */}
@@ -210,7 +204,7 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
           >
             <Icon name="ChevronsLeft" size={iconSize} />
           </Button>
-          
+
           {/* Previous button */}
           <Button
             size={buttonSize}
@@ -221,18 +215,18 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
           >
             <Icon name="ChevronLeft" size={iconSize} />
           </Button>
-          
+
           {/* Page buttons */}
-          {getVisiblePages().map((page, index) => (
-            typeof page === 'number' ? (
+          {getVisiblePages().map((page, index) =>
+            typeof page === "number" ? (
               <Button
                 key={page}
                 size={buttonSize}
-                variant={currentPage === page ? 'primary' : 'ghost'}
+                variant={currentPage === page ? "primary" : "ghost"}
                 onClick={() => handlePageChange(page)}
                 disabled={disabled}
-                className={currentPage === page ? 'bg-primary-600 text-white' : ''}
-                aria-current={currentPage === page ? 'page' : undefined}
+                className={currentPage === page ? "bg-primary-600 text-white" : ""}
+                aria-current={currentPage === page ? "page" : undefined}
                 aria-label={`Aller à la page ${page}`}
               >
                 {page}
@@ -244,9 +238,9 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
               >
                 ...
               </span>
-            )
-          ))}
-          
+            ),
+          )}
+
           {/* Next button */}
           <Button
             size={buttonSize}
@@ -257,7 +251,7 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
           >
             <Icon name="ChevronRight" size={iconSize} />
           </Button>
-          
+
           {/* Last page button */}
           <Button
             size={buttonSize}
@@ -271,13 +265,21 @@ const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
-Pagination.displayName = 'Pagination';
+Pagination.displayName = "Pagination";
 
 // Simple pagination with just previous/next
-export interface SimplePaginationProps extends Omit<PaginationProps, 'showPageSizeSelector' | 'showTotalItems' | 'showBoundaryButtons' | 'showSiblingButtons' | 'siblingCount' | 'boundaryCount'> {
+export interface SimplePaginationProps extends Omit<
+  PaginationProps,
+  | "showPageSizeSelector"
+  | "showTotalItems"
+  | "showBoundaryButtons"
+  | "showSiblingButtons"
+  | "siblingCount"
+  | "boundaryCount"
+> {
   showInfo?: boolean;
 }
 
@@ -289,13 +291,13 @@ export const SimplePagination = forwardRef<HTMLDivElement, SimplePaginationProps
       totalItems = 0,
       pageSize = 10,
       onPageChange,
-      size = 'm',
+      size = "m",
       disabled = false,
       showInfo = true,
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <Pagination
@@ -315,10 +317,10 @@ export const SimplePagination = forwardRef<HTMLDivElement, SimplePaginationProps
         {...props}
       />
     );
-  }
+  },
 );
 
-SimplePagination.displayName = 'SimplePagination';
+SimplePagination.displayName = "SimplePagination";
 
 // Pagination info only
 export interface PaginationInfoProps {
@@ -335,11 +337,11 @@ export const PaginationInfo: React.FC<PaginationInfoProps> = ({
   pageSize = 10,
   className,
 }) => {
-  const startItem = ((currentPage - 1) * pageSize) + 1;
+  const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <span className={`text-primary-300 text-sm ${className || ''}`}>
+    <span className={`text-primary-300 text-sm ${className || ""}`}>
       {startItem}-{endItem} sur {totalItems}
     </span>
   );

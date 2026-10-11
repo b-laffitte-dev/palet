@@ -1,30 +1,29 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createBrowserRouter, RouterProvider, Navigate, Link, Outlet } from 'react-router-dom';
-import { AuthProvider } from './hooks/useAuth';
-import { Layout } from './components/layout/Layout';
-import Button from './components/common/Button';
-import Home from './routes/Home';
-import Championnats from './routes/Championnats';
-import Tournois from './routes/Tournois';
-import Clubs from './routes/Clubs';
-import Joueurs from './routes/Joueurs';
-import Actualites from './routes/Actualites';
-import Federation from './routes/Federation';
-import Connexion from './routes/Connexion';
-import Inscription from './routes/Inscription';
-import VerificationEmail from './routes/VerificationEmail';
-import ClubDetail from './routes/ClubDetail';
-import PlayerDetail from './routes/PlayerDetail';
-import TournamentDetail from './routes/TournamentDetail';
-import ChampionshipDetail from './routes/ChampionshipDetail';
-import MatchDetail from './routes/MatchDetail';
-import TeamDetail from './routes/TeamDetail';
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createBrowserRouter, RouterProvider, Navigate, Link, Outlet } from "react-router-dom";
+import { AuthProvider } from "./hooks/useAuth";
+import { Layout } from "./components/layout/Layout";
+import Button from "./components/common/Button";
+import Home from "./routes/Home";
+import Championnats from "./routes/Championnats";
+import Tournois from "./routes/Tournois";
+import Clubs from "./routes/Clubs";
+import Joueurs from "./routes/Joueurs";
+import Actualites from "./routes/Actualites";
+import Federation from "./routes/Federation";
+import Connexion from "./routes/Connexion";
+import Inscription from "./routes/Inscription";
+import VerificationEmail from "./routes/VerificationEmail";
+import ClubDetail from "./routes/ClubDetail";
+import PlayerDetail from "./routes/PlayerDetail";
+import TournamentDetail from "./routes/TournamentDetail";
+import ChampionshipDetail from "./routes/ChampionshipDetail";
+import MatchDetail from "./routes/MatchDetail";
+import TeamDetail from "./routes/TeamDetail";
 
 // Import global styles
-import './styles/design-system.css';
+import "./styles/design-system.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,7 +70,7 @@ function NotFoundPage() {
 // Router configuration
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <AuthWrapper />,
     children: [
       {
@@ -79,72 +78,71 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'championnats',
+        path: "championnats",
         element: <Championnats />,
       },
       {
-        path: 'championnats/:championshipId',
+        path: "championnats/:championshipId",
         element: <ChampionshipDetail />,
       },
       {
-        path: 'tournois',
+        path: "tournois",
         element: <Tournois />,
       },
       {
-        path: 'tournois/:tournamentId',
+        path: "tournois/:tournamentId",
         element: <TournamentDetail />,
       },
       {
-        path: 'clubs',
+        path: "clubs",
         element: <Clubs />,
       },
       {
-        path: 'clubs/:clubId',
+        path: "clubs/:clubId",
         element: <ClubDetail />,
       },
       {
-        path: 'joueurs',
+        path: "joueurs",
         element: <Joueurs />,
       },
       {
-        path: 'joueurs/:playerId',
+        path: "joueurs/:playerId",
         element: <PlayerDetail />,
       },
       {
-        path: 'actualites',
+        path: "actualites",
         element: <Actualites />,
       },
       {
-        path: 'federation',
+        path: "federation",
         element: <Federation />,
       },
       {
-        path: 'matchs/:matchId',
+        path: "matchs/:matchId",
         element: <MatchDetail />,
       },
       {
-        path: 'teams/:teamId',
+        path: "teams/:teamId",
         element: <TeamDetail />,
       },
       {
-        path: 'connexion',
+        path: "connexion",
         element: <Connexion />,
       },
       {
-        path: 'inscription',
+        path: "inscription",
         element: <Inscription />,
       },
       {
-        path: 'verification-email',
+        path: "verification-email",
         element: <VerificationEmail />,
       },
       {
-        path: '*',
+        path: "*",
         element: <NotFoundPage />,
       },
     ],
   },
-
 ]);
 
 // Main app component
@@ -159,9 +157,9 @@ function App() {
 }
 
 // Render the app
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 if (!rootElement) {
-  throw new Error('Failed to find the root element');
+  throw new Error("Failed to find the root element");
 }
 
 createRoot(rootElement).render(<App />);

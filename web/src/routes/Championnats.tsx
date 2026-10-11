@@ -1,23 +1,23 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../api';
-import { Layout } from '../components/layout/Layout';
-import { ClassificationTable, MatchCard } from '../components/domain';
-import { Championship, Match } from '../types';
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../api";
+import { Layout } from "../components/layout/Layout";
+import { ClassificationTable, MatchCard } from "../components/domain";
+import { Championship, Match } from "../types";
 
 const Championnats: React.FC = () => {
   const { data: championships, isLoading: isLoadingChampionships } = useQuery<Championship[]>({
-    queryKey: ['championships'],
+    queryKey: ["championships"],
     queryFn: async () => {
-      const response = await api().GET<Championship[]>('/api/championships');
+      const response = await api().GET<Championship[]>("/api/championships");
       return response.data;
     },
   });
 
   const { data: matches, isLoading: isLoadingMatches } = useQuery<Match[]>({
-    queryKey: ['matches', 'recent'],
+    queryKey: ["matches", "recent"],
     queryFn: async () => {
-      const response = await api().GET<Match[]>('/api/matches?limit=10&sort=date&order=desc');
+      const response = await api().GET<Match[]>("/api/matches?limit=10&sort=date&order=desc");
       return response.data;
     },
   });
@@ -59,22 +59,21 @@ const Championnats: React.FC = () => {
             {championships && championships.length > 0 ? (
               <div className="space-y-8">
                 {championships
-                  .filter(champ => champ.status === 'in_progress')
+                  .filter((champ) => champ.status === "in_progress")
                   .map((championship) => (
                     <div key={championship.id} className="space-y-4">
                       <div className="flex items-center gap-4 mb-4">
-                        <h3 className="text-heading-m font-bold text-white">
-                          {championship.name}
-                        </h3>
+                        <h3 className="text-heading-m font-bold text-white">{championship.name}</h3>
                         <span className="text-body-s text-primary-300">
-                          {championship.season} - Journées {championship.currentJournee || 0}/{championship.totalJournees || 0}
+                          {championship.season} - Journées {championship.currentJournee || 0}/
+                          {championship.totalJournees || 0}
                         </span>
                       </div>
 
                       {championship.classification && (
                         <ClassificationTable
                           teams={championship.classification.teams}
-                          competition={`${championship.name} — ${championship.divisions?.[0] || 'DIVISION 1'}`}
+                          competition={`${championship.name} — ${championship.divisions?.[0] || "DIVISION 1"}`}
                           journee={championship.classification.journee}
                           season={championship.season}
                           showAllLink={false}
@@ -84,9 +83,7 @@ const Championnats: React.FC = () => {
                   ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun championnat en cours
-              </p>
+              <p className="text-body-m text-primary-300">Aucun championnat en cours</p>
             )}
           </div>
         </section>
@@ -105,9 +102,7 @@ const Championnats: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-body-m text-primary-300">
-                Aucun match récent
-              </p>
+              <p className="text-body-m text-primary-300">Aucun match récent</p>
             )}
           </div>
         </section>
