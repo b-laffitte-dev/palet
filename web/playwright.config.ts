@@ -7,9 +7,6 @@ import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
-process.env.PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = '1';
-process.env.PLAYWRIGHT_BROWSERS_PATH = '/home/appuser/.cache/ms-playwright';
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -31,7 +28,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5173',
+    baseURL: process.env.CI ? 'http://localhost:4173' : 'http://localhost:5173',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -56,10 +53,10 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: 'npm run build && npm run preview',
+    url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000, // 2 minutes for dev server to start
+    timeout: 300000, // 5 minutes for build + preview server to start
   },
 
   // Screenshots configuration
