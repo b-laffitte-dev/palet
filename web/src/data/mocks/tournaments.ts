@@ -1,6 +1,7 @@
 import type { Tournament } from "../../types";
 import { mockClubs } from "./clubs";
-import { mockTeams } from "./teams";
+
+const cdspClub = mockClubs[5] as import("../../types").Club;
 
 // Mock tournaments for CDSP 79
 export const mockTournaments: Tournament[] = [
@@ -26,7 +27,7 @@ export const mockTournaments: Tournament[] = [
     currentPhase: null,
     maxTeams: 64,
     registeredTeams: 32,
-    teams: [] as Tournament["teams"],
+    teams: [],
     pointsType: "13",
     winPoints: 2,
     drawPoints: 1,
@@ -36,7 +37,7 @@ export const mockTournaments: Tournament[] = [
     isPublic: true,
     isArchived: false,
     stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
-    organizer: mockClubs[5],
+    organizer: cdspClub,
     organizerId: "c-cdsp79",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -78,7 +79,7 @@ export const mockTournaments: Tournament[] = [
     currentPhase: "1/8 Finale",
     maxTeams: 32,
     registeredTeams: 24,
-    teams: [] as Tournament["teams"],
+    teams: [],
     pointsType: "15",
     winPoints: 2,
     drawPoints: 1,
@@ -94,7 +95,7 @@ export const mockTournaments: Tournament[] = [
       topScorer: null,
       topTeam: null,
     },
-    organizer: mockClubs[5],
+    organizer: cdspClub,
     organizerId: "c-cdsp79",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -136,7 +137,7 @@ export const mockTournaments: Tournament[] = [
     currentPhase: null,
     maxTeams: 16,
     registeredTeams: 0,
-    teams: [] as Tournament["teams"],
+    teams: [],
     pointsType: "13",
     winPoints: 2,
     drawPoints: 1,
@@ -146,7 +147,7 @@ export const mockTournaments: Tournament[] = [
     isPublic: true,
     isArchived: false,
     stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
-    organizer: mockClubs[5],
+    organizer: cdspClub,
     organizerId: "c-cdsp79",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -169,4 +170,4 @@ export const mockTournaments: Tournament[] = [
 ];
 
 // Single mock tournament for detail pages
-export const mockTournament: Tournament = mockTournaments[0];
+export const mockTournament: Tournament = mockTournaments[0]!;

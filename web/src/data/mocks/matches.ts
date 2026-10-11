@@ -1,6 +1,22 @@
 import type { Match, MatchTeam } from "../../types";
 import { mockClubs } from "./clubs";
-import { mockTeams } from "./teams";
+
+const cdspClub = mockClubs[5] as import("../../types").Club;
+
+// Helper to create MatchTeam with proper typing
+const createMatchTeam = (
+  id: string,
+  name: string,
+  rank: number | null,
+  seed: number | null,
+): MatchTeam => ({
+  id,
+  name,
+  logo: null,
+  players: [],
+  rank,
+  seed,
+});
 
 // Mock matches for CDSP 79
 export const mockMatches: Match[] = [
@@ -45,7 +61,7 @@ export const mockMatches: Match[] = [
         topScorer: null,
         topTeam: null,
       },
-      organizer: mockClubs[5],
+      organizer: cdspClub,
       organizerId: "c-cdsp79",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -54,22 +70,8 @@ export const mockMatches: Match[] = [
     journee: 15,
     phase: "Journée 15",
     round: null,
-    team1: {
-      id: "team-1",
-      name: "NIORT PALET",
-      logo: null,
-      players: [],
-      rank: 1,
-      seed: 1,
-    } as MatchTeam,
-    team2: {
-      id: "team-2",
-      name: "BRESSUIRE PALET",
-      logo: null,
-      players: [],
-      rank: 2,
-      seed: 2,
-    } as MatchTeam,
+    team1: createMatchTeam("team-1", "NIORT PALET", 1, 1),
+    team2: createMatchTeam("team-2", "BRESSUIRE PALET", 2, 2),
     team1Score: 72,
     team2Score: 68,
     winner: null,
@@ -135,7 +137,7 @@ export const mockMatches: Match[] = [
         topScorer: null,
         topTeam: null,
       },
-      organizer: mockClubs[5],
+      organizer: cdspClub,
       organizerId: "c-cdsp79",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -144,22 +146,8 @@ export const mockMatches: Match[] = [
     journee: 15,
     phase: "Journée 15",
     round: null,
-    team1: {
-      id: "team-3",
-      name: "THOUARS PALET",
-      logo: null,
-      players: [],
-      rank: 3,
-      seed: 3,
-    } as MatchTeam,
-    team2: {
-      id: "team-4",
-      name: "PARTHENAY PALET",
-      logo: null,
-      players: [],
-      rank: 4,
-      seed: 4,
-    } as MatchTeam,
+    team1: createMatchTeam("team-3", "THOUARS PALET", 3, 3),
+    team2: createMatchTeam("team-4", "PARTHENAY PALET", 4, 4),
     team1Score: 65,
     team2Score: 62,
     winner: "team1",
@@ -225,7 +213,7 @@ export const mockMatches: Match[] = [
         topScorer: null,
         topTeam: null,
       },
-      organizer: mockClubs[5],
+      organizer: cdspClub,
       organizerId: "c-cdsp79",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -234,22 +222,8 @@ export const mockMatches: Match[] = [
     journee: 16,
     phase: "Journée 16",
     round: null,
-    team1: {
-      id: "team-1",
-      name: "NIORT PALET",
-      logo: null,
-      players: [],
-      rank: 1,
-      seed: 1,
-    } as MatchTeam,
-    team2: {
-      id: "team-5",
-      name: "MELLE PALET",
-      logo: null,
-      players: [],
-      rank: 5,
-      seed: 5,
-    } as MatchTeam,
+    team1: createMatchTeam("team-1", "NIORT PALET", 1, 1),
+    team2: createMatchTeam("team-5", "MELLE PALET", 5, 5),
     team1Score: null,
     team2Score: null,
     winner: null,
@@ -308,7 +282,7 @@ export const mockLiveScores = [
 ];
 
 // Featured match mock
-export const mockFeaturedMatch: Match = mockMatches[0];
+export const mockFeaturedMatch: Match = mockMatches[0]!;
 
 // Single mock match for detail pages
-export const mockMatch: Match = mockMatches[0];
+export const mockMatch: Match = mockMatches[0]!;

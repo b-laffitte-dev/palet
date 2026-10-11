@@ -2,101 +2,56 @@ import type { Championship, ChampionshipClassification, ChampionshipTeam } from 
 import { mockClubs } from "./clubs";
 import { mockTeams } from "./teams";
 
+// Mock teams with proper typing
+const championshipTeams: ChampionshipTeam[] = [
+  {
+    position: 1,
+    team: mockTeams[0]!,
+    stats: mockTeams[0]!.stats,
+    form: ["win", "win", "win", "win", "draw"],
+    status: "qualified",
+  },
+  {
+    position: 2,
+    team: mockTeams[1]!,
+    stats: mockTeams[1]!.stats,
+    form: ["win", "win", "draw", "win", "loss"],
+    status: "qualified",
+  },
+  {
+    position: 3,
+    team: mockTeams[2]!,
+    stats: mockTeams[2]!.stats,
+    form: ["win", "draw", "win", "win", "loss"],
+    status: "barrage",
+  },
+  {
+    position: 4,
+    team: mockTeams[3]!,
+    stats: mockTeams[3]!.stats,
+    form: ["loss", "win", "win", "draw", "win"],
+    status: "safe",
+  },
+  {
+    position: 5,
+    team: mockTeams[4]!,
+    stats: mockTeams[4]!.stats,
+    form: ["win", "loss", "win", "loss", "loss"],
+    status: "relegated",
+  },
+];
+
 // Mock championship classification for CDSP 79
 export const mockClassification: ChampionshipClassification = {
   division: "Division 1",
   journee: 15,
   updatedAt: new Date(),
-  teams: [
-    {
-      position: 1,
-      team: mockTeams[0],
-      stats: {
-        matches: 15,
-        wins: 12,
-        draws: 1,
-        losses: 2,
-        pointsFor: 450,
-        pointsAgainst: 350,
-        diff: 100,
-        points: 37,
-        winRate: 0.8,
-      },
-      form: ["win", "win", "win", "win", "loss"],
-      status: "qualified",
-    },
-    {
-      position: 2,
-      team: mockTeams[1],
-      stats: {
-        matches: 15,
-        wins: 10,
-        draws: 2,
-        losses: 3,
-        pointsFor: 420,
-        pointsAgainst: 340,
-        diff: 80,
-        points: 32,
-        winRate: 0.67,
-      },
-      form: ["win", "win", "loss", "win", "win"],
-      status: "qualified",
-    },
-    {
-      position: 3,
-      team: mockTeams[2],
-      stats: {
-        matches: 15,
-        wins: 8,
-        draws: 2,
-        losses: 5,
-        pointsFor: 360,
-        pointsAgainst: 322,
-        diff: 38,
-        points: 26,
-        winRate: 0.53,
-      },
-      form: ["win", "draw", "win", "win", "loss"],
-      status: "barrage",
-    },
-    {
-      position: 4,
-      team: mockTeams[3],
-      stats: {
-        matches: 15,
-        wins: 7,
-        draws: 1,
-        losses: 7,
-        pointsFor: 320,
-        pointsAgainst: 300,
-        diff: 20,
-        points: 24,
-        winRate: 0.47,
-      },
-      form: ["loss", "win", "win", "draw", "win"],
-      status: "safe",
-    },
-    {
-      position: 5,
-      team: mockTeams[4],
-      stats: {
-        matches: 15,
-        wins: 6,
-        draws: 0,
-        losses: 9,
-        pointsFor: 280,
-        pointsAgainst: 340,
-        diff: -60,
-        points: 20,
-        winRate: 0.4,
-      },
-      form: ["win", "loss", "win", "loss", "loss"],
-      status: "relegated",
-    },
-  ],
+  teams: championshipTeams,
 };
 
 // Mock championships for CDSP 79
+const cdspClub = mockClubs[5] as import("../../types").Club;
+
 export const mockChampionships: Championship[] = [
   {
     id: "champ-1",
@@ -136,7 +91,7 @@ export const mockChampionships: Championship[] = [
       topScorer: null,
       topTeam: null,
     },
-    organizer: mockClubs[5],
+    organizer: cdspClub,
     organizerId: "c-cdsp79",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -186,7 +141,7 @@ export const mockChampionships: Championship[] = [
       topScorer: null,
       topTeam: null,
     },
-    organizer: mockClubs[5],
+    organizer: cdspClub,
     organizerId: "c-cdsp79",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -234,7 +189,7 @@ export const mockChampionships: Championship[] = [
     isPublic: true,
     isArchived: false,
     stats: { totalMatches: 0, completedMatches: 0, totalPoints: 0, topScorer: null, topTeam: null },
-    organizer: mockClubs[5],
+    organizer: cdspClub,
     organizerId: "c-cdsp79",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -254,4 +209,4 @@ export const mockChampionships: Championship[] = [
 ];
 
 // Single mock championship for detail pages
-export const mockChampionship: Championship = mockChampionships[0];
+export const mockChampionship: Championship = mockChampionships[0]!;

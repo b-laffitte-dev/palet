@@ -15,5 +15,6 @@ export { mockMatches, mockMatch, mockLiveScores, mockFeaturedMatch } from "./mat
 export { mockTournaments, mockTournament } from "./tournaments";
 export { mockChampionships, mockChampionship, mockClassification } from "./championships";
 
-// Combined mock for club detail page
-export const mockClubPlayers = mockPlayers.slice(0, 3);
+// Combined mock for club detail page - using imported mocks
+import { mockPlayers } from "./players";
+export const mockClubPlayers = [mockPlayers[1], mockPlayers[2], mockPlayers[3]];

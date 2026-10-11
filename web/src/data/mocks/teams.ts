@@ -1,13 +1,18 @@
 import type { Team } from "../../types";
-import { mockClub } from "./clubs";
+import { mockClubs } from "./clubs";
 import { mockPlayers } from "./players";
+
+const club001 = mockClubs[0] as import("../../types").Club;
+const player001 = mockPlayers[0] as import("../../types").Player;
+const player002 = mockPlayers[1] as import("../../types").Player;
+const player003 = mockPlayers[2] as import("../../types").Player;
 
 // Mock teams for CDSP 79
 export const mockTeams: Team[] = [
   {
     id: "t1",
     name: "Niort Palet Club",
-    club: mockClub,
+    club: club001,
     clubId: "c1",
     captain: null,
     captainId: null,
@@ -32,7 +37,7 @@ export const mockTeams: Team[] = [
   {
     id: "t2",
     name: "Bressuire Palet",
-    club: mockClub,
+    club: club001,
     clubId: "c2",
     captain: null,
     captainId: null,
@@ -57,7 +62,7 @@ export const mockTeams: Team[] = [
   {
     id: "t3",
     name: "Thouars Palet",
-    club: mockClub,
+    club: club001,
     clubId: "c3",
     captain: null,
     captainId: null,
@@ -82,7 +87,7 @@ export const mockTeams: Team[] = [
   {
     id: "t4",
     name: "Parthenay Palet",
-    club: mockClub,
+    club: club001,
     clubId: "c4",
     captain: null,
     captainId: null,
@@ -107,7 +112,7 @@ export const mockTeams: Team[] = [
   {
     id: "t5",
     name: "Melle Palet",
-    club: mockClub,
+    club: club001,
     clubId: "c5",
     captain: null,
     captainId: null,
@@ -136,11 +141,11 @@ export const mockClubTeams: Team[] = [
   {
     id: "team-001",
     name: "Équipe 1 - D1",
-    club: mockClub,
+    club: club001,
     clubId: "club-001",
-    captain: mockPlayers[0],
+    captain: player001,
     captainId: "player-001",
-    players: [mockPlayers[0], mockPlayers[1]],
+    players: [player001, player002],
     logo: null,
     stats: {
       matches: 20,
@@ -161,21 +166,21 @@ export const mockClubTeams: Team[] = [
   {
     id: "team-002",
     name: "Équipe 2 - D1",
-    club: mockClub,
+    club: club001,
     clubId: "club-001",
-    captain: mockPlayers[1],
+    captain: player002,
     captainId: "player-002",
-    players: [mockPlayers[1], mockPlayers[2]],
+    players: [player002, player003],
     logo: null,
     stats: {
       matches: 20,
       wins: 12,
-      draws: 4,
-      losses: 4,
-      pointsFor: 165,
-      pointsAgainst: 135,
+      draws: 5,
+      losses: 3,
+      pointsFor: 170,
+      pointsAgainst: 140,
       diff: 30,
-      points: 40,
+      points: 41,
       winRate: 0.6,
     },
     status: "active",
@@ -186,11 +191,11 @@ export const mockClubTeams: Team[] = [
   {
     id: "team-003",
     name: "Équipe 3 - D2",
-    club: mockClub,
+    club: club001,
     clubId: "club-001",
-    captain: mockPlayers[2],
+    captain: player003,
     captainId: "player-003",
-    players: [mockPlayers[2], mockPlayers[0]],
+    players: [player003, player001],
     logo: null,
     stats: {
       matches: 18,
@@ -211,4 +216,4 @@ export const mockClubTeams: Team[] = [
 ];
 
 // Single mock team for detail pages
-export const mockTeam: Team = mockTeams[0];
+export const mockTeam: Team = mockTeams[0]!;

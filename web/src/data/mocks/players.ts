@@ -1,5 +1,7 @@
 import type { Player } from "../../types";
-import { mockClub } from "./clubs";
+import { mockClubs } from "./clubs";
+
+const club001 = mockClubs[0] as import("../../types").Club;
 
 // Mock players for CDSP 79
 export const mockPlayers: Player[] = [
@@ -22,7 +24,7 @@ export const mockPlayers: Player[] = [
     address: null,
     city: null,
     postalCode: null,
-    club: mockClub,
+    club: club001,
     clubId: "c1",
     clubNumber: null,
     category: "senior",
@@ -96,14 +98,14 @@ export const mockPlayers: Player[] = [
     birthDate: new Date("1990-07-22"),
     age: 36,
     birthPlace: "La Roche-sur-Yon",
-    nationality: "Français",
+    nationality: "Française",
     dominantHand: "left",
     playStyle: "Puissance",
     phone: "+33 6 23 45 67 89",
     address: "456 Rue de la Plaque, 85000 La Roche-sur-Yon",
     city: "La Roche-sur-Yon",
     postalCode: "85000",
-    club: mockClub,
+    club: club001,
     clubId: "club-001",
     clubNumber: "ESS-002",
     category: "Senior",
@@ -179,7 +181,7 @@ export const mockPlayers: Player[] = [
     address: "789 Rue du Jeu, 85140 Les Essarts",
     city: "Les Essarts",
     postalCode: "85140",
-    club: mockClub,
+    club: club001,
     clubId: "club-001",
     clubNumber: "ESS-003",
     category: "Senior",
@@ -248,14 +250,14 @@ export const mockPlayers: Player[] = [
     birthDate: new Date("1985-03-15"),
     age: 41,
     birthPlace: "Les Essarts",
-    nationality: "Français",
+    nationality: "Française",
     dominantHand: "right",
     playStyle: "Précision",
     phone: "+33 6 12 34 56 78",
     address: "123 Rue du Palet, 85140 Les Essarts",
     city: "Les Essarts",
     postalCode: "85140",
-    club: mockClub,
+    club: club001,
     clubId: "club-001",
     clubNumber: "ESS-001",
     category: "Senior",
@@ -315,4 +317,4 @@ export const mockPlayers: Player[] = [
 ];
 
 // Single mock player for detail pages
-export const mockPlayer: Player = mockPlayers[0];
+export const mockPlayer: Player = mockPlayers[0]!;
