@@ -57,9 +57,7 @@ jobs:
         if: always()
         with:
           name: playwright-screenshots
-          path: |
-            web/test-results/**/screenshots/
-            web/test-results/**/*.png
+          path: web/test-results/
 
       - name: Generate GitHub Step Summary with Screenshots
         if: always()
