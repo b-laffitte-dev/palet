@@ -68,11 +68,11 @@
     padding: var(--spacing-4);
     padding-bottom: var(--spacing-2);
   }
-  
+
   .card-responsive .card-content {
     padding: var(--spacing-4);
   }
-  
+
   .card-responsive .card-footer {
     padding: var(--spacing-4);
   }
@@ -83,11 +83,11 @@
     padding: var(--spacing-4);
     padding-bottom: var(--spacing-3);
   }
-  
+
   .card-responsive .card-content {
     padding: var(--spacing-5);
   }
-  
+
   .card-responsive .card-footer {
     padding: var(--spacing-5);
   }
@@ -163,12 +163,12 @@
     overflow-x: visible;
     padding-bottom: 0;
   }
-  
+
   .tabs-responsive .tabs-list {
     justify-content: center;
     gap: var(--spacing-2);
   }
-  
+
   .tabs-responsive .tab-trigger {
     padding: var(--spacing-3) var(--spacing-6);
     font-size: var(--text-body-sm);
@@ -224,7 +224,7 @@
     flex-direction: row;
     gap: var(--spacing-6);
   }
-  
+
   .form-row-responsive .form-field-responsive {
     flex: 1;
     margin-bottom: 0;
@@ -333,17 +333,17 @@
     min-width: 600px;
     font-size: var(--text-body-xs);
   }
-  
+
   .table-responsive-container th,
   .table-responsive-container td {
     padding: var(--spacing-2) !important;
     white-space: nowrap;
   }
-  
+
   .table-responsive-container th {
     font-size: var(--text-body-xs) !important;
   }
-  
+
   /* Make first column sticky on mobile */
   .table-responsive-container th:first-child,
   .table-responsive-container td:first-child {
@@ -381,15 +381,15 @@
   .hero-responsive {
     padding: var(--spacing-6) 0;
   }
-  
+
   .hero-responsive .hero-title {
     font-size: var(--text-heading-l) !important;
   }
-  
+
   .hero-responsive .hero-subtitle {
     font-size: var(--text-body-m) !important;
   }
-  
+
   .hero-responsive .hero-image {
     max-height: 300px;
     object-fit: cover;
@@ -400,15 +400,15 @@
   .hero-responsive {
     padding: var(--spacing-4) 0;
   }
-  
+
   .hero-responsive .hero-title {
     font-size: var(--text-heading-m) !important;
   }
-  
+
   .hero-responsive .hero-subtitle {
     font-size: var(--text-body-sm) !important;
   }
-  
+
   .hero-responsive .hero-image {
     max-height: 200px;
   }
@@ -431,11 +431,11 @@
     flex-direction: column;
     text-align: center;
   }
-  
+
   .match-hero-responsive .team-section {
     padding: var(--spacing-4);
   }
-  
+
   .match-hero-responsive .team-name {
     font-size: var(--text-heading-m) !important;
     max-width: 200px;
@@ -443,24 +443,24 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  
+
   .match-hero-responsive .team-logo {
     width: 48px !important;
     height: 48px !important;
   }
-  
+
   .match-hero-responsive .vs-section {
     padding: var(--spacing-4);
   }
-  
+
   .match-hero-responsive .vs-text {
     font-size: var(--text-heading-sm) !important;
   }
-  
+
   .match-hero-responsive .score {
     font-size: var(--text-heading-l) !important;
   }
-  
+
   .match-hero-responsive .info-row {
     flex-direction: column;
     gap: var(--spacing-2);
@@ -472,25 +472,25 @@
   .match-hero-responsive {
     margin-bottom: var(--spacing-6);
   }
-  
+
   .match-hero-responsive .team-section {
     padding: var(--spacing-3);
   }
-  
+
   .match-hero-responsive .team-name {
     font-size: var(--text-heading-sm) !important;
     max-width: 150px;
   }
-  
+
   .match-hero-responsive .team-logo {
     width: 40px !important;
     height: 40px !important;
   }
-  
+
   .match-hero-responsive .vs-text {
     font-size: var(--text-body-m) !important;
   }
-  
+
   .match-hero-responsive .score {
     font-size: var(--text-heading-m) !important;
   }
@@ -501,12 +501,12 @@
     font-size: var(--text-body-m) !important;
     max-width: 120px;
   }
-  
+
   .match-hero-responsive .team-logo {
     width: 36px !important;
     height: 36px !important;
   }
-  
+
   .match-hero-responsive .score {
     font-size: var(--text-heading-sm) !important;
   }
@@ -539,12 +539,12 @@
     gap: var(--spacing-2);
     padding: var(--spacing-1);
   }
-  
+
   .live-scores-responsive .score-card {
     min-width: 180px;
     flex-shrink: 0;
   }
-  
+
   .live-scores-responsive .team-name {
     font-size: var(--text-body-xs) !important;
     max-width: 80px;
@@ -558,12 +558,12 @@
   .live-scores-responsive .score-card {
     min-width: 150px;
   }
-  
+
   .live-scores-responsive .team-name {
     font-size: var(--text-caption) !important;
     max-width: 60px;
   }
-  
+
   .live-scores-responsive .score {
     font-size: var(--text-body-sm) !important;
   }
@@ -663,15 +663,15 @@
     grid-template-columns: 1fr;
     gap: var(--spacing-2);
   }
-  
+
   .stats-grid-responsive .stat-card {
     padding: var(--spacing-3) !important;
   }
-  
+
   .stats-grid-responsive .stat-value {
     font-size: var(--text-heading-sm) !important;
   }
-  
+
   .stats-grid-responsive .stat-label {
     font-size: var(--text-body-xs) !important;
   }
@@ -693,13 +693,13 @@
   .pagination-responsive {
     gap: var(--spacing-1);
   }
-  
+
   .pagination-responsive .pagination-button {
     padding: var(--spacing-2) var(--spacing-3) !important;
     font-size: var(--text-body-xs) !important;
     min-width: 32px;
   }
-  
+
   .pagination-responsive .pagination-info {
     display: none;
   }
@@ -718,13 +718,13 @@
   .search-responsive {
     max-width: 100%;
   }
-  
+
   .search-responsive .search-input {
     width: 100% !important;
     font-size: var(--text-body-sm) !important;
     padding: var(--spacing-3) !important;
   }
-  
+
   .search-responsive .search-button {
     padding: var(--spacing-3) !important;
   }

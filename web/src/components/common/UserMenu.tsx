@@ -76,11 +76,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
         type="button"
       >
         {user.photo ? (
-          <img
-            src={user.photo}
-            alt=""
-            className="w-full h-full rounded-full object-cover"
-          />
+          <img src={user.photo} alt="" className="w-full h-full rounded-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[var(--text-heading-xs)] font-[var(--font-weight-black)]">
             <span>{getInitials()}</span>

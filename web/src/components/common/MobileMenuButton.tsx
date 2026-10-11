@@ -22,12 +22,11 @@ const mobileMenuButtonVariants = cva(
       variant: "default",
       size: "m",
     },
-  }
+  },
 );
 
 export interface MobileMenuButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof mobileMenuButtonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof mobileMenuButtonVariants> {
   isOpen?: boolean;
   label?: string;
 }
@@ -48,7 +47,7 @@ const MobileMenuButton = forwardRef<HTMLButtonElement, MobileMenuButtonProps>(
         {isOpen ? <Icon name="X" size={size || "m"} /> : <Icon name="Menu" size={size || "m"} />}
       </button>
     );
-  }
+  },
 );
 
 MobileMenuButton.displayName = "MobileMenuButton";

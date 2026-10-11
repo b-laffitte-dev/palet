@@ -77,18 +77,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   return (
     <>
       {/* Overlay */}
-      <div
-        className="mobile-nav-overlay active"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="mobile-nav-overlay active" onClick={onClose} aria-hidden="true" />
 
       {/* Mobile Navigation Menu */}
-      <nav
-        className="mobile-nav active"
-        role="navigation"
-        aria-label="Navigation mobile"
-      >
+      <nav className="mobile-nav active" role="navigation" aria-label="Navigation mobile">
         {/* Close Button */}
         <button
           className="mobile-nav-close"
@@ -151,12 +143,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 <div className="mobile-nav-divider" role="separator" />
               </li>
               <li role="none">
-                <Link
-                  to="/connexion"
-                  onClick={onClose}
-                  className="mobile-nav-link"
-                  role="menuitem"
-                >
+                <Link to="/connexion" onClick={onClose} className="mobile-nav-link" role="menuitem">
                   <Icon name="LogIn" size="sm" className="mobile-nav-link-icon left" />
                   <span>Connexion</span>
                 </Link>

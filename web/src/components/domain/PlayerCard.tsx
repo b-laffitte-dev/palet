@@ -16,6 +16,7 @@ export interface PlayerCardProps {
 /**
  * PlayerCard - Card displaying player information and stats
  * Used in grids on homepage and players page
+ * Fully responsive for all screen sizes
  */
 export const PlayerCard: React.FC<PlayerCardProps> = ({
   player,
@@ -66,37 +67,46 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
     return (
       <Link
         to={`/joueurs/${player.id}`}
-        className={`flex items-center gap-3 p-3 bg-primary-900 rounded-lg border border-primary-700/50 hover:bg-primary-800/50 transition-colors ${className}`}
+        className={`flex items-center gap-3 p-3 sm:p-4 bg-primary-900 rounded-lg border border-primary-700/50 hover:bg-primary-800/50 transition-colors ${className}`}
       >
         <div
-          className={`w-12 h-12 rounded-full ${getAccentBorder()} border-2 flex items-center justify-center bg-primary-800 overflow-hidden flex-shrink-0`}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${getAccentBorder()} border-2 flex items-center justify-center bg-primary-800 overflow-hidden flex-shrink-0`}
         >
           {player.photo ? (
             <img
               src={player.photo}
               alt={`${player.firstName} ${player.lastName}`}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           ) : (
-            <span className="text-heading-s font-black text-gold-700">{getInitials(player)}</span>
+            <span className="text-body-xs sm:text-body-sm font-black text-gold-700">
+              {getInitials(player)}
+            </span>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-body-s font-bold text-white truncate">
+          <h3 className="text-body-xs sm:text-body-sm font-bold text-white truncate">
             {player.firstName} {player.lastName}
           </h3>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {player.alias && (
-              <span className="text-body-xs text-primary-300">({player.alias})</span>
+              <span className="text-caption sm:text-body-xs text-primary-300 truncate">
+                ({player.alias})
+              </span>
             )}
             {showClub && player.club && (
-              <span className="text-body-xs text-primary-300 truncate">{player.club.name}</span>
+              <span className="text-caption sm:text-body-xs text-primary-300 truncate">
+                {player.club.name}
+              </span>
             )}
           </div>
         </div>
-        <div className="text-center">
-          <p className="text-body-xs text-primary-300">Victoires</p>
-          <p className="text-body-s font-bold text-gold-700">{player.stats.winRate.toFixed(0)}%</p>
+        <div className="text-center flex-shrink-0">
+          <p className="text-caption sm:text-body-xs text-primary-300">Victoires</p>
+          <p className="text-body-xs sm:text-body-sm font-bold text-gold-700">
+            {player.stats.winRate.toFixed(0)}%
+          </p>
         </div>
       </Link>
     );
@@ -104,79 +114,87 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
 
   return (
     <article
-      className={`flex flex-col bg-primary-900 rounded-lg overflow-hidden border ${getAccentColor()} ${className}`}
+      className={`player-card-responsive flex flex-col bg-primary-900 rounded-lg overflow-hidden border ${getAccentColor()} ${className}`}
     >
-      {/* Accent border on left */}
+      {/* Accent border on top */}
       <div
         className={`h-1 ${accent === "gold" ? "bg-gold-700" : accent === "primary" ? "bg-primary-600" : "bg-amber-700"}`}
       />
 
       {/* Avatar section */}
-      <Link to={`/joueurs/${player.id}`} className="block">
-        <div className="relative mx-auto -mt-8 mb-4 hover:scale-105 transition-transform">
+      <Link to={`/joueurs/${player.id}`} className="block pt-2">
+        <div className="relative mx-auto -mt-12 sm:-mt-14 mb-3 sm:mb-4 hover:scale-105 transition-transform">
           <div
-            className={`w-24 h-24 rounded-full ${getAccentBorder()} border-4 flex items-center justify-center bg-primary-800 overflow-hidden`}
+            className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full ${getAccentBorder()} border-2 sm:border-4 flex items-center justify-center bg-primary-800 overflow-hidden`}
           >
             {player.photo ? (
               <img
                 src={player.photo}
                 alt={`${player.firstName} ${player.lastName}`}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             ) : (
-              <span className="text-heading-l font-black text-gold-700">{getInitials(player)}</span>
+              <span className="text-heading-xs sm:text-heading-sm font-black text-gold-700">
+                {getInitials(player)}
+              </span>
             )}
           </div>
         </div>
       </Link>
 
       {/* Content */}
-      <div className="flex-1 px-4 pb-4 space-y-3">
+      <div className="flex-1 px-3 sm:px-4 pb-3 sm:pb-4 space-y-2">
         {/* Name */}
         <Link to={`/joueurs/${player.id}`} className="block">
-          <h3 className="text-heading-s font-bold text-white text-center truncate hover:text-gold-700 transition-colors">
+          <h3 className="text-body-sm sm:text-heading-s font-bold text-white text-center truncate hover:text-gold-700 transition-colors">
             {player.firstName} {player.lastName}
           </h3>
         </Link>
 
         {/* Club */}
         {showClub && player.club && (
-          <p className="text-body-s text-primary-200 text-center truncate">{player.club.name}</p>
+          <p className="text-body-xs sm:text-body-sm text-primary-200 text-center truncate">
+            {player.club.name}
+          </p>
         )}
 
         {player.alias && (
-          <p className="text-body-xs text-primary-300 text-center truncate">"{player.alias}"</p>
+          <p className="text-caption sm:text-body-xs text-primary-300 text-center truncate">
+            "{player.alias}"
+          </p>
         )}
 
         {/* Stats */}
-        <div className="pt-2 border-t border-primary-700/50 space-y-2">
-          <div className="flex justify-between">
-            <span className="text-caption text-primary-200">Points marqués :</span>
-            <span className="text-body-m font-bold text-gold-700">{player.stats.totalPoints}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-caption text-primary-200">Moyenne / manche :</span>
-            <span className="text-body-m font-bold text-gold-700">
-              {player.stats.pointsPerManche.toFixed(1)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-caption text-primary-200">Victoires :</span>
-            <span className="text-body-m font-bold text-gold-700">
-              {player.stats.winRate.toFixed(0)}%
-            </span>
+        <div className="pt-2 border-t border-primary-700/50">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="text-center">
+              <p className="text-caption sm:text-body-xs text-primary-300">Victoires</p>
+              <p className="text-body-sm sm:text-body-m font-bold text-gold-700">
+                {player.stats.winRate.toFixed(0)}%
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-caption sm:text-body-xs text-primary-300">Matchs</p>
+              <p className="text-body-sm sm:text-body-m font-bold text-gold-700">
+                {player.stats.matchesPlayed}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Footer actions */}
+      {/* Actions */}
       {showActions && (
-        <div className="px-4 py-3 bg-primary-800/50 border-t border-primary-700/50">
-          <Link to={`/joueurs/${player.id}`} className="block">
-            <Button variant="ghost" size="sm" fullWidth>
-              Voir le profil
-            </Button>
-          </Link>
+        <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-2 border-t border-primary-700/50">
+          <Button
+            size="xs"
+            fullWidth={true}
+            variant="outline"
+            className="text-gold-pure border-gold-700 hover:bg-gold-900/20"
+          >
+            Voir le profil
+          </Button>
         </div>
       )}
     </article>

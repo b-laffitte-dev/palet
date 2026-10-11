@@ -33,13 +33,18 @@ export function Footer({ className = "" }: FooterProps) {
   };
 
   return (
-    <footer className={`bg-[#000000] color-[var(--text-secondary)] pt-[var(--spacing-12)] pb-[var(--spacing-6)] border-t border-border-dark ${className}`}>
+    <footer
+      className={`bg-[#000000] color-[var(--text-secondary)] pt-[var(--spacing-12)] pb-[var(--spacing-6)] border-t border-border-dark ${className}`}
+    >
       <div className="container w-full max-w-[var(--container-max)] mx-auto px-[var(--container-padding)]">
         {/* Main Footer Content */}
         <div className="main-content display-grid grid-template-columns-[1fr_2fr] gap-[var(--spacing-12)] mb-[var(--spacing-10)]">
           {/* Logo and Description */}
           <div className="brand-section display-flex flex-direction-column gap-[var(--spacing-4)]">
-            <Link to="/" className="logo-link inline-flex align-items-center gap-[var(--spacing-2)] color-[var(--color-primary-400)] no-underline font-size-[var(--text-heading-m)] font-[var(--font-weight-bold)]">
+            <Link
+              to="/"
+              className="logo-link inline-flex align-items-center gap-[var(--spacing-2)] color-[var(--color-primary-400)] no-underline font-size-[var(--text-heading-m)] font-[var(--font-weight-bold)]"
+            >
               <div className="w-10 h-10 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center bg-black">
                 <span className="text-[var(--text-body-sm)] font-[var(--font-weight-black)] text-[var(--color-gold)]">
                   PC

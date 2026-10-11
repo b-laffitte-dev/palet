@@ -25,8 +25,8 @@ export function ResponsiveContainer({
     "mx-auto",
   ];
 
-  const paddingClasses = noPadding 
-    ? [] 
+  const paddingClasses = noPadding
+    ? []
     : [
         "px-[var(--container-padding)]",
         "py-[var(--spacing-4)]",
@@ -36,9 +36,7 @@ export function ResponsiveContainer({
 
   const allClasses = [...baseClasses, ...paddingClasses, className].join(" ");
 
-  return (
-    <Component className={allClasses.trim()}>{children}</Component>
-  );
+  return <Component className={allClasses.trim()}>{children}</Component>;
 }
 
 export default ResponsiveContainer;

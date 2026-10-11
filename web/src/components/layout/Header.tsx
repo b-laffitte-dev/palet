@@ -126,11 +126,7 @@ export function Header({ showCTA = true }: HeaderProps) {
             aria-controls="mobile-navigation"
             type="button"
           >
-            {isMobileMenuOpen ? (
-              <Icon name="X" size="l" />
-            ) : (
-              <Icon name="Menu" size="l" />
-            )}
+            {isMobileMenuOpen ? <Icon name="X" size="l" /> : <Icon name="Menu" size="l" />}
           </button>
 
           {/* Right Section - CTA (Desktop) */}

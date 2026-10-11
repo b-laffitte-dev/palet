@@ -16,7 +16,10 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
       <div className="container w-full max-w-[var(--container-max)] mx-auto px-[var(--container-padding)] py-0 flex items-center justify-between">
         <div className="flex items-center gap-[var(--spacing-4)] min-w-0">
           {/* Federation Name */}
-          <Link to="/" className="federation-name text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-[var(--color-gold)] no-underline letter-[var(--letter-spacing-wide)] truncate">
+          <Link
+            to="/"
+            className="federation-name text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-[var(--color-gold)] no-underline letter-[var(--letter-spacing-wide)] truncate"
+          >
             CDSP 79 - Palet Fonte
           </Link>
 
@@ -35,7 +38,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
               <div className="hidden lg:flex">
                 <UserMenu user={user!} />
               </div>
-              
+
               {/* User Menu - Mobile */}
               <div className="lg:hidden">
                 <UserMenu user={user!} />
@@ -47,7 +50,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
               <span className="hidden md:flex text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-[var(--color-danger-500)] no-underline">
                 EN DIRECT
               </span>
-              
+
               {/* Authentication Links - Desktop */}
               <div className="hidden lg:flex items-center gap-[var(--spacing-2)]">
                 <Link
@@ -64,7 +67,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
                   Mon espace
                 </Link>
               </div>
-              
+
               {/* Mobile Authentication Link */}
               <div className="lg:hidden">
                 <Link
@@ -74,7 +77,7 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
                   Connexion
                 </Link>
               </div>
-              
+
               {/* CTA Button - Desktop */}
               <Link
                 to="/inscription"

@@ -20,9 +20,7 @@ export const BREAKPOINTS = {
  * Returns the device type and whether the screen is at least a certain size
  */
 export function useResponsive() {
-  const [device, setDevice] = useState<DeviceType>(
-    getDeviceType(window.innerWidth)
-  );
+  const [device, setDevice] = useState<DeviceType>(getDeviceType(window.innerWidth));
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
 
@@ -59,7 +57,7 @@ export function useResponsive() {
 
   // Orientation
   const [orientation, setOrientation] = useState<"portrait" | "landscape">(
-    window.innerHeight > window.innerWidth ? "portrait" : "landscape"
+    window.innerHeight > window.innerWidth ? "portrait" : "landscape",
   );
 
   // Handle resize
@@ -67,7 +65,7 @@ export function useResponsive() {
     const handleResize = () => {
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
-      
+
       setWidth(newWidth);
       setHeight(newHeight);
       setDevice(getDeviceType(newWidth));
@@ -76,7 +74,7 @@ export function useResponsive() {
 
     // Set up event listener
     window.addEventListener("resize", handleResize, { passive: true });
-    
+
     // Call once to set initial values
     handleResize();
 
