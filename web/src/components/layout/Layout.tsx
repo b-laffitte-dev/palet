@@ -21,7 +21,7 @@ export function Layout({
   const liveMatchesCount = 0;
 
   return (
-    <div style={styles.layout}>
+    <div className="layout flex flex-col min-h-[100vh] bg-[var(--bg-dark)]">
       {/* TopBar */}
       {showTopBar && <TopBar hasLiveMatches={hasLiveMatches} liveMatchesCount={liveMatchesCount} />}
 
@@ -29,28 +29,14 @@ export function Layout({
       {showHeader && <Header showCTA={!hasLiveMatches} />}
 
       {/* Main Content */}
-      <main style={styles.main}>{children}</main>
+      <main className="flex-1 flex flex-col bg-[var(--bg-dark)] px-[var(--spacing-4)] py-[var(--spacing-4)] sm:px-[var(--spacing-6)] sm:py-[var(--spacing-6)] lg:px-[var(--spacing-8)] lg:py-[var(--spacing-8)] transition-all duration-200">
+        {children}
+      </main>
 
       {/* Footer */}
       {showFooter && <Footer />}
     </div>
   );
 }
-
-const styles = {
-  layout: {
-    display: "flex",
-    flexDirection: "column" as const,
-    minHeight: "100vh",
-    backgroundColor: "var(--bg-dark)",
-  } as React.CSSProperties,
-
-  main: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column" as const,
-    backgroundColor: "var(--bg-dark)",
-  } as React.CSSProperties,
-};
 
 export default Layout;

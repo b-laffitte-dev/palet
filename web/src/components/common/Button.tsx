@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 // Button variants using CVA (Class Variance Authority pattern)
 const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed",
+  "inline-flex items-center justify-center font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-md",
   {
     variants: {
       variant: {
@@ -50,6 +50,12 @@ const buttonVariants = cva(
         variant: "ghost",
         className: "hover:text-neutral-900",
       },
+      // Responsive full width on mobile
+      {
+        fullWidth: true,
+        size: "m",
+        className: "sm:w-auto",
+      },
     ],
     defaultVariants: {
       variant: "primary",
@@ -92,26 +98,29 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Combine custom styles with variant classes
     const baseStyles = buttonVariants({ variant, size, shape, fullWidth });
 
+    // Responsive classes
+    const responsiveClasses = [
+      "sm:min-w-[100px]",
+      "transition-all",
+      "duration-200",
+      "ease-in-out",
+    ].join(" ");
+
     return (
       <button
         ref={ref}
-        className={`${baseStyles} ${className || ""}`}
+        className={`${baseStyles} ${responsiveClasses} ${className || ""}`.trim()}
         disabled={disabled || loading}
         {...props}
-        style={{
-          ...styles.base,
-          ...(iconOnly && size && styles.iconOnly[size]),
-          ...props.style,
-        }}
       >
         {loading ? (
-          <span className="animate-spin" style={styles.spinner}>
+          <span className="animate-spin flex items-center justify-center">
             <Icon name="Loader2" size="sm" />
           </span>
         ) : (
           <>
             {leftIcon && <Icon name={leftIcon} size={size || "m"} />}
-            {children && !iconOnly && <span>{children}</span>}
+            {children && !iconOnly && <span className={iconOnly ? "sr-only" : ""}>{children}</span>}
             {rightIcon && <Icon name={rightIcon} size={size || "m"} />}
           </>
         )}
@@ -121,32 +130,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = "Button";
-
-// Styles object
-const styles = {
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transitionProperty: "all",
-    transitionDuration: "200ms",
-    transitionTimingFunction: "ease",
-  } as React.CSSProperties,
-
-  spinner: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-  } as React.CSSProperties,
-
-  iconOnly: {
-    xs: { padding: "0.25rem" },
-    sm: { padding: "0.375rem" },
-    m: { padding: "0.5rem" },
-    l: { padding: "0.75rem" },
-    xl: { padding: "1rem" },
-  } as Record<string, React.CSSProperties>,
-};
 
 // Named exports for different button variants
 export const ButtonPrimary = forwardRef<HTMLButtonElement, Omit<ButtonProps, "variant">>(

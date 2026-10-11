@@ -33,32 +33,32 @@ export function Footer({ className = "" }: FooterProps) {
   };
 
   return (
-    <footer style={styles.footer} className={className}>
-      <div className="container" style={styles.container}>
+    <footer className={`bg-[#000000] color-[var(--text-secondary)] pt-[var(--spacing-12)] pb-[var(--spacing-6)] border-t border-border-dark ${className}`}>
+      <div className="container w-full max-w-[var(--container-max)] mx-auto px-[var(--container-padding)]">
         {/* Main Footer Content */}
-        <div style={styles.mainContent}>
+        <div className="main-content display-grid grid-template-columns-[1fr_2fr] gap-[var(--spacing-12)] mb-[var(--spacing-10)]">
           {/* Logo and Description */}
-          <div style={styles.brandSection}>
-            <Link to="/" style={styles.logoLink}>
+          <div className="brand-section display-flex flex-direction-column gap-[var(--spacing-4)]">
+            <Link to="/" className="logo-link inline-flex align-items-center gap-[var(--spacing-2)] color-[var(--color-primary-400)] no-underline font-size-[var(--text-heading-m)] font-[var(--font-weight-bold)]">
               <div className="w-10 h-10 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center bg-black">
                 <span className="text-[var(--text-body-sm)] font-[var(--font-weight-black)] text-[var(--color-gold)]">
                   PC
                 </span>
               </div>
-              <span style={styles.logoText}>CDSP 79</span>
+              <span className="logo-text color-[var(--text-primary)]">CDSP 79</span>
             </Link>
-            <p style={styles.description}>
+            <p className="description font-size-[var(--text-body-sm)] line-height-[var(--line-height-relaxed)] color-[var(--color-neutral-400)] max-w-[300px]">
               Commission Deux-Sévrienne du Palet. Suivez le Championnat 79, la Coupe 79, et les
               résultats du palet fonte en temps réel.
             </p>
-            <div style={styles.socialLinks}>
+            <div className="social-links flex gap-[var(--spacing-3)]">
               {footerLinks.social.map((link) => (
                 <a
                   key={link.to}
                   href={link.to}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={styles.socialLink}
+                  className="social-link color-[var(--color-neutral-400)] transition-colors hover:color-[var(--color-primary-400)]"
                   aria-label={link.label}
                 >
                   <Icon name={link.icon as any} size="m" />
@@ -68,7 +68,7 @@ export function Footer({ className = "" }: FooterProps) {
           </div>
 
           {/* Navigation Sections */}
-          <div style={styles.navSections}>
+          <div className="nav-sections grid grid-cols-[repeat(3,1fr)] gap-[var(--spacing-6)]">
             <FooterNavSection title="Plateforme" links={footerLinks.platform} />
             <FooterNavSection title="Juridique" links={footerLinks.legal} />
             <FooterNavSection title="Support" links={footerLinks.support} />
@@ -76,11 +76,13 @@ export function Footer({ className = "" }: FooterProps) {
         </div>
 
         {/* Footer Bottom - Copyright */}
-        <div style={styles.bottomBar}>
-          <div style={styles.copyright}>© {currentYear} CDSP 79 — Tous droits réservés</div>
-          <div style={styles.footerMeta}>
+        <div className="bottom-bar flex items-center justify-between pt-[var(--spacing-6)] border-t border-border-secondary">
+          <div className="copyright font-size-[var(--text-body-xs)] color-[var(--text-light)]">
+            © {currentYear} CDSP 79 — Tous droits réservés
+          </div>
+          <div className="footer-meta flex items-center gap-[var(--spacing-2)] font-size-[var(--text-body-xs)] color-[var(--text-light)]">
             <span>CDSP 79 | FNSMR | CRSMR Nouvelle-Aquitaine</span>
-            <span style={styles.metaSeparator}>|</span>
+            <span className="meta-separator color-[var(--text-tertiary)]">|</span>
             <span>Version 1.0.0</span>
           </div>
         </div>
@@ -96,12 +98,17 @@ export interface FooterNavSectionProps {
 
 function FooterNavSection({ title, links }: FooterNavSectionProps) {
   return (
-    <div style={styles.navSection}>
-      <h3 style={styles.navSectionTitle}>{title}</h3>
-      <ul style={styles.navSectionList}>
+    <div className="nav-section flex flex-col gap-[var(--spacing-3)]">
+      <h3 className="nav-section-title font-size-[var(--text-body-sm)] font-[var(--font-weight-semibold)] color-[var(--text-primary)] uppercase letter-[var(--letter-spacing-wide)]">
+        {title}
+      </h3>
+      <ul className="nav-section-list list-style-none m-0 p-0 flex flex-col gap-[var(--spacing-2)]">
         {links.map((link) => (
-          <li key={link.to} style={styles.navSectionItem}>
-            <Link to={link.to} style={styles.navSectionLink}>
+          <li key={link.to} className="nav-section-item">
+            <Link
+              to={link.to}
+              className="nav-section-link font-size-[var(--text-body-sm)] color-[var(--text-tertiary)] no-underline transition-colors hover:color-[var(--color-primary-400)]"
+            >
               {link.label}
             </Link>
           </li>
@@ -110,165 +117,5 @@ function FooterNavSection({ title, links }: FooterNavSectionProps) {
     </div>
   );
 }
-
-const styles = {
-  footer: {
-    backgroundColor: "#000000",
-    color: "var(--text-secondary)",
-    padding: "var(--spacing-12) 0 var(--spacing-6)",
-    borderTop: "1px solid var(--border-dark)",
-  } as React.CSSProperties,
-
-  container: {
-    width: "100%",
-    maxWidth: "var(--container-max)",
-    margin: "0 auto",
-    padding: "0 var(--container-padding)",
-  } as React.CSSProperties,
-
-  mainContent: {
-    display: "grid",
-    gridTemplateColumns: "1fr 2fr",
-    gap: "var(--spacing-12)",
-    marginBottom: "var(--spacing-10)",
-  } as React.CSSProperties,
-
-  brandSection: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "var(--spacing-4)",
-  } as React.CSSProperties,
-
-  logoLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-2)",
-    color: "var(--color-primary-400)",
-    textDecoration: "none",
-    fontSize: "var(--text-heading-m)",
-    fontWeight: "var(--font-weight-bold)",
-  } as React.CSSProperties,
-
-  logoText: {
-    color: "var(--text-primary)",
-  } as React.CSSProperties,
-
-  description: {
-    fontSize: "var(--text-body-sm)",
-    lineHeight: "var(--line-height-relaxed)",
-    color: "var(--color-neutral-400)",
-    maxWidth: "300px",
-  } as React.CSSProperties,
-
-  socialLinks: {
-    display: "flex",
-    gap: "var(--spacing-3)",
-  } as React.CSSProperties,
-
-  socialLink: {
-    color: "var(--color-neutral-400)",
-    transition: "color var(--transition-colors)",
-    ":hover": {
-      color: "var(--color-primary-400)",
-    },
-  } as React.CSSProperties,
-
-  navSections: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: "var(--spacing-6)",
-  } as React.CSSProperties,
-
-  navSection: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "var(--spacing-3)",
-  } as React.CSSProperties,
-
-  navSectionTitle: {
-    fontSize: "var(--text-body-sm)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--text-primary)",
-    textTransform: "uppercase" as const,
-    letterSpacing: "var(--letter-spacing-wide)",
-  } as React.CSSProperties,
-
-  navSectionList: {
-    listStyle: "none",
-    margin: 0,
-    padding: 0,
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "var(--spacing-2)",
-  } as React.CSSProperties,
-
-  navSectionItem: {} as React.CSSProperties,
-
-  navSectionLink: {
-    fontSize: "var(--text-body-sm)",
-    color: "var(--text-tertiary)",
-    textDecoration: "none",
-    transition: "color var(--transition-colors)",
-    ":hover": {
-      color: "var(--color-primary-400)",
-    },
-  } as React.CSSProperties,
-
-  bottomBar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: "var(--spacing-6)",
-    borderTop: "1px solid var(--border-secondary)",
-  } as React.CSSProperties,
-
-  copyright: {
-    fontSize: "var(--text-body-xs)",
-    color: "var(--text-light)",
-  } as React.CSSProperties,
-
-  footerMeta: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-2)",
-    fontSize: "var(--text-body-xs)",
-    color: "var(--text-light)",
-  } as React.CSSProperties,
-
-  metaSeparator: {
-    color: "var(--text-tertiary)",
-  } as React.CSSProperties,
-};
-
-// Responsive styles
-const responsiveStyles = {
-  "@media (max-width: 1024px)": {
-    mainContent: {
-      gridTemplateColumns: "1fr",
-      gap: "var(--spacing-8)",
-    } as React.CSSProperties,
-  },
-  "@media (max-width: 768px)": {
-    navSections: {
-      gridTemplateColumns: "repeat(2, 1fr)",
-    } as React.CSSProperties,
-  },
-  "@media (max-width: 640px)": {
-    mainContent: {
-      gap: "var(--spacing-6)",
-    } as React.CSSProperties,
-    navSections: {
-      gridTemplateColumns: "1fr",
-    } as React.CSSProperties,
-    bottomBar: {
-      flexDirection: "column" as const,
-      gap: "var(--spacing-4)",
-      textAlign: "center" as const,
-    } as React.CSSProperties,
-  },
-};
-
-// Merge responsive styles
-Object.assign(styles, responsiveStyles);
 
 export default Footer;

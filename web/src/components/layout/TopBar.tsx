@@ -12,37 +12,75 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
   const { user, isAuthenticated } = useAuth();
 
   return (
-    <div className="topbar" style={styles.topbar}>
-      <div className="container" style={styles.container}>
-        <div style={styles.leftSection}>
+    <div className="topbar h-[40px] lg:h-[40px] bg-[#000000] color-[var(--text-primary)] flex align-items-center sticky top-0 z-[var(--z-fixed)] shadow-[0_2px_4px_rgba(0,0,0,0.3)] border-b border-border-dark">
+      <div className="container w-full max-w-[var(--container-max)] mx-auto px-[var(--container-padding)] py-0 flex items-center justify-between">
+        <div className="flex items-center gap-[var(--spacing-4)] min-w-0">
           {/* Federation Name */}
-          <Link to="/" style={styles.federationName}>
+          <Link to="/" className="federation-name text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-[var(--color-gold)] no-underline letter-[var(--letter-spacing-wide)] truncate">
             CDSP 79 - Palet Fonte
           </Link>
 
           {/* Live Indicator */}
-          {hasLiveMatches && <LiveIndicator count={liveMatchesCount} />}
+          {hasLiveMatches && (
+            <div className="hidden md:flex">
+              <LiveIndicator count={liveMatchesCount} />
+            </div>
+          )}
         </div>
 
-        <div style={styles.rightSection}>
+        <div className="flex items-center gap-[var(--spacing-4)] auth-links">
           {isAuthenticated ? (
             <>
-              {/* User Menu */}
-              <UserMenu user={user!} />
+              {/* User Menu - Desktop */}
+              <div className="hidden lg:flex">
+                <UserMenu user={user!} />
+              </div>
+              
+              {/* User Menu - Mobile */}
+              <div className="lg:hidden">
+                <UserMenu user={user!} />
+              </div>
             </>
           ) : (
             <>
-              {/* Authentication Links */}
-              <span style={styles.liveText}>EN DIRECT</span>
-              <Link to="/connexion" style={styles.authLink}>
-                Connexion
-              </Link>
-              <span style={styles.separator}>|</span>
-              <Link to="/inscription" style={styles.authLink}>
-                Mon espace
-              </Link>
-              <Link to="/inscription" style={styles.ctaButton}>
-                5s'inscrire
+              {/* Live Text - Desktop */}
+              <span className="hidden md:flex text-[var(--text-body-sm)] font-[var(--font-weight-semibold)] text-[var(--color-danger-500)] no-underline">
+                EN DIRECT
+              </span>
+              
+              {/* Authentication Links - Desktop */}
+              <div className="hidden lg:flex items-center gap-[var(--spacing-2)]">
+                <Link
+                  to="/connexion"
+                  className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] text-[var(--text-secondary)] no-underline hover:text-[var(--color-gold)] transition-colors"
+                >
+                  Connexion
+                </Link>
+                <span className="text-[var(--text-tertiary)] text-[var(--text-body-sm)]">|</span>
+                <Link
+                  to="/inscription"
+                  className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] text-[var(--text-secondary)] no-underline hover:text-[var(--color-gold)] transition-colors"
+                >
+                  Mon espace
+                </Link>
+              </div>
+              
+              {/* Mobile Authentication Link */}
+              <div className="lg:hidden">
+                <Link
+                  to="/connexion"
+                  className="text-[var(--text-body-sm)] font-[var(--font-weight-medium)] text-[var(--text-secondary)] no-underline hover:text-[var(--color-gold)] transition-colors"
+                >
+                  Connexion
+                </Link>
+              </div>
+              
+              {/* CTA Button - Desktop */}
+              <Link
+                to="/inscription"
+                className="hidden lg:flex items-center gap-[var(--spacing-2)] px-[var(--spacing-3)] py-[var(--spacing-1)] bg-[var(--accent-yellow)] text-black text-[var(--text-body-sm)] font-[var(--font-weight-bold)] rounded-[var(--radius-sm)] no-underline transition-all hover:bg-[#ffe082] active:bg-[#ffb300]"
+              >
+                S'inscrire
               </Link>
             </>
           )}
@@ -51,87 +89,5 @@ export function TopBar({ hasLiveMatches = false, liveMatchesCount = 0 }: TopBarP
     </div>
   );
 }
-
-const styles = {
-  topbar: {
-    height: "40px",
-    backgroundColor: "#000000",
-    color: "var(--text-primary)",
-    display: "flex",
-    alignItems: "center",
-    position: "sticky",
-    top: 0,
-    zIndex: "var(--z-fixed)",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-    borderBottom: "1px solid var(--border-dark)",
-  } as React.CSSProperties,
-
-  container: {
-    width: "100%",
-    maxWidth: "var(--container-max)",
-    margin: "0 auto",
-    padding: "0 var(--container-padding)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  } as React.CSSProperties,
-
-  leftSection: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-4)",
-  } as React.CSSProperties,
-
-  rightSection: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-4)",
-  } as React.CSSProperties,
-
-  federationName: {
-    fontSize: "var(--text-body-sm)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-gold)",
-    textDecoration: "none",
-    letterSpacing: "var(--letter-spacing-wide)",
-  } as React.CSSProperties,
-
-  liveText: {
-    fontSize: "var(--text-body-sm)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-danger-500)",
-    textDecoration: "none",
-  } as React.CSSProperties,
-
-  authLink: {
-    fontSize: "var(--text-body-sm)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--text-secondary)",
-    textDecoration: "none",
-    transition: "color var(--transition-colors)",
-    ":hover": {
-      color: "var(--color-gold)",
-    },
-  } as React.CSSProperties,
-
-  separator: {
-    color: "var(--text-tertiary)",
-    fontSize: "var(--text-body-sm)",
-  } as React.CSSProperties,
-
-  ctaButton: {
-    backgroundColor: "var(--accent-yellow)",
-    color: "#000000",
-    fontSize: "var(--text-body-sm)",
-    fontWeight: "var(--font-weight-bold)",
-    padding: "var(--spacing-1) var(--spacing-3)",
-    borderRadius: "var(--radius-sm)",
-    textDecoration: "none",
-    transition: "all var(--transition-colors)",
-    ":hover": {
-      backgroundColor: "#ffe082",
-    },
-  } as React.CSSProperties,
-};
 
 export default TopBar;
