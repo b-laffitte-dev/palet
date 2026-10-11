@@ -1,0 +1,159 @@
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'web/src/**'
+      - 'web/e2e/**'
+      - 'web/playwright.config.ts'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/src/**'
+      - 'web/e2e/**'
+      - 'web/playwright.config.ts'
+
+concurrency:
+  group: playwright-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright-tests:
+    name: Playwright E2E Tests with Screenshots
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.0-jammy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js dependencies
+        run: |
+          cd web
+          npm ci
+
+      - name: Install Playwright browsers
+        run: |
+          cd web
+          npx playwright install --with-deps
+
+      - name: Run Playwright tests with screenshots
+        id: playwright
+        run: |
+          cd web
+          npx playwright test --reporter=json,html
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-test-results
+          path: web/test-results/
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-html-report
+          path: web/playwright-report/
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-screenshots
+          path: web/test-results/**/screenshots/
+
+      - name: Generate GitHub Step Summary with Screenshots
+        if: always()
+        run: |
+          cd web
+          
+          # Create summary header
+          echo "# 🎯 Playwright E2E Test Results" > $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Add test statistics
+          echo "## 📊 Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse JSON results if available
+          if [ -f test-results/results.json ]; then
+            TOTAL_TESTS=$(jq '.suites[].specs | length' test-results/results.json 2>/dev/null | awk '{s+=$1} END {print s+0}')
+            PASSED=$(jq '[.suites[].specs[] | select(.ok == true)] | length' test-results/results.json 2>/dev/null || echo "0")
+            FAILED=$(jq '[.suites[].specs[] | select(.ok == false)] | length' test-results/results.json 2>/dev/null || echo "0")
+            
+            echo "| Status | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| ✅ **Passed** | $PASSED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ❌ **Failed** | $FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| 📋 **Total** | $TOTAL_TESTS |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Test results not available." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📸 Screenshots Captured" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Create a table of screenshots
+          echo "| # | Screenshot | Test |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|-----------|------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Find all screenshots and create table rows
+          COUNT=1
+          for screenshot in $(find test-results -name "*.png" 2>/dev/null | sort); do
+            # Extract test name from path
+            test_name=$(echo "$screenshot" | sed 's|.*test-results/||' | sed 's|/screenshots/.*||')
+            screenshot_name=$(basename "$screenshot")
+            
+            # Create relative path for display
+            display_path="test-results/$(echo "$screenshot" | sed 's|web/test-results/||')"
+            
+            echo "| $COUNT | [$screenshot_name]($display_path) | $test_name |" >> $GITHUB_STEP_SUMMARY
+            COUNT=$((COUNT + 1))
+          done
+          
+          if [ $COUNT -eq 1 ]; then
+            echo "| - | No screenshots captured | - |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📁 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All test artifacts are available for download:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **📊 [Test Results (JSON)](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})**" >> $GITHUB_STEP_SUMMARY
+          echo "- **🌐 [HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})** - Interactive report with screenshots" >> $GITHUB_STEP_SUMMARY
+          echo "- **📸 [Screenshots Archive](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})** - All captured screenshots" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Add instructions
+          echo "## 💡 How to View Screenshots" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Download the *playwright-html-report* artifact**" >> $GITHUB_STEP_SUMMARY
+          echo "2. **Unzip and open *index.html* in a browser**" >> $GITHUB_STEP_SUMMARY
+          echo "3. **All screenshots are embedded in the HTML report** with test context" >> $GITHUB_STEP_SUMMARY
+          echo "4. **Or download *playwright-screenshots* artifact** for raw PNG files" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Add configuration info
+          echo "## ⚙️ Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Playwright Version:** v1.64.0" >> $GITHUB_STEP_SUMMARY
+          echo "- **Browser:** Chromium, Firefox, WebKit" >> $GITHUB_STEP_SUMMARY
+          echo "- **Screenshots:** Enabled for all tests" >> $GITHUB_STEP_SUMMARY
+          echo "- **Reporters:** JSON, HTML" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Add timestamp
+          echo "## 🕐 Execution Info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow:** ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run ID:** ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY

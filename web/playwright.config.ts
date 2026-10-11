@@ -39,8 +39,8 @@ export default defineConfig({
     /* Record video only when retrying */
     video: 'retry-with-video',
 
-    /* Take screenshot on test failure */
-    screenshot: 'only-on-failure',
+    /* Take screenshot on every test */
+    screenshot: 'on',
   },
 
   /* Configure projects for major browsers */
@@ -60,5 +60,12 @@ export default defineConfig({
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 120000, // 2 minutes for dev server to start
+  },
+
+  // Screenshots configuration
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 1000,
+    },
   },
 });

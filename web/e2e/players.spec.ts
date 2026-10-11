@@ -13,6 +13,7 @@ test.describe('CDSP 79 Players', () => {
   test('should load players page successfully', async ({ page }) => {
     await expect(page).toHaveTitle(/Joueurs/);
     await expect(page.locator('main')).toBeVisible();
+    await expect(page).toHaveScreenshot('players-page.png');
   });
 
   test('should display players list', async ({ page }) => {
@@ -33,6 +34,7 @@ test.describe('CDSP 79 Players', () => {
     // Should navigate to player detail
     await expect(page).toHaveURL(/(.*)\/joueurs\/[a-zA-Z0-9-]+/);
     await expect(page.locator('h1')).toBeVisible();
+    await expect(page).toHaveScreenshot('player-detail.png');
   });
 
   test('should have search/filter functionality', async ({ page }) => {

@@ -13,6 +13,7 @@ test.describe('CDSP 79 Homepage', () => {
   test('should load homepage successfully', async ({ page }) => {
     await expect(page).toHaveTitle(/CDSP 79|Palet/);
     await expect(page.locator('main')).toBeVisible();
+    await expect(page).toHaveScreenshot('homepage-load.png');
   });
 
   test('should display header with navigation', async ({ page }) => {
@@ -23,6 +24,7 @@ test.describe('CDSP 79 Homepage', () => {
     // Check for logo or branding
     const logo = page.locator('[alt*="CDSP" i]');
     await expect(logo).toBeVisible();
+    await expect(page).toHaveScreenshot('header-navigation.png');
   });
 
   test('should display hero section with championship info', async ({ page }) => {
@@ -129,5 +131,6 @@ test.describe('CDSP 79 Homepage', () => {
     // Check for gold accent color
     const goldElements = page.locator('.text-brand-orange-pure, .bg-brand-orange-pure');
     await expect(goldElements).toBeVisible();
+    await expect(page).toHaveScreenshot('color-scheme.png');
   });
 });

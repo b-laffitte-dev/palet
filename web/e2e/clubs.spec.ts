@@ -13,6 +13,7 @@ test.describe('CDSP 79 Clubs', () => {
   test('should load clubs page successfully', async ({ page }) => {
     await expect(page).toHaveTitle(/Clubs|Annuaire/);
     await expect(page.locator('main')).toBeVisible();
+    await expect(page).toHaveScreenshot('clubs-page.png');
   });
 
   test('should display clubs list', async ({ page }) => {
@@ -33,6 +34,7 @@ test.describe('CDSP 79 Clubs', () => {
     // Should navigate to club detail
     await expect(page).toHaveURL(/(.*)\/clubs\/[a-zA-Z0-9-]+/);
     await expect(page.locator('h1')).toBeVisible();
+    await expect(page).toHaveScreenshot('club-detail-from-list.png');
   });
 });
 
