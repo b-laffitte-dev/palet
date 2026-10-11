@@ -20,7 +20,7 @@ import {
 import { PlayerCard, ClubCard } from "../components/domain";
 import { Club, Player, Team, ChampionshipClassification, ChampionshipTeam } from "../types";
 import { api } from "../api";
-import { mockClub, mockClubPlayers, mockClubTeams, mockClassification } from "../data/mocks";
+import { mockClub, mockPlayers, mockTeams, mockClassification } from "../data/mocks";
 
 const ClubDetail: React.FC = () => {
   const { clubId } = useParams<{ clubId: string }>();
@@ -260,7 +260,7 @@ const ClubDetail: React.FC = () => {
               {/* Effectif */}
               <TabPanel value="effectif" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mockClubPlayers.map((player) => (
+                  {mockPlayers.slice(0, 3).map((player) => (
                     <PlayerCard key={player.id} player={player} showClub={false} />
                   ))}
                 </div>
@@ -269,7 +269,7 @@ const ClubDetail: React.FC = () => {
               {/* Équipes */}
               <TabPanel value="equipes" className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {mockClubTeams.map((team) => (
+                  {mockTeams.slice(0, 3).map((team) => (
                     <Card key={team.id} className="bg-brand-green-900/50 border-brand-green-700/50">
                       <CardHeader>
                         <div className="flex items-center justify-between">

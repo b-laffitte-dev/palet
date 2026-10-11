@@ -661,6 +661,8 @@ export interface MatchTeam {
   players: Player[];
   rank: number | null;
   seed: number | null;
+  club?: Club | null;
+  clubId?: string | null;
 }
 
 export interface MancheScore {
@@ -1030,6 +1032,7 @@ export interface Trophy {
   competition: string;
   category: string;
   year: string;
+  season?: string;
   date: Date;
   type: "champion" | "winner" | "finalist" | "semifinalist";
 }

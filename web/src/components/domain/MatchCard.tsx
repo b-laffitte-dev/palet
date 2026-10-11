@@ -11,6 +11,7 @@ export interface MatchCardProps {
   onClick?: () => void;
   showActions?: boolean;
   showTournament?: boolean;
+  showDetails?: boolean;
 }
 
 /**
