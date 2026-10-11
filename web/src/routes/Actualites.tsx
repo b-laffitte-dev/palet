@@ -32,7 +32,7 @@ const Actualites: React.FC = () => {
     {
       id: '4',
       title: 'Règlement mis à jour pour les tournois fédéraux',
-      excerpt: 'Un nouveau règlement a été publié pour les tournois sous égide du CDSP 79.'
+      excerpt: 'Un nouveau règlement a été publié pour les tournois sous égide du CDSP 79.',
       date: new Date('2025-05-20'),
       category: 'official',
       image: null,
@@ -40,7 +40,7 @@ const Actualites: React.FC = () => {
     {
       id: '5',
       title: 'Palmarès des Challenges CDSP 79 2026',
-      excerpt: 'Retrouvez tous les résultats et classements des Challenges CDSP qui se sont tenus en 2026.'
+      excerpt: 'Retrouvez tous les résultats et classements des Challenges CDSP qui se sont tenus en 2026.',
       date: new Date('2024-08-20'),
       category: 'competitions',
       image: null,

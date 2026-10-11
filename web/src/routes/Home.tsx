@@ -267,7 +267,7 @@ const mockTournaments: Tournament[] = [
     registrationEnd: null,
     startDate: new Date('2026-11-15'),
     endDate: new Date('2026-11-17'),
-    status: 'upcoming',
+    status: 'pending',
     currentJournee: null,
     totalJournees: null,
     currentPhase: null,
