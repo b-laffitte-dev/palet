@@ -1,64 +1,57 @@
 //! Club endpoint handlers
 
-use actix_web::{get, post, web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder};
 use palet_shared::{ApiResponse, Club, CreateClubRequest, PaginatedResponse, Pagination};
-use std::sync::Arc;
 
-use crate::{db::Database, AppState};
+use crate::AppState;
 
 /// Get all clubs
-///
-/// Returns a paginated list of all clubs
 #[utoipa::path(
     get,
     path = "/clubs",
     tag = "Clubs",
-    summary = "Get all clubs",
-    description = "Returns a paginated list of all registered clubs",
     responses(
         (status = 200, description = "List of clubs", body = PaginatedResponse<Club>),
         (status = 500, description = "Internal server error")
     )
 )]
-#[get("/clubs")]
 pub async fn get_clubs(state: web::Data<AppState>) -> impl Responder {
-    let clubs = state.db.get_clubs().await.map_err(|e| {
-        log::error!("Failed to get clubs: {:?}", e);
-        HttpResponse::InternalServerError().json(ApiResponse::<()> {
-            data: (),
-            message: Some("Failed to get clubs".to_string()),
-            success: false,
-        })
-    })?;
+    match state.db.get_clubs().await {
+        Ok(clubs) => {
+            let pagination = Pagination {
+                current: 1,
+                total: 1,
+                page_size: clubs.len() as i64,
+                total_items: clubs.len() as i64,
+                has_next: false,
+                has_previous: false,
+            };
 
-    let pagination = Pagination {
-        current: 1,
-        total: 1,
-        page_size: clubs.len() as i64,
-        total_items: clubs.len() as i64,
-        has_next: false,
-        has_previous: false,
-    };
-
-    HttpResponse::Ok().json(ApiResponse {
-        data: PaginatedResponse {
-            data: clubs,
-            pagination,
-        },
-        message: Some("Clubs retrieved successfully".to_string()),
-        success: true,
-    })
+            HttpResponse::Ok().json(ApiResponse {
+                data: PaginatedResponse {
+                    data: clubs,
+                    pagination,
+                },
+                message: Some("Clubs retrieved successfully".to_string()),
+                success: true,
+            })
+        }
+        Err(e) => {
+            log::error!("Failed to get clubs: {:?}", e);
+            HttpResponse::InternalServerError().json(ApiResponse::<()> {
+                data: (),
+                message: Some("Failed to get clubs".to_string()),
+                success: false,
+            })
+        }
+    }
 }
 
 /// Get a specific club by ID
-///
-/// Returns detailed information about a specific club
 #[utoipa::path(
     get,
     path = "/clubs/{id}",
     tag = "Clubs",
-    summary = "Get club by ID",
-    description = "Returns detailed information about a specific club",
     params(
         ("id" = UUID, description = "Club ID")
     ),
@@ -68,40 +61,34 @@ pub async fn get_clubs(state: web::Data<AppState>) -> impl Responder {
         (status = 500, description = "Internal server error")
     )
 )]
-#[get("/clubs/{id}")]
 pub async fn get_club(state: web::Data<AppState>, id: web::Path<uuid::Uuid>) -> impl Responder {
-    let club = state.db.get_club(*id).await.map_err(|e| {
-        log::error!("Failed to get club: {:?}", e);
-        HttpResponse::InternalServerError().json(ApiResponse::<()> {
-            data: (),
-            message: Some("Failed to get club".to_string()),
-            success: false,
-        })
-    })?;
-
-    match club {
-        Some(club) => HttpResponse::Ok().json(ApiResponse {
+    match state.db.get_club(*id).await {
+        Ok(Some(club)) => HttpResponse::Ok().json(ApiResponse {
             data: club,
             message: Some("Club retrieved successfully".to_string()),
             success: true,
         }),
-        None => HttpResponse::NotFound().json(ApiResponse::<()> {
+        Ok(None) => HttpResponse::NotFound().json(ApiResponse::<()> {
             data: (),
             message: Some("Club not found".to_string()),
             success: false,
         }),
+        Err(e) => {
+            log::error!("Failed to get club: {:?}", e);
+            HttpResponse::InternalServerError().json(ApiResponse::<()> {
+                data: (),
+                message: Some("Failed to get club".to_string()),
+                success: false,
+            })
+        }
     }
 }
 
 /// Create a new club
-///
-/// Creates a new club with the provided information
 #[utoipa::path(
     post,
     path = "/clubs",
     tag = "Clubs",
-    summary = "Create a new club",
-    description = "Creates a new club with the provided information",
     request_body = CreateClubRequest,
     responses(
         (status = 201, description = "Club created", body = Club),
@@ -109,29 +96,25 @@ pub async fn get_club(state: web::Data<AppState>, id: web::Path<uuid::Uuid>) -> 
         (status = 500, description = "Internal server error")
     )
 )]
-#[post("/clubs")]
 pub async fn create_club(
     state: web::Data<AppState>,
     request: web::Json<CreateClubRequest>,
 ) -> impl Responder {
-    let club = state
-        .db
-        .create_club(request.into_inner())
-        .await
-        .map_err(|e| {
+    match state.db.create_club(request.into_inner()).await {
+        Ok(club) => HttpResponse::Created().json(ApiResponse {
+            data: club,
+            message: Some("Club created successfully".to_string()),
+            success: true,
+        }),
+        Err(e) => {
             log::error!("Failed to create club: {:?}", e);
             HttpResponse::InternalServerError().json(ApiResponse::<()> {
                 data: (),
                 message: Some("Failed to create club".to_string()),
                 success: false,
             })
-        })?;
-
-    HttpResponse::Created().json(ApiResponse {
-        data: club,
-        message: Some("Club created successfully".to_string()),
-        success: true,
-    })
+        }
+    }
 }
 
 #[cfg(test)]
@@ -139,6 +122,7 @@ mod tests {
     use super::*;
     use actix_web::{test, web, App};
     use palet_shared::{Club, CreateClubRequest, PaginatedResponse};
+    use std::sync::Arc;
 
     #[actix_rt::test]
     async fn test_get_clubs() {
@@ -153,7 +137,7 @@ mod tests {
         let app = test::init_service(
             App::new()
                 .app_data(web::Data::new(state))
-                .service(get_clubs),
+                .route("/clubs", web::get().to(get_clubs)),
         )
         .await;
 
@@ -179,7 +163,7 @@ mod tests {
         let app = test::init_service(
             App::new()
                 .app_data(web::Data::new(state))
-                .service(create_club),
+                .route("/clubs", web::post().to(create_club)),
         )
         .await;
 
@@ -189,7 +173,7 @@ mod tests {
             code: "TC001".to_string(),
             city: "Test City".to_string(),
             postal_code: Some("12345".to_string()),
-            league: "Deux-Sèvres".to_string(),
+            league: "Deux-S\u{00e8}vres".to_string(),
             division: "D1".to_string(),
             federation_id: uuid::Uuid::nil(),
             contact_email: Some("test@test.com".to_string()),
