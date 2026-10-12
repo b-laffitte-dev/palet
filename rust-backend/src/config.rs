@@ -1,4 +1,4 @@
-//! Configuration management for Palet Vendéen Backend
+//! Configuration management for Palet Venden Backend
 
 use config::{Config as ConfigBuilder, ConfigError, Environment, File as FileSource};
 use serde::Deserialize;
@@ -110,11 +110,11 @@ mod tests {
 
     #[test]
     fn test_config_from_settings() {
-        let mut settings = ConfigBuilder::new();
-        settings.set("host", "127.0.0.1").unwrap();
-        settings.set("port", 8080).unwrap();
+        let mut settings = config::Config::builder();
+        settings = settings.set_override("host", "127.0.0.1").unwrap();
+        settings = settings.set_override("port", 8080).unwrap();
 
-        let config = AppConfig::from_settings(settings).unwrap();
+        let config = AppConfig::from_settings(settings.build().unwrap()).unwrap();
         assert_eq!(config.host, "127.0.0.1");
         assert_eq!(config.port, 8080);
     }

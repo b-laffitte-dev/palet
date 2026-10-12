@@ -35,6 +35,7 @@ utoipa-swagger-ui = { version = "4.0", features = ["actix-web"] }
 
 [dev-dependencies]
 actix-http-test = "3.0"
+actix-rt = "2.0"
 serial_test = "3.0"
 
 [features]
