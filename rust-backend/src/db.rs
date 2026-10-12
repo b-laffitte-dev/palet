@@ -3,10 +3,10 @@
 //! Handles all database operations using SQLx with PostgreSQL
 
 use chrono::{DateTime, Utc};
-use log::{info};
+use log::info;
 use palet_shared::{
-    Championship, Club, ClubStatus, CreateClubRequest, Federation, LicenseStatus, Match,
-    MatchStatus, Player, PlayerStatus, Tournament, generate_uuid, now_utc,
+    generate_uuid, now_utc, Championship, Club, ClubStatus, CreateClubRequest, Federation,
+    LicenseStatus, Match, MatchStatus, Player, PlayerStatus, Tournament,
 };
 use sqlx::{
     postgres::{PgPool, PgPoolOptions},

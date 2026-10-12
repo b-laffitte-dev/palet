@@ -154,17 +154,13 @@ async fn main() -> std::io::Result<()> {
         App::new()
             // App state
             .app_data(web::Data::new(app_state.clone()))
-
             // Middleware
             .wrap(configure_cors(&app_config_clone))
             .wrap(middleware::Logger::default())
-
             // Swagger UI for API documentation
             .service(SwaggerUi::new("/api-docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
-
             // Health check endpoint
             .route("/health", web::get().to(health_handler::health_check))
-
             // Club endpoints
             .service(
                 web::scope("/clubs")
@@ -172,7 +168,6 @@ async fn main() -> std::io::Result<()> {
                     .route("", web::post().to(club_handler::create_club))
                     .route("/{id}", web::get().to(club_handler::get_club)),
             )
-
             // Default service for unmatched routes
             .default_service(web::route().to(not_found_handler))
     });
@@ -181,17 +176,12 @@ async fn main() -> std::io::Result<()> {
     let port = app_config.port;
     let host = app_config.host.clone();
 
-
     info!("Starting server on {}:{}", host, port);
 
-    server
-        .bind((host, port))?
-        .run()
-        .await
-        .map_err(|e| {
-            error!("Server error: {:?}", e);
-            e
-        })?;
+    server.bind((host, port))?.run().await.map_err(|e| {
+        error!("Server error: {:?}", e);
+        e
+    })?;
 
     Ok(())
 }
