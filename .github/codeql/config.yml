@@ -1,4 +1,4 @@
-# CodeQL configuration for Palet Vendéen Rust project
+# CodeQL configuration for Palet Venden Rust project
 
 # Paths to include in analysis
 paths:
@@ -17,22 +17,15 @@ paths-ignore:
   - docs
   - scripts
 
-# Queries to run
+# Queries to run for Rust
 queries:
-  # Security queries
+  # Security queries for Rust
   - name: Security
     uses: security-extended
 
-  # Code quality queries
+  # Code quality queries for Rust
   - name: Code Quality
     uses: code-quality
-
-  # Rust-specific queries (analyzed as C++)
-  - name: Memory Safety
-    uses: cpp-memory-safety
-
-  - name: Security and Quality
-    uses: cpp-security-and-quality
 
 # Database configuration
 # Note: CodeQL uses a database for analysis
@@ -49,10 +42,6 @@ build:
 
 # Analysis options
 analysis:
-  # Enable experimental features
-  experimental:
-    - enable
-
   # Analysis timeout (in minutes)
   timeout: 30
 
