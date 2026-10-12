@@ -108,8 +108,8 @@ matchsRouter.get("/matchs/:id", async (c) => {
       return c.json({ error: "Match non trouve" }, 404);
     }
 
-    const [equipeDomicile] = await db.select().from(equipes).where(eq(equipes.id, match.equipeDomicileId)).execute();
-    const [equipeExterieur] = await db.select().from(equipes).where(eq(equipes.id, match.equipeExterieurId)).execute();
+    const [equipeDomicile] = await db.select().from(equipes).where(eq(equipes.id, match.equipeDomicileId as string)).execute();
+    const [equipeExterieur] = await db.select().from(equipes).where(eq(equipes.id, match.equipeExterieurId as string)).execute();
 
     let competition = null;
     if (match.competitionType === "championnat") {

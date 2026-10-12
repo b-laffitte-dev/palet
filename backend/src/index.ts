@@ -8,6 +8,10 @@ import joueursRouter from "./routes/joueurs.js";
 import tournoisRouter from "./routes/tournois.js";
 import championnatsRouter from "./routes/championnats.js";
 import matchsRouter from "./routes/matchs.js";
+import federationsRouter from "./routes/federations.js";
+import equipesRouter from "./routes/equipes.js";
+import actualitesRouter from "./routes/actualites.js";
+import classementsRouter from "./routes/classements.js";
 
 const app = new OpenAPIHono();
 
@@ -20,6 +24,10 @@ app.route("/", joueursRouter);
 app.route("/", tournoisRouter);
 app.route("/", championnatsRouter);
 app.route("/", matchsRouter);
+app.route("/", federationsRouter);
+app.route("/", equipesRouter);
+app.route("/", actualitesRouter);
+app.route("/", classementsRouter);
 
 app.doc("/api-docs/openapi.json", {
   openapi: "3.1.0",
