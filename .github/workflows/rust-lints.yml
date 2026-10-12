@@ -33,17 +33,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Cache dependencies
-        uses: actions-rs/cargo@v1
-        with:
-          command: cache
+        uses: Swatinem/rust-cache@v2
 
       # Backend lints
       - name: Backend - Check formatting
@@ -53,10 +49,6 @@ jobs:
       - name: Backend - Run clippy
         working-directory: rust-backend
         run: cargo clippy --all-targets --all-features -- -D warnings
-
-      - name: Backend - Check for unused dependencies
-        working-directory: rust-backend
-        run: cargo deps --all-targets 2>/dev/null || true
 
       # Frontend lints
       - name: Frontend - Check formatting
@@ -95,11 +87,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
 
       - name: Check for warnings in backend
         working-directory: rust-backend
@@ -127,11 +117,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
 
       - name: Check documentation in backend
         working-directory: rust-backend

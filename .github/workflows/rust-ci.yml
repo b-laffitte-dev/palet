@@ -49,21 +49,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Cache dependencies
-        uses: actions-rs/cargo@v1
+        uses: Swatinem/rust-cache@v2
         with:
-          command: cache
           working-directory: rust-backend
 
-      - name: Install dependencies
-        working-directory: rust-backend
+      - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libpq-dev
@@ -100,18 +96,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
           components: rustfmt, clippy
           target: wasm32-unknown-unknown
 
       - name: Cache dependencies
-        uses: actions-rs/cargo@v1
+        uses: Swatinem/rust-cache@v2
         with:
-          command: cache
           working-directory: rust-frontend
 
       - name: Install wasm-pack
@@ -144,17 +137,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Cache dependencies
-        uses: actions-rs/cargo@v1
+        uses: Swatinem/rust-cache@v2
         with:
-          command: cache
           working-directory: rust-shared
 
       - name: Check formatting
@@ -183,16 +173,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
+          components: rustfmt, clippy
 
       - name: Cache dependencies
-        uses: actions-rs/cargo@v1
+        uses: Swatinem/rust-cache@v2
         with:
-          command: cache
           working-directory: rust-mobile
 
       - name: Check formatting
@@ -278,17 +266,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
 
       - name: Install cargo-audit
         run: cargo install cargo-audit
 
       - name: Run security audit
-        working-directory: .
         run: cargo audit --deny warnings
 
   # Code coverage (optional - requires nightly)
@@ -302,11 +287,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust (nightly)
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          profile: minimal
           toolchain: nightly
-          override: true
 
       - name: Install cargo-tarpaulin
         run: cargo install cargo-tarpaulin
@@ -315,7 +298,6 @@ jobs:
         working-directory: rust-backend
         run: |
           cargo tarpaulin --release --out xml -- --test-threads 1
-          cargo tarpaulin --report --out-dir ./coverage
 
       - name: Upload coverage to Codecov
         if: success()

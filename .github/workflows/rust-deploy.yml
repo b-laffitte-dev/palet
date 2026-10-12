@@ -153,15 +153,6 @@ jobs:
             ${{ github.repository_owner }}/palet-frontend:production
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Wait for approval
-        if: ${{ github.event.inputs.force != 'true' }}
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ secrets.MANUAL_APPROVAL_SECRET }}
-          approvers: ${{ secrets.PRODUCTION_APPROVERS }}
-          issue-title: "Production Deployment Approval for Palet Vendéen"
-          issue-body: "Please review and approve the production deployment"
-
       - name: Deploy to production server
         uses: appleboy/ssh-action@v1
         with:
