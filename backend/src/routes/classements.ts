@@ -1,12 +1,6 @@
 import { Hono } from "hono";
 import { createDb } from "../db/client.js";
-import {
-  classementsChampionnat,
-  championnats,
-  equipes,
-  clubs,
-  matchs,
-} from "../../db/schema.js";
+import { classementsChampionnat, championnats, equipes, clubs, matchs } from "../../db/schema.js";
 import { eq, and, desc, like, or, count } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -26,26 +20,17 @@ classementsRouter.get("/classements", async (c) => {
     let whereCondition = and();
 
     if (championnatId) {
-      whereCondition = and(
-        whereCondition,
-        eq(classementsChampionnat.championnatId, championnatId),
-      );
+      whereCondition = and(whereCondition, eq(classementsChampionnat.championnatId, championnatId));
     }
 
     if (clubId) {
-      whereCondition = and(
-        whereCondition,
-        eq(equipes.clubId, clubId),
-      );
+      whereCondition = and(whereCondition, eq(equipes.clubId, clubId));
     }
 
     if (search) {
       whereCondition = and(
         whereCondition,
-        or(
-          like(equipes.nom, `%${search}%`),
-          like(clubs.nom, `%${search}%`),
-        ),
+        or(like(equipes.nom, `%${search}%`), like(clubs.nom, `%${search}%`)),
       );
     }
 
@@ -104,10 +89,7 @@ classementsRouter.get("/classements", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la recuperation des classements:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation des classements" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation des classements" }, 500);
   }
 });
 
@@ -166,10 +148,7 @@ classementsRouter.get("/classements/championnat/:championnatId", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la recuperation du classement:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation du classement" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation du classement" }, 500);
   }
 });
 
@@ -215,10 +194,7 @@ classementsRouter.get("/classements/:id", async (c) => {
     return c.json(classement);
   } catch (error) {
     console.error("Erreur lors de la recuperation du classement:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation du classement" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation du classement" }, 500);
   }
 });
 
@@ -246,24 +222,14 @@ classementsRouter.post("/classements", async (c) => {
       .execute();
 
     if (!championnat) {
-      return c.json(
-        { error: "Le championnat specifie n'existe pas" },
-        400,
-      );
+      return c.json({ error: "Le championnat specifie n'existe pas" }, 400);
     }
 
     // Verify team exists
-    const [equipe] = await db
-      .select()
-      .from(equipes)
-      .where(eq(equipes.id, body.equipeId))
-      .execute();
+    const [equipe] = await db.select().from(equipes).where(eq(equipes.id, body.equipeId)).execute();
 
     if (!equipe) {
-      return c.json(
-        { error: "L'equipe specifiee n'existe pas" },
-        400,
-      );
+      return c.json({ error: "L'equipe specifiee n'existe pas" }, 400);
     }
 
     // Verify position is unique for this championship
@@ -298,10 +264,7 @@ classementsRouter.post("/classements", async (c) => {
       .execute();
 
     if (existingTeamClassement) {
-      return c.json(
-        { error: "Cette equipe est deja dans le classement de ce championnat" },
-        409,
-      );
+      return c.json({ error: "Cette equipe est deja dans le classement de ce championnat" }, 409);
     }
 
     const newClassement = {
@@ -330,10 +293,7 @@ classementsRouter.post("/classements", async (c) => {
     return c.json(created, 201);
   } catch (error) {
     console.error("Erreur lors de la creation du classement:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la creation du classement" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la creation du classement" }, 500);
   }
 });
 
@@ -364,10 +324,7 @@ classementsRouter.put("/classements/:id", async (c) => {
         .execute();
 
       if (!championnat) {
-        return c.json(
-          { error: "Le championnat specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le championnat specifie n'existe pas" }, 400);
       }
     }
 
@@ -380,10 +337,7 @@ classementsRouter.put("/classements/:id", async (c) => {
         .execute();
 
       if (!equipe) {
-        return c.json(
-          { error: "L'equipe specifiee n'existe pas" },
-          400,
-        );
+        return c.json({ error: "L'equipe specifiee n'existe pas" }, 400);
       }
     }
 
@@ -434,10 +388,7 @@ classementsRouter.put("/classements/:id", async (c) => {
     return c.json(updated);
   } catch (error) {
     console.error("Erreur lors de la mise a jour du classement:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise a jour du classement" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise a jour du classement" }, 500);
   }
 });
 
@@ -458,18 +409,12 @@ classementsRouter.delete("/classements/:id", async (c) => {
       return c.json({ error: "Classement non trouve" }, 404);
     }
 
-    await db
-      .delete(classementsChampionnat)
-      .where(eq(classementsChampionnat.id, id))
-      .execute();
+    await db.delete(classementsChampionnat).where(eq(classementsChampionnat.id, id)).execute();
 
     return c.json({ message: "Classement supprime avec succes" });
   } catch (error) {
     console.error("Erreur lors de la suppression du classement:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression du classement" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression du classement" }, 500);
   }
 });
 
@@ -495,10 +440,7 @@ classementsRouter.post("/classements/championnat/:championnatId/recalculate", as
       .select()
       .from(matchs)
       .where(
-        and(
-          eq(matchs.competitionId, championnatId),
-          eq(matchs.competitionType, "championnat"),
-        ),
+        and(eq(matchs.competitionId, championnatId), eq(matchs.competitionType, "championnat")),
       )
       .execute();
 
@@ -598,10 +540,7 @@ classementsRouter.post("/classements/championnat/:championnatId/recalculate", as
     }));
 
     if (newClassements.length > 0) {
-      await db
-        .insert(classementsChampionnat)
-        .values(newClassements)
-        .execute();
+      await db.insert(classementsChampionnat).values(newClassements).execute();
     }
 
     return c.json({
@@ -610,10 +549,7 @@ classementsRouter.post("/classements/championnat/:championnatId/recalculate", as
     });
   } catch (error) {
     console.error("Erreur lors du recalcul des classements:", error);
-    return c.json(
-      { error: "Erreur serveur lors du recalcul des classements" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors du recalcul des classements" }, 500);
   }
 });
 

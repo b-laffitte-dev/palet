@@ -1,7 +1,14 @@
 import { Hono } from "hono";
 import { sql } from "drizzle-orm";
 import { createDb } from "../db/client.js";
-import { championnats, federations, clubs, equipes, classementsChampionnat, matchs } from "../../db/schema.js";
+import {
+  championnats,
+  federations,
+  clubs,
+  equipes,
+  classementsChampionnat,
+  matchs,
+} from "../../db/schema.js";
 import { eq, and, desc, like, or, ne, count } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -34,24 +41,15 @@ championnatsRouter.get("/championnats", async (c) => {
     }
 
     if (federationId) {
-      whereCondition = and(
-        whereCondition,
-        eq(championnats.federationId, federationId),
-      );
+      whereCondition = and(whereCondition, eq(championnats.federationId, federationId));
     }
 
     if (statut) {
-      whereCondition = and(
-        whereCondition,
-        eq(championnats.statut, statut as any),
-      );
+      whereCondition = and(whereCondition, eq(championnats.statut, statut as any));
     }
 
     if (saison) {
-      whereCondition = and(
-        whereCondition,
-        like(championnats.saison, `%${saison}%`),
-      );
+      whereCondition = and(whereCondition, like(championnats.saison, `%${saison}%`));
     }
 
     // Compter le total
@@ -91,10 +89,7 @@ championnatsRouter.get("/championnats", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération des championnats:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération des championnats" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération des championnats" }, 500);
   }
 });
 
@@ -176,10 +171,7 @@ championnatsRouter.get("/championnats/:id", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération du championnat:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération du championnat" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération du championnat" }, 500);
   }
 });
 
@@ -190,7 +182,14 @@ championnatsRouter.post("/championnats", async (c) => {
     const body = await c.req.json();
 
     // Validation basique
-    if (!body.nom || !body.slug || !body.federationId || !body.saison || !body.dateDebut || !body.dateFin) {
+    if (
+      !body.nom ||
+      !body.slug ||
+      !body.federationId ||
+      !body.saison ||
+      !body.dateDebut ||
+      !body.dateFin
+    ) {
       return c.json(
         { error: "Les champs nom, slug, federationId, saison, dateDebut et dateFin sont requis" },
         400,
@@ -205,10 +204,7 @@ championnatsRouter.post("/championnats", async (c) => {
       .execute();
 
     if (!federation) {
-      return c.json(
-        { error: "La fédération spécifiée n'existe pas" },
-        400,
-      );
+      return c.json({ error: "La fédération spécifiée n'existe pas" }, 400);
     }
 
     // Vérifier que le slug est unique
@@ -219,10 +215,7 @@ championnatsRouter.post("/championnats", async (c) => {
       .execute();
 
     if (existingChampionnat) {
-      return c.json(
-        { error: "Un championnat avec ce slug existe déjà" },
-        409,
-      );
+      return c.json({ error: "Un championnat avec ce slug existe déjà" }, 409);
     }
 
     // Créer le championnat
@@ -251,10 +244,7 @@ championnatsRouter.post("/championnats", async (c) => {
     return c.json(createdChampionnat, 201);
   } catch (error) {
     console.error("Erreur lors de la création du championnat:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la création du championnat" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la création du championnat" }, 500);
   }
 });
 
@@ -285,10 +275,7 @@ championnatsRouter.put("/championnats/:id", async (c) => {
         .execute();
 
       if (championnatWithSameSlug) {
-        return c.json(
-          { error: "Un championnat avec ce slug existe déjà" },
-          409,
-        );
+        return c.json({ error: "Un championnat avec ce slug existe déjà" }, 409);
       }
     }
 
@@ -301,10 +288,7 @@ championnatsRouter.put("/championnats/:id", async (c) => {
         .execute();
 
       if (!federation) {
-        return c.json(
-          { error: "La fédération spécifiée n'existe pas" },
-          400,
-        );
+        return c.json({ error: "La fédération spécifiée n'existe pas" }, 400);
       }
     }
 
@@ -313,11 +297,13 @@ championnatsRouter.put("/championnats/:id", async (c) => {
       nom: body.nom || existingChampionnat.nom,
       slug: body.slug || existingChampionnat.slug,
       saison: body.saison || existingChampionnat.saison,
-      description: body.description !== undefined ? body.description : existingChampionnat.description,
+      description:
+        body.description !== undefined ? body.description : existingChampionnat.description,
       statut: body.statut || existingChampionnat.statut,
       dateDebut: body.dateDebut ? new Date(body.dateDebut) : existingChampionnat.dateDebut,
       dateFin: body.dateFin ? new Date(body.dateFin) : existingChampionnat.dateFin,
-      nombreEquipes: body.nombreEquipes !== undefined ? body.nombreEquipes : existingChampionnat.nombreEquipes,
+      nombreEquipes:
+        body.nombreEquipes !== undefined ? body.nombreEquipes : existingChampionnat.nombreEquipes,
       reglement: body.reglement !== undefined ? body.reglement : existingChampionnat.reglement,
       federationId: body.federationId || existingChampionnat.federationId,
       misAJourLe: new Date(),
@@ -333,10 +319,7 @@ championnatsRouter.put("/championnats/:id", async (c) => {
     return c.json(result);
   } catch (error) {
     console.error("Erreur lors de la mise à jour du championnat:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise à jour du championnat" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise à jour du championnat" }, 500);
   }
 });
 
@@ -358,18 +341,12 @@ championnatsRouter.delete("/championnats/:id", async (c) => {
     }
 
     // Supprimer le championnat
-    await db
-      .delete(championnats)
-      .where(eq(championnats.id, id))
-      .execute();
+    await db.delete(championnats).where(eq(championnats.id, id)).execute();
 
     return c.json({ message: "Championnat supprimé avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression du championnat:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression du championnat" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression du championnat" }, 500);
   }
 });
 
@@ -382,10 +359,7 @@ championnatsRouter.post("/championnats/:id/classement", async (c) => {
 
     // Validation
     if (!Array.isArray(body.classement)) {
-      return c.json(
-        { error: "Le champ classement doit être un tableau" },
-        400,
-      );
+      return c.json({ error: "Le champ classement doit être un tableau" }, 400);
     }
 
     // Vérifier que le championnat existe
@@ -432,10 +406,7 @@ championnatsRouter.post("/championnats/:id/classement", async (c) => {
     return c.json(createdClassement, 201);
   } catch (error) {
     console.error("Erreur lors de la mise à jour du classement:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise à jour du classement" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise à jour du classement" }, 500);
   }
 });
 
@@ -479,10 +450,7 @@ championnatsRouter.post("/championnats/:id/matchs", async (c) => {
       .execute();
 
     if (!equipeDomicile || !equipeExterieur) {
-      return c.json(
-        { error: "Une ou plusieurs equipes n'existent pas" },
-        400,
-      );
+      return c.json({ error: "Une ou plusieurs equipes n'existent pas" }, 400);
     }
 
     // Créer le match
@@ -507,19 +475,12 @@ championnatsRouter.post("/championnats/:id/matchs", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [createdMatch] = await db
-      .insert(matchs)
-      .values(newMatch)
-      .returning()
-      .execute();
+    const [createdMatch] = await db.insert(matchs).values(newMatch).returning().execute();
 
     return c.json(createdMatch, 201);
   } catch (error) {
     console.error("Erreur lors de la création du match:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la création du match" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la création du match" }, 500);
   }
 });
 

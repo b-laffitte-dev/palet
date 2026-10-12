@@ -34,31 +34,19 @@ actualitesRouter.get("/actualites", async (c) => {
     }
 
     if (clubId) {
-      whereCondition = and(
-        whereCondition,
-        eq(actualites.clubId, clubId),
-      );
+      whereCondition = and(whereCondition, eq(actualites.clubId, clubId));
     }
 
     if (auteurId) {
-      whereCondition = and(
-        whereCondition,
-        eq(actualites.auteurId, auteurId),
-      );
+      whereCondition = and(whereCondition, eq(actualites.auteurId, auteurId));
     }
 
     if (categorie) {
-      whereCondition = and(
-        whereCondition,
-        like(actualites.categories, `%${categorie}%`),
-      );
+      whereCondition = and(whereCondition, like(actualites.categories, `%${categorie}%`));
     }
 
     if (statut) {
-      whereCondition = and(
-        whereCondition,
-        eq(actualites.statut, statut),
-      );
+      whereCondition = and(whereCondition, eq(actualites.statut, statut));
     }
 
     const [totalResult] = await db
@@ -104,10 +92,7 @@ actualitesRouter.get("/actualites", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la recuperation des actualites:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation des actualites" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation des actualites" }, 500);
   }
 });
 
@@ -148,10 +133,7 @@ actualitesRouter.get("/actualites/:id", async (c) => {
     return c.json(actualite);
   } catch (error) {
     console.error("Erreur lors de la recuperation de l'actualite:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation de l'actualite" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation de l'actualite" }, 500);
   }
 });
 
@@ -163,10 +145,7 @@ actualitesRouter.post("/actualites", async (c) => {
 
     // Validation
     if (!body.titre || !body.slug || !body.contenu) {
-      return c.json(
-        { error: "Les champs titre, slug et contenu sont requis" },
-        400,
-      );
+      return c.json({ error: "Les champs titre, slug et contenu sont requis" }, 400);
     }
 
     // Verify slug is unique
@@ -177,10 +156,7 @@ actualitesRouter.post("/actualites", async (c) => {
       .execute();
 
     if (existingActualite) {
-      return c.json(
-        { error: "Une actualite avec ce slug existe deja" },
-        409,
-      );
+      return c.json({ error: "Une actualite avec ce slug existe deja" }, 409);
     }
 
     // Verify auteur exists if provided
@@ -192,26 +168,16 @@ actualitesRouter.post("/actualites", async (c) => {
         .execute();
 
       if (!auteur) {
-        return c.json(
-          { error: "L'auteur specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "L'auteur specifie n'existe pas" }, 400);
       }
     }
 
     // Verify club exists if provided
     if (body.clubId) {
-      const [club] = await db
-        .select()
-        .from(clubs)
-        .where(eq(clubs.id, body.clubId))
-        .execute();
+      const [club] = await db.select().from(clubs).where(eq(clubs.id, body.clubId)).execute();
 
       if (!club) {
-        return c.json(
-          { error: "Le club specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le club specifie n'existe pas" }, 400);
       }
     }
 
@@ -232,19 +198,12 @@ actualitesRouter.post("/actualites", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [created] = await db
-      .insert(actualites)
-      .values(newActualite)
-      .returning()
-      .execute();
+    const [created] = await db.insert(actualites).values(newActualite).returning().execute();
 
     return c.json(created, 201);
   } catch (error) {
     console.error("Erreur lors de la creation de l'actualite:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la creation de l'actualite" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la creation de l'actualite" }, 500);
   }
 });
 
@@ -275,10 +234,7 @@ actualitesRouter.put("/actualites/:id", async (c) => {
         .execute();
 
       if (actualiteWithSlug) {
-        return c.json(
-          { error: "Une actualite avec ce slug existe deja" },
-          409,
-        );
+        return c.json({ error: "Une actualite avec ce slug existe deja" }, 409);
       }
     }
 
@@ -291,26 +247,16 @@ actualitesRouter.put("/actualites/:id", async (c) => {
         .execute();
 
       if (!auteur) {
-        return c.json(
-          { error: "L'auteur specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "L'auteur specifie n'existe pas" }, 400);
       }
     }
 
     // Verify club exists if provided
     if (body.clubId) {
-      const [club] = await db
-        .select()
-        .from(clubs)
-        .where(eq(clubs.id, body.clubId))
-        .execute();
+      const [club] = await db.select().from(clubs).where(eq(clubs.id, body.clubId)).execute();
 
       if (!club) {
-        return c.json(
-          { error: "Le club specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le club specifie n'existe pas" }, 400);
       }
     }
 
@@ -323,7 +269,8 @@ actualitesRouter.put("/actualites/:id", async (c) => {
       auteurId: body.auteurId !== undefined ? body.auteurId : existingActualite.auteurId,
       clubId: body.clubId !== undefined ? body.clubId : existingActualite.clubId,
       datePublication: body.datePublication || existingActualite.datePublication,
-      dateEvenement: body.dateEvenement !== undefined ? body.dateEvenement : existingActualite.dateEvenement,
+      dateEvenement:
+        body.dateEvenement !== undefined ? body.dateEvenement : existingActualite.dateEvenement,
       categories: body.categories !== undefined ? body.categories : existingActualite.categories,
       statut: body.statut || existingActualite.statut,
       misAJourLe: new Date(),
@@ -339,10 +286,7 @@ actualitesRouter.put("/actualites/:id", async (c) => {
     return c.json(updated);
   } catch (error) {
     console.error("Erreur lors de la mise a jour de l'actualite:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise a jour de l'actualite" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise a jour de l'actualite" }, 500);
   }
 });
 
@@ -363,18 +307,12 @@ actualitesRouter.delete("/actualites/:id", async (c) => {
       return c.json({ error: "Actualite non trouvee" }, 404);
     }
 
-    await db
-      .delete(actualites)
-      .where(eq(actualites.id, id))
-      .execute();
+    await db.delete(actualites).where(eq(actualites.id, id)).execute();
 
     return c.json({ message: "Actualite supprimee avec succes" });
   } catch (error) {
     console.error("Erreur lors de la suppression de l'actualite:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression de l'actualite" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression de l'actualite" }, 500);
   }
 });
 

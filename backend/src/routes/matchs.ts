@@ -1,6 +1,14 @@
 import { Hono } from "hono";
 import { createDb } from "../db/client.js";
-import { matchs, equipes, clubs, championnats, tournois, statistiquesJoueurs, joueurs } from "../../db/schema.js";
+import {
+  matchs,
+  equipes,
+  clubs,
+  championnats,
+  tournois,
+  statistiquesJoueurs,
+  joueurs,
+} from "../../db/schema.js";
 import { eq, and, desc, like, or, ne, count } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -108,19 +116,39 @@ matchsRouter.get("/matchs/:id", async (c) => {
       return c.json({ error: "Match non trouve" }, 404);
     }
 
-    const [equipeDomicile] = await db.select().from(equipes).where(eq(equipes.id, match.equipeDomicileId as string)).execute();
-    const [equipeExterieur] = await db.select().from(equipes).where(eq(equipes.id, match.equipeExterieurId as string)).execute();
+    const [equipeDomicile] = await db
+      .select()
+      .from(equipes)
+      .where(eq(equipes.id, match.equipeDomicileId as string))
+      .execute();
+    const [equipeExterieur] = await db
+      .select()
+      .from(equipes)
+      .where(eq(equipes.id, match.equipeExterieurId as string))
+      .execute();
 
     let competition = null;
     if (match.competitionType === "championnat") {
-      const [championnat] = await db.select().from(championnats).where(eq(championnats.id, match.competitionId)).execute();
+      const [championnat] = await db
+        .select()
+        .from(championnats)
+        .where(eq(championnats.id, match.competitionId))
+        .execute();
       competition = championnat;
     } else if (match.competitionType === "tournoi") {
-      const [tournoi] = await db.select().from(tournois).where(eq(tournois.id, match.competitionId)).execute();
+      const [tournoi] = await db
+        .select()
+        .from(tournois)
+        .where(eq(tournois.id, match.competitionId))
+        .execute();
       competition = tournoi;
     }
 
-    const stats = await db.select().from(statistiquesJoueurs).where(eq(statistiquesJoueurs.matchId, id)).execute();
+    const stats = await db
+      .select()
+      .from(statistiquesJoueurs)
+      .where(eq(statistiquesJoueurs.matchId, id))
+      .execute();
 
     return c.json({ ...match, equipeDomicile, equipeExterieur, competition, statistiques: stats });
   } catch (error) {
@@ -135,12 +163,33 @@ matchsRouter.post("/matchs", async (c) => {
     const db = createDb();
     const body = await c.req.json();
 
-    if (!body.competitionId || !body.competitionType || !body.equipeDomicileId || !body.equipeExterieurId || !body.dateHeure || !body.phase) {
-      return c.json({ error: "Les champs competitionId, competitionType, equipeDomicileId, equipeExterieurId, dateHeure et phase sont requis" }, 400);
+    if (
+      !body.competitionId ||
+      !body.competitionType ||
+      !body.equipeDomicileId ||
+      !body.equipeExterieurId ||
+      !body.dateHeure ||
+      !body.phase
+    ) {
+      return c.json(
+        {
+          error:
+            "Les champs competitionId, competitionType, equipeDomicileId, equipeExterieurId, dateHeure et phase sont requis",
+        },
+        400,
+      );
     }
 
-    const [equipeDomicile] = await db.select().from(equipes).where(eq(equipes.id, body.equipeDomicileId)).execute();
-    const [equipeExterieur] = await db.select().from(equipes).where(eq(equipes.id, body.equipeExterieurId)).execute();
+    const [equipeDomicile] = await db
+      .select()
+      .from(equipes)
+      .where(eq(equipes.id, body.equipeDomicileId))
+      .execute();
+    const [equipeExterieur] = await db
+      .select()
+      .from(equipes)
+      .where(eq(equipes.id, body.equipeExterieurId))
+      .execute();
 
     if (!equipeDomicile || !equipeExterieur) {
       return c.json({ error: "Une ou plusieurs equipes n'existent pas" }, 400);
@@ -152,10 +201,18 @@ matchsRouter.post("/matchs", async (c) => {
 
     let competitionExists = false;
     if (body.competitionType === "championnat") {
-      const [championnat] = await db.select().from(championnats).where(eq(championnats.id, body.competitionId)).execute();
+      const [championnat] = await db
+        .select()
+        .from(championnats)
+        .where(eq(championnats.id, body.competitionId))
+        .execute();
       competitionExists = !!championnat;
     } else if (body.competitionType === "tournoi") {
-      const [tournoi] = await db.select().from(tournois).where(eq(tournois.id, body.competitionId)).execute();
+      const [tournoi] = await db
+        .select()
+        .from(tournois)
+        .where(eq(tournois.id, body.competitionId))
+        .execute();
       competitionExists = !!tournoi;
     }
 
@@ -207,8 +264,10 @@ matchsRouter.put("/matchs/:id", async (c) => {
 
     let statut = body.statut || existingMatch.statut;
     if (body.scoreDomicile !== undefined || body.scoreExterieur !== undefined) {
-      const scoreDomicile = body.scoreDomicile !== undefined ? body.scoreDomicile : existingMatch.scoreDomicile;
-      const scoreExterieur = body.scoreExterieur !== undefined ? body.scoreExterieur : existingMatch.scoreExterieur;
+      const scoreDomicile =
+        body.scoreDomicile !== undefined ? body.scoreDomicile : existingMatch.scoreDomicile;
+      const scoreExterieur =
+        body.scoreExterieur !== undefined ? body.scoreExterieur : existingMatch.scoreExterieur;
       if (scoreDomicile > 0 || scoreExterieur > 0) {
         statut = "termine";
       }
@@ -219,10 +278,18 @@ matchsRouter.put("/matchs/:id", async (c) => {
       phase: body.phase || existingMatch.phase,
       numeroTour: body.numeroTour !== undefined ? body.numeroTour : existingMatch.numeroTour,
       numeroMatch: body.numeroMatch !== undefined ? body.numeroMatch : existingMatch.numeroMatch,
-      equipeDomicileId: body.equipeDomicileId !== undefined ? body.equipeDomicileId : existingMatch.equipeDomicileId,
-      equipeExterieurId: body.equipeExterieurId !== undefined ? body.equipeExterieurId : existingMatch.equipeExterieurId,
-      scoreDomicile: body.scoreDomicile !== undefined ? body.scoreDomicile : existingMatch.scoreDomicile,
-      scoreExterieur: body.scoreExterieur !== undefined ? body.scoreExterieur : existingMatch.scoreExterieur,
+      equipeDomicileId:
+        body.equipeDomicileId !== undefined
+          ? body.equipeDomicileId
+          : existingMatch.equipeDomicileId,
+      equipeExterieurId:
+        body.equipeExterieurId !== undefined
+          ? body.equipeExterieurId
+          : existingMatch.equipeExterieurId,
+      scoreDomicile:
+        body.scoreDomicile !== undefined ? body.scoreDomicile : existingMatch.scoreDomicile,
+      scoreExterieur:
+        body.scoreExterieur !== undefined ? body.scoreExterieur : existingMatch.scoreExterieur,
       statut: statut,
       dateHeure: body.dateHeure ? new Date(body.dateHeure) : existingMatch.dateHeure,
       lieu: body.lieu !== undefined ? body.lieu : existingMatch.lieu,
@@ -231,7 +298,12 @@ matchsRouter.put("/matchs/:id", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [result] = await db.update(matchs).set(updatedMatch).where(eq(matchs.id, id)).returning().execute();
+    const [result] = await db
+      .update(matchs)
+      .set(updatedMatch)
+      .where(eq(matchs.id, id))
+      .returning()
+      .execute();
     return c.json(result);
   } catch (error) {
     console.error("Erreur lors de la mise a jour du match:", error);
@@ -282,7 +354,12 @@ matchsRouter.post("/matchs/:id/statistiques", async (c) => {
     const [existingStat] = await db
       .select()
       .from(statistiquesJoueurs)
-      .where(and(eq(statistiquesJoueurs.joueurId, body.joueurId), eq(statistiquesJoueurs.matchId, matchId)))
+      .where(
+        and(
+          eq(statistiquesJoueurs.joueurId, body.joueurId),
+          eq(statistiquesJoueurs.matchId, matchId),
+        ),
+      )
       .execute();
 
     const statData = {
@@ -304,7 +381,12 @@ matchsRouter.post("/matchs/:id/statistiques", async (c) => {
 
     let result;
     if (existingStat) {
-      [result] = await db.update(statistiquesJoueurs).set(statData).where(eq(statistiquesJoueurs.id, existingStat.id)).returning().execute();
+      [result] = await db
+        .update(statistiquesJoueurs)
+        .set(statData)
+        .where(eq(statistiquesJoueurs.id, existingStat.id))
+        .returning()
+        .execute();
     } else {
       [result] = await db.insert(statistiquesJoueurs).values(statData).returning().execute();
     }

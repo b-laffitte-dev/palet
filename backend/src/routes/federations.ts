@@ -20,10 +20,7 @@ federationsRouter.get("/federations", async (c) => {
     if (search) {
       whereCondition = and(
         whereCondition,
-        or(
-          like(federations.nom, `%${search}%`),
-          like(federations.slug, `%${search}%`),
-        ),
+        or(like(federations.nom, `%${search}%`), like(federations.slug, `%${search}%`)),
       );
     }
 
@@ -124,10 +121,7 @@ federationsRouter.post("/federations", async (c) => {
     const body = await c.req.json();
 
     if (!body.nom || !body.slug) {
-      return c.json(
-        { error: "Les champs nom et slug sont requis" },
-        400,
-      );
+      return c.json({ error: "Les champs nom et slug sont requis" }, 400);
     }
 
     const [existingFederation] = await db
@@ -137,10 +131,7 @@ federationsRouter.post("/federations", async (c) => {
       .execute();
 
     if (existingFederation) {
-      return c.json(
-        { error: "Une federation avec ce slug existe deja" },
-        409,
-      );
+      return c.json({ error: "Une federation avec ce slug existe deja" }, 409);
     }
 
     const newFederation = {
@@ -194,17 +185,15 @@ federationsRouter.put("/federations/:id", async (c) => {
         .execute();
 
       if (federationWithSlug) {
-        return c.json(
-          { error: "Une federation avec ce slug existe deja" },
-          409,
-        );
+        return c.json({ error: "Une federation avec ce slug existe deja" }, 409);
       }
     }
 
     const updatedFederation = {
       nom: body.nom || existingFederation.nom,
       slug: body.slug || existingFederation.slug,
-      description: body.description !== undefined ? body.description : existingFederation.description,
+      description:
+        body.description !== undefined ? body.description : existingFederation.description,
       logoUrl: body.logoUrl !== undefined ? body.logoUrl : existingFederation.logoUrl,
       siteWeb: body.siteWeb !== undefined ? body.siteWeb : existingFederation.siteWeb,
       email: body.email !== undefined ? body.email : existingFederation.email,
@@ -255,10 +244,7 @@ federationsRouter.delete("/federations/:id", async (c) => {
       );
     }
 
-    await db
-      .delete(federations)
-      .where(eq(federations.id, id))
-      .execute();
+    await db.delete(federations).where(eq(federations.id, id)).execute();
 
     return c.json({ message: "Federation supprimee avec succes" });
   } catch (error) {

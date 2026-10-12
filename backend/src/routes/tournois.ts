@@ -35,24 +35,15 @@ tournoisRouter.get("/tournois", async (c) => {
     }
 
     if (federationId) {
-      whereCondition = and(
-        whereCondition,
-        eq(tournois.federationId, federationId),
-      );
+      whereCondition = and(whereCondition, eq(tournois.federationId, federationId));
     }
 
     if (statut) {
-      whereCondition = and(
-        whereCondition,
-        eq(tournois.statut, statut as any),
-      );
+      whereCondition = and(whereCondition, eq(tournois.statut, statut as any));
     }
 
     if (ville) {
-      whereCondition = and(
-        whereCondition,
-        like(tournois.ville, `%${ville}%`),
-      );
+      whereCondition = and(whereCondition, like(tournois.ville, `%${ville}%`));
     }
 
     // Compter le total
@@ -92,10 +83,7 @@ tournoisRouter.get("/tournois", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération des tournois:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération des tournois" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération des tournois" }, 500);
   }
 });
 
@@ -156,10 +144,7 @@ tournoisRouter.get("/tournois/:id", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération du tournoi:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération du tournoi" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération du tournoi" }, 500);
   }
 });
 
@@ -170,9 +155,20 @@ tournoisRouter.post("/tournois", async (c) => {
     const body = await c.req.json();
 
     // Validation basique
-    if (!body.nom || !body.slug || !body.federationId || !body.dateDebut || !body.dateFin || !body.lieu || !body.ville) {
+    if (
+      !body.nom ||
+      !body.slug ||
+      !body.federationId ||
+      !body.dateDebut ||
+      !body.dateFin ||
+      !body.lieu ||
+      !body.ville
+    ) {
       return c.json(
-        { error: "Les champs nom, slug, federationId, dateDebut, dateFin, lieu et ville sont requis" },
+        {
+          error:
+            "Les champs nom, slug, federationId, dateDebut, dateFin, lieu et ville sont requis",
+        },
         400,
       );
     }
@@ -185,10 +181,7 @@ tournoisRouter.post("/tournois", async (c) => {
       .execute();
 
     if (!federation) {
-      return c.json(
-        { error: "La fédération spécifiée n'existe pas" },
-        400,
-      );
+      return c.json({ error: "La fédération spécifiée n'existe pas" }, 400);
     }
 
     // Vérifier que le slug est unique
@@ -199,10 +192,7 @@ tournoisRouter.post("/tournois", async (c) => {
       .execute();
 
     if (existingTournoi) {
-      return c.json(
-        { error: "Un tournoi avec ce slug existe déjà" },
-        409,
-      );
+      return c.json({ error: "Un tournoi avec ce slug existe déjà" }, 409);
     }
 
     // Créer le tournoi
@@ -228,19 +218,12 @@ tournoisRouter.post("/tournois", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [createdTournoi] = await db
-      .insert(tournois)
-      .values(newTournoi)
-      .returning()
-      .execute();
+    const [createdTournoi] = await db.insert(tournois).values(newTournoi).returning().execute();
 
     return c.json(createdTournoi, 201);
   } catch (error) {
     console.error("Erreur lors de la création du tournoi:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la création du tournoi" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la création du tournoi" }, 500);
   }
 });
 
@@ -252,11 +235,7 @@ tournoisRouter.put("/tournois/:id", async (c) => {
     const body = await c.req.json();
 
     // Vérifier que le tournoi existe
-    const [existingTournoi] = await db
-      .select()
-      .from(tournois)
-      .where(eq(tournois.id, id))
-      .execute();
+    const [existingTournoi] = await db.select().from(tournois).where(eq(tournois.id, id)).execute();
 
     if (!existingTournoi) {
       return c.json({ error: "Tournoi non trouvé" }, 404);
@@ -271,10 +250,7 @@ tournoisRouter.put("/tournois/:id", async (c) => {
         .execute();
 
       if (tournoiWithSameSlug) {
-        return c.json(
-          { error: "Un tournoi avec ce slug existe déjà" },
-          409,
-        );
+        return c.json({ error: "Un tournoi avec ce slug existe déjà" }, 409);
       }
     }
 
@@ -287,10 +263,7 @@ tournoisRouter.put("/tournois/:id", async (c) => {
         .execute();
 
       if (!federation) {
-        return c.json(
-          { error: "La fédération spécifiée n'existe pas" },
-          400,
-        );
+        return c.json({ error: "La fédération spécifiée n'existe pas" }, 400);
       }
     }
 
@@ -306,8 +279,14 @@ tournoisRouter.put("/tournois/:id", async (c) => {
       adresse: body.adresse !== undefined ? body.adresse : existingTournoi.adresse,
       ville: body.ville || existingTournoi.ville,
       codePostal: body.codePostal !== undefined ? body.codePostal : existingTournoi.codePostal,
-      nombreEquipesMax: body.nombreEquipesMax !== undefined ? body.nombreEquipesMax : existingTournoi.nombreEquipesMax,
-      fraisInscription: body.fraisInscription !== undefined ? body.fraisInscription : existingTournoi.fraisInscription,
+      nombreEquipesMax:
+        body.nombreEquipesMax !== undefined
+          ? body.nombreEquipesMax
+          : existingTournoi.nombreEquipesMax,
+      fraisInscription:
+        body.fraisInscription !== undefined
+          ? body.fraisInscription
+          : existingTournoi.fraisInscription,
       type: body.type || existingTournoi.type,
       reglement: body.reglement !== undefined ? body.reglement : existingTournoi.reglement,
       federationId: body.federationId || existingTournoi.federationId,
@@ -324,10 +303,7 @@ tournoisRouter.put("/tournois/:id", async (c) => {
     return c.json(result);
   } catch (error) {
     console.error("Erreur lors de la mise à jour du tournoi:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise à jour du tournoi" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise à jour du tournoi" }, 500);
   }
 });
 
@@ -338,29 +314,19 @@ tournoisRouter.delete("/tournois/:id", async (c) => {
     const id = c.req.param("id");
 
     // Vérifier que le tournoi existe
-    const [existingTournoi] = await db
-      .select()
-      .from(tournois)
-      .where(eq(tournois.id, id))
-      .execute();
+    const [existingTournoi] = await db.select().from(tournois).where(eq(tournois.id, id)).execute();
 
     if (!existingTournoi) {
       return c.json({ error: "Tournoi non trouvé" }, 404);
     }
 
     // Supprimer le tournoi
-    await db
-      .delete(tournois)
-      .where(eq(tournois.id, id))
-      .execute();
+    await db.delete(tournois).where(eq(tournois.id, id)).execute();
 
     return c.json({ message: "Tournoi supprimé avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression du tournoi:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression du tournoi" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression du tournoi" }, 500);
   }
 });
 
@@ -373,35 +339,21 @@ tournoisRouter.post("/tournois/:id/inscrire", async (c) => {
 
     // Validation
     if (!body.equipeId) {
-      return c.json(
-        { error: "Le champ equipeId est requis" },
-        400,
-      );
+      return c.json({ error: "Le champ equipeId est requis" }, 400);
     }
 
     // Vérifier que le tournoi existe
-    const [tournoi] = await db
-      .select()
-      .from(tournois)
-      .where(eq(tournois.id, id))
-      .execute();
+    const [tournoi] = await db.select().from(tournois).where(eq(tournois.id, id)).execute();
 
     if (!tournoi) {
       return c.json({ error: "Tournoi non trouvé" }, 404);
     }
 
     // Vérifier que l'équipe existe
-    const [equipe] = await db
-      .select()
-      .from(equipes)
-      .where(eq(equipes.id, body.equipeId))
-      .execute();
+    const [equipe] = await db.select().from(equipes).where(eq(equipes.id, body.equipeId)).execute();
 
     if (!equipe) {
-      return c.json(
-        { error: "L'équipe spécifiée n'existe pas" },
-        400,
-      );
+      return c.json({ error: "L'équipe spécifiée n'existe pas" }, 400);
     }
 
     // Vérifier que le tournoi n'est pas complet
@@ -415,10 +367,7 @@ tournoisRouter.post("/tournois/:id/inscrire", async (c) => {
     const maxCount = tournoi.nombreEquipesMax || 0;
 
     if (currentCount >= maxCount) {
-      return c.json(
-        { error: "Le tournoi a atteint le nombre maximum d'equipes" },
-        400,
-      );
+      return c.json({ error: "Le tournoi a atteint le nombre maximum d'equipes" }, 400);
     }
 
     // Vérifier que l'équipe n'est pas déjà inscrite
@@ -429,10 +378,7 @@ tournoisRouter.post("/tournois/:id/inscrire", async (c) => {
       .execute();
 
     if (existingInscription) {
-      return c.json(
-        { error: "Cette équipe est déjà inscrite à ce tournoi" },
-        409,
-      );
+      return c.json({ error: "Cette équipe est déjà inscrite à ce tournoi" }, 409);
     }
 
     // Inscrire l'équipe
@@ -466,10 +412,7 @@ tournoisRouter.post("/tournois/:id/inscrire", async (c) => {
     return c.json(createdInscription, 201);
   } catch (error) {
     console.error("Erreur lors de l'inscription au tournoi:", error);
-    return c.json(
-      { error: "Erreur serveur lors de l'inscription au tournoi" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de l'inscription au tournoi" }, 500);
   }
 });
 
@@ -498,11 +441,7 @@ tournoisRouter.delete("/tournois/:id/equipes/:equipeId", async (c) => {
       .execute();
 
     // Mettre à jour le nombre d'equipes inscrites
-    const [tournoi] = await db
-      .select()
-      .from(tournois)
-      .where(eq(tournois.id, tournoiId))
-      .execute();
+    const [tournoi] = await db.select().from(tournois).where(eq(tournois.id, tournoiId)).execute();
 
     if (tournoi) {
       const currentInscrites = tournoi.nombreEquipesInscrites || 0;
@@ -519,10 +458,7 @@ tournoisRouter.delete("/tournois/:id/equipes/:equipeId", async (c) => {
     return c.json({ message: "Équipe désinscrite avec succès" });
   } catch (error) {
     console.error("Erreur lors de la désinscription:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la désinscription" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la désinscription" }, 500);
   }
 });
 

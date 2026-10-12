@@ -10,11 +10,7 @@ const clubsRouter = new Hono();
 clubsRouter.get("/clubs", async (c) => {
   try {
     const db = createDb();
-    const clubsList = await db
-      .select()
-      .from(clubs)
-      .orderBy(desc(clubs.creeLe))
-      .execute();
+    const clubsList = await db.select().from(clubs).orderBy(desc(clubs.creeLe)).execute();
 
     return c.json({
       data: clubsList,
@@ -24,10 +20,7 @@ clubsRouter.get("/clubs", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération des clubs:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération des clubs" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération des clubs" }, 500);
   }
 });
 
@@ -37,11 +30,7 @@ clubsRouter.get("/clubs/:id", async (c) => {
     const db = createDb();
     const id = c.req.param("id");
 
-    const [club] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.id, id))
-      .execute();
+    const [club] = await db.select().from(clubs).where(eq(clubs.id, id)).execute();
 
     if (!club) {
       return c.json({ error: "Club non trouvé" }, 404);
@@ -50,10 +39,7 @@ clubsRouter.get("/clubs/:id", async (c) => {
     return c.json(club);
   } catch (error) {
     console.error("Erreur lors de la récupération du club:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération du club" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération du club" }, 500);
   }
 });
 
@@ -65,10 +51,7 @@ clubsRouter.post("/clubs", async (c) => {
 
     // Validation basique
     if (!body.nom || !body.slug || !body.ville || !body.federationId) {
-      return c.json(
-        { error: "Les champs nom, slug, ville et federationId sont requis" },
-        400,
-      );
+      return c.json({ error: "Les champs nom, slug, ville et federationId sont requis" }, 400);
     }
 
     // Vérifier que la fédération existe
@@ -79,24 +62,14 @@ clubsRouter.post("/clubs", async (c) => {
       .execute();
 
     if (!federation) {
-      return c.json(
-        { error: "La fédération spécifiée n'existe pas" },
-        400,
-      );
+      return c.json({ error: "La fédération spécifiée n'existe pas" }, 400);
     }
 
     // Vérifier que le slug est unique
-    const [existingClub] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.slug, body.slug))
-      .execute();
+    const [existingClub] = await db.select().from(clubs).where(eq(clubs.slug, body.slug)).execute();
 
     if (existingClub) {
-      return c.json(
-        { error: "Un club avec ce slug existe déjà" },
-        409,
-      );
+      return c.json({ error: "Un club avec ce slug existe déjà" }, 409);
     }
 
     // Créer le club
@@ -120,19 +93,12 @@ clubsRouter.post("/clubs", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [createdClub] = await db
-      .insert(clubs)
-      .values(newClub)
-      .returning()
-      .execute();
+    const [createdClub] = await db.insert(clubs).values(newClub).returning().execute();
 
     return c.json(createdClub, 201);
   } catch (error) {
     console.error("Erreur lors de la création du club:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la création du club" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la création du club" }, 500);
   }
 });
 
@@ -144,11 +110,7 @@ clubsRouter.put("/clubs/:id", async (c) => {
     const body = await c.req.json();
 
     // Vérifier que le club existe
-    const [existingClub] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.id, id))
-      .execute();
+    const [existingClub] = await db.select().from(clubs).where(eq(clubs.id, id)).execute();
 
     if (!existingClub) {
       return c.json({ error: "Club non trouvé" }, 404);
@@ -163,10 +125,7 @@ clubsRouter.put("/clubs/:id", async (c) => {
         .execute();
 
       if (clubWithSameSlug) {
-        return c.json(
-          { error: "Un club avec ce slug existe déjà" },
-          409,
-        );
+        return c.json({ error: "Un club avec ce slug existe déjà" }, 409);
       }
     }
 
@@ -179,10 +138,7 @@ clubsRouter.put("/clubs/:id", async (c) => {
         .execute();
 
       if (!federation) {
-        return c.json(
-          { error: "La fédération spécifiée n'existe pas" },
-          400,
-        );
+        return c.json({ error: "La fédération spécifiée n'existe pas" }, 400);
       }
     }
 
@@ -198,10 +154,18 @@ clubsRouter.put("/clubs/:id", async (c) => {
       email: body.email !== undefined ? body.email : existingClub.email,
       telephone: body.telephone !== undefined ? body.telephone : existingClub.telephone,
       federationId: body.federationId || existingClub.federationId,
-      anneeFondation: body.anneeFondation !== undefined ? body.anneeFondation : existingClub.anneeFondation,
-      nombreLicencies: body.nombreLicencies !== undefined ? body.nombreLicencies : existingClub.nombreLicencies,
-      couleurPrincipale: body.couleurPrincipale !== undefined ? body.couleurPrincipale : existingClub.couleurPrincipale,
-      couleurSecondaire: body.couleurSecondaire !== undefined ? body.couleurSecondaire : existingClub.couleurSecondaire,
+      anneeFondation:
+        body.anneeFondation !== undefined ? body.anneeFondation : existingClub.anneeFondation,
+      nombreLicencies:
+        body.nombreLicencies !== undefined ? body.nombreLicencies : existingClub.nombreLicencies,
+      couleurPrincipale:
+        body.couleurPrincipale !== undefined
+          ? body.couleurPrincipale
+          : existingClub.couleurPrincipale,
+      couleurSecondaire:
+        body.couleurSecondaire !== undefined
+          ? body.couleurSecondaire
+          : existingClub.couleurSecondaire,
       misAJourLe: new Date(),
     };
 
@@ -215,10 +179,7 @@ clubsRouter.put("/clubs/:id", async (c) => {
     return c.json(result);
   } catch (error) {
     console.error("Erreur lors de la mise à jour du club:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise à jour du club" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise à jour du club" }, 500);
   }
 });
 
@@ -229,29 +190,19 @@ clubsRouter.delete("/clubs/:id", async (c) => {
     const id = c.req.param("id");
 
     // Vérifier que le club existe
-    const [existingClub] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.id, id))
-      .execute();
+    const [existingClub] = await db.select().from(clubs).where(eq(clubs.id, id)).execute();
 
     if (!existingClub) {
       return c.json({ error: "Club non trouvé" }, 404);
     }
 
     // Supprimer le club
-    await db
-      .delete(clubs)
-      .where(eq(clubs.id, id))
-      .execute();
+    await db.delete(clubs).where(eq(clubs.id, id)).execute();
 
     return c.json({ message: "Club supprimé avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression du club:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression du club" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression du club" }, 500);
   }
 });
 

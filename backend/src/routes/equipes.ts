@@ -23,25 +23,16 @@ equipesRouter.get("/equipes", async (c) => {
     if (search) {
       whereCondition = and(
         whereCondition,
-        or(
-          like(equipes.nom, `%${search}%`),
-          like(equipes.slug, `%${search}%`),
-        ),
+        or(like(equipes.nom, `%${search}%`), like(equipes.slug, `%${search}%`)),
       );
     }
 
     if (clubId) {
-      whereCondition = and(
-        whereCondition,
-        eq(equipes.clubId, clubId),
-      );
+      whereCondition = and(whereCondition, eq(equipes.clubId, clubId));
     }
 
     if (categorie) {
-      whereCondition = and(
-        whereCondition,
-        eq(equipes.categorie, categorie as any),
-      );
+      whereCondition = and(whereCondition, eq(equipes.categorie, categorie as any));
     }
 
     const [totalResult] = await db
@@ -88,10 +79,7 @@ equipesRouter.get("/equipes", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la recuperation des equipes:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation des equipes" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation des equipes" }, 500);
   }
 });
 
@@ -156,14 +144,11 @@ equipesRouter.get("/equipes/:id", async (c) => {
         },
       })
       .from(matchs)
-      .leftJoin(equipes, or(
-        eq(matchs.equipeExterieurId, equipes.id),
-        eq(matchs.equipeDomicileId, equipes.id),
-      ))
-      .where(or(
-        eq(matchs.equipeDomicileId, id),
-        eq(matchs.equipeExterieurId, id),
-      ))
+      .leftJoin(
+        equipes,
+        or(eq(matchs.equipeExterieurId, equipes.id), eq(matchs.equipeDomicileId, equipes.id)),
+      )
+      .where(or(eq(matchs.equipeDomicileId, id), eq(matchs.equipeExterieurId, id)))
       .orderBy(desc(matchs.dateHeure))
       .execute();
 
@@ -174,10 +159,7 @@ equipesRouter.get("/equipes/:id", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la recuperation de l'equipe:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la recuperation de l'equipe" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la recuperation de l'equipe" }, 500);
   }
 });
 
@@ -189,24 +171,14 @@ equipesRouter.post("/equipes", async (c) => {
 
     // Validation
     if (!body.nom || !body.slug || !body.clubId) {
-      return c.json(
-        { error: "Les champs nom, slug et clubId sont requis" },
-        400,
-      );
+      return c.json({ error: "Les champs nom, slug et clubId sont requis" }, 400);
     }
 
     // Verify club exists
-    const [club] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.id, body.clubId))
-      .execute();
+    const [club] = await db.select().from(clubs).where(eq(clubs.id, body.clubId)).execute();
 
     if (!club) {
-      return c.json(
-        { error: "Le club specifie n'existe pas" },
-        400,
-      );
+      return c.json({ error: "Le club specifie n'existe pas" }, 400);
     }
 
     // Verify slug is unique
@@ -217,10 +189,7 @@ equipesRouter.post("/equipes", async (c) => {
       .execute();
 
     if (existingEquipe) {
-      return c.json(
-        { error: "Une equipe avec ce slug existe deja" },
-        409,
-      );
+      return c.json({ error: "Une equipe avec ce slug existe deja" }, 409);
     }
 
     // Verify capitaine exists if provided
@@ -232,10 +201,7 @@ equipesRouter.post("/equipes", async (c) => {
         .execute();
 
       if (!capitaine) {
-        return c.json(
-          { error: "Le capitaine specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le capitaine specifie n'existe pas" }, 400);
       }
     }
 
@@ -251,19 +217,12 @@ equipesRouter.post("/equipes", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [created] = await db
-      .insert(equipes)
-      .values(newEquipe)
-      .returning()
-      .execute();
+    const [created] = await db.insert(equipes).values(newEquipe).returning().execute();
 
     return c.json(created, 201);
   } catch (error) {
     console.error("Erreur lors de la creation de l'equipe:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la creation de l'equipe" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la creation de l'equipe" }, 500);
   }
 });
 
@@ -275,11 +234,7 @@ equipesRouter.put("/equipes/:id", async (c) => {
     const body = await c.req.json();
 
     // Verify equipe exists
-    const [existingEquipe] = await db
-      .select()
-      .from(equipes)
-      .where(eq(equipes.id, id))
-      .execute();
+    const [existingEquipe] = await db.select().from(equipes).where(eq(equipes.id, id)).execute();
 
     if (!existingEquipe) {
       return c.json({ error: "Equipe non trouvee" }, 404);
@@ -294,26 +249,16 @@ equipesRouter.put("/equipes/:id", async (c) => {
         .execute();
 
       if (equipeWithSlug) {
-        return c.json(
-          { error: "Une equipe avec ce slug existe deja" },
-          409,
-        );
+        return c.json({ error: "Une equipe avec ce slug existe deja" }, 409);
       }
     }
 
     // Verify club exists if changing
     if (body.clubId && body.clubId !== existingEquipe.clubId) {
-      const [club] = await db
-        .select()
-        .from(clubs)
-        .where(eq(clubs.id, body.clubId))
-        .execute();
+      const [club] = await db.select().from(clubs).where(eq(clubs.id, body.clubId)).execute();
 
       if (!club) {
-        return c.json(
-          { error: "Le club specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le club specifie n'existe pas" }, 400);
       }
     }
 
@@ -326,10 +271,7 @@ equipesRouter.put("/equipes/:id", async (c) => {
         .execute();
 
       if (!capitaine) {
-        return c.json(
-          { error: "Le capitaine specifie n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le capitaine specifie n'existe pas" }, 400);
       }
     }
 
@@ -338,7 +280,8 @@ equipesRouter.put("/equipes/:id", async (c) => {
       nom: body.nom || existingEquipe.nom,
       slug: body.slug || existingEquipe.slug,
       capitaineId: body.capitaineId !== undefined ? body.capitaineId : existingEquipe.capitaineId,
-      nombreJoueurs: body.nombreJoueurs !== undefined ? body.nombreJoueurs : existingEquipe.nombreJoueurs,
+      nombreJoueurs:
+        body.nombreJoueurs !== undefined ? body.nombreJoueurs : existingEquipe.nombreJoueurs,
       categorie: body.categorie || existingEquipe.categorie,
       misAJourLe: new Date(),
     };
@@ -353,10 +296,7 @@ equipesRouter.put("/equipes/:id", async (c) => {
     return c.json(updated);
   } catch (error) {
     console.error("Erreur lors de la mise a jour de l'equipe:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise a jour de l'equipe" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise a jour de l'equipe" }, 500);
   }
 });
 
@@ -367,28 +307,18 @@ equipesRouter.delete("/equipes/:id", async (c) => {
     const id = c.req.param("id");
 
     // Verify equipe exists
-    const [existingEquipe] = await db
-      .select()
-      .from(equipes)
-      .where(eq(equipes.id, id))
-      .execute();
+    const [existingEquipe] = await db.select().from(equipes).where(eq(equipes.id, id)).execute();
 
     if (!existingEquipe) {
       return c.json({ error: "Equipe non trouvee" }, 404);
     }
 
-    await db
-      .delete(equipes)
-      .where(eq(equipes.id, id))
-      .execute();
+    await db.delete(equipes).where(eq(equipes.id, id)).execute();
 
     return c.json({ message: "Equipe supprimee avec succes" });
   } catch (error) {
     console.error("Erreur lors de la suppression de l'equipe:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression de l'equipe" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression de l'equipe" }, 500);
   }
 });
 
@@ -400,43 +330,25 @@ equipesRouter.post("/equipes/:id/joueurs", async (c) => {
     const body = await c.req.json();
 
     if (!body.joueurId) {
-      return c.json(
-        { error: "Le champ joueurId est requis" },
-        400,
-      );
+      return c.json({ error: "Le champ joueurId est requis" }, 400);
     }
 
     // Verify equipe exists
-    const [equipe] = await db
-      .select()
-      .from(equipes)
-      .where(eq(equipes.id, id))
-      .execute();
+    const [equipe] = await db.select().from(equipes).where(eq(equipes.id, id)).execute();
 
     if (!equipe) {
       return c.json({ error: "Equipe non trouvee" }, 404);
     }
 
     // Verify joueur exists
-    const [joueur] = await db
-      .select()
-      .from(joueurs)
-      .where(eq(joueurs.id, body.joueurId))
-      .execute();
+    const [joueur] = await db.select().from(joueurs).where(eq(joueurs.id, body.joueurId)).execute();
 
     if (!joueur) {
-      return c.json(
-        { error: "Le joueur specifie n'existe pas" },
-        400,
-      );
+      return c.json({ error: "Le joueur specifie n'existe pas" }, 400);
     }
 
     // Update joueur's club
-    await db
-      .update(joueurs)
-      .set({ clubId: id })
-      .where(eq(joueurs.id, body.joueurId))
-      .execute();
+    await db.update(joueurs).set({ clubId: id }).where(eq(joueurs.id, body.joueurId)).execute();
 
     // Update equipe's nombreJoueurs
     await db
@@ -452,10 +364,7 @@ equipesRouter.post("/equipes/:id/joueurs", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de l'ajout du joueur a l'equipe:", error);
-    return c.json(
-      { error: "Erreur serveur lors de l'ajout du joueur a l'equipe" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de l'ajout du joueur a l'equipe" }, 500);
   }
 });
 
@@ -468,22 +377,14 @@ equipesRouter.post("/equipes/:id/tournois/:tournoiId", async (c) => {
     const body = await c.req.json();
 
     // Verify equipe exists
-    const [equipe] = await db
-      .select()
-      .from(equipes)
-      .where(eq(equipes.id, equipeId))
-      .execute();
+    const [equipe] = await db.select().from(equipes).where(eq(equipes.id, equipeId)).execute();
 
     if (!equipe) {
       return c.json({ error: "Equipe non trouvee" }, 404);
     }
 
     // Verify tournoi exists
-    const [tournoi] = await db
-      .select()
-      .from(tournois)
-      .where(eq(tournois.id, tournoiId))
-      .execute();
+    const [tournoi] = await db.select().from(tournois).where(eq(tournois.id, tournoiId)).execute();
 
     if (!tournoi) {
       return c.json({ error: "Tournoi non trouve" }, 404);
@@ -493,27 +394,16 @@ equipesRouter.post("/equipes/:id/tournois/:tournoiId", async (c) => {
     const [existingRegistration] = await db
       .select()
       .from(equipesTournois)
-      .where(
-        and(
-          eq(equipesTournois.equipeId, equipeId),
-          eq(equipesTournois.tournoiId, tournoiId),
-        ),
-      )
+      .where(and(eq(equipesTournois.equipeId, equipeId), eq(equipesTournois.tournoiId, tournoiId)))
       .execute();
 
     if (existingRegistration) {
-      return c.json(
-        { error: "Cette equipe est deja inscrite a ce tournoi" },
-        409,
-      );
+      return c.json({ error: "Cette equipe est deja inscrite a ce tournoi" }, 409);
     }
 
     // Check if tournament is full
     if ((tournoi.nombreEquipesMax || 0) <= (tournoi.nombreEquipesInscrites || 0)) {
-      return c.json(
-        { error: "Le tournoi a atteint le nombre maximum d'equipes" },
-        400,
-      );
+      return c.json({ error: "Le tournoi a atteint le nombre maximum d'equipes" }, 400);
     }
 
     const newRegistration = {
@@ -526,10 +416,7 @@ equipesRouter.post("/equipes/:id/tournois/:tournoiId", async (c) => {
       creeLe: new Date(),
     };
 
-    await db
-      .insert(equipesTournois)
-      .values(newRegistration)
-      .execute();
+    await db.insert(equipesTournois).values(newRegistration).execute();
 
     // Update tournament's nombreEquipesInscrites
     await db
@@ -538,16 +425,16 @@ equipesRouter.post("/equipes/:id/tournois/:tournoiId", async (c) => {
       .where(eq(tournois.id, tournoiId))
       .execute();
 
-    return c.json({
-      message: "Equipe inscrite au tournoi avec succes",
-      registration: newRegistration,
-    }, 201);
+    return c.json(
+      {
+        message: "Equipe inscrite au tournoi avec succes",
+        registration: newRegistration,
+      },
+      201,
+    );
   } catch (error) {
     console.error("Erreur lors de l'inscription de l'equipe au tournoi:", error);
-    return c.json(
-      { error: "Erreur serveur lors de l'inscription de l'equipe au tournoi" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de l'inscription de l'equipe au tournoi" }, 500);
   }
 });
 

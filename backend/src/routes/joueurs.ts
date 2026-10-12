@@ -32,17 +32,11 @@ joueursRouter.get("/joueurs", async (c) => {
     }
 
     if (clubId) {
-      whereCondition = and(
-        whereCondition,
-        eq(joueurs.clubId, clubId),
-      );
+      whereCondition = and(whereCondition, eq(joueurs.clubId, clubId));
     }
 
     if (categorie) {
-      whereCondition = and(
-        whereCondition,
-        eq(joueurs.categorie, categorie as any),
-      );
+      whereCondition = and(whereCondition, eq(joueurs.categorie, categorie as any));
     }
 
     // Compter le total
@@ -84,10 +78,7 @@ joueursRouter.get("/joueurs", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération des joueurs:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération des joueurs" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération des joueurs" }, 500);
   }
 });
 
@@ -121,10 +112,7 @@ joueursRouter.get("/joueurs/:id", async (c) => {
     return c.json(joueur);
   } catch (error) {
     console.error("Erreur lors de la récupération du joueur:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération du joueur" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération du joueur" }, 500);
   }
 });
 
@@ -136,24 +124,14 @@ joueursRouter.post("/joueurs", async (c) => {
 
     // Validation basique
     if (!body.nom || !body.prenom || !body.clubId) {
-      return c.json(
-        { error: "Les champs nom, prenom et clubId sont requis" },
-        400,
-      );
+      return c.json({ error: "Les champs nom, prenom et clubId sont requis" }, 400);
     }
 
     // Vérifier que le club existe
-    const [club] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.id, body.clubId))
-      .execute();
+    const [club] = await db.select().from(clubs).where(eq(clubs.id, body.clubId)).execute();
 
     if (!club) {
-      return c.json(
-        { error: "Le club spécifié n'existe pas" },
-        400,
-      );
+      return c.json({ error: "Le club spécifié n'existe pas" }, 400);
     }
 
     // Vérifier que la licence est unique (si fournie)
@@ -165,10 +143,7 @@ joueursRouter.post("/joueurs", async (c) => {
         .execute();
 
       if (existingJoueur) {
-        return c.json(
-          { error: "Un joueur avec cette licence existe déjà" },
-          409,
-        );
+        return c.json({ error: "Un joueur avec cette licence existe déjà" }, 409);
       }
     }
 
@@ -195,19 +170,12 @@ joueursRouter.post("/joueurs", async (c) => {
       misAJourLe: new Date(),
     };
 
-    const [createdJoueur] = await db
-      .insert(joueurs)
-      .values(newJoueur)
-      .returning()
-      .execute();
+    const [createdJoueur] = await db.insert(joueurs).values(newJoueur).returning().execute();
 
     return c.json(createdJoueur, 201);
   } catch (error) {
     console.error("Erreur lors de la création du joueur:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la création du joueur" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la création du joueur" }, 500);
   }
 });
 
@@ -219,11 +187,7 @@ joueursRouter.put("/joueurs/:id", async (c) => {
     const body = await c.req.json();
 
     // Vérifier que le joueur existe
-    const [existingJoueur] = await db
-      .select()
-      .from(joueurs)
-      .where(eq(joueurs.id, id))
-      .execute();
+    const [existingJoueur] = await db.select().from(joueurs).where(eq(joueurs.id, id)).execute();
 
     if (!existingJoueur) {
       return c.json({ error: "Joueur non trouvé" }, 404);
@@ -238,26 +202,16 @@ joueursRouter.put("/joueurs/:id", async (c) => {
         .execute();
 
       if (joueurWithSameLicence) {
-        return c.json(
-          { error: "Un joueur avec cette licence existe déjà" },
-          409,
-        );
+        return c.json({ error: "Un joueur avec cette licence existe déjà" }, 409);
       }
     }
 
     // Si le club est modifié, vérifier qu'il existe
     if (body.clubId && body.clubId !== existingJoueur.clubId) {
-      const [club] = await db
-        .select()
-        .from(clubs)
-        .where(eq(clubs.id, body.clubId))
-        .execute();
+      const [club] = await db.select().from(clubs).where(eq(clubs.id, body.clubId)).execute();
 
       if (!club) {
-        return c.json(
-          { error: "Le club spécifié n'existe pas" },
-          400,
-        );
+        return c.json({ error: "Le club spécifié n'existe pas" }, 400);
       }
     }
 
@@ -268,14 +222,17 @@ joueursRouter.put("/joueurs/:id", async (c) => {
       licence: body.licence !== undefined ? body.licence : existingJoueur.licence,
       clubId: body.clubId || existingJoueur.clubId,
       categorie: body.categorie || existingJoueur.categorie,
-      dateNaissance: body.dateNaissance !== undefined ? body.dateNaissance : existingJoueur.dateNaissance,
+      dateNaissance:
+        body.dateNaissance !== undefined ? body.dateNaissance : existingJoueur.dateNaissance,
       email: body.email !== undefined ? body.email : existingJoueur.email,
       telephone: body.telephone !== undefined ? body.telephone : existingJoueur.telephone,
       photoUrl: body.photoUrl !== undefined ? body.photoUrl : existingJoueur.photoUrl,
       poste: body.poste !== undefined ? body.poste : existingJoueur.poste,
       mainDroite: body.mainDroite !== undefined ? body.mainDroite : existingJoueur.mainDroite,
-      nombreVictoires: body.nombreVictoires !== undefined ? body.nombreVictoires : existingJoueur.nombreVictoires,
-      nombreDefaites: body.nombreDefaites !== undefined ? body.nombreDefaites : existingJoueur.nombreDefaites,
+      nombreVictoires:
+        body.nombreVictoires !== undefined ? body.nombreVictoires : existingJoueur.nombreVictoires,
+      nombreDefaites:
+        body.nombreDefaites !== undefined ? body.nombreDefaites : existingJoueur.nombreDefaites,
       nombreNuls: body.nombreNuls !== undefined ? body.nombreNuls : existingJoueur.nombreNuls,
       points: body.points !== undefined ? body.points : existingJoueur.points,
       classement: body.classement !== undefined ? body.classement : existingJoueur.classement,
@@ -292,10 +249,7 @@ joueursRouter.put("/joueurs/:id", async (c) => {
     return c.json(result);
   } catch (error) {
     console.error("Erreur lors de la mise à jour du joueur:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la mise à jour du joueur" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la mise à jour du joueur" }, 500);
   }
 });
 
@@ -306,29 +260,19 @@ joueursRouter.delete("/joueurs/:id", async (c) => {
     const id = c.req.param("id");
 
     // Vérifier que le joueur existe
-    const [existingJoueur] = await db
-      .select()
-      .from(joueurs)
-      .where(eq(joueurs.id, id))
-      .execute();
+    const [existingJoueur] = await db.select().from(joueurs).where(eq(joueurs.id, id)).execute();
 
     if (!existingJoueur) {
       return c.json({ error: "Joueur non trouvé" }, 404);
     }
 
     // Supprimer le joueur
-    await db
-      .delete(joueurs)
-      .where(eq(joueurs.id, id))
-      .execute();
+    await db.delete(joueurs).where(eq(joueurs.id, id)).execute();
 
     return c.json({ message: "Joueur supprimé avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression du joueur:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la suppression du joueur" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la suppression du joueur" }, 500);
   }
 });
 
@@ -342,11 +286,7 @@ joueursRouter.get("/clubs/:clubId/joueurs", async (c) => {
     const pageSize = parseInt(query.pageSize || "10");
 
     // Vérifier que le club existe
-    const [club] = await db
-      .select()
-      .from(clubs)
-      .where(eq(clubs.id, clubId))
-      .execute();
+    const [club] = await db.select().from(clubs).where(eq(clubs.id, clubId)).execute();
 
     if (!club) {
       return c.json({ error: "Club non trouvé" }, 404);
@@ -381,10 +321,7 @@ joueursRouter.get("/clubs/:clubId/joueurs", async (c) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération des joueurs du club:", error);
-    return c.json(
-      { error: "Erreur serveur lors de la récupération des joueurs" },
-      500,
-    );
+    return c.json({ error: "Erreur serveur lors de la récupération des joueurs" }, 500);
   }
 });
 
