@@ -17,9 +17,11 @@
   "dependencies": {
     "@hono/node-server": "^2.1.4",
     "@hono/zod-openapi": "^1.6.3",
+    "@types/uuid": "^10.0.0",
     "drizzle-orm": "^0.45.4",
     "hono": "^4",
     "postgres": "^3.4.9",
+    "uuid": "^14.0.3",
     "zod": "^4.6.5"
   },
   "devDependencies": {
