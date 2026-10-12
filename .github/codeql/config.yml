@@ -1,0 +1,60 @@
+# CodeQL configuration for Palet Vendéen Rust project
+
+# Paths to include in analysis
+paths:
+  - rust-backend
+  - rust-frontend
+  - rust-shared
+  - rust-mobile
+
+# Paths to exclude from analysis
+paths-ignore:
+  - target
+  - pkg
+  - node_modules
+  - .git
+  - .github
+  - docs
+  - scripts
+
+# Queries to run
+queries:
+  # Security queries
+  - name: Security
+    uses: security-extended
+
+  # Code quality queries
+  - name: Code Quality
+    uses: code-quality
+
+  # Rust-specific queries (analyzed as C++)
+  - name: Memory Safety
+    uses: cpp-memory-safety
+
+  - name: Security and Quality
+    uses: cpp-security-and-quality
+
+# Database configuration
+# Note: CodeQL uses a database for analysis
+# This is automatically managed by the action
+
+# Build configuration
+build:
+  # Rust build command for CodeQL
+  command: |
+    cd rust-backend && cargo build --release
+    cd ../rust-frontend && cargo build --release --features web
+    cd ../rust-shared && cargo build --release
+    cd ../rust-mobile && cargo build --release --features mobile
+
+# Analysis options
+analysis:
+  # Enable experimental features
+  experimental:
+    - enable
+
+  # Analysis timeout (in minutes)
+  timeout: 30
+
+  # Memory limit (in MB)
+  memory: 8192

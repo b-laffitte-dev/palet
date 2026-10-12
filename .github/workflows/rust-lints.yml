@@ -1,0 +1,195 @@
+name: Rust Lints
+
+on:
+  push:
+    branches: [main, project/rust]
+    paths:
+      - 'rust-backend/**'
+      - 'rust-frontend/**'
+      - 'rust-shared/**'
+      - 'rust-mobile/**'
+      - 'Cargo.toml'
+  pull_request:
+    branches: [main, project/rust]
+    paths:
+      - 'rust-backend/**'
+      - 'rust-frontend/**'
+      - 'rust-shared/**'
+      - 'rust-mobile/**'
+      - 'Cargo.toml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Run all lints
+  lints:
+    name: All Lints
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: Cache dependencies
+        uses: actions-rs/cargo@v1
+        with:
+          command: cache
+
+      # Backend lints
+      - name: Backend - Check formatting
+        working-directory: rust-backend
+        run: cargo fmt --all -- --check
+
+      - name: Backend - Run clippy
+        working-directory: rust-backend
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Backend - Check for unused dependencies
+        working-directory: rust-backend
+        run: cargo deps --all-targets 2>/dev/null || true
+
+      # Frontend lints
+      - name: Frontend - Check formatting
+        working-directory: rust-frontend
+        run: cargo fmt --all -- --check
+
+      - name: Frontend - Run clippy
+        working-directory: rust-frontend
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      # Shared lints
+      - name: Shared - Check formatting
+        working-directory: rust-shared
+        run: cargo fmt --all -- --check
+
+      - name: Shared - Run clippy
+        working-directory: rust-shared
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      # Mobile lints
+      - name: Mobile - Check formatting
+        working-directory: rust-mobile
+        run: cargo fmt --all -- --check
+
+      - name: Mobile - Run clippy
+        working-directory: rust-mobile
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+  # Check for warnings in code
+  warnings:
+    name: Warnings Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Check for warnings in backend
+        working-directory: rust-backend
+        run: cargo build --all-targets 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
+      - name: Check for warnings in frontend
+        working-directory: rust-frontend
+        run: cargo build --all-targets --features web 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
+      - name: Check for warnings in shared
+        working-directory: rust-shared
+        run: cargo build --all-targets 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
+      - name: Check for warnings in mobile
+        working-directory: rust-mobile
+        run: cargo build --all-targets --features mobile 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
+  # Check documentation
+  docs:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Check documentation in backend
+        working-directory: rust-backend
+        run: cargo doc --no-deps --document-private-items 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
+      - name: Check documentation in shared
+        working-directory: rust-shared
+        run: cargo doc --no-deps --document-private-items 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
+  # Check for TODO comments
+  todos:
+    name: TODO Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find TODO comments
+        run: |
+          TODOS=$(grep -r "TODO\|FIXME\|XXX\|HACK" rust-backend rust-frontend rust-shared rust-mobile --include="*.rs" --include="*.toml" || true)
+          if [ -n "$TODOS" ]; then
+            echo "::warning::Found TODO/FIXME comments:"
+            echo "$TODOS"
+            echo "::warning::Please address these comments before merging"
+          fi
+
+  # Check for large files
+  large-files:
+    name: Large Files Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find large files
+        run: |
+          LARGE_FILES=$(find rust-backend rust-frontend rust-shared rust-mobile -type f -size +1M -exec ls -lh {} \; 2>/dev/null || true)
+          if [ -n "$LARGE_FILES" ]; then
+            echo "::warning::Found large files (>1MB):"
+            echo "$LARGE_FILES"
+            echo "::warning::Consider removing or compressing large files"
+          fi
+
+  # Check for hardcoded secrets
+  secrets:
+    name: Secrets Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: rust-backend rust-frontend rust-shared rust-mobile
+          base: ${{ github.event.repository.default_branch || 'main' }}
+          head: HEAD
+          extra_args: --debug --only-verified
