@@ -6,15 +6,9 @@ use actix_cors::Cors;
 use actix_web::{
     http::header, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Responder,
 };
-use chrono::Utc;
-use dotenv::dotenv;
 use log::{error, info};
-use palet_shared::{
-    ApiResponse, CacheStatus, Championship, Club, CreateClubRequest, DatabaseStatus, Federation,
-    HealthCheck, Match, Player, Tournament,
-};
-use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
+use palet_shared::ApiResponse;
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use std::sync::Arc;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -24,7 +18,7 @@ pub mod config;
 pub mod db;
 pub mod handlers;
 
-use config::{load_config, AppConfig};
+use config::load_config;
 use db::Database;
 use handlers::{club_handler, health_handler};
 
@@ -73,8 +67,6 @@ async fn init_db(config: &config::AppConfig) -> Result<PgPool, sqlx::Error> {
         .connect(db_url)
         .await
 }
-
-/// Initialize application configuration
 
 /// CORS middleware configuration
 fn configure_cors(config: &config::AppConfig) -> Cors {

@@ -2,16 +2,9 @@
 //!
 //! Handles all database operations using SQLx with PostgreSQL
 
-use chrono::{DateTime, Utc};
 use log::info;
-use palet_shared::{
-    generate_uuid, now_utc, Championship, Club, ClubStatus, CreateClubRequest, Federation,
-    LicenseStatus, Match, MatchStatus, Player, PlayerStatus, Tournament,
-};
-use sqlx::{
-    postgres::{PgPool, PgPoolOptions},
-    FromRow, Row,
-};
+use palet_shared::{generate_uuid, now_utc, Club, ClubStatus, CreateClubRequest, Federation};
+use sqlx::{postgres::PgPool, Row};
 use uuid::Uuid;
 
 /// Database connection wrapper
@@ -336,13 +329,14 @@ impl Database {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    use sqlx::PgPool;
+    use sqlx::postgres::PgPoolOptions;
 
     pub async fn create_test_db() -> Database {
-        let db_url = "postgres://palet:palet@localhost:5432/palet_test";
+        let db_url = std::env::var("PALET__DATABASE_URL")
+            .unwrap_or_else(|_| "postgres://palet:palet@localhost:5432/palet_test".to_string());
         let pool = PgPoolOptions::new()
             .max_connections(5)
-            .connect(db_url)
+            .connect(&db_url)
             .await
             .expect("Failed to connect to test database");
 

@@ -1680,6 +1680,7 @@ version = "0.1.0"
 dependencies = [
  "actix-cors",
  "actix-http-test",
+ "actix-rt",
  "actix-web",
  "chrono",
  "config",

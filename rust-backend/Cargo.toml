@@ -7,18 +7,18 @@ description = "Backend API for Palet Vendéen - Rust implementation"
 
 [dependencies]
 # Web framework
-actix-web = "4.0"
+actix-web = "4"
 actix-cors = "0.7"
 
 # Database
 sqlx = { version = "0.8", features = ["postgres", "runtime-tokio-rustls", "uuid", "chrono", "json"] }
-uuid = { version = "1.0", features = ["v4", "serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-tokio = { version = "1.0", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
 
 # Serialization
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 
 # Configuration
 config = { version = "0.13", features = ["toml", "json", "ini"] }
@@ -30,13 +30,13 @@ dotenv = "0.15"
 palet-shared = { path = "../rust-shared" }
 
 # OpenAPI documentation
-utoipa = { version = "4.0", features = ["actix_extras", "chrono", "uuid"] }
-utoipa-swagger-ui = { version = "4.0", features = ["actix-web"] }
+utoipa = { version = "4", features = ["actix_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "4", features = ["actix-web"] }
 
 [dev-dependencies]
-actix-http-test = "3.0"
-actix-rt = "2.0"
-serial_test = "3.0"
+actix-http-test = "3"
+actix-rt = "2"
+serial_test = "3"
 
 [features]
 default = []
