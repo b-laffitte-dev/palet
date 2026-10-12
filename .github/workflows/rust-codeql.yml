@@ -40,13 +40,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpq-dev
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         id: init
         with:
-          languages: cpp
+          languages: rust
           source-root: .
-          config-file: .github/codeql/config.yml
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
@@ -56,4 +60,4 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:cpp"
+          category: "/language:rust"
