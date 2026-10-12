@@ -32,16 +32,25 @@ impl AppConfig {
     /// Create a new AppConfig from config::Settings
     pub fn from_settings(settings: Config) -> Result<Self, ConfigError> {
         Ok(Self {
-            host: settings.get_string("host")?.unwrap_or_else(|_| "0.0.0.0".to_string()),
+            host: settings
+                .get_string("host")?
+                .unwrap_or_else(|_| "0.0.0.0".to_string()),
             port: settings.get_int("port")?.unwrap_or(3000) as u16,
-            database_url: settings.get_string("database_url")?
+            database_url: settings
+                .get_string("database_url")?
                 .unwrap_or_else(|_| "postgres://palet:palet@localhost:5432/palet".to_string()),
             db_max_connections: settings.get_int("db_max_connections")?.unwrap_or(20) as u32,
             db_timeout_secs: settings.get_int("db_timeout_secs")?.unwrap_or(30) as u64,
             cors_max_age: settings.get_int("cors_max_age")?.unwrap_or(86400) as u64,
-            environment: settings.get_string("environment")?.unwrap_or_else(|_| "development".to_string()),
-            log_level: settings.get_string("log_level")?.unwrap_or_else(|_| "info".to_string()),
-            jwt_secret: settings.get_string("jwt_secret")?.unwrap_or_else(|_| "change-me-in-production".to_string()),
+            environment: settings
+                .get_string("environment")?
+                .unwrap_or_else(|_| "development".to_string()),
+            log_level: settings
+                .get_string("log_level")?
+                .unwrap_or_else(|_| "info".to_string()),
+            jwt_secret: settings
+                .get_string("jwt_secret")?
+                .unwrap_or_else(|_| "change-me-in-production".to_string()),
             jwt_expiration_hours: settings.get_int("jwt_expiration_hours")?.unwrap_or(24) as u64,
         })
     }
@@ -68,8 +77,8 @@ impl Default for AppConfig {
 pub fn load_config() -> Result<AppConfig, ConfigError> {
     dotenv::dotenv().ok();
 
-    let mut builder = Config::builder()
-        .add_source(File::with_name("config/default").required(false));
+    let mut builder =
+        Config::builder().add_source(File::with_name("config/default").required(false));
 
     // Add local config if it exists
     if std::path::Path::new("config/local.toml").exists() {
@@ -104,7 +113,7 @@ mod tests {
         let mut settings = Config::new();
         settings.insert("host", "127.0.0.1").unwrap();
         settings.insert("port", 8080).unwrap();
-        
+
         let config = AppConfig::from_settings(settings).unwrap();
         assert_eq!(config.host, "127.0.0.1");
         assert_eq!(config.port, 8080);

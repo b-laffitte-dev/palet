@@ -5,18 +5,16 @@
 use chrono::{DateTime, Utc};
 use log::{debug, error, info, warn};
 use palet_shared::{
-    Club, CreateClubRequest, Federation, Match, Player, Tournament, Championship,
-    CompetitionCategory, CompetitionFormat, CompetitionMaterial, CompetitionStatus,
-    CompetitionType, ClubStatus, DominantHand, LicenseStatus, MatchStatus,
-    PlayerStatus, Team, TeamStatus, User, UserRole, UserStatus,
-    ClassificationPrimary, ClassificationSecondary, ClassificationTertiary,
-    DistanceUnit, EmailNotifications, MatchResult, MatchWinner, 
-    NotificationsPreferences, PermissionCategory, PointsType, PushNotifications,
-    SocialLinks, TeamClassificationStatus, TournamentPhaseType,
-    generate_uuid, now_utc,
+    generate_uuid, now_utc, Championship, ClassificationPrimary, ClassificationSecondary,
+    ClassificationTertiary, Club, ClubStatus, CompetitionCategory, CompetitionFormat,
+    CompetitionMaterial, CompetitionStatus, CompetitionType, CreateClubRequest, DistanceUnit,
+    DominantHand, EmailNotifications, Federation, LicenseStatus, Match, MatchResult, MatchStatus,
+    MatchWinner, NotificationsPreferences, PermissionCategory, Player, PlayerStatus, PointsType,
+    PushNotifications, SocialLinks, Team, TeamClassificationStatus, TeamStatus, Tournament,
+    TournamentPhaseType, User, UserRole, UserStatus,
 };
 use sqlx::{
-    postgres::{PgPool, PgPoolOptions, PgRow}, 
+    postgres::{PgPool, PgPoolOptions, PgRow},
     FromRow, PgConnection, Row,
 };
 use std::str::FromStr;
@@ -145,7 +143,12 @@ impl Database {
     }
 
     /// Create a new federation
-    pub async fn create_federation(&self, name: String, slug: String, description: Option<String>) -> Result<Federation, sqlx::Error> {
+    pub async fn create_federation(
+        &self,
+        name: String,
+        slug: String,
+        description: Option<String>,
+    ) -> Result<Federation, sqlx::Error> {
         let id = generate_uuid();
         let created_at = now_utc();
 
@@ -335,7 +338,10 @@ impl Database {
     }
 
     /// Get federation by slug
-    pub async fn get_federation_by_slug(&self, slug: &str) -> Result<Option<Federation>, sqlx::Error> {
+    pub async fn get_federation_by_slug(
+        &self,
+        slug: &str,
+    ) -> Result<Option<Federation>, sqlx::Error> {
         let row = sqlx::query(
             r#"
             SELECT id, nom as name, slug, description, cree_le as created_at
@@ -386,7 +392,11 @@ impl Database {
                 id: row.get("id"),
                 first_name: row.get("first_name"),
                 last_name: row.get("last_name"),
-                full_name: format!("{} {}", row.get::<String, _>("first_name"), row.get::<String, _>("last_name")),
+                full_name: format!(
+                    "{} {}",
+                    row.get::<String, _>("first_name"),
+                    row.get::<String, _>("last_name")
+                ),
                 alias: None,
                 email: "".to_string(),
                 photo: None,
@@ -439,7 +449,11 @@ impl Database {
             id: row.get("id"),
             first_name: row.get("first_name"),
             last_name: row.get("last_name"),
-            full_name: format!("{} {}", row.get::<String, _>("first_name"), row.get::<String, _>("last_name")),
+            full_name: format!(
+                "{} {}",
+                row.get::<String, _>("first_name"),
+                row.get::<String, _>("last_name")
+            ),
             alias: None,
             email: "".to_string(),
             photo: None,
@@ -491,7 +505,11 @@ impl Database {
                 id: row.get("id"),
                 first_name: row.get("first_name"),
                 last_name: row.get("last_name"),
-                full_name: format!("{} {}", row.get::<String, _>("first_name"), row.get::<String, _>("last_name")),
+                full_name: format!(
+                    "{} {}",
+                    row.get::<String, _>("first_name"),
+                    row.get::<String, _>("last_name")
+                ),
                 alias: None,
                 email: "".to_string(),
                 photo: None,
@@ -670,19 +688,21 @@ pub mod tests {
         db.initialize().await.expect("Failed to initialize");
 
         // Create federation
-        let fed = db.create_federation(
-            "Fédération Vendéenne".to_string(),
-            "fv".to_string(),
-            Some("Fédération de Palet Vendéen".to_string()),
-        )
-        .await
-        .expect("Failed to create federation");
+        let fed = db
+            .create_federation(
+                "Fédération Vendéenne".to_string(),
+                "fv".to_string(),
+                Some("Fédération de Palet Vendéen".to_string()),
+            )
+            .await
+            .expect("Failed to create federation");
 
         assert_eq!(fed.name, "Fédération Vendéenne");
         assert_eq!(fed.slug, "fv");
 
         // Get federation
-        let retrieved = db.get_federation(fed.id)
+        let retrieved = db
+            .get_federation(fed.id)
             .await
             .expect("Failed to get federation")
             .expect("Federation not found");

@@ -53,7 +53,7 @@ mod tests {
     #[actix_rt::test]
     async fn test_health_check() {
         let db = Arc::new(crate::db::tests::create_test_db().await);
-        
+
         let app = test::init_service(
             App::new()
                 .app_data(web::Data::new(db.clone()))
@@ -65,7 +65,7 @@ mod tests {
         let resp = test::call_service(&app, req).await;
 
         assert!(resp.status().is_success());
-        
+
         let body: ApiResponse<HealthCheck> = test::read_body_json(resp).await;
         assert!(body.success);
         assert_eq!(body.data.statut, "ok");

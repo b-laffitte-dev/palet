@@ -114,14 +114,18 @@ pub async fn create_club(
     state: web::Data<AppState>,
     request: web::Json<CreateClubRequest>,
 ) -> impl Responder {
-    let club = state.db.create_club(request.into_inner()).await.map_err(|e| {
-        log::error!("Failed to create club: {:?}", e);
-        HttpResponse::InternalServerError().json(ApiResponse::<()> {
-            data: (),
-            message: Some("Failed to create club".to_string()),
-            success: false,
-        })
-    })?;
+    let club = state
+        .db
+        .create_club(request.into_inner())
+        .await
+        .map_err(|e| {
+            log::error!("Failed to create club: {:?}", e);
+            HttpResponse::InternalServerError().json(ApiResponse::<()> {
+                data: (),
+                message: Some("Failed to create club".to_string()),
+                success: false,
+            })
+        })?;
 
     HttpResponse::Created().json(ApiResponse {
         data: club,
@@ -140,7 +144,7 @@ mod tests {
     async fn test_get_clubs() {
         let db = Arc::new(crate::db::tests::create_test_db().await);
         db.initialize().await.expect("Failed to initialize");
-        
+
         let state = AppState {
             db,
             config: Arc::new(crate::config::AppConfig::default()),
@@ -157,7 +161,7 @@ mod tests {
         let resp = test::call_service(&app, req).await;
 
         assert!(resp.status().is_success());
-        
+
         let body: ApiResponse<PaginatedResponse<Club>> = test::read_body_json(resp).await;
         assert!(body.success);
     }
@@ -166,7 +170,7 @@ mod tests {
     async fn test_create_club() {
         let db = Arc::new(crate::db::tests::create_test_db().await);
         db.initialize().await.expect("Failed to initialize");
-        
+
         let state = AppState {
             db,
             config: Arc::new(crate::config::AppConfig::default()),
@@ -200,7 +204,7 @@ mod tests {
         let resp = test::call_service(&app, req).await;
 
         assert!(resp.status().is_success());
-        
+
         let body: ApiResponse<Club> = test::read_body_json(resp).await;
         assert!(body.success);
         assert_eq!(body.data.name, "Test Club");

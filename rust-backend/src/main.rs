@@ -11,8 +11,8 @@ use chrono::Utc;
 use dotenv::dotenv;
 use log::{error, info};
 use palet_shared::{
-    ApiResponse, DatabaseStatus, HealthCheck, CacheStatus,
-    Club, CreateClubRequest, Federation, Player, Tournament, Match, Championship,
+    ApiResponse, CacheStatus, Championship, Club, CreateClubRequest, DatabaseStatus, Federation,
+    HealthCheck, Match, Player, Tournament,
 };
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -25,8 +25,6 @@ use utoipa_swagger_ui::SwaggerUi;
 pub mod config;
 pub mod db;
 pub mod handlers;
-pub mod models;
-pub mod routes;
 
 use config::AppConfig;
 use db::Database;
@@ -79,9 +77,9 @@ struct ApiDoc;
 /// Initialize database connection pool
 async fn init_db(config: &AppConfig) -> Result<PgPool, sqlx::Error> {
     let db_url = &config.database_url;
-    
+
     info!("Connecting to database: {}", db_url);
-    
+
     PgPoolOptions::new()
         .max_connections(config.db_max_connections)
         .acquire_timeout(std::time::Duration::from_secs(config.db_timeout_secs))
@@ -92,13 +90,13 @@ async fn init_db(config: &AppConfig) -> Result<PgPool, sqlx::Error> {
 /// Initialize application configuration
 fn init_config() -> Result<AppConfig, config::ConfigError> {
     dotenv().ok();
-    
+
     let settings = config::Config::builder()
         .add_source(config::File::with_name("config/default"))
         .add_source(config::File::with_name("config/local").required(false))
         .add_source(config::Environment::with_prefix("PALET").separator("__"))
         .build()?;
-    
+
     Ok(AppConfig::from_settings(settings)?)
 }
 
@@ -124,14 +122,14 @@ async fn logger_middleware(
 ) -> Result<actix_web::dev::ServiceResponse, actix_web::Error> {
     let method = req.method().clone();
     let path = req.uri().path().to_string();
-    
+
     info!("{} {}", method, path);
-    
+
     let res = srv.call(req).await?;
-    
+
     let status = res.response().status();
     info!("{} {} - {}", method, path, status);
-    
+
     Ok(res)
 }
 
@@ -146,7 +144,9 @@ async fn not_found_handler(req: HttpRequest) -> impl Responder {
 }
 
 /// Error handler for internal server errors
-async fn internal_error_handler(err: error::InternalError<actix_web::error::BoxedError>) -> impl Responder {
+async fn internal_error_handler(
+    err: error::InternalError<actix_web::error::BoxedError>,
+) -> impl Responder {
     error!("Internal Server Error: {:?}", err);
     HttpResponse::InternalServerError().json(ApiResponse::<()> {
         data: (),
@@ -206,19 +206,17 @@ async fn main() -> std::io::Result<()> {
         App::new()
             // App state
             .app_data(web::Data::new(app_state.clone()))
-            
             // Middleware
             .wrap(cors)
             .wrap(middleware::Logger::default())
-            .wrap(middleware::ErrorHandlers::new()
-                .handler(error::InternalError::class_of(), internal_error_handler))
-            
+            .wrap(
+                middleware::ErrorHandlers::new()
+                    .handler(error::InternalError::class_of(), internal_error_handler),
+            )
             // Swagger UI for API documentation
             .service(SwaggerUi::new("/api-docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
-            
             // Health check endpoint
             .route("/health", get().to(health_handler::health_check))
-            
             // Club endpoints
             .service(
                 web::scope("/clubs")
@@ -226,7 +224,6 @@ async fn main() -> std::io::Result<()> {
                     .route("", web::post().to(club_handler::create_club))
                     .route("/{id}", get().to(club_handler::get_club)),
             )
-            
             // Default service for unmatched routes
             .default_service(web::route().to(not_found_handler))
     });
@@ -234,17 +231,13 @@ async fn main() -> std::io::Result<()> {
     // Start server
     let port = app_config.port;
     let host = app_config.host.clone();
-    
+
     info!("Starting server on {}:{}", host, port);
-    
-    server
-        .bind((host, port))?
-        .run()
-        .await
-        .map_err(|e| {
-            error!("Server error: {:?}", e);
-            e
-        })?;
+
+    server.bind((host, port))?.run().await.map_err(|e| {
+        error!("Server error: {:?}", e);
+        e
+    })?;
 
     Ok(())
 }
