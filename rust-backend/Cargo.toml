@@ -1,0 +1,48 @@
+[package]
+name = "palet-backend"
+version = "0.1.0"
+edition = "2021"
+authors = ["Palet Vendéen Team"]
+description = "Backend API for Palet Vendéen - Rust implementation"
+
+[dependencies]
+# Web framework
+actix-web = "4.0"
+actix-cors = "0.7"
+actix-rt = "2.0"
+
+# Database
+sqlx = { version = "0.8", features = ["postgres", "runtime-actix-rustls", "uuid", "chrono", "json"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Validation
+validator = { version = "0.16", features = ["derive"] }
+
+# Configuration
+env_logger = "0.10"
+log = "0.4"
+dotenv = "0.15"
+config = "0.13"
+
+# Shared types
+palet-shared = { path = "../rust-shared" }
+
+# OpenAPI documentation
+utoipa = { version = "4.0", features = ["actix_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "4.0", features = ["actix-web"] }
+
+[dev-dependencies]
+actix-http-test = "3.0"
+serial_test = "3.0"
+
+[features]
+default = []
+
+[[bin]]
+name = "palet-backend"
+path = "src/main.rs"
