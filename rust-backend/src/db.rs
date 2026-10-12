@@ -23,10 +23,10 @@ impl Database {
     pub async fn initialize(&self) -> Result<(), sqlx::Error> {
         info!("Initializing database schema...");
 
-        // Create federations table
+        // Create palet_federations table (avoiding conflict with pg_catalog.federations)
         sqlx::query(
             r#"
-            CREATE TABLE IF NOT EXISTS federations (
+            CREATE TABLE IF NOT EXISTS palet_federations (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nom VARCHAR(255) NOT NULL,
                 slug VARCHAR(255) NOT NULL UNIQUE,
@@ -38,12 +38,12 @@ impl Database {
         .execute(&self.pool)
         .await?;
 
-        // Create clubs table
+        // Create palet_clubs table
         sqlx::query(
             r#"
-            CREATE TABLE IF NOT EXISTS clubs (
+            CREATE TABLE IF NOT EXISTS palet_clubs (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                federation_id UUID NOT NULL REFERENCES federations(id),
+                federation_id UUID NOT NULL REFERENCES palet_federations(id),
                 nom VARCHAR(255) NOT NULL,
                 slug VARCHAR(255) NOT NULL UNIQUE,
                 ville VARCHAR(100),
@@ -54,12 +54,12 @@ impl Database {
         .execute(&self.pool)
         .await?;
 
-        // Create joueurs table
+        // Create palet_joueurs table
         sqlx::query(
             r#"
-            CREATE TABLE IF NOT EXISTS joueurs (
+            CREATE TABLE IF NOT EXISTS palet_joueurs (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                club_id UUID NOT NULL REFERENCES clubs(id),
+                club_id UUID NOT NULL REFERENCES palet_clubs(id),
                 nom VARCHAR(100) NOT NULL,
                 prenom VARCHAR(100) NOT NULL,
                 licence VARCHAR(50) UNIQUE,
@@ -83,7 +83,7 @@ impl Database {
         let rows = sqlx::query(
             r#"
             SELECT id, nom as name, slug, description, cree_le as created_at
-            FROM federations
+            FROM palet_federations
             ORDER BY nom
             "#,
         )
@@ -107,7 +107,7 @@ impl Database {
         let row = sqlx::query(
             r#"
             SELECT id, nom as name, slug, description, cree_le as created_at
-            FROM federations
+            FROM palet_federations
             WHERE id = $1
             "#,
         )
@@ -136,7 +136,7 @@ impl Database {
 
         let row = sqlx::query(
             r#"
-            INSERT INTO federations (id, nom, slug, description, cree_le)
+            INSERT INTO palet_federations (id, nom, slug, description, cree_le)
             VALUES ($1, $2, $3, $4, $5)
             RETURNING id, nom as name, slug, description, cree_le as created_at
             "#,
@@ -172,7 +172,7 @@ impl Database {
                 c.slug,
                 c.ville as city,
                 c.cree_le as created_at
-            FROM clubs c
+            FROM palet_clubs c
             ORDER BY c.nom
             "#,
         )
@@ -219,7 +219,7 @@ impl Database {
                 c.slug,
                 c.ville as city,
                 c.cree_le as created_at
-            FROM clubs c
+            FROM palet_clubs c
             WHERE c.id = $1
             "#,
         )
@@ -261,7 +261,7 @@ impl Database {
 
         let row = sqlx::query(
             r#"
-            INSERT INTO clubs (id, federation_id, nom, slug, ville, cree_le)
+            INSERT INTO palet_clubs (id, federation_id, nom, slug, ville, cree_le)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING id, nom as name, slug, ville as city, cree_le as created_at
             "#,
