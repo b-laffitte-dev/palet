@@ -76,7 +76,6 @@ async fn init_db(config: &config::AppConfig) -> Result<PgPool, sqlx::Error> {
 
 /// Initialize application configuration
 
-
 /// CORS middleware configuration
 fn configure_cors(config: &config::AppConfig) -> Cors {
     Cors::default()

@@ -1,8 +1,8 @@
 //! Club endpoint handlers
 
 use actix_web::{web, HttpResponse, Responder};
-use palet_shared::{ApiResponse, CreateClubRequest, PaginatedResponse, Pagination};
 use palet_shared::Club;
+use palet_shared::{ApiResponse, CreateClubRequest, PaginatedResponse, Pagination};
 
 use crate::AppState;
 
