@@ -13,16 +13,17 @@ use std::sync::Arc;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-// Re-export handlers for modular imports
-pub mod config;
-pub mod db;
-pub mod handlers;
+// Import modules
+mod config;
+mod db;
+mod handlers;
 
 use config::load_config;
 use db::Database;
 use handlers::{club_handler, health_handler};
 
 // App state shared across all routes
+
 #[derive(Clone)]
 pub struct AppState {
     pub db: Arc<Database>,
@@ -177,4 +178,4 @@ async fn main() -> std::io::Result<()> {
 
 // Re-export for use in tests
 #[cfg(test)]
-pub use db::tests::*;
+pub use db::test_utils::*;

@@ -4,7 +4,7 @@ use actix_web::{web, HttpResponse, Responder};
 use chrono::Utc;
 use palet_shared::{ApiResponse, CacheStatus, DatabaseStatus, HealthCheck};
 
-use crate::AppState;
+use super::super::AppState;
 
 /// Health check handler
 #[utoipa::path(
@@ -47,7 +47,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_health_check() {
-        let db = Arc::new(crate::db::tests::create_test_db().await);
+        let db = Arc::new(crate::db::test_utils::create_test_db().await);
         let config = Arc::new(crate::config::AppConfig::default());
         let state = AppState { db, config };
 

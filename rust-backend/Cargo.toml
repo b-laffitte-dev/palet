@@ -6,14 +6,26 @@ authors = ["Palet Vendéen Team"]
 description = "Backend API for Palet Vendéen - Rust implementation"
 
 [dependencies]
+# Async trait
+async-trait = "0.1"
+
 # Web framework
 actix-web = "4"
 actix-cors = "0.7"
 
 # Database
 sqlx = { version = "0.8", features = ["postgres", "runtime-tokio-rustls", "uuid", "chrono", "json"] }
+
+# Error handling
+thiserror = "1"
+
+# UUID
 uuid = { version = "1", features = ["v4", "serde"] }
+
+# Time
 chrono = { version = "0.4", features = ["serde"] }
+
+# Async runtime
 tokio = { version = "1", features = ["full"] }
 
 # Serialization
@@ -37,9 +49,16 @@ utoipa-swagger-ui = { version = "4", features = ["actix-web"] }
 actix-http-test = "3"
 actix-rt = "2"
 serial_test = "3"
+tokio = { version = "1", features = ["full", "test-util"] }
+async-trait = "0.1"
+mockall = "0.12"
 
 [features]
 default = []
+
+[lib]
+name = "palet_backend"
+path = "src/lib.rs"
 
 [[bin]]
 name = "palet-backend"

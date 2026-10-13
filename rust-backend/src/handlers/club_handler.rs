@@ -3,7 +3,7 @@
 use actix_web::{web, HttpResponse, Responder};
 use palet_shared::{ApiResponse, CreateClubRequest, PaginatedResponse, Pagination};
 
-use crate::AppState;
+use super::super::AppState;
 
 /// Get all clubs
 #[utoipa::path(
@@ -126,7 +126,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_get_clubs() {
-        let db = Arc::new(crate::db::tests::create_test_db().await);
+        let db = Arc::new(crate::db::test_utils::create_test_db().await);
         db.initialize().await.expect("Failed to initialize");
 
         // Create a test federation first
@@ -162,7 +162,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_create_club() {
-        let db = Arc::new(crate::db::tests::create_test_db().await);
+        let db = Arc::new(crate::db::test_utils::create_test_db().await);
         db.initialize().await.expect("Failed to initialize");
 
         // Create a test federation first
