@@ -81,7 +81,7 @@ jobs:
         env:
           PALET__DATABASE_URL: postgres://palet:palet@localhost:5432/palet
           PALET__ENVIRONMENT: test
-        run: cargo test --release -- --nocapture
+        run: cargo test -- --nocapture
 
   # Test shared library
   shared:
@@ -117,7 +117,7 @@ jobs:
 
       - name: Run tests
         working-directory: rust-shared
-        run: cargo test --release
+        run: cargo test
 
   # Build Docker images (only on push to main, not PR)
   docker:
