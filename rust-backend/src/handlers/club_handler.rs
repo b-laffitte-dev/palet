@@ -129,6 +129,16 @@ mod tests {
         let db = Arc::new(crate::db::tests::create_test_db().await);
         db.initialize().await.expect("Failed to initialize");
 
+        // Create a test federation first
+        let _federation = db
+            .create_federation(
+                "Test Federation".to_string(),
+                "test-federation-get".to_string(),
+                Some("Test federation for get clubs".to_string()),
+            )
+            .await
+            .expect("Failed to create test federation");
+
         let state = AppState {
             db,
             config: Arc::new(crate::config::AppConfig::default()),
@@ -155,6 +165,16 @@ mod tests {
         let db = Arc::new(crate::db::tests::create_test_db().await);
         db.initialize().await.expect("Failed to initialize");
 
+        // Create a test federation first
+        let federation = db
+            .create_federation(
+                "Test Federation".to_string(),
+                "test-federation".to_string(),
+                Some("Test federation for clubs".to_string()),
+            )
+            .await
+            .expect("Failed to create test federation");
+
         let state = AppState {
             db,
             config: Arc::new(crate::config::AppConfig::default()),
@@ -175,7 +195,7 @@ mod tests {
             postal_code: Some("12345".to_string()),
             league: "Deux-S\u{00e8}vres".to_string(),
             division: "D1".to_string(),
-            federation_id: uuid::Uuid::nil(),
+            federation_id: federation.id,
             contact_email: Some("test@test.com".to_string()),
             contact_phone: Some("1234567890".to_string()),
             website: Some("https://test.com".to_string()),
