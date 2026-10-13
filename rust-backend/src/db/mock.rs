@@ -250,6 +250,6 @@ pub enum MockDatabaseError {
 
 impl From<MockDatabaseError> for sqlx::Error {
     fn from(err: MockDatabaseError) -> Self {
-        sqlx::Error::Protocol(err.to_string().into())
+        sqlx::Error::Protocol(err.to_string())
     }
 }

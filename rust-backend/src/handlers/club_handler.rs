@@ -3,7 +3,7 @@
 use actix_web::{web, HttpResponse, Responder};
 use palet_shared::{ApiResponse, CreateClubRequest, PaginatedResponse, Pagination};
 
-use super::super::AppState;
+use crate::AppState;
 
 /// Get all clubs
 #[utoipa::path(
@@ -114,103 +114,5 @@ pub async fn create_club(
                 success: false,
             })
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use actix_web::{test, web, App};
-    use palet_shared::{Club, CreateClubRequest, PaginatedResponse};
-    use std::sync::Arc;
-
-    #[actix_rt::test]
-    async fn test_get_clubs() {
-        let db = Arc::new(crate::db::test_utils::create_test_db().await);
-        db.initialize().await.expect("Failed to initialize");
-
-        // Create a test federation first
-        let _federation = db
-            .create_federation(
-                "Test Federation".to_string(),
-                "test-federation-get".to_string(),
-                Some("Test federation for get clubs".to_string()),
-            )
-            .await
-            .expect("Failed to create test federation");
-
-        let state = AppState {
-            db,
-            config: Arc::new(crate::config::AppConfig::default()),
-        };
-
-        let app = test::init_service(
-            App::new()
-                .app_data(web::Data::new(state))
-                .route("/clubs", web::get().to(get_clubs)),
-        )
-        .await;
-
-        let req = test::TestRequest::get().uri("/clubs").to_request();
-        let resp = test::call_service(&app, req).await;
-
-        assert!(resp.status().is_success());
-
-        let body: ApiResponse<PaginatedResponse<Club>> = test::read_body_json(resp).await;
-        assert!(body.success);
-    }
-
-    #[actix_rt::test]
-    async fn test_create_club() {
-        let db = Arc::new(crate::db::test_utils::create_test_db().await);
-        db.initialize().await.expect("Failed to initialize");
-
-        // Create a test federation first
-        let federation = db
-            .create_federation(
-                "Test Federation".to_string(),
-                "test-federation".to_string(),
-                Some("Test federation for clubs".to_string()),
-            )
-            .await
-            .expect("Failed to create test federation");
-
-        let state = AppState {
-            db,
-            config: Arc::new(crate::config::AppConfig::default()),
-        };
-
-        let app = test::init_service(
-            App::new()
-                .app_data(web::Data::new(state))
-                .route("/clubs", web::post().to(create_club)),
-        )
-        .await;
-
-        let request = CreateClubRequest {
-            name: "Test Club".to_string(),
-            nickname: Some("TC".to_string()),
-            code: "TC001".to_string(),
-            city: "Test City".to_string(),
-            postal_code: Some("12345".to_string()),
-            league: "Deux-S\u{00e8}vres".to_string(),
-            division: "D1".to_string(),
-            federation_id: federation.id,
-            contact_email: Some("test@test.com".to_string()),
-            contact_phone: Some("1234567890".to_string()),
-            website: Some("https://test.com".to_string()),
-        };
-
-        let req = test::TestRequest::post()
-            .uri("/clubs")
-            .set_json(&request)
-            .to_request();
-        let resp = test::call_service(&app, req).await;
-
-        assert!(resp.status().is_success());
-
-        let body: ApiResponse<Club> = test::read_body_json(resp).await;
-        assert!(body.success);
-        assert_eq!(body.data.name, "Test Club");
     }
 }

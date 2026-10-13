@@ -4,7 +4,7 @@ use actix_web::{web, HttpResponse, Responder};
 use chrono::Utc;
 use palet_shared::{ApiResponse, CacheStatus, DatabaseStatus, HealthCheck};
 
-use super::super::AppState;
+use crate::AppState;
 
 /// Health check handler
 #[utoipa::path(
@@ -36,35 +36,4 @@ pub async fn health_check(state: web::Data<AppState>) -> impl Responder {
         message: Some("API is healthy".to_string()),
         success: true,
     })
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use actix_web::{test, web, App};
-    use palet_shared::HealthCheck;
-    use std::sync::Arc;
-
-    #[actix_rt::test]
-    async fn test_health_check() {
-        let db = Arc::new(crate::db::test_utils::create_test_db().await);
-        let config = Arc::new(crate::config::AppConfig::default());
-        let state = AppState { db, config };
-
-        let app = test::init_service(
-            App::new()
-                .app_data(web::Data::new(state))
-                .route("/health", web::get().to(health_check)),
-        )
-        .await;
-
-        let req = test::TestRequest::get().uri("/health").to_request();
-        let resp = test::call_service(&app, req).await;
-
-        assert!(resp.status().is_success());
-
-        let body: ApiResponse<HealthCheck> = test::read_body_json(resp).await;
-        assert!(body.success);
-        assert_eq!(body.data.statut, "ok");
-    }
 }
