@@ -145,6 +145,7 @@ jobs:
             echo "::warning::Found TODO/FIXME comments:"
             echo "$TODOS"
             echo "::warning::Please address these comments before merging"
+            exit 1
           fi
 
   # Check for large files
@@ -160,9 +161,10 @@ jobs:
         run: |
           LARGE_FILES=$(find rust-backend rust-frontend rust-shared rust-mobile -type f -size +1M -exec ls -lh {} \; 2>/dev/null || true)
           if [ -n "$LARGE_FILES" ]; then
-            echo "::warning::Found large files (>1MB):"
+            echo "::error::Found large files (>1MB):"
             echo "$LARGE_FILES"
-            echo "::warning::Consider removing or compressing large files"
+            echo "::error::Please remove or compress large files"
+            exit 1
           fi
 
   # Check for hardcoded secrets
@@ -177,7 +179,8 @@ jobs:
       - name: Check for hardcoded secrets
         uses: trufflesecurity/trufflehog@main
         with:
-          path: rust-backend rust-frontend rust-shared rust-mobile
+          path: .
           base: ${{ github.event.repository.default_branch || 'main' }}
           head: HEAD
           extra_args: --debug --only-verified
+          filter: rust-backend rust-frontend rust-shared rust-mobile

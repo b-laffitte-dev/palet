@@ -53,7 +53,7 @@ jobs:
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: rust-backend
+          workspaces: .
 
       - name: Install system dependencies
         run: |
@@ -73,6 +73,7 @@ jobs:
         env:
           PALET__DATABASE_URL: postgres://palet:palet@localhost:5432/palet
           PALET__ENVIRONMENT: test
+          RUST_LOG: debug
         run: cargo build --release
 
       - name: Run tests
@@ -80,7 +81,7 @@ jobs:
         env:
           PALET__DATABASE_URL: postgres://palet:palet@localhost:5432/palet
           PALET__ENVIRONMENT: test
-        run: cargo test --release
+        run: cargo test --release -- --nocapture
 
   # Test shared library
   shared:
