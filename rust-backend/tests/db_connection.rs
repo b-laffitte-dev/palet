@@ -2,11 +2,10 @@
 //!
 //! This module contains isolated tests for database connectivity using MockDatabase.
 //! These tests can run without a real PostgreSQL connection.
+
+mod mock;
+use mock::{MockDatabase, MockDatabaseError};
 use uuid::Uuid;
-
-use std::sync::Arc;
-
-use palet_backend::db::mock::{MockDatabase, MockDatabaseError};
 
 // ============================================
 // CONNECTION TESTS
@@ -19,10 +18,7 @@ async fn test_mock_database_connection_establishment() {
 
     // Verify the mock connection is alive
     let is_connected = db.check_connection().await;
-    assert!(
-        is_connected,
-        "Mock database connection should be established"
-    );
+    assert!(is_connected, "Mock database connection should be established");
 }
 
 #[tokio::test]
@@ -33,10 +29,7 @@ async fn test_mock_database_connection_failure() {
 
     // Verify the connection is not alive
     let is_connected = db.check_connection().await;
-    assert!(
-        !is_connected,
-        "Mock database connection should fail when set to false"
-    );
+    assert!(!is_connected, "Mock database connection should fail when set to false");
 }
 
 #[tokio::test]
@@ -48,14 +41,8 @@ async fn test_mock_database_connection_pool() {
     let is_connected1 = db1.check_connection().await;
     let is_connected2 = db2.check_connection().await;
 
-    assert!(
-        is_connected1,
-        "First mock database instance should be connected"
-    );
-    assert!(
-        is_connected2,
-        "Second mock database instance should be connected"
-    );
+    assert!(is_connected1, "First mock database instance should be connected");
+    assert!(is_connected2, "Second mock database instance should be connected");
 }
 
 // ============================================
@@ -69,10 +56,7 @@ async fn test_mock_database_schema_initialization() {
 
     // Initialize the schema
     let result = db.initialize().await;
-    assert!(
-        result.is_ok(),
-        "Mock database schema initialization should succeed"
-    );
+    assert!(result.is_ok(), "Mock database schema initialization should succeed");
 }
 
 #[tokio::test]
@@ -83,14 +67,8 @@ async fn test_mock_database_schema_initialization_failure() {
 
     // Initialize the schema - should fail
     let result = db.initialize().await;
-    assert!(
-        result.is_err(),
-        "Mock database schema initialization should fail when not connected"
-    );
-    assert!(matches!(
-        result.unwrap_err(),
-        MockDatabaseError::ConnectionFailed
-    ));
+    assert!(result.is_err(), "Mock database schema initialization should fail when not connected");
+    assert!(matches!(result.unwrap_err(), MockDatabaseError::ConnectionFailed));
 }
 
 #[tokio::test]
@@ -103,18 +81,9 @@ async fn test_mock_database_schema_initialization_idempotent() {
     let result2 = db.initialize().await;
     let result3 = db.initialize().await;
 
-    assert!(
-        result1.is_ok(),
-        "First mock schema initialization should succeed"
-    );
-    assert!(
-        result2.is_ok(),
-        "Second mock schema initialization should succeed"
-    );
-    assert!(
-        result3.is_ok(),
-        "Third mock schema initialization should succeed"
-    );
+    assert!(result1.is_ok(), "First mock schema initialization should succeed");
+    assert!(result2.is_ok(), "Second mock schema initialization should succeed");
+    assert!(result3.is_ok(), "Third mock schema initialization should succeed");
 }
 
 // ============================================
@@ -127,16 +96,11 @@ async fn test_mock_database_run_migrations() {
     let db = MockDatabase::new();
 
     // Initialize first
-    db.initialize()
-        .await
-        .expect("Schema initialization should succeed");
+    db.initialize().await.expect("Schema initialization should succeed");
 
     // Run migrations
     let result = db.run_migrations().await;
-    assert!(
-        result.is_ok(),
-        "Mock database migrations should run successfully"
-    );
+    assert!(result.is_ok(), "Mock database migrations should run successfully");
 }
 
 #[tokio::test]
@@ -146,14 +110,8 @@ async fn test_mock_database_run_migrations_without_init() {
 
     // Run migrations without initializing - should fail
     let result = db.run_migrations().await;
-    assert!(
-        result.is_err(),
-        "Mock database migrations should fail without schema initialization"
-    );
-    assert!(matches!(
-        result.unwrap_err(),
-        MockDatabaseError::SchemaInitializationFailed
-    ));
+    assert!(result.is_err(), "Mock database migrations should fail without schema initialization");
+    assert!(matches!(result.unwrap_err(), MockDatabaseError::SchemaInitializationFailed));
 }
 
 #[tokio::test]
@@ -164,14 +122,8 @@ async fn test_mock_database_run_migrations_connection_failure() {
 
     // Run migrations - should fail
     let result = db.run_migrations().await;
-    assert!(
-        result.is_err(),
-        "Mock database migrations should fail when not connected"
-    );
-    assert!(matches!(
-        result.unwrap_err(),
-        MockDatabaseError::ConnectionFailed
-    ));
+    assert!(result.is_err(), "Mock database migrations should fail when not connected");
+    assert!(matches!(result.unwrap_err(), MockDatabaseError::ConnectionFailed));
 }
 
 // ============================================
@@ -261,10 +213,7 @@ async fn test_mock_database_create_club() {
         website: Some("https://test.com".to_string()),
     };
 
-    let club = db
-        .create_club(club_request)
-        .await
-        .expect("Should create club");
+    let club = db.create_club(club_request).await.expect("Should create club");
     assert_eq!(club.name, "Test Club");
     assert_eq!(club.code, "TC001");
     assert_eq!(club.city, "Test City");
@@ -290,14 +239,8 @@ async fn test_mock_database_create_club_without_federation() {
     };
 
     let result = db.create_club(club_request).await;
-    assert!(
-        result.is_err(),
-        "Should fail to create club without federation"
-    );
-    assert!(matches!(
-        result.unwrap_err(),
-        MockDatabaseError::FederationRequired
-    ));
+    assert!(result.is_err(), "Should fail to create club without federation");
+    assert!(matches!(result.unwrap_err(), MockDatabaseError::FederationRequired));
 }
 
 #[tokio::test]
@@ -362,10 +305,7 @@ async fn test_mock_database_get_club() {
         website: None,
     };
 
-    let created_club = db
-        .create_club(club_request)
-        .await
-        .expect("Should create club");
+    let created_club = db.create_club(club_request).await.expect("Should create club");
 
     // Get it back
     let retrieved_club = db

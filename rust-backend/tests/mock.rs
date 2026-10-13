@@ -38,50 +38,10 @@ impl MockDatabase {
         }
     }
 
-    /// Create a mock database with pre-populated data
-    pub fn with_data(federations: Vec<Federation>, clubs: Vec<Club>) -> Self {
-        let mut state = MockDatabaseState {
-            federations: HashMap::new(),
-            clubs: HashMap::new(),
-            is_connected: true,
-            schema_initialized: true,
-        };
-
-        for fed in federations {
-            state.federations.insert(fed.id, fed);
-        }
-
-        for club in clubs {
-            state.clubs.insert(club.id, club);
-        }
-
-        Self {
-            state: Arc::new(RwLock::new(state)),
-        }
-    }
-
     /// Set connection status
     pub fn set_connected(&self, connected: bool) {
         let mut state = self.state.write().unwrap();
         state.is_connected = connected;
-    }
-
-    /// Set schema initialization status
-    pub fn set_schema_initialized(&self, initialized: bool) {
-        let mut state = self.state.write().unwrap();
-        state.schema_initialized = initialized;
-    }
-
-    /// Add a federation
-    pub fn add_federation(&self, federation: Federation) {
-        let mut state = self.state.write().unwrap();
-        state.federations.insert(federation.id, federation);
-    }
-
-    /// Add a club
-    pub fn add_club(&self, club: Club) {
-        let mut state = self.state.write().unwrap();
-        state.clubs.insert(club.id, club);
     }
 
     // ============================================
@@ -234,22 +194,10 @@ impl MockDatabase {
 /// Error type for mock database operations
 #[derive(Debug, Error)]
 pub enum MockDatabaseError {
-    #[error("Not found")]
-    NotFound,
     #[error("Connection failed")]
     ConnectionFailed,
     #[error("Schema initialization failed")]
     SchemaInitializationFailed,
-    #[error("Migration failed")]
-    MigrationFailed,
     #[error("Federation required")]
     FederationRequired,
-    #[error("Invalid data: {0}")]
-    InvalidData(String),
-}
-
-impl From<MockDatabaseError> for sqlx::Error {
-    fn from(err: MockDatabaseError) -> Self {
-        sqlx::Error::Protocol(err.to_string())
-    }
 }

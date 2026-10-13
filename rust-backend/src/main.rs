@@ -176,6 +176,3 @@ async fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-// Re-export for use in tests
-#[cfg(test)]
-pub use db::test_utils::*;
