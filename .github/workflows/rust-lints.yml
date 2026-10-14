@@ -15,7 +15,6 @@ on:
       - 'rust-backend/**'
       - 'rust-frontend/**'
       - 'rust-shared/**'
-      - 'rust-mobile/**'
       - 'Cargo.toml'
 
 concurrency:
@@ -68,14 +67,7 @@ jobs:
         working-directory: rust-shared
         run: cargo clippy --all-targets --all-features -- -D warnings
 
-      # Mobile lints
-      - name: Mobile - Check formatting
-        working-directory: rust-mobile
-        run: cargo fmt --all -- --check
 
-      - name: Mobile - Run clippy
-        working-directory: rust-mobile
-        run: cargo clippy --all-targets --all-features -- -D warnings
 
   # Check for warnings in code
   warnings:
@@ -103,9 +95,7 @@ jobs:
         working-directory: rust-shared
         run: cargo build --all-targets 2>&1 | grep -i "warning:" && exit 1 || exit 0
 
-      - name: Check for warnings in mobile
-        working-directory: rust-mobile
-        run: cargo build --all-targets --features mobile 2>&1 | grep -i "warning:" && exit 1 || exit 0
+
 
   # Check documentation
   docs:
@@ -140,7 +130,7 @@ jobs:
 
       - name: Find TODO comments
         run: |
-          TODOS=$(grep -r "TODO\|FIXME\|XXX\|HACK" rust-backend rust-frontend rust-shared rust-mobile --include="*.rs" --include="*.toml" || true)
+          TODOS=$(grep -r "TODO\|FIXME\|XXX\|HACK" rust-backend rust-frontend rust-shared --include="*.rs" --include="*.toml" || true)
           if [ -n "$TODOS" ]; then
             echo "::warning::Found TODO/FIXME comments:"
             echo "$TODOS"
@@ -159,7 +149,7 @@ jobs:
 
       - name: Find large files
         run: |
-          LARGE_FILES=$(find rust-backend rust-frontend rust-shared rust-mobile -type f -size +1M -exec ls -lh {} \; 2>/dev/null || true)
+          LARGE_FILES=$(find rust-backend rust-frontend rust-shared -type f -size +1M -exec ls -lh {} \; 2>/dev/null || true)
           if [ -n "$LARGE_FILES" ]; then
             echo "::error::Found large files (>1MB):"
             echo "$LARGE_FILES"
@@ -183,4 +173,4 @@ jobs:
           base: ${{ github.event.repository.default_branch || 'main' }}
           head: HEAD
           extra_args: --debug --only-verified
-          filter: rust-backend rust-frontend rust-shared rust-mobile
+          filter: rust-backend rust-frontend rust-shared
