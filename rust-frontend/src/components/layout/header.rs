@@ -18,7 +18,7 @@ pub fn header() -> Html {
                         <Link<Route> to={Route::Home}>
                             <Logo />
                         </Link<Route>>
-                        
+
                         {/* Desktop navigation */}
                         <nav class="hidden md:flex space-x-6">
                             <Link<Route> to={Route::Clubs} classes="text-brand-green-200 hover:text-white transition-colors">
@@ -41,7 +41,7 @@ pub fn header() -> Html {
                             </Link<Route>>
                         </nav>
                     </div>
-                    
+
                     {/* Auth buttons */}
                     <div class="flex items-center space-x-4">
                         <Link<Route> to={Route::Connexion}>

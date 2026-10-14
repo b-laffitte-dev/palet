@@ -1,0 +1,1 @@
+//! tournament_detail page

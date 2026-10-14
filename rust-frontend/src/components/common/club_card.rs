@@ -39,7 +39,7 @@ pub fn club_card(props: &ClubCardProps) -> Html {
                     </div>
                 </div>
             </CardHeader>
-            
+
             <CardBody>
                 <div class="space-y-2">
                     <p class="text-body-s text-brand-green-200">
@@ -60,7 +60,7 @@ pub fn club_card(props: &ClubCardProps) -> Html {
                     </p>
                 </div>
             </CardBody>
-            
+
             if *show_details {
                 <CardFooter>
                     <Button variant="secondary" size="s">

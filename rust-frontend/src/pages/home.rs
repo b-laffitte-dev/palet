@@ -1,13 +1,10 @@
 //! Home page component
 
-use palet_shared::{Club, Match, Player, Tournament, Championship};
+use palet_shared::{Championship, Club, Match, Player, Tournament};
 use yew::prelude::*;
 
 use crate::{
-    components::{
-        common::*,
-        layout::Layout,
-    },
+    components::{common::*, layout::Layout},
     services::api::UseApi,
 };
 
@@ -15,14 +12,14 @@ use crate::{
 #[function_component(Home)]
 pub fn home() -> Html {
     let api = UseApi();
-    
+
     // State for loading and data
     let clubs = use_state(|| Vec::<Club>::new());
     let tournaments = use_state(|| Vec::<Tournament>::new());
     let championships = use_state(|| Vec::<Championship>::new());
     let featured_matches = use_state(|| Vec::<Match>::new());
     let featured_players = use_state(|| Vec::<Player>::new());
-    
+
     let loading = use_state(|| true);
     let error = use_state(|| Option::<String>::None);
 

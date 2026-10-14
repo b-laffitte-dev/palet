@@ -4,10 +4,7 @@ use palet_shared::{Club, PaginatedResponse};
 use yew::prelude::*;
 
 use crate::{
-    components::{
-        common::*,
-        layout::Layout,
-    },
+    components::{common::*, layout::Layout},
     services::api::UseApi,
 };
 
@@ -15,7 +12,7 @@ use crate::{
 #[function_component(Clubs)]
 pub fn clubs() -> Html {
     let api = UseApi();
-    
+
     // State for clubs and loading
     let clubs = use_state(|| Vec::<Club>::new());
     let pagination = use_state(|| PaginatedResponse::<Club>::default());

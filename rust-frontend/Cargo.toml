@@ -1,3 +1,6 @@
+[workspace]
+members = []
+
 [package]
 name = "palet-frontend"
 version = "0.1.0"
@@ -6,6 +9,7 @@ authors = ["Palet Vendéen Team"]
 description = "Frontend web application for Palet Vendéen - Rust/Yew implementation"
 
 [lib]
+name = "palet_frontend"
 crate-type = ["cdylib"]
 
 [dependencies]

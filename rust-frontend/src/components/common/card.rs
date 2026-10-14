@@ -66,10 +66,7 @@ pub fn card_header(props: &CardHeaderProps) -> Html {
 
     let base_classes = "mb-4";
 
-    let combined_classes = classes!(
-        base_classes,
-        classes.as_deref().unwrap_or("")
-    );
+    let combined_classes = classes!(base_classes, classes.as_deref().unwrap_or(""));
 
     html! {
         <div class={combined_classes}>
@@ -93,10 +90,7 @@ pub fn card_body(props: &CardBodyProps) -> Html {
 
     let base_classes = "";
 
-    let combined_classes = classes!(
-        base_classes,
-        classes.as_deref().unwrap_or("")
-    );
+    let combined_classes = classes!(base_classes, classes.as_deref().unwrap_or(""));
 
     html! {
         <div class={combined_classes}>
@@ -120,10 +114,7 @@ pub fn card_footer(props: &CardFooterProps) -> Html {
 
     let base_classes = "mt-4 pt-4 border-t border-brand-green-700/30";
 
-    let combined_classes = classes!(
-        base_classes,
-        classes.as_deref().unwrap_or("")
-    );
+    let combined_classes = classes!(base_classes, classes.as_deref().unwrap_or(""));
 
     html! {
         <div class={combined_classes}>

@@ -1,0 +1,1 @@
+//! Palet Vendéen Frontend Library

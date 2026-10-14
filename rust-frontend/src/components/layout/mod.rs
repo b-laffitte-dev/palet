@@ -1,17 +1,17 @@
 //! Layout components
 
-pub mod layout;
-pub mod header;
 pub mod footer;
-pub mod top_bar;
+pub mod header;
+pub mod layout;
 pub mod mobile_nav;
-pub mod sticky_header;
 pub mod responsive_container;
+pub mod sticky_header;
+pub mod top_bar;
 
-pub use layout::*;
-pub use header::*;
 pub use footer::*;
-pub use top_bar::*;
+pub use header::*;
+pub use layout::*;
 pub use mobile_nav::*;
-pub use sticky_header::*;
 pub use responsive_container::*;
+pub use sticky_header::*;
+pub use top_bar::*;

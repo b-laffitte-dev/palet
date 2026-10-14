@@ -3,9 +3,7 @@
 //! Main entry point for the web application
 
 use log::info;
-use palet_shared::{
-    ApiResponse, Club, Federation, Match, Player, Tournament, Championship,
-};
+use palet_shared::{ApiResponse, Championship, Club, Federation, Match, Player, Tournament};
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 use yew_router::prelude::*;
@@ -18,22 +16,12 @@ mod services;
 mod types;
 mod utils;
 
-use components::{layout::Layout, common::*};
+use components::{common::*, layout::Layout};
 use pages::{
-    home::Home,
-    clubs::Clubs,
-    club_detail::ClubDetail,
-    players::Players,
-    player_detail::PlayerDetail,
-    tournaments::Tournaments,
-    tournament_detail::TournamentDetail,
-    championships::Championships,
-    championship_detail::ChampionshipDetail,
-    federation::Federation,
-    actualites::Actualites,
-    connexion::Connexion,
-    inscription::Inscription,
-    not_found::NotFound,
+    actualites::Actualites, championship_detail::ChampionshipDetail, championships::Championships,
+    club_detail::ClubDetail, clubs::Clubs, connexion::Connexion, federation::Federation,
+    home::Home, inscription::Inscription, not_found::NotFound, player_detail::PlayerDetail,
+    players::Players, tournament_detail::TournamentDetail, tournaments::Tournaments,
 };
 use services::api::ApiService;
 
@@ -120,10 +108,10 @@ fn switch(routes: &Route) -> Html {
 #[function_component(App)]
 pub fn app() -> Html {
     let api_service = use_memo(|_| ApiService::new(), ());
-    
+
     // Provide API service via context
     let api_context = use_context_provider(|| api_service);
-    
+
     html! {
         <BrowserRouter>
             <Layout>
@@ -138,9 +126,9 @@ pub fn app() -> Html {
 pub fn run_app() {
     // Initialize logging
     wasm_logger::init(wasm_logger::Config::default());
-    
+
     info!("Starting Palet Vendéen Frontend...");
-    
+
     // Mount the app
     yew::Renderer::<App>::new().render();
 }

@@ -3,7 +3,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use super::{Header, Footer, MobileNav, StickyHeader};
+use super::{Footer, Header, MobileNav, StickyHeader};
 
 /// Layout component properties
 #[derive(Properties, PartialEq)]
@@ -23,15 +23,15 @@ pub fn layout(props: &LayoutProps) -> Html {
         <div class="min-h-screen bg-brand-green-900 text-brand-green-100 flex flex-col">
             {/* Sticky header for desktop */}
             <StickyHeader />
-            
+
             {/* Main content */}
             <main class="flex-1">
                 {children}
             </main>
-            
+
             {/* Footer */}
             <Footer />
-            
+
             {/* Mobile navigation */}
             <MobileNav />
         </div>
@@ -51,13 +51,15 @@ pub struct LinkProps {
 
 #[function_component(Link)]
 pub fn link(props: &LinkProps) -> Html {
-    let LinkProps { to, children, classes } = props;
+    let LinkProps {
+        to,
+        children,
+        classes,
+    } = props;
 
-    let base_classes = "text-brand-green-400 hover:text-brand-green-300 transition-colors duration-200";
-    let combined_classes = classes!(
-        base_classes,
-        classes.as_deref().unwrap_or("")
-    );
+    let base_classes =
+        "text-brand-green-400 hover:text-brand-green-300 transition-colors duration-200";
+    let combined_classes = classes!(base_classes, classes.as_deref().unwrap_or(""));
 
     html! {
         <yew_router::components::Link<Route> to={to.clone()} classes={combined_classes}>
