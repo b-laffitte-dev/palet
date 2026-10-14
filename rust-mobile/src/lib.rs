@@ -1,10 +1,9 @@
-//! Palet Vendéen Mobile - Tauri Implementation
+//! Palet Vendéen Mobile - Dioxus Library
 //!
-//! Library crate for mobile application
+//! Shared library for mobile application
 
-pub mod android;
-pub mod ios;
-
-// Re-export main types
-pub use android::*;
-pub use ios::*;
+pub mod components;
+pub mod pages;
+pub mod services;
+pub mod hooks;
+pub mod utils;

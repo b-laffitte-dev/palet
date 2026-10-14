@@ -1,17 +1,13 @@
-//! Layout components
+//! Layout components for Palet Vendéen Frontend
 
 pub mod footer;
 pub mod header;
 pub mod layout;
 pub mod mobile_nav;
-pub mod responsive_container;
 pub mod sticky_header;
-pub mod top_bar;
 
-pub use footer::*;
-pub use header::*;
-pub use layout::*;
-pub use mobile_nav::*;
-pub use responsive_container::*;
-pub use sticky_header::*;
-pub use top_bar::*;
+pub use footer::Footer;
+pub use header::Header;
+pub use layout::Layout;
+pub use mobile_nav::MobileNav;
+pub use sticky_header::StickyHeader;

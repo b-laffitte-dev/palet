@@ -5,11 +5,6 @@ members = [
 ]
 resolver = "2"
 
-# Frontend and mobile are excluded from workspace due to WASM/OpenSSL dependencies
-# They can be built separately when needed:
-# - rust-frontend: requires wasm-pack and web-sys dependencies
-# - rust-mobile: requires platform-specific Tauri setup
-
 [workspace.dependencies]
 # Shared dependencies
 serde = { version = "1", features = ["derive"] }

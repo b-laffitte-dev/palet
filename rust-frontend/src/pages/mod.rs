@@ -1,4 +1,4 @@
-//! Page components for Palet Vendéen Frontend
+//! Pages module for Palet Vendéen Frontend
 
 pub mod actualites;
 pub mod championship_detail;
@@ -15,17 +15,17 @@ pub mod players;
 pub mod tournament_detail;
 pub mod tournaments;
 
-pub use actualites::*;
-pub use championship_detail::*;
-pub use championships::*;
-pub use club_detail::*;
-pub use clubs::*;
-pub use connexion::*;
-pub use federation::*;
-pub use home::*;
-pub use inscription::*;
-pub use not_found::*;
-pub use player_detail::*;
-pub use players::*;
-pub use tournament_detail::*;
-pub use tournaments::*;
+pub use actualites::Actualites;
+pub use championship_detail::ChampionnatDetail;
+pub use championships::Championnats;
+pub use club_detail::ClubDetail;
+pub use clubs::Clubs;
+pub use connexion::Connexion;
+pub use federation::Federation;
+pub use home::Home;
+pub use inscription::Inscription;
+pub use not_found::NotFound;
+pub use player_detail::PlayerDetail;
+pub use players::Joueurs;
+pub use tournament_detail::TournamentDetail;
+pub use tournaments::Tournois;

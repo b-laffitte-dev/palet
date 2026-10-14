@@ -1,114 +1,77 @@
-//! Palet Vendéen Mobile - Tauri Implementation
+//! Palet Vendéen Mobile - Dioxus Implementation
 //!
-//! Main entry point for iOS and Android applications
+//! Main entry point for the mobile application (iOS and Android)
 
+use dioxus::prelude::*;
+use dioxus_router::prelude::*;
+use dioxus_mobile::launch;
 use log::info;
-use palet_shared::{
-    ApiResponse, Club, Federation, Match, Player, Tournament, Championship,
+
+mod components;
+mod pages;
+mod services;
+mod hooks;
+mod utils;
+
+use pages::{
+    home::Home, clubs::Clubs, club_detail::ClubDetail,
+    players::Joueurs, player_detail::PlayerDetail,
+    tournaments::Tournois, tournament_detail::TournamentDetail,
+    championships::Championnats, championship_detail::ChampionnatDetail,
+    federation::Federation, actualites::Actualites,
+    connexion::Connexion, inscription::Inscription, not_found::NotFound,
 };
-use tauri::Manager;
 
-// Re-export for mobile-specific functionality
-pub mod ios;
-pub mod android;
-
-/// Mobile application state
-pub struct MobileAppState {
-    pub api_url: String,
-    pub current_club: Option<Club>,
-    pub current_user: Option<palet_shared::User>,
+/// Route definitions
+#[derive(Clone, Debug, PartialEq, Routable)]
+#[rustfmt::skip]
+enum Route {
+    #[route("/")]
+    Home,
+    #[route("/championnats")]
+    Championnats,
+    #[route("/championnats/:id")]
+    ChampionnatDetail { id: String },
+    #[route("/tournois")]
+    Tournois,
+    #[route("/tournois/:id")]
+    TournamentDetail { id: String },
+    #[route("/clubs")]
+    Clubs,
+    #[route("/clubs/:id")]
+    ClubDetail { id: String },
+    #[route("/joueurs")]
+    Joueurs,
+    #[route("/joueurs/:id")]
+    PlayerDetail { id: String },
+    #[route("/actualites")]
+    Actualites,
+    #[route("/federation")]
+    Federation,
+    #[route("/connexion")]
+    Connexion,
+    #[route("/inscription")]
+    Inscription,
+    #[route("/404")]
+    NotFound,
 }
 
-impl Default for MobileAppState {
-    fn default() -> Self {
-        Self {
-            api_url: "http://localhost:3000".to_string(),
-            current_club: None,
-            current_user: None,
-        }
+/// Main App component
+#[component]
+fn App() -> Element {
+    rsx! {
+        Router::<Route> {}
     }
 }
 
-/// Initialize mobile application
-#[tauri::command]
-async fn initialize_app(state: tauri::State<'_, MobileAppState>) -> Result<(), String> {
-    info!("Initializing Palet Vendéen Mobile App");
-    Ok(())
-}
-
-/// Get clubs list
-#[tauri::command]
-async fn get_clubs(state: tauri::State<'_, MobileAppState>) -> Result<Vec<Club>, String> {
-    // In a real implementation, this would call the API
-    // For now, return empty vector
-    Ok(Vec::new())
-}
-
-/// Get club by ID
-#[tauri::command]
-async fn get_club(state: tauri::State<'_, MobileAppState>, id: String) -> Result<Option<Club>, String> {
-    // In a real implementation, this would call the API
-    Ok(None)
-}
-
-/// Get players by club
-#[tauri::command]
-async fn get_players_by_club(state: tauri::State<'_, MobileAppState>, club_id: String) -> Result<Vec<Player>, String> {
-    // In a real implementation, this would call the API
-    Ok(Vec::new())
-}
-
-/// Get tournaments
-#[tauri::command]
-async fn get_tournaments(state: tauri::State<'_, MobileAppState>) -> Result<Vec<Tournament>, String> {
-    // In a real implementation, this would call the API
-    Ok(Vec::new())
-}
-
-/// Get championships
-#[tauri::command]
-async fn get_championships(state: tauri::State<'_, MobileAppState>) -> Result<Vec<Championship>, String> {
-    // In a real implementation, this would call the API
-    Ok(Vec::new())
-}
-
-/// Get matches
-#[tauri::command]
-async fn get_matches(state: tauri::State<'_, MobileAppState>) -> Result<Vec<Match>, String> {
-    // In a real implementation, this would call the API
-    Ok(Vec::new())
-}
-
-/// Main entry point for Tauri mobile application
-fn main() {
+/// Main entry point for mobile
+#[no_mangle]
+pub fn dioxus_main() {
     // Initialize logging
-    #[cfg(debug_assertions)]
-    {
-        std::env::set_var("RUST_LOG", "debug");
-    }
+    dioxus_mobile::init_logging();
     
-    env_logger::Builder::from_env(
-        env_logger::Env::default().default_filter_or("info,tauri=info"),
-    )
-    .init();
-
-    info!("Starting Palet Vendéen Mobile App...");
-
-    tauri::Builder::default()
-        .setup(|app| {
-            info!("Application setup");
-            Ok(())
-        })
-        .manage(MobileAppState::default())
-        .invoke_handler(tauri::generate_handler![
-            initialize_app,
-            get_clubs,
-            get_club,
-            get_players_by_club,
-            get_tournaments,
-            get_championships,
-            get_matches,
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    info!("Starting Palet Vendéen Mobile with Dioxus...");
+    
+    // Launch the app
+    launch(App);
 }
