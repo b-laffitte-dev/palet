@@ -56,9 +56,6 @@ pub enum Route {
     Inscription,
     #[at("/404")]
     NotFound,
-    #[not_found]
-    #[at("/404")]
-    NotFoundRoute,
 }
 
 impl Route {
@@ -100,7 +97,7 @@ fn switch(routes: &Route) -> Html {
         Route::Federation => html! { <Federation /> },
         Route::Connexion => html! { <Connexion /> },
         Route::Inscription => html! { <Inscription /> },
-        Route::NotFound | Route::NotFoundRoute => html! { <NotFound /> },
+        Route::NotFound => html! { <NotFound /> },
     }
 }
 

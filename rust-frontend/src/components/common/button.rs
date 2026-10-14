@@ -78,10 +78,10 @@ pub fn button(props: &ButtonProps) -> Html {
         base_classes,
         variant_classes,
         size_classes,
-        classes.as_deref().unwrap_or("")
+        classes.as_ref().map(|s| s.as_str()).unwrap_or("")
     );
 
-    let button_type = r#type.as_deref().unwrap_or("button");
+    let button_type = r#type.as_ref().map(|s| s.as_str()).unwrap_or("button");
 
     html! {
         <button
@@ -149,7 +149,7 @@ pub fn link_button(props: &LinkButtonProps) -> Html {
         base_classes,
         variant_classes,
         size_classes,
-        classes.as_deref().unwrap_or("")
+        classes.as_ref().map(|s| s.as_str()).unwrap_or("")
     );
 
     html! {

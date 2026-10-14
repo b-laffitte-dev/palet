@@ -59,7 +59,10 @@ pub fn link(props: &LinkProps) -> Html {
 
     let base_classes =
         "text-brand-green-400 hover:text-brand-green-300 transition-colors duration-200";
-    let combined_classes = classes!(base_classes, classes.as_deref().unwrap_or(""));
+    let combined_classes = classes!(
+        base_classes,
+        classes.as_ref().map(|s| s.as_str()).unwrap_or("")
+    );
 
     html! {
         <yew_router::components::Link<Route> to={to.clone()} classes={combined_classes}>
