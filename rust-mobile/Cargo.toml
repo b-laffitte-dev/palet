@@ -6,11 +6,12 @@ authors = ["Palet Vendéen Team"]
 description = "Mobile application for Palet Vendéen - Tauri implementation for iOS and Android"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+name = "palet_mobile"
 
 [dependencies]
-# Tauri for mobile
-tauri = { version = "2", features = ["mobile"] }
+# Disable tauri mobile for now - needs special platform setup
+tauri = { version = "2", features = ["macos-private-api"], optional = true }
 
 # Shared types
 palet-shared = { path = "../rust-shared" }
