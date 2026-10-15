@@ -18,7 +18,7 @@ WORKDIR /app
 COPY . .
 
 # Build the wasm application
-RUN cd rust-frontend && wasm-pack build --target web --out-name palet_frontend --out-dir ./pkg
+RUN wasm-pack build --target web --out-name palet_frontend --out-dir ./pkg
 
 # Runtime stage using nginx
 FROM nginx:alpine
