@@ -1,7 +1,7 @@
 # Dockerfile for Palet Vendéen Backend (Rust)
 
 # Build stage
-FROM rust:1.80-slim AS builder
+FROM rust:slim AS builder
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -23,6 +23,7 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
     libssl3 \
     ca-certificates \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy binary from build stage

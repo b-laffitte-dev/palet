@@ -1,7 +1,7 @@
 # Dockerfile for Palet Vendéen Frontend (Rust/Yew)
 
 # Build stage
-FROM rust:1.80-slim AS builder
+FROM rust:slim AS builder
 
 # Install wasm-pack
 RUN cargo install wasm-pack
@@ -27,11 +27,14 @@ FROM nginx:alpine
 COPY --from=builder /app/rust-frontend/pkg /usr/share/nginx/html/pkg
 COPY --from=builder /app/rust-frontend/static /usr/share/nginx/html/static
 
+# Copy index.html
+COPY index.html /usr/share/nginx/html/index.html
+
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
-EXPOSE 8080
+EXPOSE 80
 
 # Run nginx
 CMD ["nginx", "-g", "daemon off;"]
