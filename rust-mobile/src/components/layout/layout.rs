@@ -1,7 +1,7 @@
 //! Main layout component for Palet Vendéen
 
-use dioxus::prelude::*;
 use super::{Footer, StickyHeader};
+use dioxus::prelude::*;
 
 /// Main layout component
 #[component]

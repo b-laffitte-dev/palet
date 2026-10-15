@@ -180,7 +180,7 @@ pub struct AuthState {
     pub two_factor_pending: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct SocialLinks {
     pub facebook: Option<String>,
     pub twitter: Option<String>,
@@ -191,7 +191,7 @@ pub struct SocialLinks {
 // CLUB TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Club {
     pub id: Uuid,
     pub name: String,
@@ -241,7 +241,7 @@ impl Timestamped for Club {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, utoipa::ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ClubStatus {
     Active,
@@ -833,7 +833,7 @@ pub struct CurrentScores {
 // API RESPONSE TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct ApiResponse<T> {
     pub data: T,
     pub message: Option<String>,
@@ -848,7 +848,7 @@ pub struct ApiError {
     pub details: Option<serde_json::Value>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Pagination {
     pub current: i64,
     pub total: i64,
@@ -858,13 +858,13 @@ pub struct Pagination {
     pub has_previous: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct PaginatedResponse<T> {
     pub data: Vec<T>,
     pub pagination: Pagination,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct HealthCheck {
     pub statut: String,
     pub version: String,
@@ -873,14 +873,14 @@ pub struct HealthCheck {
     pub cache: CacheStatus,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, utoipa::ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum DatabaseStatus {
     Connected,
     Disconnected,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, utoipa::ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum CacheStatus {
     Connected,
@@ -891,7 +891,7 @@ pub enum CacheStatus {
 // REQUEST/RESPONSE DTOs
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct CreateClubRequest {
     pub name: String,
     pub nickname: Option<String>,

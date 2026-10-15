@@ -1,8 +1,8 @@
 //! Home page for Palet Vendéen
 
-use dioxus::prelude::*;
+use crate::components::common::{Button, ButtonSize, ButtonVariant};
 use crate::components::layout::Layout;
-use crate::components::common::{Button, ButtonVariant, ButtonSize};
+use dioxus::prelude::*;
 
 /// Home page component
 #[component]

@@ -1,7 +1,7 @@
 //! Header component for Palet Vendéen
 
+use crate::components::common::{Button, ButtonSize, ButtonVariant, Logo};
 use dioxus::prelude::*;
-use crate::components::common::{Button, ButtonVariant, ButtonSize, Logo};
 
 /// Header component
 #[component]

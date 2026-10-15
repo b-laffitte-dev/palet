@@ -1,7 +1,7 @@
 //! Tournament detail page for Palet Vendéen
 
-use dioxus::prelude::*;
 use crate::components::layout::Layout;
+use dioxus::prelude::*;
 
 /// Page component
 #[component]

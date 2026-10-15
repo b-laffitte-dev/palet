@@ -12,7 +12,7 @@ use crate::AppState;
     path = "/health",
     tag = "Health",
     responses(
-        (status = 200, description = "API is healthy", body = HealthCheck),
+        (status = 200, description = "API is healthy", body = palet_shared::HealthCheck),
         (status = 503, description = "Service unavailable")
     )
 )]

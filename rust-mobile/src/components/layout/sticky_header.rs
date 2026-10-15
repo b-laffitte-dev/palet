@@ -1,7 +1,7 @@
 //! Sticky header component for Palet Vendéen
 
-use dioxus::prelude::*;
 use super::Header;
+use dioxus::prelude::*;
 
 /// Sticky header component for desktop
 #[component]

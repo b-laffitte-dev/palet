@@ -3,7 +3,7 @@
 //! Main entry point for the web application
 
 use dioxus::prelude::*;
-use dioxus_router::prelude::*;
+use dioxus_router::*;
 use dioxus_web::launch;
 use log::info;
 

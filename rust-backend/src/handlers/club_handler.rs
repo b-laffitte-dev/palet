@@ -11,7 +11,7 @@ use crate::AppState;
     path = "/clubs",
     tag = "Clubs",
     responses(
-        (status = 200, description = "List of clubs", body = PaginatedResponse<Club>),
+        (status = 200, description = "List of clubs", body = PaginatedResponse<palet_shared::Club>),
         (status = 500, description = "Internal server error")
     )
 )]
@@ -53,10 +53,10 @@ pub async fn get_clubs(state: web::Data<AppState>) -> impl Responder {
     path = "/clubs/{id}",
     tag = "Clubs",
     params(
-        ("id" = UUID, description = "Club ID")
+        ("id" = Uuid, description = "Club ID")
     ),
     responses(
-        (status = 200, description = "Club details", body = Club),
+        (status = 200, description = "Club details", body = palet_shared::Club),
         (status = 404, description = "Club not found"),
         (status = 500, description = "Internal server error")
     )
@@ -89,9 +89,9 @@ pub async fn get_club(state: web::Data<AppState>, id: web::Path<uuid::Uuid>) -> 
     post,
     path = "/clubs",
     tag = "Clubs",
-    request_body = CreateClubRequest,
+    request_body = palet_shared::CreateClubRequest,
     responses(
-        (status = 201, description = "Club created", body = Club),
+        (status = 201, description = "Club created", body = palet_shared::Club),
         (status = 400, description = "Invalid request data"),
         (status = 500, description = "Internal server error")
     )

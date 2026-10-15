@@ -5,17 +5,13 @@ edition = "2021"
 authors = ["Palet Vendéen Team"]
 description = "Frontend web application for Palet Vendéen - Dioxus implementation"
 
-[workspace]
-# Allow standalone build
-members = []
-
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 # Dioxus for web
-dioxus = { version = "0.5", features = ["web", "router"] }
-dioxus-web = "0.5"
+dioxus = { version = "0.7.10", features = ["web", "router"] }
+dioxus-web = "0.7.10"
 
 # Serialization
 serde = { version = "1", features = ["derive"] }

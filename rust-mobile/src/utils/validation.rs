@@ -7,7 +7,10 @@ pub fn validate_email(email: &str) -> bool {
 
 /// Validate a phone number (French format)
 pub fn validate_phone(phone: &str) -> bool {
-    phone.len() >= 10 && phone.chars().all(|c| c.is_ascii_digit() || c == '+' || c == ' ')
+    phone.len() >= 10
+        && phone
+            .chars()
+            .all(|c| c.is_ascii_digit() || c == '+' || c == ' ')
 }
 
 /// Validate a license number

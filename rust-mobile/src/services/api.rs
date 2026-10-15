@@ -1,6 +1,6 @@
 //! API service for Palet Vendéen Frontend
 
-use palet_shared::{Club, Tournament, Championship, Player, Federation};
+use palet_shared::{Championship, Club, Federation, Player, Tournament};
 
 /// API Service for making HTTP requests to the backend
 #[derive(Clone)]
