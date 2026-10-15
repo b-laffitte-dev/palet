@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:17
@@ -16,9 +18,14 @@ services:
       retries: 10
 
   api:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: rust-backend/Dockerfile
     environment:
-      DATABASE_URL: postgres://palet:palet@db:5432/palet
+      PALET__DATABASE_URL: postgres://palet:palet@db:5432/palet
+      PALET__ENVIRONMENT: production
+      PALET__LOG_LEVEL: info
+      PALET__JWT_SECRET: super-secret-key-for-production
     ports:
       - "3000:3000"
     depends_on:
@@ -26,13 +33,11 @@ services:
         condition: service_healthy
 
   web:
-    image: node:22
-    working_dir: /app
-    volumes:
-      - ./web:/app
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    build:
+      context: .
+      dockerfile: rust-frontend/Dockerfile
     ports:
-      - "5173:5173"
+      - "8080:8080"
     depends_on:
       - api
 
