@@ -2,7 +2,7 @@
 //!
 //! This module provides database connection management and error handling.
 
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use std::sync::Arc;
 
 // Re-export repositories

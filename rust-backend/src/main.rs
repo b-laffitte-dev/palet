@@ -8,7 +8,7 @@ use actix_web::{
 };
 use log::{error, info};
 use palet_shared::ApiResponse;
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use std::sync::Arc;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
