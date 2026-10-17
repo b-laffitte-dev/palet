@@ -18,7 +18,7 @@ WORKDIR /app
 COPY . .
 
 # Build the wasm application
-RUN wasm-pack build --target web --out-name palet_frontend --out-dir ./pkg
+RUN cd rust-frontend && wasm-pack build --target web --out-name palet_frontend --out-dir ./pkg
 
 # Runtime stage using nginx
 FROM nginx:alpine
@@ -28,10 +28,10 @@ COPY --from=builder /app/rust-frontend/pkg /usr/share/nginx/html/pkg
 COPY --from=builder /app/rust-frontend/static /usr/share/nginx/html/static
 
 # Copy index.html
-COPY index.html /usr/share/nginx/html/index.html
+COPY rust-frontend/index.html /usr/share/nginx/html/index.html
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY rust-frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
 EXPOSE 80

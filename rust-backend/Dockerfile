@@ -14,6 +14,7 @@ WORKDIR /app
 COPY . .
 
 # Build the application
+WORKDIR /app/rust-backend
 RUN cargo build --release --bin palet-backend
 
 # Runtime stage
@@ -30,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /app/target/release/palet-backend /usr/local/bin/palet-backend
 
 # Copy configuration
-COPY --from=builder /app/config /app/config
+COPY --from=builder /app/rust-backend/config /app/config
 
 # Create app directory
 WORKDIR /app

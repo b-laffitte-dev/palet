@@ -17,8 +17,8 @@ services:
 
   api:
     build:
-      context: rust-backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: rust-backend/Dockerfile
     environment:
       PALET__DATABASE_URL: postgres://palet:palet@db:5432/palet
       PALET__ENVIRONMENT: production
@@ -38,8 +38,8 @@ services:
 
   web:
     build:
-      context: rust-frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: rust-frontend/Dockerfile
     ports:
       - "8080:80"
     depends_on:
