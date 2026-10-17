@@ -5,6 +5,7 @@
 use actix_web::{web, HttpResponse, Responder};
 use palet_shared::{ApiResponse, Club, CreateClubRequest, PaginatedResponse, Pagination};
 use uuid::Uuid;
+use crate::repositories::club_repository::ClubRepository;
 
 use crate::AppState;
 

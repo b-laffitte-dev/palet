@@ -5,7 +5,7 @@
 use async_trait::async_trait;
 use chrono::Utc;
 use palet_shared::{CreatePlayerRequest, DominantHand, LicenseStatus, Player, PlayerStatus};
-use sqlx::PgPool;
+use sqlx::{FromRow, PgPool, Row};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -56,33 +56,33 @@ impl PostgresPlayerRepository {
 
     // Helper function to convert database row to Player
     async fn row_to_player(row: sqlx::postgres::PgRow) -> Result<Player, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let first_name: String = row.get("first_name");
-        let last_name: String = row.get("last_name");
+        let id: Uuid = row.get::<_, _>("id");
+        let first_name: String = row.get::<_, _>("first_name");
+        let last_name: String = row.get::<_, _>("last_name");
         let full_name = format!("{} {}", first_name, last_name);
-        let alias: Option<String> = row.get("alias");
-        let email: String = row.get("email");
-        let photo: Option<String> = row.get("photo");
-        let status: PlayerStatus = row.get("status");
-        let birth_date: chrono::DateTime<Utc> = row.get("birth_date");
-        let age: i32 = row.get("age");
-        let birth_place: Option<String> = row.get("birth_place");
-        let nationality: String = row.get("nationality");
-        let dominant_hand: DominantHand = row.get("dominant_hand");
-        let play_style: Option<String> = row.get("play_style");
-        let phone: Option<String> = row.get("phone");
-        let address: Option<String> = row.get("address");
-        let city: Option<String> = row.get("city");
-        let postal_code: Option<String> = row.get("postal_code");
-        let club_id: Uuid = row.get("club_id");
-        let club_number: Option<String> = row.get("club_number");
-        let category: String = row.get("category");
-        let license_number: String = row.get("license_number");
-        let license_date: chrono::DateTime<Utc> = row.get("license_date");
-        let license_status: LicenseStatus = row.get("license_status");
-        let registration_date: chrono::DateTime<Utc> = row.get("registration_date");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let alias: Option<String> = row.get::<_, _>("alias");
+        let email: String = row.get::<_, _>("email");
+        let photo: Option<String> = row.get::<_, _>("photo");
+        let status: PlayerStatus = row.get::<_, _>("status");
+        let birth_date: chrono::DateTime<Utc> = row.get::<_, _>("birth_date");
+        let age: i32 = row.get::<_, _>("age");
+        let birth_place: Option<String> = row.get::<_, _>("birth_place");
+        let nationality: String = row.get::<_, _>("nationality");
+        let dominant_hand: DominantHand = row.get::<_, _>("dominant_hand");
+        let play_style: Option<String> = row.get::<_, _>("play_style");
+        let phone: Option<String> = row.get::<_, _>("phone");
+        let address: Option<String> = row.get::<_, _>("address");
+        let city: Option<String> = row.get::<_, _>("city");
+        let postal_code: Option<String> = row.get::<_, _>("postal_code");
+        let club_id: Uuid = row.get::<_, _>("club_id");
+        let club_number: Option<String> = row.get::<_, _>("club_number");
+        let category: String = row.get::<_, _>("category");
+        let license_number: String = row.get::<_, _>("license_number");
+        let license_date: chrono::DateTime<Utc> = row.get::<_, _>("license_date");
+        let license_status: LicenseStatus = row.get::<_, _>("license_status");
+        let registration_date: chrono::DateTime<Utc> = row.get::<_, _>("registration_date");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, _>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, _>("updated_at");
 
         Ok(Player {
             id,

@@ -9,6 +9,7 @@ use palet_shared::{
     CreateChampionshipRequest, PaginatedResponse, Pagination, UpdateChampionshipRequest,
 };
 use uuid::Uuid;
+use crate::repositories::championship_repository::ChampionshipRepository;
 
 use crate::AppState;
 

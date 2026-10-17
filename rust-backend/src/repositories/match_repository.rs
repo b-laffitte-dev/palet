@@ -109,37 +109,37 @@ impl PostgresMatchRepository {
 
     // Helper function to convert database row to Match
     async fn row_to_match(row: sqlx::postgres::PgRow) -> Result<Match, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let competition_id: Uuid = row.get("competition_id");
-        let competition_type = row.get("competition_type");
-        let journee: Option<i32> = row.get("journee");
-        let phase: Option<String> = row.get("phase");
-        let round: Option<String> = row.get("round");
-        let team1_id: Uuid = row.get("team1_id");
-        let team2_id: Uuid = row.get("team2_id");
-        let team1_score: Option<i32> = row.get("team1_score");
-        let team2_score: Option<i32> = row.get("team2_score");
-        let winner: Option<MatchWinner> = row.get("winner");
-        let manches: Option<Vec<MancheScore>> = row.get("manches");
-        let best_of: Option<i32> = row.get("best_of");
-        let current_manche: Option<i32> = row.get("current_manche");
+        let id: Uuid = row.get::<_, _>("id");
+        let competition_id: Uuid = row.get::<_, _>("competition_id");
+        let competition_type = row.get::<_, _>("competition_type");
+        let journee: Option<i32> = row.get::<_, _>("journee");
+        let phase: Option<String> = row.get::<_, _>("phase");
+        let round: Option<String> = row.get::<_, _>("round");
+        let team1_id: Uuid = row.get::<_, _>("team1_id");
+        let team2_id: Uuid = row.get::<_, _>("team2_id");
+        let team1_score: Option<i32> = row.get::<_, _>("team1_score");
+        let team2_score: Option<i32> = row.get::<_, _>("team2_score");
+        let winner: Option<MatchWinner> = row.get::<_, _>("winner");
+        let manches: Option<Vec<MancheScore>> = row.get::<_, _>("manches");
+        let best_of: Option<i32> = row.get::<_, _>("best_of");
+        let current_manche: Option<i32> = row.get::<_, _>("current_manche");
         let current_scores = row.get::<Option<serde_json::Value>, _>("current_scores");
         let current_scores: Option<palet_shared::CurrentScores> = match current_scores {
             Some(value) => serde_json::from_value(value).ok(),
             None => None,
         };
-        let status: MatchStatus = row.get("status");
-        let verified: bool = row.get("verified");
-        let verified_by: Option<Uuid> = row.get("verified_by");
-        let verified_at: Option<chrono::DateTime<Utc>> = row.get("verified_at");
-        let date: chrono::DateTime<Utc> = row.get("date");
-        let time: Option<String> = row.get("time");
-        let location: Option<String> = row.get("location");
-        let duration: Option<String> = row.get("duration");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
-        let started_at: Option<chrono::DateTime<Utc>> = row.get("started_at");
-        let ended_at: Option<chrono::DateTime<Utc>> = row.get("ended_at");
+        let status: MatchStatus = row.get::<_, _>("status");
+        let verified: bool = row.get::<_, _>("verified");
+        let verified_by: Option<Uuid> = row.get::<_, _>("verified_by");
+        let verified_at: Option<chrono::DateTime<Utc>> = row.get::<_, _>("verified_at");
+        let date: chrono::DateTime<Utc> = row.get::<_, _>("date");
+        let time: Option<String> = row.get::<_, _>("time");
+        let location: Option<String> = row.get::<_, _>("location");
+        let duration: Option<String> = row.get::<_, _>("duration");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, _>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, _>("updated_at");
+        let started_at: Option<chrono::DateTime<Utc>> = row.get::<_, _>("started_at");
+        let ended_at: Option<chrono::DateTime<Utc>> = row.get::<_, _>("ended_at");
 
         Ok(Match {
             id,

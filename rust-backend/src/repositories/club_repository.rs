@@ -5,7 +5,7 @@
 use async_trait::async_trait;
 use chrono::Utc;
 use palet_shared::{Club, ClubStatus, CreateClubRequest, UpdateClubRequest};
-use sqlx::PgPool;
+use sqlx::{FromRow, PgPool, Row};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -63,29 +63,29 @@ impl PostgresClubRepository {
 
     // Helper function to convert database row to Club
     async fn row_to_club(row: sqlx::postgres::PgRow) -> Result<Club, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let name: String = row.get("name");
-        let nickname: Option<String> = row.get("nickname");
-        let code: String = row.get("code");
-        let logo: Option<String> = row.get("logo");
-        let address: Option<String> = row.get("address");
-        let city: String = row.get("city");
-        let postal_code: Option<String> = row.get("postal_code");
-        let league: String = row.get("league");
-        let division: String = row.get("division");
-        let status: ClubStatus = row.get("status");
-        let players_count: i32 = row.get("players_count");
-        let teams_count: i32 = row.get("teams_count");
-        let contact_email: Option<String> = row.get("contact_email");
-        let contact_phone: Option<String> = row.get("contact_phone");
-        let website: Option<String> = row.get("website");
+        let id: Uuid = row.get::<_, _>("id");
+        let name: String = row.get::<_, _>("name");
+        let nickname: Option<String> = row.get::<_, _>("nickname");
+        let code: String = row.get::<_, _>("code");
+        let logo: Option<String> = row.get::<_, _>("logo");
+        let address: Option<String> = row.get::<_, _>("address");
+        let city: String = row.get::<_, _>("city");
+        let postal_code: Option<String> = row.get::<_, _>("postal_code");
+        let league: String = row.get::<_, _>("league");
+        let division: String = row.get::<_, _>("division");
+        let status: ClubStatus = row.get::<_, _>("status");
+        let players_count: i32 = row.get::<_, _>("players_count");
+        let teams_count: i32 = row.get::<_, _>("teams_count");
+        let contact_email: Option<String> = row.get::<_, _>("contact_email");
+        let contact_phone: Option<String> = row.get::<_, _>("contact_phone");
+        let website: Option<String> = row.get::<_, _>("website");
 
         // Parse social links
-        let social_json: serde_json::Value = row.get("social");
+        let social_json: serde_json::Value = row.get::<_, _>("social");
         let social: palet_shared::SocialLinks = serde_json::from_value(social_json).unwrap_or_default();
 
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, _>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, _>("updated_at");
 
         Ok(Club {
             id,

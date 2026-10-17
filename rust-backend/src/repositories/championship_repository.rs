@@ -10,7 +10,7 @@ use palet_shared::{
     ClassificationSecondary, ClassificationTertiary, CompetitionStatus, CreateChampionshipRequest,
     TeamClassificationStatus, TeamStats, UpdateChampionshipRequest,
 };
-use sqlx::PgPool;
+use sqlx::{FromRow, PgPool, Row};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -122,32 +122,32 @@ impl PostgresChampionshipRepository {
     async fn row_to_championship(
         row: sqlx::postgres::PgRow,
     ) -> Result<Championship, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let name: String = row.get("name");
-        let code: Option<String> = row.get("code");
-        let season: String = row.get("season");
-        let description: Option<String> = row.get("description");
-        let league: String = row.get("league");
-        let divisions: Vec<String> = row.get("divisions");
-        let total_journees: i32 = row.get("total_journees");
-        let journee_duration: Option<String> = row.get("journee_duration");
+        let id: Uuid = row.get::<_, _>("id");
+        let name: String = row.get::<_, _>("name");
+        let code: Option<String> = row.get::<_, _>("code");
+        let season: String = row.get::<_, _>("season");
+        let description: Option<String> = row.get::<_, _>("description");
+        let league: String = row.get::<_, _>("league");
+        let divisions: Vec<String> = row.get::<_, _>("divisions");
+        let total_journees: i32 = row.get::<_, _>("total_journees");
+        let journee_duration: Option<String> = row.get::<_, _>("journee_duration");
         
         // Parse classification rules
-        let primary: ClassificationPrimary = row.get("classification_primary");
-        let secondary: ClassificationSecondary = row.get("classification_secondary");
-        let tertiary: ClassificationTertiary = row.get("classification_tertiary");
+        let primary: ClassificationPrimary = row.get::<_, _>("classification_primary");
+        let secondary: ClassificationSecondary = row.get::<_, _>("classification_secondary");
+        let tertiary: ClassificationTertiary = row.get::<_, _>("classification_tertiary");
         let classification_rules = palet_shared::ClassificationRules {
             primary,
             secondary,
             tertiary,
         };
 
-        let status: CompetitionStatus = row.get("status");
-        let current_journee: Option<i32> = row.get("current_journee");
-        let current_phase: Option<String> = row.get("current_phase");
-        let organizer_id: Uuid = row.get("organizer_id");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let status: CompetitionStatus = row.get::<_, _>("status");
+        let current_journee: Option<i32> = row.get::<_, _>("current_journee");
+        let current_phase: Option<String> = row.get::<_, _>("current_phase");
+        let organizer_id: Uuid = row.get::<_, _>("organizer_id");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, _>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, _>("updated_at");
 
         Ok(Championship {
             id,
@@ -173,12 +173,12 @@ impl PostgresChampionshipRepository {
     async fn row_to_classification(
         row: sqlx::postgres::PgRow,
     ) -> Result<ChampionshipClassification, sqlx::Error> {
-        let division: String = row.get("division");
-        let journee: i32 = row.get("journee");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let division: String = row.get::<_, _>("division");
+        let journee: i32 = row.get::<_, _>("journee");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, _>("updated_at");
         
         // Parse teams JSON
-        let teams_json: serde_json::Value = row.get("teams");
+        let teams_json: serde_json::Value = row.get::<_, _>("teams");
         let teams: Vec<ChampionshipTeam> = serde_json::from_value(teams_json)?;
 
         Ok(ChampionshipClassification {
@@ -193,18 +193,18 @@ impl PostgresChampionshipRepository {
     async fn row_to_championship_team(
         row: sqlx::postgres::PgRow,
     ) -> Result<ChampionshipTeam, sqlx::Error> {
-        let position: i32 = row.get("position");
-        let team_id: Uuid = row.get("team_id");
+        let position: i32 = row.get::<_, _>("position");
+        let team_id: Uuid = row.get::<_, _>("team_id");
         
         // Parse stats JSON
-        let stats_json: serde_json::Value = row.get("stats");
+        let stats_json: serde_json::Value = row.get::<_, _>("stats");
         let stats: TeamStats = serde_json::from_value(stats_json)?;
 
         // Parse form JSON
-        let form_json: serde_json::Value = row.get("form");
+        let form_json: serde_json::Value = row.get::<_, _>("form");
         let form: Vec<palet_shared::MatchResult> = serde_json::from_value(form_json).unwrap_or_default();
 
-        let status: TeamClassificationStatus = row.get("status");
+        let status: TeamClassificationStatus = row.get::<_, _>("status");
 
         Ok(ChampionshipTeam {
             position,

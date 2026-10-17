@@ -6,6 +6,7 @@ use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 use palet_shared::{ApiResponse, CreateMatchRequest, Match, MatchStatus, MancheScore, PaginatedResponse, Pagination, UpdateMatchRequest, MatchWinner};
 use uuid::Uuid;
+use crate::repositories::match_repository::MatchRepository;
 
 use crate::AppState;
 
