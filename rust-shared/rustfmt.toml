@@ -1,4 +1,4 @@
-# Rustfmt configuration for Palet Vendéen shared library
+# Rustfmt configuration for Palet Vendeen shared library
 # This file configures the Rust code formatter for consistent style
 
 # Basic configuration
@@ -22,7 +22,7 @@ imports_granularity = "Crate"
 group_imports = "StdExternalCrate"
 
 # Brace style
-brace_style = "AlwaysSameLine"
+brace_style = "SameLineWhere"
 control_brace_style = "AlwaysSameLine"
 
 # Line wrapping
