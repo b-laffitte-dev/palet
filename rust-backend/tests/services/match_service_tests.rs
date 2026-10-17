@@ -1,10 +1,11 @@
-//! Tests TDD pour MatchService (Palet Vendéen)
+//! Tests TDD pour MatchService (Palet Vendeen)
 //!
 //! Approche :
-//! 1. Écrire les tests EN PREMIER (rouge)
+//! 1. Ecrire les tests EN PREMIER (rouge)
 //! 2. Implémenter le code minimal pour passer les tests (vert)
 //! 3. Refactoriser (si nécessaire)
 
+use chrono::Utc;
 use palet_shared::{
     CompetitionType, CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner,
     UpdateMatchRequest,
@@ -13,7 +14,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::harness::mocks::MockMatchRepository;
-use crate::harness::utils::{create_match, new_id};
+use crate::harness::utils::new_id;
 use crate::services::match_service::{MatchService, MatchServiceError, MatchServiceImpl};
 
 // ============================================
@@ -27,7 +28,7 @@ fn create_test_service() -> MatchServiceImpl<MockMatchRepository> {
 }
 
 // ============================================
-// 1. TESTS DE CRÉATION DE MATCH
+// 1. TESTS DE CREATION DE MATCH
 // ============================================
 
 #[tokio::test]
@@ -36,13 +37,13 @@ async fn test_create_match_with_valid_data() {
     let service = create_test_service();
     let team1_id = new_id();
     let team2_id = new_id();
-    
+
     let request = CreateMatchRequest {
         competition_id: Uuid::new_v4(),
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Salle des Essarts".to_string()),
         journee: Some(1),
         phase: None,
@@ -55,7 +56,7 @@ async fn test_create_match_with_valid_data() {
 
     // THEN: Should succeed
     assert!(result.is_ok(), "Creating valid match should succeed");
-    
+
     let match_obj = result.unwrap();
     assert_eq!(match_obj.competition_type, CompetitionType::Championship);
     assert_eq!(match_obj.team1_id, team1_id);
@@ -70,13 +71,13 @@ async fn test_create_match_with_same_teams_fails() {
     // GIVEN: A service and invalid request (same team1 and team2)
     let service = create_test_service();
     let team_id = new_id();
-    
+
     let request = CreateMatchRequest {
         competition_id: Uuid::new_v4(),
         competition_type: CompetitionType::Championship,
         team1_id: team_id,
         team2_id: team_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -89,7 +90,7 @@ async fn test_create_match_with_same_teams_fails() {
 
     // THEN: Should fail with validation error
     assert!(result.is_err(), "Creating match with same teams should fail");
-    
+
     match result.unwrap_err() {
         MatchServiceError::ValidationError(msg) => {
             assert!(msg.contains("same"), "Error should mention same teams");
@@ -104,13 +105,13 @@ async fn test_create_match_with_invalid_best_of_fails() {
     let service = create_test_service();
     let team1_id = new_id();
     let team2_id = new_id();
-    
+
     let request = CreateMatchRequest {
         competition_id: Uuid::new_v4(),
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -123,7 +124,7 @@ async fn test_create_match_with_invalid_best_of_fails() {
 
     // THEN: Should fail with validation error
     assert!(result.is_err(), "Creating match with invalid best_of should fail");
-    
+
     match result.unwrap_err() {
         MatchServiceError::ValidationError(msg) => {
             assert!(msg.contains("13 or 15"), "Error should mention valid best_of values");
@@ -138,13 +139,13 @@ async fn test_create_match_with_past_date_fails() {
     let service = create_test_service();
     let team1_id = new_id();
     let team2_id = new_id();
-    
+
     let request = CreateMatchRequest {
         competition_id: Uuid::new_v4(),
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() - chrono::Duration::days(1), // Past date
+        date: Utc::now() - chrono::Duration::days(1), // Past date
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -157,7 +158,7 @@ async fn test_create_match_with_past_date_fails() {
 
     // THEN: Should fail with validation error
     assert!(result.is_err(), "Creating match with past date should fail");
-    
+
     match result.unwrap_err() {
         MatchServiceError::ValidationError(msg) => {
             assert!(msg.contains("past"), "Error should mention past date");
@@ -172,13 +173,13 @@ async fn test_create_tournament_match_with_best_of_15() {
     let service = create_test_service();
     let team1_id = new_id();
     let team2_id = new_id();
-    
+
     let request = CreateMatchRequest {
         competition_id: Uuid::new_v4(),
         competition_type: CompetitionType::Tournament,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Salle des Essarts".to_string()),
         journee: None,
         phase: Some("Finale".to_string()),
@@ -190,8 +191,11 @@ async fn test_create_tournament_match_with_best_of_15() {
     let result = service.create_match(request).await;
 
     // THEN: Should succeed
-    assert!(result.is_ok(), "Creating tournament final match with best_of 15 should succeed");
-    
+    assert!(
+        result.is_ok(),
+        "Creating tournament final match with best_of 15 should succeed"
+    );
+
     let match_obj = result.unwrap();
     assert_eq!(match_obj.competition_type, CompetitionType::Tournament);
     assert_eq!(match_obj.best_of, Some(15));
@@ -225,7 +229,10 @@ async fn test_get_matches_empty() {
     let result = service.get_matches().await;
 
     // THEN: Should return empty list
-    assert!(result.is_ok(), "Getting all matches from empty repo should succeed");
+    assert!(
+        result.is_ok(),
+        "Getting all matches from empty repo should succeed"
+    );
     assert!(result.unwrap().is_empty());
 }
 
@@ -255,7 +262,7 @@ async fn test_get_matches_by_team() {
 }
 
 // ============================================
-// 3. TESTS DE MISE À JOUR DE MATCH
+// 3. TESTS DE MISE A JOUR DE MATCH
 // ============================================
 
 #[tokio::test]
@@ -290,7 +297,7 @@ async fn test_update_match_scores() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -313,7 +320,7 @@ async fn test_update_match_scores() {
 
     // THEN: Should succeed
     assert!(result.is_ok(), "Updating match scores should succeed");
-    
+
     if let Some(updated) = result.unwrap() {
         assert_eq!(updated.team1_score, 13);
         assert_eq!(updated.team2_score, 10);
@@ -353,7 +360,7 @@ async fn test_delete_match() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -387,7 +394,7 @@ async fn test_start_match() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -402,7 +409,7 @@ async fn test_start_match() {
 
     // THEN: Should succeed
     assert!(result.is_ok(), "Starting match should succeed");
-    
+
     let started = result.unwrap();
     assert_eq!(started.status, MatchStatus::InProgress);
 }
@@ -419,7 +426,7 @@ async fn test_complete_match() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -428,7 +435,7 @@ async fn test_complete_match() {
     };
 
     let mut match_obj = service.create_match(create_request).await.unwrap();
-    
+
     // Start the match first
     match_obj = service.start_match(match_obj.id).await.unwrap();
 
@@ -437,14 +444,14 @@ async fn test_complete_match() {
 
     // THEN: Should succeed
     assert!(result.is_ok(), "Completing match should succeed");
-    
+
     let completed = result.unwrap();
     assert_eq!(completed.status, MatchStatus::Completed);
     assert_eq!(completed.winner, Some(MatchWinner::Team1));
 }
 
 // ============================================
-// 6. TESTS DE MANCHE (Palet Vendéen)
+// 6. TESTS DE MANCHE (Palet Vendeen)
 // ============================================
 
 #[tokio::test]
@@ -459,7 +466,7 @@ async fn test_add_manche() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -475,10 +482,12 @@ async fn test_add_manche() {
 
     // THEN: Should succeed
     assert!(result.is_ok(), "Adding manche should succeed");
-    
+
     let updated = result.unwrap();
     // Verify manche was added
-    assert!(!updated.team1_manches.is_empty() || !updated.team2_manches.is_empty());
+    assert!(
+        !updated.team1_manches.is_empty() || !updated.team2_manches.is_empty()
+    );
 }
 
 #[tokio::test]
@@ -493,7 +502,7 @@ async fn test_add_manche_with_negative_score_fails() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -508,11 +517,17 @@ async fn test_add_manche_with_negative_score_fails() {
     let result = service.add_manche(match_obj.id, -1, 4).await;
 
     // THEN: Should fail with validation error
-    assert!(result.is_err(), "Adding manche with negative score should fail");
-    
+    assert!(
+        result.is_err(),
+        "Adding manche with negative score should fail"
+    );
+
     match result.unwrap_err() {
         MatchServiceError::ValidationError(msg) => {
-            assert!(msg.contains("negative"), "Error should mention negative score");
+            assert!(
+                msg.contains("negative"),
+                "Error should mention negative score"
+            );
         }
         _ => panic!("Expected ValidationError"),
     }
@@ -530,7 +545,7 @@ async fn test_add_manche_with_score_exceeding_6_fails() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -545,8 +560,11 @@ async fn test_add_manche_with_score_exceeding_6_fails() {
     let result = service.add_manche(match_obj.id, 7, 4).await;
 
     // THEN: Should fail with validation error
-    assert!(result.is_err(), "Adding manche with score > 6 should fail");
-    
+    assert!(
+        result.is_err(),
+        "Adding manche with score > 6 should fail"
+    );
+
     match result.unwrap_err() {
         MatchServiceError::ValidationError(msg) => {
             assert!(msg.contains("6"), "Error should mention max score of 6");
@@ -567,7 +585,7 @@ async fn test_update_manche() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -577,7 +595,7 @@ async fn test_update_manche() {
 
     let mut match_obj = service.create_match(create_request).await.unwrap();
     match_obj = service.start_match(match_obj.id).await.unwrap();
-    
+
     // Add first manche
     match_obj = service.add_manche(match_obj.id, 6, 4).await.unwrap();
 
@@ -589,7 +607,7 @@ async fn test_update_manche() {
 }
 
 // ============================================
-// 7. TESTS DE VÉRIFICATION DE MATCH
+// 7. TESTS DE VERIFICATION DE MATCH
 // ============================================
 
 #[tokio::test]
@@ -605,7 +623,7 @@ async fn test_verify_match() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -615,14 +633,17 @@ async fn test_verify_match() {
 
     let mut match_obj = service.create_match(create_request).await.unwrap();
     match_obj = service.start_match(match_obj.id).await.unwrap();
-    match_obj = service.complete_match(match_obj.id, MatchWinner::Team1).await.unwrap();
+    match_obj = service
+        .complete_match(match_obj.id, MatchWinner::Team1)
+        .await
+        .unwrap();
 
     // WHEN: Verify match
     let result = service.verify_match(match_obj.id, verifier_id).await;
 
     // THEN: Should succeed
     assert!(result.is_ok(), "Verifying match should succeed");
-    
+
     let verified = result.unwrap();
     // In a real implementation, verified_by would be set
 }
@@ -640,7 +661,7 @@ async fn test_unverify_match() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -650,7 +671,10 @@ async fn test_unverify_match() {
 
     let mut match_obj = service.create_match(create_request).await.unwrap();
     match_obj = service.start_match(match_obj.id).await.unwrap();
-    match_obj = service.complete_match(match_obj.id, MatchWinner::Team1).await.unwrap();
+    match_obj = service
+        .complete_match(match_obj.id, MatchWinner::Team1)
+        .await
+        .unwrap();
     match_obj = service.verify_match(match_obj.id, verifier_id).await.unwrap();
 
     // WHEN: Unverify match
@@ -661,7 +685,7 @@ async fn test_unverify_match() {
 }
 
 // ============================================
-// 8. TESTS DE RÈGLES PALET VENDÉEN
+// 8. TESTS DE REGLES PALET VENDEEN
 // ============================================
 
 #[tokio::test]
@@ -673,7 +697,10 @@ async fn test_validate_manche_score_with_valid_scores() {
     let result = service.validate_manche_score(6, 4).await;
 
     // THEN: Should succeed
-    assert!(result.is_ok(), "Validating valid manche score should succeed");
+    assert!(
+        result.is_ok(),
+        "Validating valid manche score should succeed"
+    );
 }
 
 #[tokio::test]
@@ -685,7 +712,10 @@ async fn test_validate_manche_score_with_zero_scores() {
     let result = service.validate_manche_score(0, 0).await;
 
     // THEN: Should succeed (0-0 is technically valid, though unusual)
-    assert!(result.is_ok(), "Validating zero scores should succeed");
+    assert!(
+        result.is_ok(),
+        "Validating zero scores should succeed"
+    );
 }
 
 #[tokio::test]
@@ -700,7 +730,7 @@ async fn test_check_match_completion_not_completed() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -709,21 +739,28 @@ async fn test_check_match_completion_not_completed() {
     };
 
     let mut match_obj = service.create_match(create_request).await.unwrap();
-    
+
     // Update scores but not enough to complete
     let update_request = UpdateMatchRequest {
         team1_score: Some(10),
         team2_score: Some(8),
         ..Default::default()
     };
-    
-    match_obj = service.update_match(match_obj.id, update_request).await.unwrap().unwrap();
+
+    match_obj = service
+        .update_match(match_obj.id, update_request)
+        .await
+        .unwrap()
+        .unwrap();
 
     // WHEN: Check if match is completed
     let result = service.check_match_completion(&match_obj).await;
 
     // THEN: Should return false
-    assert!(result.is_ok(), "Checking match completion should succeed");
+    assert!(
+        result.is_ok(),
+        "Checking match completion should succeed"
+    );
     assert!(!result.unwrap(), "Match should not be completed yet");
 }
 
@@ -739,7 +776,7 @@ async fn test_check_match_completion_is_completed() {
         competition_type: CompetitionType::Championship,
         team1_id,
         team2_id,
-        date: chrono::Utc::now() + chrono::Duration::hours(1),
+        date: Utc::now() + chrono::Duration::hours(1),
         location: Some("Test".to_string()),
         journee: Some(1),
         phase: None,
@@ -748,26 +785,33 @@ async fn test_check_match_completion_is_completed() {
     };
 
     let mut match_obj = service.create_match(create_request).await.unwrap();
-    
+
     // Update scores to reach best_of
     let update_request = UpdateMatchRequest {
         team1_score: Some(13),
         team2_score: Some(10),
         ..Default::default()
     };
-    
-    match_obj = service.update_match(match_obj.id, update_request).await.unwrap().unwrap();
+
+    match_obj = service
+        .update_match(match_obj.id, update_request)
+        .await
+        .unwrap()
+        .unwrap();
 
     // WHEN: Check if match is completed
     let result = service.check_match_completion(&match_obj).await;
 
     // THEN: Should return true
-    assert!(result.is_ok(), "Checking match completion should succeed");
+    assert!(
+        result.is_ok(),
+        "Checking match completion should succeed"
+    );
     assert!(result.unwrap(), "Match should be completed");
 }
 
 // ============================================
-// 9. TESTS DE REQUÊTES PAR COMPÉTITION
+// 9. TESTS DE REQUETES PAR COMPETITION
 // ============================================
 
 #[tokio::test]
@@ -780,7 +824,10 @@ async fn test_get_matches_by_competition() {
     let result = service.get_matches_by_competition(competition_id).await;
 
     // THEN: Should succeed
-    assert!(result.is_ok(), "Getting matches by competition should succeed");
+    assert!(
+        result.is_ok(),
+        "Getting matches by competition should succeed"
+    );
 }
 
 #[tokio::test]
@@ -793,7 +840,10 @@ async fn test_get_championship_matches() {
     let result = service.get_championship_matches(championship_id).await;
 
     // THEN: Should succeed
-    assert!(result.is_ok(), "Getting championship matches should succeed");
+    assert!(
+        result.is_ok(),
+        "Getting championship matches should succeed"
+    );
 }
 
 #[tokio::test]
@@ -806,7 +856,10 @@ async fn test_get_matches_by_journee() {
     let result = service.get_matches_by_journee(1, competition_id).await;
 
     // THEN: Should succeed
-    assert!(result.is_ok(), "Getting matches by journee should succeed");
+    assert!(
+        result.is_ok(),
+        "Getting matches by journee should succeed"
+    );
 }
 
 #[tokio::test]
@@ -816,8 +869,13 @@ async fn test_get_completed_matches_by_championship() {
     let championship_id = new_id();
 
     // WHEN: Get completed matches by championship
-    let result = service.get_completed_matches_by_championship(championship_id).await;
+    let result = service
+        .get_completed_matches_by_championship(championship_id)
+        .await;
 
     // THEN: Should succeed
-    assert!(result.is_ok(), "Getting completed matches by championship should succeed");
+    assert!(
+        result.is_ok(),
+        "Getting completed matches by championship should succeed"
+    );
 }
