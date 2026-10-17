@@ -20,7 +20,7 @@ mod handlers;
 
 use config::load_config;
 use db::Database;
-use handlers::{club_handler, health_handler};
+use handlers::{championship_handler, club_handler, health_handler, match_handler};
 
 // App state shared across all routes
 
@@ -38,11 +38,33 @@ pub struct AppState {
         club_handler::get_clubs,
         club_handler::create_club,
         club_handler::get_club,
+        match_handler::get_matches,
+        match_handler::get_match,
+        match_handler::get_matches_by_competition,
+        match_handler::create_match,
+        match_handler::update_match,
+        match_handler::delete_match,
+        match_handler::start_match,
+        match_handler::complete_match,
+        match_handler::add_manche,
+        championship_handler::get_championships,
+        championship_handler::get_championship,
+        championship_handler::get_championships_by_league,
+        championship_handler::get_championships_by_season,
+        championship_handler::create_championship,
+        championship_handler::update_championship,
+        championship_handler::delete_championship,
+        championship_handler::start_championship,
+        championship_handler::next_journee,
+        championship_handler::get_championship_classification,
+        championship_handler::update_championship_classification,
     ),
     components(),
     tags(
         (name = "Health", description = "Health check endpoints"),
         (name = "Clubs", description = "Club management endpoints"),
+        (name = "Matchs", description = "Match management endpoints"),
+        (name = "Championnats", description = "Championship management endpoints"),
     ),
     info(
         title = "Palet Vendéen API",
