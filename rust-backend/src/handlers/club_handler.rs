@@ -1,7 +1,10 @@
-//! Club endpoint handlers
+//! Club endpoint handlers for Palet Venden
+//!
+//! Handles all club-related operations
 
 use actix_web::{web, HttpResponse, Responder};
-use palet_shared::{ApiResponse, CreateClubRequest, PaginatedResponse, Pagination};
+use palet_shared::{ApiResponse, Club, CreateClubRequest, PaginatedResponse, Pagination};
+use uuid::Uuid;
 
 use crate::AppState;
 
@@ -11,12 +14,12 @@ use crate::AppState;
     path = "/clubs",
     tag = "Clubs",
     responses(
-        (status = 200, description = "List of clubs", body = PaginatedResponse<palet_shared::Club>),
+        (status = 200, description = "List of all clubs", body = PaginatedResponse<Club>),
         (status = 500, description = "Internal server error")
     )
 )]
 pub async fn get_clubs(state: web::Data<AppState>) -> impl Responder {
-    match state.db.get_clubs().await {
+    match state.db.clubs.get_clubs().await {
         Ok(clubs) => {
             let pagination = Pagination {
                 current: 1,
@@ -47,22 +50,22 @@ pub async fn get_clubs(state: web::Data<AppState>) -> impl Responder {
     }
 }
 
-/// Get a specific club by ID
+/// Get club by ID
 #[utoipa::path(
     get,
     path = "/clubs/{id}",
     tag = "Clubs",
     params(
-        ("id" = Uuid, description = "Club ID")
+        ("id", description = "Club ID")
     ),
     responses(
-        (status = 200, description = "Club details", body = palet_shared::Club),
+        (status = 200, description = "Club details", body = Club),
         (status = 404, description = "Club not found"),
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn get_club(state: web::Data<AppState>, id: web::Path<uuid::Uuid>) -> impl Responder {
-    match state.db.get_club(*id).await {
+pub async fn get_club(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+    match state.db.clubs.get_club(*id).await {
         Ok(Some(club)) => HttpResponse::Ok().json(ApiResponse {
             data: club,
             message: Some("Club retrieved successfully".to_string()),
@@ -89,10 +92,10 @@ pub async fn get_club(state: web::Data<AppState>, id: web::Path<uuid::Uuid>) -> 
     post,
     path = "/clubs",
     tag = "Clubs",
-    request_body = palet_shared::CreateClubRequest,
+    request_body = CreateClubRequest,
     responses(
-        (status = 201, description = "Club created", body = palet_shared::Club),
-        (status = 400, description = "Invalid request data"),
+        (status = 201, description = "Club created", body = Club),
+        (status = 400, description = "Bad request"),
         (status = 500, description = "Internal server error")
     )
 )]
@@ -100,7 +103,7 @@ pub async fn create_club(
     state: web::Data<AppState>,
     request: web::Json<CreateClubRequest>,
 ) -> impl Responder {
-    match state.db.create_club(request.into_inner()).await {
+    match state.db.clubs.create_club(request.into_inner()).await {
         Ok(club) => HttpResponse::Created().json(ApiResponse {
             data: club,
             message: Some("Club created successfully".to_string()),

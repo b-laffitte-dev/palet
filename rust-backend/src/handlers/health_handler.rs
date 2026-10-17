@@ -1,39 +1,40 @@
-//! Health check endpoint handler
+//! Health check endpoint handlers for Palet Venden
+//!
+//! Handles health check and status operations
 
 use actix_web::{web, HttpResponse, Responder};
-use chrono::Utc;
-use palet_shared::{ApiResponse, CacheStatus, DatabaseStatus, HealthCheck};
+use palet_shared::{ApiResponse, DatabaseStatus, HealthCheck};
 
 use crate::AppState;
 
-/// Health check handler
+/// Health check endpoint
 #[utoipa::path(
     get,
     path = "/health",
     tag = "Health",
     responses(
-        (status = 200, description = "API is healthy", body = palet_shared::HealthCheck),
-        (status = 503, description = "Service unavailable")
+        (status = 200, description = "Health check status", body = HealthCheck),
+        (status = 500, description = "Internal server error")
     )
 )]
 pub async fn health_check(state: web::Data<AppState>) -> impl Responder {
-    let database_status = if state.db.check_connection().await {
-        DatabaseStatus::Connected
-    } else {
-        DatabaseStatus::Disconnected
+    let database_status = match state.db.check_connection().await {
+        Ok(true) => DatabaseStatus::Connected,
+        Ok(false) => DatabaseStatus::Disconnected,
+        Err(_) => DatabaseStatus::Disconnected,
     };
 
     let health = HealthCheck {
-        statut: "ok".to_string(),
+        statut: "OK".to_string(),
         version: "0.1.0".to_string(),
-        timestamp: Utc::now(),
+        timestamp: chrono::Utc::now(),
         database: database_status,
-        cache: CacheStatus::Connected,
+        cache: palet_shared::CacheStatus::Connected,
     };
 
     HttpResponse::Ok().json(ApiResponse {
         data: health,
-        message: Some("API is healthy".to_string()),
+        message: Some("Health check successful".to_string()),
         success: true,
     })
 }
