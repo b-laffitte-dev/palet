@@ -45,8 +45,12 @@ impl From<sqlx::Error> for DatabaseError {
         match error {
             sqlx::Error::Database(err) => DatabaseError::QueryError(err.to_string()),
             sqlx::Error::Connection(err) => DatabaseError::ConnectionError(err.to_string()),
-            sqlx::Error::PoolTimedOut => DatabaseError::PoolError("Connection pool timed out".to_string()),
-            sqlx::Error::PoolClosed => DatabaseError::PoolError("Connection pool closed".to_string()),
+            sqlx::Error::PoolTimedOut => {
+                DatabaseError::PoolError("Connection pool timed out".to_string())
+            }
+            sqlx::Error::PoolClosed => {
+                DatabaseError::PoolError("Connection pool closed".to_string())
+            }
             _ => DatabaseError::QueryError(error.to_string()),
         }
     }
@@ -77,7 +81,7 @@ impl Database {
     /// Create a new Database instance with all repositories
     pub fn new(pool: PgPool) -> Self {
         let pool = Arc::new(pool);
-        
+
         Self {
             pool: pool.clone(),
             matches: Arc::new(PostgresMatchRepository::new(pool.clone())),
