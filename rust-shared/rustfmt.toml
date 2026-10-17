@@ -1,0 +1,80 @@
+# Rustfmt configuration for Palet Vendéen shared library
+# This file configures the Rust code formatter for consistent style
+
+# Basic configuration
+edition = "2021"
+version = "Two"
+
+# Formatting options
+max_width = 100
+hard_tabs = false
+tab_spaces = 4
+newline_style = "Auto"
+
+# Indentation
+indent_style = "Block"
+indent_size = 4
+
+# Import formatting
+imports_indent = "Block"
+imports_layout = "Vertical"
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+
+# Brace style
+brace_style = "AlwaysSameLine"
+control_brace_style = "AlwaysSameLine"
+
+# Line wrapping
+fn_args_layout = "Tall"
+where_predicates_layout = "Tall"
+chain_layout = "Tall"
+
+# Spacing
+spaces_around_ranges = false
+space_before_colon = false
+space_after_colon = true
+spaces_around_equal_in_struct_lit = true
+
+# Trailing commas
+trailing_comma = "Vertical"
+trailing_semicolon = false
+
+# Comments
+comment_width = 100
+format_code_in_doc_comments = true
+format_macro_matchers = true
+format_macro_bodies = true
+
+# Match arms
+match_arm_leading_pipes = "Always"
+match_block_trailing_comma = true
+
+# Enums
+enum_discrim_align_threshold = 20
+
+# Structs
+struct_field_align_threshold = 20
+struct_lit_width = 18
+struct_lit_multiline_threshold = 12
+
+# Files to ignore
+ignore = []
+
+# Files to include
+include = []
+
+# Unstable features
+unstable_features = true
+
+# Normalize comments
+normalize_comments = true
+normalize_doc_attributes = true
+
+# Reorder imports
+reorder_imports = true
+reorder_modules = true
+reorder_impl_items = true
+
+# Merge imports
+merge_imports = true
