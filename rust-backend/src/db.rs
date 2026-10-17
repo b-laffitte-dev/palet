@@ -1,8 +1,8 @@
-//! Database module for Palet Vendéen backend
+//! Database module for Palet Vendeen backend
 //!
 //! This module provides database connection management and error handling.
 
-use sqlx::{postgres::PgPoolOptions, PgPool};
+use sqlx::{PgPool, postgres::PgPoolOptions};
 use std::sync::Arc;
 
 // Re-export repositories

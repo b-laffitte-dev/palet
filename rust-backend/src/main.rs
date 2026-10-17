@@ -1,4 +1,4 @@
-//! Palet Vendéen Backend - Rust Implementation
+//! Palet Vendeen Backend - Rust Implementation
 //!
 //! Main entry point for the Actix-web API server
 
@@ -8,7 +8,7 @@ use actix_web::{
 };
 use log::{error, info};
 use palet_shared::ApiResponse;
-use sqlx::{postgres::PgPoolOptions, PgPool};
+use sqlx::{PgPool, postgres::PgPoolOptions};
 use std::sync::Arc;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
