@@ -64,19 +64,19 @@ impl PostgresTeamRepository {
 
     // Helper function to convert database row to Team
     async fn row_to_team(row: sqlx::postgres::PgRow) -> Result<Team, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let name: String = row.get("name");
-        let club_id: Uuid = row.get("club_id");
-        let captain_id: Option<Uuid> = row.get("captain_id");
-        let logo: Option<String> = row.get("logo");
+        let id: Uuid = row.get::<_, Uuid>("id");
+        let name: String = row.get::<_, String>("name");
+        let club_id: Uuid = row.get::<_, Uuid>("club_id");
+        let captain_id: Option<Uuid> = row.get::<_, Option<Uuid>>("captain_id");
+        let logo: Option<String> = row.get::<_, Option<String>>("logo");
 
         // Parse stats JSON
-        let stats_json: serde_json::Value = row.get("stats");
+        let stats_json: serde_json::Value = row.get::<_, serde_json::Value>("stats");
         let stats: TeamStats = serde_json::from_value(stats_json).unwrap_or_default();
 
-        let status: TeamStatus = row.get("status");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let status: TeamStatus = row.get::<_, TeamStatus>("status");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("updated_at");
 
         Ok(Team {
             id,
