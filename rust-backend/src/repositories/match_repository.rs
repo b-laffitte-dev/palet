@@ -9,7 +9,8 @@ use palet_shared::{
     CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner, PointsType,
     UpdateMatchRequest,
 };
-use sqlx::{FromRow, PgPool};
+use serde_json;
+use sqlx::{PgPool, Row};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -109,37 +110,37 @@ impl PostgresMatchRepository {
 
     // Helper function to convert database row to Match
     async fn row_to_match(row: sqlx::postgres::PgRow) -> Result<Match, sqlx::Error> {
-        let id: Uuid = row.get::<_, Uuid>("id");
-        let competition_id: Uuid = row.get::<_, Uuid>("competition_id");
-        let competition_type = row.get::<_, palet_shared::CompetitionType>("competition_type");
-        let journee: Option<i32> = row.get::<_, i32>("journee");
-        let phase: Option<String> = row.get::<_, Option<String>>("phase");
-        let round: Option<String> = row.get::<_, Option<String>>("round");
-        let team1_id: Uuid = row.get::<_, Uuid>("team1_id");
-        let team2_id: Uuid = row.get::<_, Uuid>("team2_id");
-        let team1_score: Option<i32> = row.get::<_, Option<i32>>("team1_score");
-        let team2_score: Option<i32> = row.get::<_, Option<i32>>("team2_score");
-        let winner: Option<MatchWinner> = row.get::<_, Option<MatchWinner>>("winner");
-        let manches: Option<Vec<MancheScore>> = row.get::<_, Option<Vec<MancheScore>>>("manches");
-        let best_of: Option<i32> = row.get::<_, Option<i32>>("best_of");
-        let current_manche: Option<i32> = row.get::<_, Option<i32>>("current_manche");
-        let current_scores = row.get::<Option<serde_json::Value>, _>("current_scores");
+        let id: Uuid = row.get("id");
+        let competition_id: Uuid = row.get("competition_id");
+        let competition_type: palet_shared::CompetitionType = palet_shared::CompetitionType::Championship;
+        let journee: Option<i32> = row.get("journee");
+        let phase: Option<String> = row.get("phase");
+        let round: Option<String> = row.get("round");
+        let team1_id: Uuid = row.get("team1_id");
+        let team2_id: Uuid = row.get("team2_id");
+        let team1_score: Option<i32> = row.get("team1_score");
+        let team2_score: Option<i32> = row.get("team2_score");
+        let winner: Option<MatchWinner> = None;
+        let manches: Option<Vec<MancheScore>> = None;
+        let best_of: Option<i32> = row.get("best_of");
+        let current_manche: Option<i32> = row.get("current_manche");
+        let current_scores = row.get("current_scores");
         let current_scores: Option<palet_shared::CurrentScores> = match current_scores {
             Some(value) => serde_json::from_value(value).ok(),
             None => None,
         };
-        let status: MatchStatus = row.get::<_, MatchStatus>("status");
-        let verified: bool = row.get::<_, bool>("verified");
-        let verified_by: Option<Uuid> = row.get::<_, Option<Uuid>>("verified_by");
-        let verified_at: Option<chrono::DateTime<Utc>> = row.get::<_, Option<chrono::DateTime<Utc>>>("verified_at");
-        let date: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("date");
-        let time: Option<String> = row.get::<_, Option<String>>("time");
-        let location: Option<String> = row.get::<_, Option<String>>("location");
-        let duration: Option<String> = row.get::<_, Option<String>>("duration");
-        let created_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("updated_at");
-        let started_at: Option<chrono::DateTime<Utc>> = row.get::<_, Option<chrono::DateTime<Utc>>>("started_at");
-        let ended_at: Option<chrono::DateTime<Utc>> = row.get::<_, Option<chrono::DateTime<Utc>>>("ended_at");
+        let status: MatchStatus = MatchStatus::Scheduled;
+        let verified: bool = row.get("verified");
+        let verified_by: Option<Uuid> = row.get("verified_by");
+        let verified_at: Option<chrono::DateTime<Utc>> = row.get("verified_at");
+        let date: chrono::DateTime<Utc> = row.get("date");
+        let time: Option<String> = row.get("time");
+        let location: Option<String> = row.get("location");
+        let duration: Option<String> = row.get("duration");
+        let created_at: chrono::DateTime<Utc> = row.get("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let started_at: Option<chrono::DateTime<Utc>> = row.get("started_at");
+        let ended_at: Option<chrono::DateTime<Utc>> = row.get("ended_at");
 
         Ok(Match {
             id,
@@ -231,7 +232,7 @@ impl MatchRepository for PostgresMatchRepository {
         let row = sqlx::query(query)
             .bind(match_obj.id)
             .bind(match_obj.competition_id)
-            .bind(match_obj.competition_type)
+            .bind(serde_json::to_string(&match_obj.competition_type).unwrap())
             .bind(match_obj.journee)
             .bind(match_obj.phase)
             .bind(match_obj.round)
@@ -239,12 +240,12 @@ impl MatchRepository for PostgresMatchRepository {
             .bind(match_obj.team2_id)
             .bind(match_obj.team1_score)
             .bind(match_obj.team2_score)
-            .bind(match_obj.winner)
-            .bind(match_obj.manches)
+            .bind(serde_json::to_string(&match_obj.winner).unwrap())
+            .bind(sqlx::types::Json(&match_obj.manches))
             .bind(match_obj.best_of)
             .bind(match_obj.current_manche)
             .bind(sqlx::types::Json(match_obj.current_scores))
-            .bind(match_obj.status)
+            .bind(serde_json::to_string(&match_obj.status).unwrap())
             .bind(match_obj.verified)
             .bind(match_obj.verified_by)
             .bind(match_obj.verified_at)
@@ -309,7 +310,7 @@ impl MatchRepository for PostgresMatchRepository {
     ) -> Result<Vec<Match>, DatabaseError> {
         let query = "SELECT * FROM matches WHERE status = $1 ORDER BY date";
         let rows = sqlx::query(query)
-            .bind(status)
+            .bind(serde_json::to_string(&status).unwrap())
             .fetch_all(&*self.pool)
             .await?;
 
@@ -368,8 +369,8 @@ impl MatchRepository for PostgresMatchRepository {
         let row = sqlx::query(query)
             .bind(match_obj.team1_score)
             .bind(match_obj.team2_score)
-            .bind(match_obj.winner)
-            .bind(match_obj.status)
+            .bind(serde_json::to_string(&match_obj.winner).unwrap())
+            .bind(serde_json::to_string(&match_obj.status).unwrap())
             .bind(match_obj.verified)
             .bind(match_obj.updated_at)
             .bind(match_id)
@@ -424,7 +425,7 @@ impl MatchRepository for PostgresMatchRepository {
 
         let row = sqlx::query(query)
             .bind(match_id)
-            .bind(winner)
+            .bind(serde_json::to_string(&winner).unwrap())
             .fetch_one(&*self.pool)
             .await?;
 

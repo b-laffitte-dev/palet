@@ -11,7 +11,7 @@ pub use crate::repositories::{
     club_repository::{ClubRepository, PostgresClubRepository},
     match_repository::{MatchRepository, PostgresMatchRepository},
     player_repository::{PlayerRepository, PostgresPlayerRepository},
-    team_repository::{TeamRepository, PostgresTeamRepository},
+    team_repository::{PostgresTeamRepository, TeamRepository},
 };
 
 // ============================================
@@ -45,8 +45,12 @@ impl From<sqlx::Error> for DatabaseError {
         match error {
             sqlx::Error::Database(err) => DatabaseError::QueryError(err.to_string()),
             sqlx::Error::Connection(err) => DatabaseError::ConnectionError(err.to_string()),
-            sqlx::Error::PoolTimedOut => DatabaseError::PoolError("Connection pool timed out".to_string()),
-            sqlx::Error::PoolClosed => DatabaseError::PoolError("Connection pool closed".to_string()),
+            sqlx::Error::PoolTimedOut => {
+                DatabaseError::PoolError("Connection pool timed out".to_string())
+            }
+            sqlx::Error::PoolClosed => {
+                DatabaseError::PoolError("Connection pool closed".to_string())
+            }
             _ => DatabaseError::QueryError(error.to_string()),
         }
     }
@@ -66,18 +70,18 @@ impl From<String> for DatabaseError {
 #[derive(Clone)]
 pub struct Database {
     pool: Arc<PgPool>,
-    pub matches: Arc<PostgresMatchRepository>,
-    pub championships: Arc<PostgresChampionshipRepository>,
-    pub clubs: Arc<PostgresClubRepository>,
-    pub players: Arc<PostgresPlayerRepository>,
-    pub teams: Arc<PostgresTeamRepository>,
+    pub matches: Arc<dyn MatchRepository + Send + Sync>,
+    pub championships: Arc<dyn ChampionshipRepository + Send + Sync>,
+    pub clubs: Arc<dyn ClubRepository + Send + Sync>,
+    pub players: Arc<dyn PlayerRepository + Send + Sync>,
+    pub teams: Arc<dyn TeamRepository + Send + Sync>,
 }
 
 impl Database {
     /// Create a new Database instance with all repositories
     pub fn new(pool: PgPool) -> Self {
         let pool = Arc::new(pool);
-        
+
         Self {
             pool: pool.clone(),
             matches: Arc::new(PostgresMatchRepository::new(pool.clone())),
