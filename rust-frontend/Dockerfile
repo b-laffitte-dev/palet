@@ -25,7 +25,6 @@ FROM nginx:alpine
 
 # Copy built files
 COPY --from=builder /app/rust-frontend/pkg /usr/share/nginx/html/pkg
-COPY --from=builder /app/rust-frontend/static /usr/share/nginx/html/static
 
 # Copy index.html
 COPY rust-frontend/index.html /usr/share/nginx/html/index.html
