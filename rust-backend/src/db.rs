@@ -11,7 +11,7 @@ pub use crate::repositories::{
     club_repository::{ClubRepository, PostgresClubRepository},
     match_repository::{MatchRepository, PostgresMatchRepository},
     player_repository::{PlayerRepository, PostgresPlayerRepository},
-    team_repository::{TeamRepository, PostgresTeamRepository},
+    team_repository::{PostgresTeamRepository, TeamRepository},
 };
 
 // ============================================
