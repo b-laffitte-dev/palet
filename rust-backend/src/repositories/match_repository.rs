@@ -109,37 +109,37 @@ impl PostgresMatchRepository {
 
     // Helper function to convert database row to Match
     async fn row_to_match(row: sqlx::postgres::PgRow) -> Result<Match, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let competition_id: Uuid = row.get("competition_id");
-        let competition_type = row.get("competition_type");
-        let journee: Option<i32> = row.get("journee");
-        let phase: Option<String> = row.get("phase");
-        let round: Option<String> = row.get("round");
-        let team1_id: Uuid = row.get("team1_id");
-        let team2_id: Uuid = row.get("team2_id");
-        let team1_score: Option<i32> = row.get("team1_score");
-        let team2_score: Option<i32> = row.get("team2_score");
-        let winner: Option<MatchWinner> = row.get("winner");
-        let manches: Option<Vec<MancheScore>> = row.get("manches");
-        let best_of: Option<i32> = row.get("best_of");
-        let current_manche: Option<i32> = row.get("current_manche");
+        let id: Uuid = row.get::<_, Uuid>("id");
+        let competition_id: Uuid = row.get::<_, Uuid>("competition_id");
+        let competition_type = row.get::<_, palet_shared::CompetitionType>("competition_type");
+        let journee: Option<i32> = row.get::<_, i32>("journee");
+        let phase: Option<String> = row.get::<_, Option<String>>("phase");
+        let round: Option<String> = row.get::<_, Option<String>>("round");
+        let team1_id: Uuid = row.get::<_, Uuid>("team1_id");
+        let team2_id: Uuid = row.get::<_, Uuid>("team2_id");
+        let team1_score: Option<i32> = row.get::<_, Option<i32>>("team1_score");
+        let team2_score: Option<i32> = row.get::<_, Option<i32>>("team2_score");
+        let winner: Option<MatchWinner> = row.get::<_, Option<MatchWinner>>("winner");
+        let manches: Option<Vec<MancheScore>> = row.get::<_, Option<Vec<MancheScore>>>("manches");
+        let best_of: Option<i32> = row.get::<_, Option<i32>>("best_of");
+        let current_manche: Option<i32> = row.get::<_, Option<i32>>("current_manche");
         let current_scores = row.get::<Option<serde_json::Value>, _>("current_scores");
         let current_scores: Option<palet_shared::CurrentScores> = match current_scores {
             Some(value) => serde_json::from_value(value).ok(),
             None => None,
         };
-        let status: MatchStatus = row.get("status");
-        let verified: bool = row.get("verified");
-        let verified_by: Option<Uuid> = row.get("verified_by");
-        let verified_at: Option<chrono::DateTime<Utc>> = row.get("verified_at");
-        let date: chrono::DateTime<Utc> = row.get("date");
-        let time: Option<String> = row.get("time");
-        let location: Option<String> = row.get("location");
-        let duration: Option<String> = row.get("duration");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
-        let started_at: Option<chrono::DateTime<Utc>> = row.get("started_at");
-        let ended_at: Option<chrono::DateTime<Utc>> = row.get("ended_at");
+        let status: MatchStatus = row.get::<_, MatchStatus>("status");
+        let verified: bool = row.get::<_, bool>("verified");
+        let verified_by: Option<Uuid> = row.get::<_, Option<Uuid>>("verified_by");
+        let verified_at: Option<chrono::DateTime<Utc>> = row.get::<_, Option<chrono::DateTime<Utc>>>("verified_at");
+        let date: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("date");
+        let time: Option<String> = row.get::<_, Option<String>>("time");
+        let location: Option<String> = row.get::<_, Option<String>>("location");
+        let duration: Option<String> = row.get::<_, Option<String>>("duration");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("updated_at");
+        let started_at: Option<chrono::DateTime<Utc>> = row.get::<_, Option<chrono::DateTime<Utc>>>("started_at");
+        let ended_at: Option<chrono::DateTime<Utc>> = row.get::<_, Option<chrono::DateTime<Utc>>>("ended_at");
 
         Ok(Match {
             id,

@@ -63,29 +63,29 @@ impl PostgresClubRepository {
 
     // Helper function to convert database row to Club
     async fn row_to_club(row: sqlx::postgres::PgRow) -> Result<Club, sqlx::Error> {
-        let id: Uuid = row.get("id");
-        let name: String = row.get("name");
-        let nickname: Option<String> = row.get("nickname");
-        let code: String = row.get("code");
-        let logo: Option<String> = row.get("logo");
-        let address: Option<String> = row.get("address");
-        let city: String = row.get("city");
-        let postal_code: Option<String> = row.get("postal_code");
-        let league: String = row.get("league");
-        let division: String = row.get("division");
-        let status: ClubStatus = row.get("status");
-        let players_count: i32 = row.get("players_count");
-        let teams_count: i32 = row.get("teams_count");
-        let contact_email: Option<String> = row.get("contact_email");
-        let contact_phone: Option<String> = row.get("contact_phone");
-        let website: Option<String> = row.get("website");
+        let id: Uuid = row.get::<_, Uuid>("id");
+        let name: String = row.get::<_, String>("name");
+        let nickname: Option<String> = row.get::<_, Option<String>>("nickname");
+        let code: String = row.get::<_, String>("code");
+        let logo: Option<String> = row.get::<_, Option<String>>("logo");
+        let address: Option<String> = row.get::<_, Option<String>>("address");
+        let city: String = row.get::<_, String>("city");
+        let postal_code: Option<String> = row.get::<_, Option<String>>("postal_code");
+        let league: String = row.get::<_, String>("league");
+        let division: String = row.get::<_, String>("division");
+        let status: ClubStatus = row.get::<_, ClubStatus>("status");
+        let players_count: i32 = row.get::<_, i32>("players_count");
+        let teams_count: i32 = row.get::<_, i32>("teams_count");
+        let contact_email: Option<String> = row.get::<_, Option<String>>("contact_email");
+        let contact_phone: Option<String> = row.get::<_, Option<String>>("contact_phone");
+        let website: Option<String> = row.get::<_, Option<String>>("website");
 
         // Parse social links
-        let social_json: serde_json::Value = row.get("social");
+        let social_json: serde_json::Value = row.get::<_, serde_json::Value>("social");
         let social: palet_shared::SocialLinks = serde_json::from_value(social_json).unwrap_or_default();
 
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let created_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("created_at");
+        let updated_at: chrono::DateTime<Utc> = row.get::<_, chrono::DateTime<Utc>>("updated_at");
 
         Ok(Club {
             id,
