@@ -1,0 +1,13 @@
+# Default configuration for Palet Vendéen Backend
+
+[default]
+host = "0.0.0.0"
+port = 3000
+database_url = "postgres://palet:palet@localhost:5432/palet"
+db_max_connections = 20
+db_timeout_secs = 30
+cors_max_age = 86400
+environment = "development"
+log_level = "info"
+jwt_secret = "change-me-in-production"
+jwt_expiration_hours = 24
