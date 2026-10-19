@@ -30,10 +30,8 @@ pub trait MatchRepository {
         &self,
         competition_id: Uuid,
     ) -> Result<Vec<Match>, DatabaseError>;
-    async fn get_matches_by_status(
-        &self,
-        status: MatchStatus,
-    ) -> Result<Vec<Match>, DatabaseError>;
+    async fn get_matches_by_status(&self, status: MatchStatus)
+        -> Result<Vec<Match>, DatabaseError>;
     async fn update_match(
         &self,
         match_id: Uuid,
@@ -50,11 +48,8 @@ pub trait MatchRepository {
     ) -> Result<Match, DatabaseError>;
 
     // Manche Operations (Palet Vendéen specific)
-    async fn add_manche(
-        &self,
-        match_id: Uuid,
-        manche: MancheScore,
-    ) -> Result<Match, DatabaseError>;
+    async fn add_manche(&self, match_id: Uuid, manche: MancheScore)
+        -> Result<Match, DatabaseError>;
     async fn update_manche(
         &self,
         match_id: Uuid,
@@ -64,7 +59,8 @@ pub trait MatchRepository {
     ) -> Result<Match, DatabaseError>;
 
     // Verification Operations
-    async fn verify_match(&self, match_id: Uuid, verifier_id: Uuid) -> Result<Match, DatabaseError>;
+    async fn verify_match(&self, match_id: Uuid, verifier_id: Uuid)
+        -> Result<Match, DatabaseError>;
     async fn unverify_match(&self, match_id: Uuid) -> Result<Match, DatabaseError>;
 
     // Query Operations
@@ -111,7 +107,8 @@ impl PostgresMatchRepository {
     async fn row_to_match(row: sqlx::postgres::PgRow) -> Result<Match, sqlx::Error> {
         let id: Uuid = row.get("id");
         let competition_id: Uuid = row.get("competition_id");
-        let competition_type: palet_shared::CompetitionType = palet_shared::CompetitionType::Championship;
+        let competition_type: palet_shared::CompetitionType =
+            palet_shared::CompetitionType::Championship;
         let journee: Option<i32> = row.get("journee");
         let phase: Option<String> = row.get("phase");
         let round: Option<String> = row.get("round");
@@ -437,13 +434,13 @@ impl MatchRepository for PostgresMatchRepository {
         manche: MancheScore,
     ) -> Result<Match, DatabaseError> {
         // Get current match
-        let mut match_obj = self.get_match(match_id).await?.ok_or_else(|| {
+        let match_obj = self.get_match(match_id).await?.ok_or_else(|| {
             DatabaseError::NotFound(format!("Match with id {} not found", match_id))
         })?;
 
         // Initialize manches if None
         let mut manches = match_obj.manches.clone().unwrap_or_default();
-        
+
         // Check if manche number already exists
         let current_manche = manche.number;
         if let Some(existing) = manches.iter_mut().find(|m| m.number == manche.number) {
@@ -509,8 +506,14 @@ impl MatchRepository for PostgresMatchRepository {
         }
 
         // Recalculate scores
-        let team1_total: i32 = match_obj.manches.as_ref().map_or(0, |m| m.iter().map(|m| m.team1).sum());
-        let team2_total: i32 = match_obj.manches.as_ref().map_or(0, |m| m.iter().map(|m| m.team2).sum());
+        let team1_total: i32 = match_obj
+            .manches
+            .as_ref()
+            .map_or(0, |m| m.iter().map(|m| m.team1).sum());
+        let team2_total: i32 = match_obj
+            .manches
+            .as_ref()
+            .map_or(0, |m| m.iter().map(|m| m.team2).sum());
 
         // Update in database
         let query = r#"
@@ -534,7 +537,11 @@ impl MatchRepository for PostgresMatchRepository {
         Self::row_to_match(row).await.map_err(DatabaseError::from)
     }
 
-    async fn verify_match(&self, match_id: Uuid, verifier_id: Uuid) -> Result<Match, DatabaseError> {
+    async fn verify_match(
+        &self,
+        match_id: Uuid,
+        verifier_id: Uuid,
+    ) -> Result<Match, DatabaseError> {
         let query = r#"
             UPDATE matches SET
                 verified = true,
@@ -615,7 +622,8 @@ impl MatchRepository for PostgresMatchRepository {
         journee: i32,
         competition_id: Uuid,
     ) -> Result<Vec<Match>, DatabaseError> {
-        let query = "SELECT * FROM matches WHERE journee = $1 AND competition_id = $2 ORDER BY date";
+        let query =
+            "SELECT * FROM matches WHERE journee = $1 AND competition_id = $2 ORDER BY date";
         let rows = sqlx::query(query)
             .bind(journee)
             .bind(competition_id)
@@ -918,7 +926,7 @@ impl MatchRepository for MockMatchRepository {
         let mut matches = self.matches.lock().unwrap();
         if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             let mut manches = match_obj.manches.clone().unwrap_or_default();
-            
+
             // Check if manche number already exists
             let current_manche = manche.number;
             if let Some(existing) = manches.iter_mut().find(|m| m.number == manche.number) {
@@ -986,8 +994,14 @@ impl MatchRepository for MockMatchRepository {
             }
 
             // Recalculate scores
-            let team1_total: i32 = match_obj.manches.as_ref().map_or(0, |m| m.iter().map(|m| m.team1).sum());
-            let team2_total: i32 = match_obj.manches.as_ref().map_or(0, |m| m.iter().map(|m| m.team2).sum());
+            let team1_total: i32 = match_obj
+                .manches
+                .as_ref()
+                .map_or(0, |m| m.iter().map(|m| m.team1).sum());
+            let team2_total: i32 = match_obj
+                .manches
+                .as_ref()
+                .map_or(0, |m| m.iter().map(|m| m.team2).sum());
 
             match_obj.team1_score = Some(team1_total);
             match_obj.team2_score = Some(team2_total);
@@ -1002,7 +1016,11 @@ impl MatchRepository for MockMatchRepository {
         }
     }
 
-    async fn verify_match(&self, match_id: Uuid, verifier_id: Uuid) -> Result<Match, DatabaseError> {
+    async fn verify_match(
+        &self,
+        match_id: Uuid,
+        verifier_id: Uuid,
+    ) -> Result<Match, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
                 "Mock connection failed".to_string(),
@@ -1093,9 +1111,7 @@ impl MatchRepository for MockMatchRepository {
             .lock()
             .unwrap()
             .iter()
-            .filter(|m| {
-                m.journee == Some(journee) && m.competition_id == competition_id
-            })
+            .filter(|m| m.journee == Some(journee) && m.competition_id == competition_id)
             .cloned()
             .collect())
     }
@@ -1122,9 +1138,7 @@ impl MatchRepository for MockMatchRepository {
             .lock()
             .unwrap()
             .iter()
-            .filter(|m| {
-                m.competition_id == championship_id && m.status == MatchStatus::Completed
-            })
+            .filter(|m| m.competition_id == championship_id && m.status == MatchStatus::Completed)
             .cloned()
             .collect())
     }

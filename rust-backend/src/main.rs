@@ -13,23 +13,13 @@ use std::sync::Arc;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-// Import modules
-mod config;
-mod db;
-mod handlers;
-mod repositories;
-
-use config::load_config;
-use db::Database;
-use handlers::{championship_handler, club_handler, health_handler, match_handler};
-
-// App state shared across all routes
-
-#[derive(Clone)]
-pub struct AppState {
-    pub db: Arc<Database>,
-    pub config: Arc<config::AppConfig>,
-}
+// Import the library crate
+use palet_backend::{
+    config::load_config,
+    db::Database,
+    handlers::{championship_handler, club_handler, health_handler, match_handler},
+    AppState,
+};
 
 // OpenAPI documentation
 #[derive(OpenApi)]
@@ -80,7 +70,7 @@ pub struct AppState {
 struct ApiDoc;
 
 /// Initialize database connection pool
-async fn init_db(config: &config::AppConfig) -> Result<PgPool, sqlx::Error> {
+async fn init_db(config: &palet_backend::AppConfig) -> Result<PgPool, sqlx::Error> {
     let db_url = &config.database_url;
 
     info!("Connecting to database: {}", db_url);
@@ -93,7 +83,7 @@ async fn init_db(config: &config::AppConfig) -> Result<PgPool, sqlx::Error> {
 }
 
 /// CORS middleware configuration
-fn configure_cors(config: &config::AppConfig) -> Cors {
+fn configure_cors(config: &palet_backend::AppConfig) -> Cors {
     Cors::default()
         .allow_any_origin()
         .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])

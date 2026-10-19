@@ -1,4 +1,5 @@
 //! Badge component for Palet Vendéen
+#![allow(dead_code)]
 
 use dioxus::prelude::*;
 

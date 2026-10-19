@@ -29,7 +29,10 @@ pub trait ChampionshipRepository {
         &self,
         request: CreateChampionshipRequest,
     ) -> Result<Championship, DatabaseError>;
-    async fn get_championship(&self, championship_id: Uuid) -> Result<Option<Championship>, DatabaseError>;
+    async fn get_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Option<Championship>, DatabaseError>;
     async fn get_championships(&self) -> Result<Vec<Championship>, DatabaseError>;
     async fn update_championship(
         &self,
@@ -57,7 +60,10 @@ pub trait ChampionshipRepository {
     ) -> Result<Vec<Championship>, DatabaseError>;
 
     // Lifecycle Operations
-    async fn start_championship(&self, championship_id: Uuid) -> Result<Championship, DatabaseError>;
+    async fn start_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, DatabaseError>;
     async fn next_journee(&self, championship_id: Uuid) -> Result<Championship, DatabaseError>;
     async fn complete_championship(
         &self,
@@ -120,9 +126,7 @@ impl PostgresChampionshipRepository {
     }
 
     // Helper function to convert database row to Championship
-    async fn row_to_championship(
-        row: sqlx::postgres::PgRow,
-    ) -> Result<Championship, sqlx::Error> {
+    async fn row_to_championship(row: sqlx::postgres::PgRow) -> Result<Championship, sqlx::Error> {
         let id: Uuid = row.get("id");
         let name: String = row.get("name");
         let code: Option<String> = row.get("code");
@@ -132,7 +136,7 @@ impl PostgresChampionshipRepository {
         let divisions: Vec<String> = row.get("divisions");
         let total_journees: i32 = row.get("total_journees");
         let journee_duration: Option<String> = row.get("journee_duration");
-        
+
         // Parse classification rules - TODO: These enum types need sqlx::Type impl
         let primary: ClassificationPrimary = ClassificationPrimary::Points;
         let secondary: ClassificationSecondary = ClassificationSecondary::Diff;
@@ -177,10 +181,11 @@ impl PostgresChampionshipRepository {
         let division: String = row.get("division");
         let journee: i32 = row.get("journee");
         let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
-        
+
         // Parse teams JSON
         let teams_json: serde_json::Value = row.get("teams");
-        let teams: Vec<ChampionshipTeam> = serde_json::from_value(teams_json).map_err(|e| sqlx::Error::Protocol(e.to_string()))?;
+        let teams: Vec<ChampionshipTeam> =
+            serde_json::from_value(teams_json).map_err(|e| sqlx::Error::Protocol(e.to_string()))?;
 
         Ok(ChampionshipClassification {
             division,
@@ -196,14 +201,16 @@ impl PostgresChampionshipRepository {
     ) -> Result<ChampionshipTeam, sqlx::Error> {
         let position: i32 = row.get("position");
         let team_id: Uuid = row.get("team_id");
-        
+
         // Parse stats JSON
         let stats_json: serde_json::Value = row.get("stats");
-        let stats: TeamStats = serde_json::from_value(stats_json).map_err(|e| sqlx::Error::Protocol(e.to_string()))?;
+        let stats: TeamStats =
+            serde_json::from_value(stats_json).map_err(|e| sqlx::Error::Protocol(e.to_string()))?;
 
         // Parse form JSON
         let form_json: serde_json::Value = row.get("form");
-        let form: Vec<palet_shared::MatchResult> = serde_json::from_value(form_json).unwrap_or_default();
+        let form: Vec<palet_shared::MatchResult> =
+            serde_json::from_value(form_json).unwrap_or_default();
 
         let status: TeamClassificationStatus = TeamClassificationStatus::Qualified; // TODO: Read from DB
 
@@ -278,7 +285,9 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_championship(row).await.map_err(DatabaseError::from)
+        Self::row_to_championship(row)
+            .await
+            .map_err(DatabaseError::from)
     }
 
     async fn get_championship(
@@ -484,7 +493,10 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
         Ok(championships)
     }
 
-    async fn start_championship(&self, championship_id: Uuid) -> Result<Championship, DatabaseError> {
+    async fn start_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, DatabaseError> {
         let query = r#"
             UPDATE championships SET
                 status = 'in_progress',
@@ -499,17 +511,22 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_championship(row).await.map_err(DatabaseError::from)
+        Self::row_to_championship(row)
+            .await
+            .map_err(DatabaseError::from)
     }
 
     async fn next_journee(&self, championship_id: Uuid) -> Result<Championship, DatabaseError> {
         // Get current championship
-        let championship = self.get_championship(championship_id).await?.ok_or_else(|| {
-            DatabaseError::NotFound(format!(
-                "Championship with id {} not found",
-                championship_id
-            ))
-        })?;
+        let championship = self
+            .get_championship(championship_id)
+            .await?
+            .ok_or_else(|| {
+                DatabaseError::NotFound(format!(
+                    "Championship with id {} not found",
+                    championship_id
+                ))
+            })?;
 
         let current_journee = championship.current_journee.unwrap_or(0);
         let next_journee = current_journee + 1;
@@ -536,10 +553,15 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_championship(row).await.map_err(DatabaseError::from)
+        Self::row_to_championship(row)
+            .await
+            .map_err(DatabaseError::from)
     }
 
-    async fn complete_championship(&self, championship_id: Uuid) -> Result<Championship, DatabaseError> {
+    async fn complete_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, DatabaseError> {
         let query = r#"
             UPDATE championships SET
                 status = 'completed',
@@ -554,7 +576,9 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_championship(row).await.map_err(DatabaseError::from)
+        Self::row_to_championship(row)
+            .await
+            .map_err(DatabaseError::from)
     }
 
     async fn get_championship_classification(
@@ -569,7 +593,7 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
 
         let mut query_builder = sqlx::query(query);
         query_builder = query_builder.bind(championship_id);
-        
+
         if let Some(div) = division {
             query_builder = query_builder.bind(div);
         }
@@ -607,7 +631,9 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_classification(row).await.map_err(DatabaseError::from)
+        Self::row_to_classification(row)
+            .await
+            .map_err(DatabaseError::from)
     }
 
     async fn add_team_to_championship(
@@ -670,7 +696,7 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
 
         let mut query_builder = sqlx::query(query);
         query_builder = query_builder.bind(championship_id);
-        
+
         if let Some(div) = division {
             query_builder = query_builder.bind(div);
         }
@@ -690,12 +716,15 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
         team_id: Uuid,
     ) -> Result<bool, DatabaseError> {
         // Check if championship exists and is in registration phase
-        let championship = self.get_championship(championship_id).await?.ok_or_else(|| {
-            DatabaseError::NotFound(format!(
-                "Championship with id {} not found",
-                championship_id
-            ))
-        })?;
+        let championship = self
+            .get_championship(championship_id)
+            .await?
+            .ok_or_else(|| {
+                DatabaseError::NotFound(format!(
+                    "Championship with id {} not found",
+                    championship_id
+                ))
+            })?;
 
         // Check if team is already registered
         let query = "SELECT 1 FROM championship_teams WHERE championship_id = $1 AND team_id = $2";
@@ -776,7 +805,10 @@ impl ChampionshipRepository for MockChampionshipRepository {
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
-        self.championships.lock().unwrap().push(championship.clone());
+        self.championships
+            .lock()
+            .unwrap()
+            .push(championship.clone());
 
         Ok(championship)
     }
@@ -964,7 +996,10 @@ impl ChampionshipRepository for MockChampionshipRepository {
             .collect())
     }
 
-    async fn start_championship(&self, championship_id: Uuid) -> Result<Championship, DatabaseError> {
+    async fn start_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
                 "Mock connection failed".to_string(),
@@ -1022,7 +1057,10 @@ impl ChampionshipRepository for MockChampionshipRepository {
         }
     }
 
-    async fn complete_championship(&self, championship_id: Uuid) -> Result<Championship, DatabaseError> {
+    async fn complete_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
                 "Mock connection failed".to_string(),
@@ -1045,7 +1083,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
     async fn get_championship_classification(
         &self,
-        championship_id: Uuid,
+        _championship_id: Uuid,
         division: Option<String>,
     ) -> Result<Vec<ChampionshipClassification>, DatabaseError> {
         if self.should_fail {
@@ -1057,10 +1095,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
         let classifications = {
             let all = self.classifications.lock().unwrap();
             if let Some(div) = &division {
-                all.iter()
-                    .filter(|c| c.division == *div)
-                    .cloned()
-                    .collect()
+                all.iter().filter(|c| c.division == *div).cloned().collect()
             } else {
                 all.clone()
             }
@@ -1071,7 +1106,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
     async fn update_championship_classification(
         &self,
-        championship_id: Uuid,
+        _championship_id: Uuid,
         division: String,
         classification: ChampionshipClassification,
     ) -> Result<ChampionshipClassification, DatabaseError> {
@@ -1097,9 +1132,9 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
     async fn add_team_to_championship(
         &self,
-        championship_id: Uuid,
-        team_id: Uuid,
-        division: String,
+        _championship_id: Uuid,
+        _team_id: Uuid,
+        _division: String,
     ) -> Result<(), DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
@@ -1112,8 +1147,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
     async fn remove_team_from_championship(
         &self,
-        championship_id: Uuid,
-        team_id: Uuid,
+        _championship_id: Uuid,
+        _team_id: Uuid,
     ) -> Result<(), DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
@@ -1126,8 +1161,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
     async fn get_championship_teams(
         &self,
-        championship_id: Uuid,
-        division: Option<String>,
+        _championship_id: Uuid,
+        _division: Option<String>,
     ) -> Result<Vec<ChampionshipTeam>, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
@@ -1141,8 +1176,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
     async fn validate_championship_registration(
         &self,
-        championship_id: Uuid,
-        team_id: Uuid,
+        _championship_id: Uuid,
+        _team_id: Uuid,
     ) -> Result<bool, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(

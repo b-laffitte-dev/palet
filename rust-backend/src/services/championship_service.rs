@@ -7,13 +7,15 @@ use async_trait::async_trait;
 use chrono::Utc;
 use palet_shared::{
     Championship, ChampionshipClassification, ChampionshipTeam, ClassificationPrimary,
-    ClassificationSecondary, ClassificationTertiary, CompetitionStatus,
-    CreateChampionshipRequest, TeamClassificationStatus, TeamStats, UpdateChampionshipRequest,
+    ClassificationSecondary, ClassificationTertiary, CompetitionStatus, CreateChampionshipRequest,
+    TeamClassificationStatus, TeamStats, UpdateChampionshipRequest,
 };
 use std::sync::Arc;
 use uuid::Uuid;
 
-use crate::repositories::championship_repository::{ChampionshipRepository, MockChampionshipRepository};
+use crate::repositories::championship_repository::{
+    ChampionshipRepository, MockChampionshipRepository,
+};
 
 // ============================================
 // CHAMPIONSHIP SERVICE TRAIT (Interface)
@@ -57,8 +59,14 @@ pub trait ChampionshipService {
     ) -> Result<Vec<Championship>, ChampionshipServiceError>;
 
     // Lifecycle Operations
-    async fn start_championship(&self, championship_id: Uuid) -> Result<Championship, ChampionshipServiceError>;
-    async fn next_journee(&self, championship_id: Uuid) -> Result<Championship, ChampionshipServiceError>;
+    async fn start_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, ChampionshipServiceError>;
+    async fn next_journee(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, ChampionshipServiceError>;
     async fn complete_championship(
         &self,
         championship_id: Uuid,
@@ -150,9 +158,7 @@ pub enum ChampionshipServiceError {
 impl From<crate::db::DatabaseError> for ChampionshipServiceError {
     fn from(error: crate::db::DatabaseError) -> Self {
         match error {
-            crate::db::DatabaseError::NotFound(msg) => {
-                ChampionshipServiceError::NotFound(msg)
-            }
+            crate::db::DatabaseError::NotFound(msg) => ChampionshipServiceError::NotFound(msg),
             crate::db::DatabaseError::ValidationError(msg) => {
                 ChampionshipServiceError::ValidationError(msg)
             }
@@ -185,8 +191,7 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         request: CreateChampionshipRequest,
     ) -> Result<Championship, ChampionshipServiceError> {
         // Validate the request
-        self.validate_championship_creation(&request)
-            .await?;
+        self.validate_championship_creation(&request).await?;
 
         // Create the championship
         let championship = self.repository.create_championship(request).await?;
@@ -231,10 +236,7 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         &self,
         league: String,
     ) -> Result<Vec<Championship>, ChampionshipServiceError> {
-        let championships = self
-            .repository
-            .get_championships_by_league(league)
-            .await?;
+        let championships = self.repository.get_championships_by_league(league).await?;
         Ok(championships)
     }
 
@@ -242,10 +244,7 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         &self,
         season: String,
     ) -> Result<Vec<Championship>, ChampionshipServiceError> {
-        let championships = self
-            .repository
-            .get_championships_by_season(season)
-            .await?;
+        let championships = self.repository.get_championships_by_season(season).await?;
         Ok(championships)
     }
 
@@ -253,14 +252,14 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         &self,
         status: CompetitionStatus,
     ) -> Result<Vec<Championship>, ChampionshipServiceError> {
-        let championships = self
-            .repository
-            .get_championships_by_status(status)
-            .await?;
+        let championships = self.repository.get_championships_by_status(status).await?;
         Ok(championships)
     }
 
-    async fn start_championship(&self, championship_id: Uuid) -> Result<Championship, ChampionshipServiceError> {
+    async fn start_championship(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, ChampionshipServiceError> {
         // Check if championship exists and is in pending state
         let championship = self.repository.get_championship(championship_id).await?;
         if let Some(championship) = championship {
@@ -276,7 +275,10 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         Ok(championship)
     }
 
-    async fn next_journee(&self, championship_id: Uuid) -> Result<Championship, ChampionshipServiceError> {
+    async fn next_journee(
+        &self,
+        championship_id: Uuid,
+    ) -> Result<Championship, ChampionshipServiceError> {
         let championship = self.repository.next_journee(championship_id).await?;
         Ok(championship)
     }
@@ -285,7 +287,10 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         &self,
         championship_id: Uuid,
     ) -> Result<Championship, ChampionshipServiceError> {
-        let championship = self.repository.complete_championship(championship_id).await?;
+        let championship = self
+            .repository
+            .complete_championship(championship_id)
+            .await?;
         Ok(championship)
     }
 
@@ -328,12 +333,14 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
 
         // Get the championship to get classification rules
         let championship = self.repository.get_championship(championship_id).await?;
-        if let Some(championship) = championship {
+        if championship.is_some() {
             // Sort teams based on classification rules
             let mut sorted_teams = teams.clone();
             sorted_teams.sort_by(|a, b| {
                 // Primary: Points (descending)
-                b.stats.points.cmp(&a.stats.points)
+                b.stats
+                    .points
+                    .cmp(&a.stats.points)
                     // Secondary: Diff (descending)
                     .then_with(|| b.stats.diff.cmp(&a.stats.diff))
                     // Tertiary: Points For (descending)
@@ -344,7 +351,7 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
             let mut teams_with_positions = Vec::new();
             for (index, mut team) in sorted_teams.into_iter().enumerate() {
                 team.position = (index + 1) as i32;
-                
+
                 // Determine status based on position
                 // For Palet Vendéen: Top teams qualify, bottom teams might be relegated
                 let status = if team.position <= 4 {
@@ -584,6 +591,7 @@ pub fn create_test_championship(
 }
 
 /// Helper function to create a test championship team
+#[allow(clippy::too_many_arguments)]
 pub fn create_test_championship_team(
     position: i32,
     team_id: Uuid,
@@ -595,7 +603,7 @@ pub fn create_test_championship_team(
     points_against: i32,
 ) -> ChampionshipTeam {
     let diff = points_for - points_against;
-    let points = wins * 3 + draws * 1; // Standard Palet Vendéen scoring
+    let points = wins * 3 + draws; // Standard Palet Vendéen scoring
     let win_rate = if matches > 0 {
         wins as f64 / matches as f64
     } else {
@@ -881,9 +889,9 @@ mod tests {
         let championship_id = championship.id;
 
         // Create test teams with different points
-        let team1 = create_test_championship_team(1, Uuid::new_v4(), 5, 4, 1, 0, 45, 20);
-        let team2 = create_test_championship_team(2, Uuid::new_v4(), 5, 3, 1, 1, 40, 25);
-        let team3 = create_test_championship_team(3, Uuid::new_v4(), 5, 2, 2, 1, 35, 30);
+        let _team1 = create_test_championship_team(1, Uuid::new_v4(), 5, 4, 1, 0, 45, 20);
+        let _team2 = create_test_championship_team(2, Uuid::new_v4(), 5, 3, 1, 1, 40, 25);
+        let _team3 = create_test_championship_team(3, Uuid::new_v4(), 5, 2, 2, 1, 35, 30);
 
         // WHEN: Calculating classification
         let classification = service
@@ -936,10 +944,15 @@ mod tests {
         };
 
         let _ = service.create_championship(request_vendee).await.unwrap();
-        let _ = service.create_championship(request_deux_sevres).await.unwrap();
+        let _ = service
+            .create_championship(request_deux_sevres)
+            .await
+            .unwrap();
 
         // WHEN: Getting championships by league
-        let result = service.get_championships_by_league("Vendée".to_string()).await;
+        let result = service
+            .get_championships_by_league("Vendée".to_string())
+            .await;
 
         // THEN: Should return only Vendée championships
         assert!(result.is_ok());
@@ -992,7 +1005,9 @@ mod tests {
         let _ = service.create_championship(request_2024).await.unwrap();
 
         // WHEN: Getting championships by season
-        let result = service.get_championships_by_season("2025-2026".to_string()).await;
+        let result = service
+            .get_championships_by_season("2025-2026".to_string())
+            .await;
 
         // THEN: Should return only 2025-2026 championships
         assert!(result.is_ok());

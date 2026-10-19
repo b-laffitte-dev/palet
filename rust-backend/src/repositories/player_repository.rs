@@ -2,9 +2,9 @@
 //!
 //! This module provides the database operations for managing players.
 
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
 use chrono::Utc;
-use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use palet_shared::{CreatePlayerRequest, DominantHand, LicenseStatus, Player, PlayerStatus};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
@@ -23,13 +23,21 @@ pub trait PlayerRepository {
     async fn create_player(&self, request: CreatePlayerRequest) -> Result<Player, DatabaseError>;
     async fn get_player(&self, player_id: Uuid) -> Result<Option<Player>, DatabaseError>;
     async fn get_players(&self) -> Result<Vec<Player>, DatabaseError>;
-    async fn update_player(&self, player_id: Uuid, request: CreatePlayerRequest) -> Result<Option<Player>, DatabaseError>;
+    async fn update_player(
+        &self,
+        player_id: Uuid,
+        request: CreatePlayerRequest,
+    ) -> Result<Option<Player>, DatabaseError>;
     async fn delete_player(&self, player_id: Uuid) -> Result<bool, DatabaseError>;
 
     // Query Operations
     async fn get_players_by_club(&self, club_id: Uuid) -> Result<Vec<Player>, DatabaseError>;
-    async fn get_players_by_category(&self, category: String) -> Result<Vec<Player>, DatabaseError>;
-    async fn get_players_by_status(&self, status: PlayerStatus) -> Result<Vec<Player>, DatabaseError>;
+    async fn get_players_by_category(&self, category: String)
+        -> Result<Vec<Player>, DatabaseError>;
+    async fn get_players_by_status(
+        &self,
+        status: PlayerStatus,
+    ) -> Result<Vec<Player>, DatabaseError>;
     async fn get_players_by_license_status(
         &self,
         status: LicenseStatus,
@@ -121,7 +129,10 @@ impl PostgresPlayerRepository {
 #[async_trait]
 impl PlayerRepository for PostgresPlayerRepository {
     async fn create_player(&self, request: CreatePlayerRequest) -> Result<Player, DatabaseError> {
-        let age: i32 = (Utc::now().signed_duration_since(request.birth_date).num_days() / 365) as i32;
+        let age: i32 = (Utc::now()
+            .signed_duration_since(request.birth_date)
+            .num_days()
+            / 365) as i32;
 
         let player = Player {
             id: Uuid::new_v4(),
@@ -321,7 +332,10 @@ impl PlayerRepository for PostgresPlayerRepository {
         Ok(players)
     }
 
-    async fn get_players_by_category(&self, category: String) -> Result<Vec<Player>, DatabaseError> {
+    async fn get_players_by_category(
+        &self,
+        category: String,
+    ) -> Result<Vec<Player>, DatabaseError> {
         let query = "SELECT * FROM players WHERE category = $1 ORDER BY last_name, first_name";
         let rows = sqlx::query(query)
             .bind(category)
@@ -335,7 +349,10 @@ impl PlayerRepository for PostgresPlayerRepository {
         Ok(players)
     }
 
-    async fn get_players_by_status(&self, status: PlayerStatus) -> Result<Vec<Player>, DatabaseError> {
+    async fn get_players_by_status(
+        &self,
+        status: PlayerStatus,
+    ) -> Result<Vec<Player>, DatabaseError> {
         let query = "SELECT * FROM players WHERE status = $1::text ORDER BY last_name, first_name";
         let rows = sqlx::query(query)
             .bind(enum_to_db_string(&status))
@@ -353,7 +370,8 @@ impl PlayerRepository for PostgresPlayerRepository {
         &self,
         status: LicenseStatus,
     ) -> Result<Vec<Player>, DatabaseError> {
-        let query = "SELECT * FROM players WHERE license_status = $1::text ORDER BY last_name, first_name";
+        let query =
+            "SELECT * FROM players WHERE license_status = $1::text ORDER BY last_name, first_name";
         let rows = sqlx::query(query)
             .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
@@ -416,7 +434,6 @@ impl MockPlayerRepository {
     pub fn add_player(&mut self, player: Player) {
         self.players.lock().unwrap().push(player);
     }
-
 }
 
 #[async_trait]
@@ -428,7 +445,10 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        let age: i32 = (Utc::now().signed_duration_since(request.birth_date).num_days() / 365) as i32;
+        let age: i32 = (Utc::now()
+            .signed_duration_since(request.birth_date)
+            .num_days()
+            / 365) as i32;
 
         let player = Player {
             id: Uuid::new_v4(),
@@ -475,7 +495,8 @@ impl PlayerRepository for MockPlayerRepository {
             .lock()
             .unwrap()
             .iter()
-            .find(|p| p.id == player_id).cloned())
+            .find(|p| p.id == player_id)
+            .cloned())
     }
 
     async fn get_players(&self) -> Result<Vec<Player>, DatabaseError> {
@@ -558,7 +579,10 @@ impl PlayerRepository for MockPlayerRepository {
             .collect())
     }
 
-    async fn get_players_by_category(&self, category: String) -> Result<Vec<Player>, DatabaseError> {
+    async fn get_players_by_category(
+        &self,
+        category: String,
+    ) -> Result<Vec<Player>, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
                 "Mock connection failed".to_string(),
@@ -575,7 +599,10 @@ impl PlayerRepository for MockPlayerRepository {
             .collect())
     }
 
-    async fn get_players_by_status(&self, status: PlayerStatus) -> Result<Vec<Player>, DatabaseError> {
+    async fn get_players_by_status(
+        &self,
+        status: PlayerStatus,
+    ) -> Result<Vec<Player>, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(
                 "Mock connection failed".to_string(),

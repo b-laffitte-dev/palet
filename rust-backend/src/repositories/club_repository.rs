@@ -32,10 +32,7 @@ pub trait ClubRepository {
 
     // Query Operations
     async fn get_clubs_by_league(&self, league: String) -> Result<Vec<Club>, DatabaseError>;
-    async fn get_clubs_by_division(
-        &self,
-        division: String,
-    ) -> Result<Vec<Club>, DatabaseError>;
+    async fn get_clubs_by_division(&self, division: String) -> Result<Vec<Club>, DatabaseError>;
     async fn get_clubs_by_status(&self, status: ClubStatus) -> Result<Vec<Club>, DatabaseError>;
     async fn get_clubs_by_federation(
         &self,
@@ -83,7 +80,12 @@ impl PostgresClubRepository {
 
         // Parse social links
         let social_json: serde_json::Value = row.get("social");
-        let social: palet_shared::SocialLinks = serde_json::from_value(social_json).unwrap_or(palet_shared::SocialLinks { facebook: None, twitter: None, instagram: None });
+        let social: palet_shared::SocialLinks =
+            serde_json::from_value(social_json).unwrap_or(palet_shared::SocialLinks {
+                facebook: None,
+                twitter: None,
+                instagram: None,
+            });
 
         let created_at: chrono::DateTime<Utc> = row.get("created_at");
         let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
@@ -132,7 +134,11 @@ impl ClubRepository for PostgresClubRepository {
             contact_email: request.contact_email,
             contact_phone: request.contact_phone,
             website: request.website,
-            social: palet_shared::SocialLinks { facebook: None, twitter: None, instagram: None },
+            social: palet_shared::SocialLinks {
+                facebook: None,
+                twitter: None,
+                instagram: None,
+            },
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
@@ -395,7 +401,6 @@ impl MockClubRepository {
     pub fn add_club(&mut self, club: Club) {
         self.clubs.lock().unwrap().push(club);
     }
-
 }
 
 #[async_trait]
@@ -424,7 +429,11 @@ impl ClubRepository for MockClubRepository {
             contact_email: request.contact_email,
             contact_phone: request.contact_phone,
             website: request.website,
-            social: palet_shared::SocialLinks { facebook: None, twitter: None, instagram: None },
+            social: palet_shared::SocialLinks {
+                facebook: None,
+                twitter: None,
+                instagram: None,
+            },
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
@@ -444,7 +453,8 @@ impl ClubRepository for MockClubRepository {
             .lock()
             .unwrap()
             .iter()
-            .find(|c| c.id == club_id).cloned())
+            .find(|c| c.id == club_id)
+            .cloned())
     }
 
     async fn get_clubs(&self) -> Result<Vec<Club>, DatabaseError> {

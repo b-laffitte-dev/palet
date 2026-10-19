@@ -4,9 +4,7 @@
 //! It implements the TDD harness requirements for Palet-specific functionality.
 
 use async_trait::async_trait;
-use palet_shared::{
-    Championship, CompetitionType, MancheScore, Match, MatchStatus, MatchWinner,
-};
+use palet_shared::{Championship, CompetitionType, Match, MatchStatus, MatchWinner};
 use uuid::Uuid;
 
 // ============================================
@@ -33,32 +31,17 @@ pub trait PaletRulesService {
     ) -> Result<(), PaletRulesError>;
 
     /// Calculate the winner of a manche
-    fn calculate_manche_winner(
-        &self,
-        team1_score: i32,
-        team2_score: i32,
-    ) -> Option<MatchWinner>;
+    fn calculate_manche_winner(&self, team1_score: i32, team2_score: i32) -> Option<MatchWinner>;
 
     /// Check if a match is completed based on scores
-    fn is_match_completed(
-        &self,
-        team1_score: i32,
-        team2_score: i32,
-        best_of: i32,
-    ) -> bool;
+    fn is_match_completed(&self, team1_score: i32, team2_score: i32, best_of: i32) -> bool;
 
     /// Determine the winner of a completed match
-    fn determine_match_winner(
-        &self,
-        team1_score: i32,
-        team2_score: i32,
-    ) -> Option<MatchWinner>;
+    fn determine_match_winner(&self, team1_score: i32, team2_score: i32) -> Option<MatchWinner>;
 
     // Championship Rules
     /// Get the classification rules for a Palet Vendéen championship
-    fn get_championship_classification_rules(
-        &self,
-    ) -> palet_shared::ClassificationRules;
+    fn get_championship_classification_rules(&self) -> palet_shared::ClassificationRules;
 
     /// Calculate team classification based on Palet Vendéen rules
     fn calculate_team_classification(
@@ -77,11 +60,7 @@ pub trait PaletRulesService {
     fn get_loss_points(&self) -> i32;
 
     /// Calculate team stats based on match results
-    fn calculate_team_stats(
-        &self,
-        matches: Vec<Match>,
-        team_id: Uuid,
-    ) -> palet_shared::TeamStats;
+    fn calculate_team_stats(&self, matches: Vec<Match>, team_id: Uuid) -> palet_shared::TeamStats;
 
     // Validation Rules
     /// Validate that a championship follows Palet Vendéen rules
@@ -91,10 +70,7 @@ pub trait PaletRulesService {
     ) -> Result<(), PaletRulesError>;
 
     /// Validate that a match follows Palet Vendéen rules
-    fn validate_match_rules(
-        &self,
-        match_obj: &Match,
-    ) -> Result<(), PaletRulesError>;
+    fn validate_match_rules(&self, match_obj: &Match) -> Result<(), PaletRulesError>;
 }
 
 // ============================================
@@ -133,7 +109,7 @@ impl PaletRulesServiceImpl {
 impl PaletRulesService for PaletRulesServiceImpl {
     fn get_match_points_target(
         &self,
-        competition_type: CompetitionType,
+        _competition_type: CompetitionType,
         phase: Option<String>,
     ) -> i32 {
         // In Palet Vendéen:
@@ -154,7 +130,7 @@ impl PaletRulesService for PaletRulesServiceImpl {
         &self,
         team1_score: i32,
         team2_score: i32,
-        manche_number: i32,
+        _manche_number: i32,
     ) -> Result<(), PaletRulesError> {
         // Validate scores are non-negative
         if team1_score < 0 || team2_score < 0 {
@@ -191,11 +167,7 @@ impl PaletRulesService for PaletRulesServiceImpl {
         Ok(())
     }
 
-    fn calculate_manche_winner(
-        &self,
-        team1_score: i32,
-        team2_score: i32,
-    ) -> Option<MatchWinner> {
+    fn calculate_manche_winner(&self, team1_score: i32, team2_score: i32) -> Option<MatchWinner> {
         if team1_score > team2_score {
             Some(MatchWinner::Team1)
         } else if team2_score > team1_score {
@@ -205,20 +177,11 @@ impl PaletRulesService for PaletRulesServiceImpl {
         }
     }
 
-    fn is_match_completed(
-        &self,
-        team1_score: i32,
-        team2_score: i32,
-        best_of: i32,
-    ) -> bool {
+    fn is_match_completed(&self, team1_score: i32, team2_score: i32, best_of: i32) -> bool {
         team1_score >= best_of || team2_score >= best_of
     }
 
-    fn determine_match_winner(
-        &self,
-        team1_score: i32,
-        team2_score: i32,
-    ) -> Option<MatchWinner> {
+    fn determine_match_winner(&self, team1_score: i32, team2_score: i32) -> Option<MatchWinner> {
         if team1_score > team2_score {
             Some(MatchWinner::Team1)
         } else if team2_score > team1_score {
@@ -228,9 +191,7 @@ impl PaletRulesService for PaletRulesServiceImpl {
         }
     }
 
-    fn get_championship_classification_rules(
-        &self,
-    ) -> palet_shared::ClassificationRules {
+    fn get_championship_classification_rules(&self) -> palet_shared::ClassificationRules {
         // Palet Vendéen standard classification rules:
         // 1. Points (descending)
         // 2. Diff (goal difference, descending)
@@ -249,7 +210,9 @@ impl PaletRulesService for PaletRulesServiceImpl {
         // Sort teams based on Palet Vendéen classification rules
         teams.sort_by(|a, b| {
             // Primary: Points (descending)
-            b.stats.points.cmp(&a.stats.points)
+            b.stats
+                .points
+                .cmp(&a.stats.points)
                 // Secondary: Diff (descending)
                 .then_with(|| b.stats.diff.cmp(&a.stats.diff))
                 // Tertiary: Points For (descending)
@@ -279,11 +242,7 @@ impl PaletRulesService for PaletRulesServiceImpl {
         0
     }
 
-    fn calculate_team_stats(
-        &self,
-        matches: Vec<Match>,
-        team_id: Uuid,
-    ) -> palet_shared::TeamStats {
+    fn calculate_team_stats(&self, matches: Vec<Match>, team_id: Uuid) -> palet_shared::TeamStats {
         let mut matches_played = 0;
         let mut wins = 0;
         let mut draws = 0;
@@ -302,7 +261,9 @@ impl PaletRulesService for PaletRulesServiceImpl {
 
             matches_played += 1;
 
-            if let (Some(team1_score), Some(team2_score)) = (match_obj.team1_score, match_obj.team2_score) {
+            if let (Some(team1_score), Some(team2_score)) =
+                (match_obj.team1_score, match_obj.team2_score)
+            {
                 if is_team1 {
                     points_for += team1_score;
                     points_against += team2_score;
@@ -395,10 +356,7 @@ impl PaletRulesService for PaletRulesServiceImpl {
         Ok(())
     }
 
-    fn validate_match_rules(
-        &self,
-        match_obj: &Match,
-    ) -> Result<(), PaletRulesError> {
+    fn validate_match_rules(&self, match_obj: &Match) -> Result<(), PaletRulesError> {
         // Validate best_of value
         if let Some(best_of) = match_obj.best_of {
             if best_of != 13 && best_of != 15 {
@@ -410,7 +368,9 @@ impl PaletRulesService for PaletRulesServiceImpl {
         }
 
         // Validate scores
-        if let (Some(team1_score), Some(team2_score)) = (match_obj.team1_score, match_obj.team2_score) {
+        if let (Some(team1_score), Some(team2_score)) =
+            (match_obj.team1_score, match_obj.team2_score)
+        {
             if team1_score < 0 || team2_score < 0 {
                 return Err(PaletRulesError::InvalidScore(
                     "Scores cannot be negative".to_string(),
@@ -422,7 +382,8 @@ impl PaletRulesService for PaletRulesServiceImpl {
                 let best_of = match_obj.best_of.unwrap_or(13);
                 if team1_score < best_of && team2_score < best_of {
                     return Err(PaletRulesError::RuleViolation(
-                        "Completed match must have at least one team reaching the best_of score".to_string(),
+                        "Completed match must have at least one team reaching the best_of score"
+                            .to_string(),
                     ));
                 }
             }
@@ -446,6 +407,7 @@ impl PaletRulesService for PaletRulesServiceImpl {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use palet_shared::MancheScore;
 
     #[test]
     fn test_get_match_points_target_normal() {
@@ -465,10 +427,8 @@ mod tests {
         let service = PaletRulesServiceImpl::new();
 
         // WHEN: Getting points target for final
-        let target = service.get_match_points_target(
-            CompetitionType::Tournament,
-            Some("Finale".to_string()),
-        );
+        let target = service
+            .get_match_points_target(CompetitionType::Tournament, Some("Finale".to_string()));
 
         // THEN: Should be 15
         assert_eq!(target, 15);
@@ -480,10 +440,8 @@ mod tests {
         let service = PaletRulesServiceImpl::new();
 
         // WHEN: Getting points target for "la balle"
-        let target = service.get_match_points_target(
-            CompetitionType::Tournament,
-            Some("La Balle".to_string()),
-        );
+        let target = service
+            .get_match_points_target(CompetitionType::Tournament, Some("La Balle".to_string()));
 
         // THEN: Should be 15
         assert_eq!(target, 15);

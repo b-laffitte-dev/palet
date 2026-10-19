@@ -6,12 +6,8 @@ FROM rust:slim AS builder
 # Install wasm-pack
 RUN cargo install wasm-pack
 
-# Install nodejs for npm dependencies (if needed)
-RUN apt-get update && apt-get install -y \
-    curl \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
+# Add the wasm compilation target
+RUN rustup target add wasm32-unknown-unknown
 
 # Copy source code
 WORKDIR /app

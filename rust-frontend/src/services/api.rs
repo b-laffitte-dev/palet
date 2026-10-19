@@ -8,6 +8,12 @@ pub struct ApiService {
     base_url: String,
 }
 
+impl Default for ApiService {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ApiService {
     /// Create a new API service
     pub fn new() -> Self {

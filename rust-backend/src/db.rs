@@ -161,10 +161,7 @@ mod tests {
         assert!(matches!(error, DatabaseError::QueryError(_)));
 
         // Test sqlx::Error to DatabaseError conversion
-        let sqlx_error = sqlx::Error::Io(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "database error",
-        ));
+        let sqlx_error = sqlx::Error::Io(std::io::Error::other("database error"));
         let error = DatabaseError::from(sqlx_error);
         assert!(matches!(error, DatabaseError::ConnectionError(_)));
     }

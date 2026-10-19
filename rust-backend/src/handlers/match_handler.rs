@@ -3,8 +3,11 @@
 //! Handles all match-related operations with TDD approach
 
 use actix_web::{web, HttpResponse, Responder};
+use palet_shared::{
+    ApiResponse, CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner,
+    PaginatedResponse, Pagination, UpdateMatchRequest,
+};
 use serde::{Deserialize, Serialize};
-use palet_shared::{ApiResponse, CreateMatchRequest, Match, MatchStatus, MancheScore, PaginatedResponse, Pagination, UpdateMatchRequest, MatchWinner};
 use uuid::Uuid;
 
 use crate::AppState;
@@ -155,12 +158,7 @@ pub async fn get_matches_by_status(
         _ => MatchStatus::Scheduled,
     };
 
-    match state
-        .db
-        .matches
-        .get_matches_by_status(match_status)
-        .await
-    {
+    match state.db.matches.get_matches_by_status(match_status).await {
         Ok(matches) => HttpResponse::Ok().json(ApiResponse {
             data: matches,
             message: Some("Matchs retrieved successfully".to_string()),
@@ -352,12 +350,7 @@ pub async fn complete_match(
     id: web::Path<Uuid>,
     winner: web::Query<MatchWinner>,
 ) -> impl Responder {
-    match state
-        .db
-        .matches
-        .complete_match(*id, winner.0.clone())
-        .await
-    {
+    match state.db.matches.complete_match(*id, winner.0.clone()).await {
         Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {
             data: match_obj,
             message: Some("Match completed successfully".to_string()),
@@ -398,12 +391,15 @@ pub async fn add_manche(
     match state
         .db
         .matches
-        .add_manche(*id, MancheScore {
-            number: request.current_manche + 1,
-            team1: request.team1_score,
-            team2: request.team2_score,
-            winner: None,
-        })
+        .add_manche(
+            *id,
+            MancheScore {
+                number: request.current_manche + 1,
+                team1: request.team1_score,
+                team2: request.team2_score,
+                winner: None,
+            },
+        )
         .await
     {
         Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {

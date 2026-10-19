@@ -56,7 +56,11 @@ pub trait MatchService {
     ) -> Result<Match, MatchServiceError>;
 
     // Verification Operations
-    async fn verify_match(&self, match_id: Uuid, verifier_id: Uuid) -> Result<Match, MatchServiceError>;
+    async fn verify_match(
+        &self,
+        match_id: Uuid,
+        verifier_id: Uuid,
+    ) -> Result<Match, MatchServiceError>;
     async fn unverify_match(&self, match_id: Uuid) -> Result<Match, MatchServiceError>;
 
     // Query Operations
@@ -86,7 +90,10 @@ pub trait MatchService {
     ) -> Result<Vec<Match>, MatchServiceError>;
 
     // Palet Vendéen Rules Validation
-    async fn validate_match_creation(&self, request: &CreateMatchRequest) -> Result<(), MatchServiceError>;
+    async fn validate_match_creation(
+        &self,
+        request: &CreateMatchRequest,
+    ) -> Result<(), MatchServiceError>;
     async fn validate_manche_score(
         &self,
         team1_score: i32,
@@ -226,8 +233,7 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
         team2_score: i32,
     ) -> Result<Match, MatchServiceError> {
         // Validate manche score
-        self.validate_manche_score(team1_score, team2_score)
-            .await?;
+        self.validate_manche_score(team1_score, team2_score).await?;
 
         // Get current match to determine next manche number
         let match_obj = self.repository.get_match(match_id).await?;
@@ -265,8 +271,7 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
         team2_score: i32,
     ) -> Result<Match, MatchServiceError> {
         // Validate manche score
-        self.validate_manche_score(team1_score, team2_score)
-            .await?;
+        self.validate_manche_score(team1_score, team2_score).await?;
 
         let match_obj = self
             .repository
@@ -275,7 +280,11 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
         Ok(match_obj)
     }
 
-    async fn verify_match(&self, match_id: Uuid, verifier_id: Uuid) -> Result<Match, MatchServiceError> {
+    async fn verify_match(
+        &self,
+        match_id: Uuid,
+        verifier_id: Uuid,
+    ) -> Result<Match, MatchServiceError> {
         let match_obj = self.repository.verify_match(match_id, verifier_id).await?;
         Ok(match_obj)
     }
@@ -343,7 +352,10 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
         Ok(matches)
     }
 
-    async fn validate_match_creation(&self, request: &CreateMatchRequest) -> Result<(), MatchServiceError> {
+    async fn validate_match_creation(
+        &self,
+        request: &CreateMatchRequest,
+    ) -> Result<(), MatchServiceError> {
         // Validate required fields
         if request.team1_id == request.team2_id {
             return Err(MatchServiceError::ValidationError(
@@ -354,9 +366,10 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
         // Validate best_of value (13 or 15 for Palet Vendéen)
         if let Some(best_of) = request.best_of {
             if best_of != 13 && best_of != 15 {
-                return Err(MatchServiceError::ValidationError(
-                    format!("best_of must be 13 or 15 for Palet Vendéen, got {}", best_of),
-                ));
+                return Err(MatchServiceError::ValidationError(format!(
+                    "best_of must be 13 or 15 for Palet Vendéen, got {}",
+                    best_of
+                )));
             }
         }
 
@@ -385,12 +398,10 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
 
         // Validate scores are within valid range (0-6 for doublette)
         if team1_score > 6 || team2_score > 6 {
-            return Err(MatchServiceError::ValidationError(
-                format!(
-                    "Scores cannot exceed 6 per manche (got {} and {})",
-                    team1_score, team2_score
-                ),
-            ));
+            return Err(MatchServiceError::ValidationError(format!(
+                "Scores cannot exceed 6 per manche (got {} and {})",
+                team1_score, team2_score
+            )));
         }
 
         // In Palet Vendéen, a manche cannot be a draw (one team must have more points)

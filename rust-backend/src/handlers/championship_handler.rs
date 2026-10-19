@@ -267,7 +267,10 @@ pub async fn update_championship(
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn delete_championship(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+pub async fn delete_championship(
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
     match state.db.championships.delete_championship(*id).await {
         Ok(deleted) => {
             if deleted {

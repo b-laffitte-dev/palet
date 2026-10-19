@@ -3,8 +3,6 @@
 //! Main entry point for the web application
 
 use dioxus::prelude::*;
-use dioxus_router::*;
-use dioxus_web::launch;
 use log::info;
 
 mod components;
@@ -63,7 +61,6 @@ fn App() -> Element {
 }
 
 /// Main entry point for WASM
-#[wasm_bindgen::prelude::wasm_bindgen(start)]
 pub fn main() {
     // Initialize logging
     wasm_logger::init(wasm_logger::Config::default());

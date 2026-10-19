@@ -2,10 +2,10 @@
 //!
 //! This module provides the database operations for managing teams.
 
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
 use chrono::Utc;
-use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
-use palet_shared::{Team, TeamStatus, TeamStats};
+use palet_shared::{Team, TeamStats, TeamStatus};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
 use uuid::Uuid;
@@ -319,7 +319,6 @@ impl MockTeamRepository {
     pub fn add_team(&mut self, team: Team) {
         self.teams.lock().unwrap().push(team);
     }
-
 }
 
 #[async_trait]
@@ -363,7 +362,8 @@ impl TeamRepository for MockTeamRepository {
             .lock()
             .unwrap()
             .iter()
-            .find(|t| t.id == team_id).cloned())
+            .find(|t| t.id == team_id)
+            .cloned())
     }
 
     async fn get_teams(&self) -> Result<Vec<Team>, DatabaseError> {
