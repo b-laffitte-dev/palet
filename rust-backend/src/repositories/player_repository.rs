@@ -4,6 +4,7 @@
 
 use async_trait::async_trait;
 use chrono::Utc;
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use palet_shared::{CreatePlayerRequest, DominantHand, LicenseStatus, Player, PlayerStatus};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
@@ -55,7 +56,7 @@ impl PostgresPlayerRepository {
     }
 
     // Helper function to convert database row to Player
-    async fn row_to_player(row: sqlx::postgres::PgRow) -> Result<Player, sqlx::Error> {
+    async fn row_to_player(row: sqlx::postgres::PgRow) -> Result<Player, DatabaseError> {
         let id: Uuid = row.get("id");
         let first_name: String = row.get("first_name");
         let last_name: String = row.get("last_name");
@@ -63,7 +64,8 @@ impl PostgresPlayerRepository {
         let alias: Option<String> = row.get("alias");
         let email: String = row.get("email");
         let photo: Option<String> = row.get("photo");
-        let status: PlayerStatus = row.get("status");
+        let status_str: String = row.get("status");
+        let status: PlayerStatus = enum_from_db_string(&status_str)?;
         let birth_date: chrono::DateTime<Utc> = row.get("birth_date");
         let age: i32 = row.get("age");
         let birth_place: Option<String> = row.get("birth_place");
@@ -119,12 +121,12 @@ impl PostgresPlayerRepository {
 #[async_trait]
 impl PlayerRepository for PostgresPlayerRepository {
     async fn create_player(&self, request: CreatePlayerRequest) -> Result<Player, DatabaseError> {
-        let age = Utc::now().signed_duration_since(request.birth_date).num_days() / 365;
+        let age: i32 = (Utc::now().signed_duration_since(request.birth_date).num_days() / 365) as i32;
 
         let player = Player {
             id: Uuid::new_v4(),
-            first_name: request.first_name,
-            last_name: request.last_name,
+            first_name: request.first_name.clone(),
+            last_name: request.last_name.clone(),
             full_name: format!("{} {}", request.first_name, request.last_name),
             alias: None,
             email: request.email,
@@ -176,12 +178,12 @@ impl PlayerRepository for PostgresPlayerRepository {
             .bind(player.alias)
             .bind(&player.email)
             .bind(player.photo)
-            .bind(player.status)
+            .bind(enum_to_db_string(&player.status))
             .bind(player.birth_date)
             .bind(player.age)
             .bind(player.birth_place)
             .bind(&player.nationality)
-            .bind(player.dominant_hand)
+            .bind(enum_to_db_string(&player.dominant_hand))
             .bind(player.play_style)
             .bind(player.phone)
             .bind(player.address)
@@ -192,14 +194,14 @@ impl PlayerRepository for PostgresPlayerRepository {
             .bind(&player.category)
             .bind(&player.license_number)
             .bind(player.license_date)
-            .bind(player.license_status)
+            .bind(enum_to_db_string(&player.license_status))
             .bind(player.registration_date)
             .bind(player.created_at)
             .bind(player.updated_at)
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_player(row).await.map_err(DatabaseError::from)
+        Self::row_to_player(row).await
     }
 
     async fn get_player(&self, player_id: Uuid) -> Result<Option<Player>, DatabaseError> {
@@ -240,9 +242,9 @@ impl PlayerRepository for PostgresPlayerRepository {
         let mut player = existing.unwrap();
 
         // Update fields from request
+        player.full_name = format!("{} {}", request.first_name, request.last_name);
         player.first_name = request.first_name;
         player.last_name = request.last_name;
-        player.full_name = format!("{} {}", request.first_name, request.last_name);
         player.email = request.email;
         player.nationality = request.nationality;
         player.dominant_hand = request.dominant_hand;
@@ -282,7 +284,7 @@ impl PlayerRepository for PostgresPlayerRepository {
             .bind(&player.full_name)
             .bind(&player.email)
             .bind(&player.nationality)
-            .bind(player.dominant_hand)
+            .bind(enum_to_db_string(&player.dominant_hand))
             .bind(&player.category)
             .bind(player.club_id)
             .bind(player.license_number)
@@ -334,9 +336,9 @@ impl PlayerRepository for PostgresPlayerRepository {
     }
 
     async fn get_players_by_status(&self, status: PlayerStatus) -> Result<Vec<Player>, DatabaseError> {
-        let query = "SELECT * FROM players WHERE status = $1 ORDER BY last_name, first_name";
+        let query = "SELECT * FROM players WHERE status = $1::text ORDER BY last_name, first_name";
         let rows = sqlx::query(query)
-            .bind(status)
+            .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
             .await?;
 
@@ -351,9 +353,9 @@ impl PlayerRepository for PostgresPlayerRepository {
         &self,
         status: LicenseStatus,
     ) -> Result<Vec<Player>, DatabaseError> {
-        let query = "SELECT * FROM players WHERE license_status = $1 ORDER BY last_name, first_name";
+        let query = "SELECT * FROM players WHERE license_status = $1::text ORDER BY last_name, first_name";
         let rows = sqlx::query(query)
-            .bind(status)
+            .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
             .await?;
 
@@ -391,7 +393,7 @@ impl PlayerRepository for PostgresPlayerRepository {
 /// Mock implementation of PlayerRepository for testing
 #[derive(Clone, Default)]
 pub struct MockPlayerRepository {
-    pub players: Vec<Player>,
+    pub players: std::sync::Arc<std::sync::Mutex<Vec<Player>>>,
     pub should_fail: bool,
 }
 
@@ -402,7 +404,7 @@ impl MockPlayerRepository {
 
     pub fn with_players(players: Vec<Player>) -> Self {
         Self {
-            players,
+            players: std::sync::Arc::new(std::sync::Mutex::new(players)),
             should_fail: false,
         }
     }
@@ -412,12 +414,9 @@ impl MockPlayerRepository {
     }
 
     pub fn add_player(&mut self, player: Player) {
-        self.players.push(player);
+        self.players.lock().unwrap().push(player);
     }
 
-    pub fn find_player_mut(&mut self, player_id: Uuid) -> Option<&mut Player> {
-        self.players.iter_mut().find(|p| p.id == player_id)
-    }
 }
 
 #[async_trait]
@@ -429,12 +428,12 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        let age = Utc::now().signed_duration_since(request.birth_date).num_days() / 365;
+        let age: i32 = (Utc::now().signed_duration_since(request.birth_date).num_days() / 365) as i32;
 
         let player = Player {
             id: Uuid::new_v4(),
-            first_name: request.first_name,
-            last_name: request.last_name,
+            first_name: request.first_name.clone(),
+            last_name: request.last_name.clone(),
             full_name: format!("{} {}", request.first_name, request.last_name),
             alias: None,
             email: request.email,
@@ -471,7 +470,12 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        Ok(self.players.iter().find(|p| p.id == player_id).cloned())
+        Ok(self
+            .players
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|p| p.id == player_id).cloned())
     }
 
     async fn get_players(&self) -> Result<Vec<Player>, DatabaseError> {
@@ -481,7 +485,7 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        Ok(self.players.clone())
+        Ok(self.players.lock().unwrap().clone())
     }
 
     async fn update_player(
@@ -495,7 +499,8 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        if let Some(player) = self.players.iter_mut().find(|p| p.id == player_id) {
+        let mut players = self.players.lock().unwrap();
+        if let Some(player) = players.iter_mut().find(|p| p.id == player_id) {
             player.first_name = request.first_name.clone();
             player.last_name = request.last_name.clone();
             player.full_name = format!("{} {}", player.first_name, player.last_name);
@@ -527,7 +532,12 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        let index = self.players.iter().position(|p| p.id == player_id);
+        let index = self
+            .players
+            .lock()
+            .unwrap()
+            .iter()
+            .position(|p| p.id == player_id);
         Ok(index.is_some())
     }
 
@@ -540,6 +550,8 @@ impl PlayerRepository for MockPlayerRepository {
 
         Ok(self
             .players
+            .lock()
+            .unwrap()
             .iter()
             .filter(|p| p.club_id == club_id)
             .cloned()
@@ -555,6 +567,8 @@ impl PlayerRepository for MockPlayerRepository {
 
         Ok(self
             .players
+            .lock()
+            .unwrap()
             .iter()
             .filter(|p| p.category == category)
             .cloned()
@@ -570,6 +584,8 @@ impl PlayerRepository for MockPlayerRepository {
 
         Ok(self
             .players
+            .lock()
+            .unwrap()
             .iter()
             .filter(|p| p.status == status)
             .cloned()
@@ -588,6 +604,8 @@ impl PlayerRepository for MockPlayerRepository {
 
         Ok(self
             .players
+            .lock()
+            .unwrap()
             .iter()
             .filter(|p| p.license_status == status)
             .cloned()
@@ -604,6 +622,8 @@ impl PlayerRepository for MockPlayerRepository {
         let query_lower = query.to_lowercase();
         Ok(self
             .players
+            .lock()
+            .unwrap()
             .iter()
             .filter(|p| {
                 p.first_name.to_lowercase().contains(&query_lower)

@@ -17,6 +17,7 @@ use utoipa_swagger_ui::SwaggerUi;
 mod config;
 mod db;
 mod handlers;
+mod repositories;
 
 use config::load_config;
 use db::Database;

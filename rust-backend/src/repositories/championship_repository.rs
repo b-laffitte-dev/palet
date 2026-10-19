@@ -562,8 +562,8 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
         championship_id: Uuid,
         division: Option<String>,
     ) -> Result<Vec<ChampionshipClassification>, DatabaseError> {
-        let query = match division {
-            Some(div) => "SELECT * FROM championship_classifications WHERE championship_id = $1 AND division = $2",
+        let query = match &division {
+            Some(_) => "SELECT * FROM championship_classifications WHERE championship_id = $1 AND division = $2",
             None => "SELECT * FROM championship_classifications WHERE championship_id = $1",
         };
 
@@ -663,8 +663,8 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
         championship_id: Uuid,
         division: Option<String>,
     ) -> Result<Vec<ChampionshipTeam>, DatabaseError> {
-        let query = match division {
-            Some(div) => "SELECT * FROM championship_teams WHERE championship_id = $1 AND division = $2 ORDER BY position",
+        let query = match &division {
+            Some(_) => "SELECT * FROM championship_teams WHERE championship_id = $1 AND division = $2 ORDER BY position",
             None => "SELECT * FROM championship_teams WHERE championship_id = $1 ORDER BY position",
         };
 
@@ -720,8 +720,8 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
 /// Mock implementation of ChampionshipRepository for testing
 #[derive(Clone, Default)]
 pub struct MockChampionshipRepository {
-    pub championships: Vec<Championship>,
-    pub classifications: Vec<ChampionshipClassification>,
+    pub championships: std::sync::Arc<std::sync::Mutex<Vec<Championship>>>,
+    pub classifications: std::sync::Arc<std::sync::Mutex<Vec<ChampionshipClassification>>>,
     pub should_fail: bool,
 }
 
@@ -732,7 +732,7 @@ impl MockChampionshipRepository {
 
     pub fn with_championships(championships: Vec<Championship>) -> Self {
         Self {
-            championships,
+            championships: std::sync::Arc::new(std::sync::Mutex::new(championships)),
             ..Default::default()
         }
     }
@@ -742,13 +742,7 @@ impl MockChampionshipRepository {
     }
 
     pub fn add_championship(&mut self, championship: Championship) {
-        self.championships.push(championship);
-    }
-
-    pub fn find_championship_mut(&mut self, championship_id: Uuid) -> Option<&mut Championship> {
-        self.championships
-            .iter_mut()
-            .find(|c| c.id == championship_id)
+        self.championships.lock().unwrap().push(championship);
     }
 }
 
@@ -782,6 +776,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
+        self.championships.lock().unwrap().push(championship.clone());
 
         Ok(championship)
     }
@@ -798,6 +793,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
         Ok(self
             .championships
+            .lock()
+            .unwrap()
             .iter()
             .find(|c| c.id == championship_id)
             .cloned())
@@ -810,7 +807,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
             ));
         }
 
-        Ok(self.championships.clone())
+        Ok(self.championships.lock().unwrap().clone())
     }
 
     async fn update_championship(
@@ -824,7 +821,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
             ));
         }
 
-        if let Some(championship) = self.championships.iter_mut().find(|c| c.id == championship_id) {
+        let mut championships = self.championships.lock().unwrap();
+        if let Some(championship) = championships.iter_mut().find(|c| c.id == championship_id) {
             if let Some(name) = request.name {
                 championship.name = name;
             }
@@ -879,6 +877,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
         let index = self
             .championships
+            .lock()
+            .unwrap()
             .iter()
             .position(|c| c.id == championship_id);
         Ok(index.is_some())
@@ -896,6 +896,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
         Ok(self
             .championships
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.league == league)
             .cloned()
@@ -914,6 +916,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
         Ok(self
             .championships
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.season == season)
             .cloned()
@@ -932,6 +936,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
         Ok(self
             .championships
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.status == status)
             .cloned()
@@ -950,6 +956,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
 
         Ok(self
             .championships
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.organizer_id == organizer_id)
             .cloned()
@@ -963,7 +971,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
             ));
         }
 
-        if let Some(championship) = self.championships.iter_mut().find(|c| c.id == championship_id) {
+        let mut championships = self.championships.lock().unwrap();
+        if let Some(championship) = championships.iter_mut().find(|c| c.id == championship_id) {
             championship.status = CompetitionStatus::InProgress;
             championship.current_journee = Some(1);
             championship.updated_at = Utc::now();
@@ -983,7 +992,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
             ));
         }
 
-        if let Some(championship) = self.championships.iter_mut().find(|c| c.id == championship_id) {
+        let mut championships = self.championships.lock().unwrap();
+        if let Some(championship) = championships.iter_mut().find(|c| c.id == championship_id) {
             let current_journee = championship.current_journee.unwrap_or(0);
             let next_journee = current_journee + 1;
 
@@ -1019,7 +1029,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
             ));
         }
 
-        if let Some(championship) = self.championships.iter_mut().find(|c| c.id == championship_id) {
+        let mut championships = self.championships.lock().unwrap();
+        if let Some(championship) = championships.iter_mut().find(|c| c.id == championship_id) {
             championship.status = CompetitionStatus::Completed;
             championship.current_phase = Some("finished".to_string());
             championship.updated_at = Utc::now();
@@ -1043,18 +1054,16 @@ impl ChampionshipRepository for MockChampionshipRepository {
             ));
         }
 
-        let classifications = if let Some(div) = division {
-            self.classifications
-                .iter()
-                .filter(|c| c.division == div)
-                .cloned()
-                .collect()
-        } else {
-            self.classifications
-                .iter()
-                .filter(|c| true)
-                .cloned()
-                .collect()
+        let classifications = {
+            let all = self.classifications.lock().unwrap();
+            if let Some(div) = &division {
+                all.iter()
+                    .filter(|c| c.division == *div)
+                    .cloned()
+                    .collect()
+            } else {
+                all.clone()
+            }
         };
 
         Ok(classifications)
@@ -1073,14 +1082,14 @@ impl ChampionshipRepository for MockChampionshipRepository {
         }
 
         // Find and update existing classification or add new one
-        if let Some(existing) = self
-            .classifications
+        let mut classifications = self.classifications.lock().unwrap();
+        if let Some(existing) = classifications
             .iter_mut()
             .find(|c| c.division == division && c.journee == classification.journee)
         {
             *existing = classification.clone();
         } else {
-            self.classifications.push(classification.clone());
+            classifications.push(classification.clone());
         }
 
         Ok(classification)

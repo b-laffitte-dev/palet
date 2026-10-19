@@ -5,10 +5,8 @@
 
 use async_trait::async_trait;
 use palet_shared::{
-    Championship, CompetitionCategory, CompetitionMaterial, CompetitionType, MancheScore,
-    Match, MatchStatus, MatchWinner, PointsType,
+    Championship, CompetitionType, MancheScore, Match, MatchStatus, MatchWinner,
 };
-use std::sync::Arc;
 use uuid::Uuid;
 
 // ============================================
@@ -455,7 +453,7 @@ mod tests {
         let service = PaletRulesServiceImpl::new();
 
         // WHEN: Getting points target
-        let target = service.get_match_points_target(CompetitionType::Championnat, None);
+        let target = service.get_match_points_target(CompetitionType::Championship, None);
 
         // THEN: Should be 13
         assert_eq!(target, 13);
@@ -924,7 +922,7 @@ mod tests {
         let match_obj = palet_shared::Match {
             id: Uuid::new_v4(),
             competition_id: Uuid::new_v4(),
-            competition_type: CompetitionType::Championnat,
+            competition_type: CompetitionType::Championship,
             journee: Some(1),
             phase: None,
             round: None,
@@ -979,7 +977,7 @@ mod tests {
         let match_obj = palet_shared::Match {
             id: Uuid::new_v4(),
             competition_id: Uuid::new_v4(),
-            competition_type: CompetitionType::Championnat,
+            competition_type: CompetitionType::Championship,
             journee: Some(1),
             phase: None,
             round: None,

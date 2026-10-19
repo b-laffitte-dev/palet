@@ -32,6 +32,8 @@ pub enum DatabaseError {
 
     #[error("Validation error: {0}")]
     ValidationError(String),
+    #[error("Protocol error: {0}")]
+    ProtocolError(String),
 
     #[error("Migration error: {0}")]
     MigrationError(String),
@@ -44,7 +46,7 @@ impl From<sqlx::Error> for DatabaseError {
     fn from(error: sqlx::Error) -> Self {
         match error {
             sqlx::Error::Database(err) => DatabaseError::QueryError(err.to_string()),
-            sqlx::Error::Connection(err) => DatabaseError::ConnectionError(err.to_string()),
+            sqlx::Error::Io(err) => DatabaseError::ConnectionError(err.to_string()),
             sqlx::Error::PoolTimedOut => {
                 DatabaseError::PoolError("Connection pool timed out".to_string())
             }
@@ -159,8 +161,11 @@ mod tests {
         assert!(matches!(error, DatabaseError::QueryError(_)));
 
         // Test sqlx::Error to DatabaseError conversion
-        let sqlx_error = sqlx::Error::Database("database error".into());
+        let sqlx_error = sqlx::Error::Io(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "database error",
+        ));
         let error = DatabaseError::from(sqlx_error);
-        assert!(matches!(error, DatabaseError::QueryError(_)));
+        assert!(matches!(error, DatabaseError::ConnectionError(_)));
     }
 }

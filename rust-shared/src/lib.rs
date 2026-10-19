@@ -383,7 +383,7 @@ impl Timestamped for Team {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, Default)]
 pub struct TeamStats {
     pub matches: i32,
     pub wins: i32,

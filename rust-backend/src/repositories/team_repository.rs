@@ -4,6 +4,7 @@
 
 use async_trait::async_trait;
 use chrono::Utc;
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use palet_shared::{Team, TeamStatus, TeamStats};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
@@ -63,7 +64,7 @@ impl PostgresTeamRepository {
     }
 
     // Helper function to convert database row to Team
-    async fn row_to_team(row: sqlx::postgres::PgRow) -> Result<Team, sqlx::Error> {
+    async fn row_to_team(row: sqlx::postgres::PgRow) -> Result<Team, DatabaseError> {
         let id: Uuid = row.get("id");
         let name: String = row.get("name");
         let club_id: Uuid = row.get("club_id");
@@ -74,7 +75,8 @@ impl PostgresTeamRepository {
         let stats_json: serde_json::Value = row.get("stats");
         let stats: TeamStats = serde_json::from_value(stats_json).unwrap_or_default();
 
-        let status: TeamStatus = row.get("status");
+        let status_str: String = row.get("status");
+        let status: TeamStatus = enum_from_db_string(&status_str)?;
         let created_at: chrono::DateTime<Utc> = row.get("created_at");
         let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
 
@@ -129,13 +131,13 @@ impl TeamRepository for PostgresTeamRepository {
             .bind(team.captain_id)
             .bind(team.logo)
             .bind(sqlx::types::Json(team.stats))
-            .bind(team.status)
+            .bind(enum_to_db_string(&team.status))
             .bind(team.created_at)
             .bind(team.updated_at)
             .fetch_one(&*self.pool)
             .await?;
 
-        Self::row_to_team(row).await.map_err(DatabaseError::from)
+        Self::row_to_team(row).await
     }
 
     async fn get_team(&self, team_id: Uuid) -> Result<Option<Team>, DatabaseError> {
@@ -210,7 +212,7 @@ impl TeamRepository for PostgresTeamRepository {
             .bind(team.name)
             .bind(team.captain_id)
             .bind(sqlx::types::Json(team.stats))
-            .bind(team.status)
+            .bind(enum_to_db_string(&team.status))
             .bind(team.updated_at)
             .bind(team_id)
             .fetch_one(&*self.pool)
@@ -244,9 +246,9 @@ impl TeamRepository for PostgresTeamRepository {
     }
 
     async fn get_teams_by_status(&self, status: TeamStatus) -> Result<Vec<Team>, DatabaseError> {
-        let query = "SELECT * FROM teams WHERE status = $1 ORDER BY name";
+        let query = "SELECT * FROM teams WHERE status = $1::text ORDER BY name";
         let rows = sqlx::query(query)
-            .bind(status)
+            .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
             .await?;
 
@@ -294,7 +296,7 @@ impl TeamRepository for PostgresTeamRepository {
 /// Mock implementation of TeamRepository for testing
 #[derive(Clone, Default)]
 pub struct MockTeamRepository {
-    pub teams: Vec<Team>,
+    pub teams: std::sync::Arc<std::sync::Mutex<Vec<Team>>>,
     pub should_fail: bool,
 }
 
@@ -305,7 +307,7 @@ impl MockTeamRepository {
 
     pub fn with_teams(teams: Vec<Team>) -> Self {
         Self {
-            teams,
+            teams: std::sync::Arc::new(std::sync::Mutex::new(teams)),
             should_fail: false,
         }
     }
@@ -315,12 +317,9 @@ impl MockTeamRepository {
     }
 
     pub fn add_team(&mut self, team: Team) {
-        self.teams.push(team);
+        self.teams.lock().unwrap().push(team);
     }
 
-    pub fn find_team_mut(&mut self, team_id: Uuid) -> Option<&mut Team> {
-        self.teams.iter_mut().find(|t| t.id == team_id)
-    }
 }
 
 #[async_trait]
@@ -359,7 +358,12 @@ impl TeamRepository for MockTeamRepository {
             ));
         }
 
-        Ok(self.teams.iter().find(|t| t.id == team_id).cloned())
+        Ok(self
+            .teams
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|t| t.id == team_id).cloned())
     }
 
     async fn get_teams(&self) -> Result<Vec<Team>, DatabaseError> {
@@ -369,7 +373,7 @@ impl TeamRepository for MockTeamRepository {
             ));
         }
 
-        Ok(self.teams.clone())
+        Ok(self.teams.lock().unwrap().clone())
     }
 
     async fn update_team(
@@ -386,7 +390,8 @@ impl TeamRepository for MockTeamRepository {
             ));
         }
 
-        if let Some(team) = self.teams.iter_mut().find(|t| t.id == team_id) {
+        let mut teams = self.teams.lock().unwrap();
+        if let Some(team) = teams.iter_mut().find(|t| t.id == team_id) {
             if let Some(name) = name {
                 team.name = name;
             }
@@ -415,7 +420,12 @@ impl TeamRepository for MockTeamRepository {
             ));
         }
 
-        let index = self.teams.iter().position(|t| t.id == team_id);
+        let index = self
+            .teams
+            .lock()
+            .unwrap()
+            .iter()
+            .position(|t| t.id == team_id);
         Ok(index.is_some())
     }
 
@@ -428,6 +438,8 @@ impl TeamRepository for MockTeamRepository {
 
         Ok(self
             .teams
+            .lock()
+            .unwrap()
             .iter()
             .filter(|t| t.club_id == club_id)
             .cloned()
@@ -443,6 +455,8 @@ impl TeamRepository for MockTeamRepository {
 
         Ok(self
             .teams
+            .lock()
+            .unwrap()
             .iter()
             .filter(|t| t.status == status)
             .cloned()
@@ -458,6 +472,8 @@ impl TeamRepository for MockTeamRepository {
 
         Ok(self
             .teams
+            .lock()
+            .unwrap()
             .iter()
             .filter(|t| t.captain_id == Some(captain_id))
             .cloned()
@@ -474,6 +490,8 @@ impl TeamRepository for MockTeamRepository {
         let query_lower = query.to_lowercase();
         Ok(self
             .teams
+            .lock()
+            .unwrap()
             .iter()
             .filter(|t| t.name.to_lowercase().contains(&query_lower))
             .cloned()

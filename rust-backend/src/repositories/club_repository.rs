@@ -372,7 +372,7 @@ impl ClubRepository for PostgresClubRepository {
 /// Mock implementation of ClubRepository for testing
 #[derive(Clone, Default)]
 pub struct MockClubRepository {
-    pub clubs: Vec<Club>,
+    pub clubs: std::sync::Arc<std::sync::Mutex<Vec<Club>>>,
     pub should_fail: bool,
 }
 
@@ -383,7 +383,7 @@ impl MockClubRepository {
 
     pub fn with_clubs(clubs: Vec<Club>) -> Self {
         Self {
-            clubs,
+            clubs: std::sync::Arc::new(std::sync::Mutex::new(clubs)),
             should_fail: false,
         }
     }
@@ -393,12 +393,9 @@ impl MockClubRepository {
     }
 
     pub fn add_club(&mut self, club: Club) {
-        self.clubs.push(club);
+        self.clubs.lock().unwrap().push(club);
     }
 
-    pub fn find_club_mut(&mut self, club_id: Uuid) -> Option<&mut Club> {
-        self.clubs.iter_mut().find(|c| c.id == club_id)
-    }
 }
 
 #[async_trait]
@@ -442,7 +439,12 @@ impl ClubRepository for MockClubRepository {
             ));
         }
 
-        Ok(self.clubs.iter().find(|c| c.id == club_id).cloned())
+        Ok(self
+            .clubs
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|c| c.id == club_id).cloned())
     }
 
     async fn get_clubs(&self) -> Result<Vec<Club>, DatabaseError> {
@@ -452,7 +454,7 @@ impl ClubRepository for MockClubRepository {
             ));
         }
 
-        Ok(self.clubs.clone())
+        Ok(self.clubs.lock().unwrap().clone())
     }
 
     async fn update_club(
@@ -466,7 +468,8 @@ impl ClubRepository for MockClubRepository {
             ));
         }
 
-        if let Some(club) = self.clubs.iter_mut().find(|c| c.id == club_id) {
+        let mut clubs = self.clubs.lock().unwrap();
+        if let Some(club) = clubs.iter_mut().find(|c| c.id == club_id) {
             if let Some(name) = request.name {
                 club.name = name;
             }
@@ -513,7 +516,12 @@ impl ClubRepository for MockClubRepository {
             ));
         }
 
-        let index = self.clubs.iter().position(|c| c.id == club_id);
+        let index = self
+            .clubs
+            .lock()
+            .unwrap()
+            .iter()
+            .position(|c| c.id == club_id);
         Ok(index.is_some())
     }
 
@@ -526,6 +534,8 @@ impl ClubRepository for MockClubRepository {
 
         Ok(self
             .clubs
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.league == league)
             .cloned()
@@ -541,6 +551,8 @@ impl ClubRepository for MockClubRepository {
 
         Ok(self
             .clubs
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.division == division)
             .cloned()
@@ -556,6 +568,8 @@ impl ClubRepository for MockClubRepository {
 
         Ok(self
             .clubs
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| c.status == status)
             .cloned()
@@ -572,7 +586,7 @@ impl ClubRepository for MockClubRepository {
             ));
         }
 
-        Ok(self.clubs.clone())
+        Ok(self.clubs.lock().unwrap().clone())
     }
 
     async fn search_clubs(&self, query: String) -> Result<Vec<Club>, DatabaseError> {
@@ -585,6 +599,8 @@ impl ClubRepository for MockClubRepository {
         let query_lower = query.to_lowercase();
         Ok(self
             .clubs
+            .lock()
+            .unwrap()
             .iter()
             .filter(|c| {
                 c.name.to_lowercase().contains(&query_lower)

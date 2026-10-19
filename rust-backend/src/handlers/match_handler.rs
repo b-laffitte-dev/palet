@@ -427,7 +427,7 @@ pub async fn add_manche(
 // ============================================
 
 /// Request to add a manche
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct AddMancheRequest {
     pub team1_score: i32,
     pub team2_score: i32,

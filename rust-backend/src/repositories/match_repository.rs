@@ -6,8 +6,7 @@
 use async_trait::async_trait;
 use chrono::Utc;
 use palet_shared::{
-    CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner, PointsType,
-    UpdateMatchRequest,
+    CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner, UpdateMatchRequest,
 };
 use serde_json;
 use sqlx::{PgPool, Row};
@@ -446,6 +445,7 @@ impl MatchRepository for PostgresMatchRepository {
         let mut manches = match_obj.manches.clone().unwrap_or_default();
         
         // Check if manche number already exists
+        let current_manche = manche.number;
         if let Some(existing) = manches.iter_mut().find(|m| m.number == manche.number) {
             *existing = manche;
         } else {
@@ -456,8 +456,6 @@ impl MatchRepository for PostgresMatchRepository {
         // Calculate current scores
         let team1_total: i32 = manches.iter().map(|m| m.team1).sum();
         let team2_total: i32 = manches.iter().map(|m| m.team2).sum();
-        let current_manche = manche.number;
-
         let current_scores = palet_shared::CurrentScores {
             team1: team1_total,
             team2: team2_total,
@@ -667,7 +665,7 @@ impl MatchRepository for PostgresMatchRepository {
 /// Mock implementation of MatchRepository for testing
 #[derive(Clone, Default)]
 pub struct MockMatchRepository {
-    pub matches: Vec<Match>,
+    pub matches: std::sync::Arc<std::sync::Mutex<Vec<Match>>>,
     pub should_fail: bool,
 }
 
@@ -678,7 +676,7 @@ impl MockMatchRepository {
 
     pub fn with_matches(matches: Vec<Match>) -> Self {
         Self {
-            matches,
+            matches: std::sync::Arc::new(std::sync::Mutex::new(matches)),
             should_fail: false,
         }
     }
@@ -688,11 +686,7 @@ impl MockMatchRepository {
     }
 
     pub fn add_match(&mut self, match_obj: Match) {
-        self.matches.push(match_obj);
-    }
-
-    pub fn find_match_mut(&mut self, match_id: Uuid) -> Option<&mut Match> {
-        self.matches.iter_mut().find(|m| m.id == match_id)
+        self.matches.lock().unwrap().push(match_obj);
     }
 }
 
@@ -739,6 +733,8 @@ impl MatchRepository for MockMatchRepository {
             ended_at: None,
         };
 
+        self.matches.lock().unwrap().push(match_obj.clone());
+
         Ok(match_obj)
     }
 
@@ -749,7 +745,13 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        Ok(self.matches.iter().find(|m| m.id == match_id).cloned())
+        Ok(self
+            .matches
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|m| m.id == match_id)
+            .cloned())
     }
 
     async fn get_matches(&self) -> Result<Vec<Match>, DatabaseError> {
@@ -759,7 +761,7 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        Ok(self.matches.clone())
+        Ok(self.matches.lock().unwrap().clone())
     }
 
     async fn get_matches_by_competition(
@@ -774,6 +776,8 @@ impl MatchRepository for MockMatchRepository {
 
         Ok(self
             .matches
+            .lock()
+            .unwrap()
             .iter()
             .filter(|m| m.competition_id == competition_id)
             .cloned()
@@ -792,6 +796,8 @@ impl MatchRepository for MockMatchRepository {
 
         Ok(self
             .matches
+            .lock()
+            .unwrap()
             .iter()
             .filter(|m| m.status == status)
             .cloned()
@@ -810,7 +816,8 @@ impl MatchRepository for MockMatchRepository {
         }
 
         // Find and update the match
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             if let Some(team1_score) = request.team1_score {
                 match_obj.team1_score = Some(team1_score);
             }
@@ -841,7 +848,12 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        let index = self.matches.iter().position(|m| m.id == match_id);
+        let index = self
+            .matches
+            .lock()
+            .unwrap()
+            .iter()
+            .position(|m| m.id == match_id);
         Ok(index.is_some())
     }
 
@@ -852,7 +864,8 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.status = MatchStatus::InProgress;
             match_obj.started_at = Some(Utc::now());
             match_obj.updated_at = Utc::now();
@@ -876,7 +889,8 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.status = MatchStatus::Completed;
             match_obj.winner = Some(winner);
             match_obj.ended_at = Some(Utc::now());
@@ -901,10 +915,12 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             let mut manches = match_obj.manches.clone().unwrap_or_default();
             
             // Check if manche number already exists
+            let current_manche = manche.number;
             if let Some(existing) = manches.iter_mut().find(|m| m.number == manche.number) {
                 *existing = manche;
             } else {
@@ -914,7 +930,6 @@ impl MatchRepository for MockMatchRepository {
 
             let team1_total: i32 = manches.iter().map(|m| m.team1).sum();
             let team2_total: i32 = manches.iter().map(|m| m.team2).sum();
-            let current_manche = manche.number;
 
             match_obj.manches = Some(manches);
             match_obj.current_manche = Some(current_manche);
@@ -961,7 +976,8 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             if let Some(manches) = &mut match_obj.manches {
                 if let Some(manche) = manches.iter_mut().find(|m| m.number == manche_number) {
                     manche.team1 = team1_score;
@@ -993,7 +1009,8 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.verified = true;
             match_obj.verified_by = Some(verifier_id);
             match_obj.verified_at = Some(Utc::now());
@@ -1014,7 +1031,8 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        if let Some(match_obj) = self.matches.iter_mut().find(|m| m.id == match_id) {
+        let mut matches = self.matches.lock().unwrap();
+        if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.verified = false;
             match_obj.verified_by = None;
             match_obj.verified_at = None;
@@ -1039,7 +1057,7 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
 
-        Ok(self.matches.clone())
+        Ok(self.matches.lock().unwrap().clone())
     }
 
     async fn get_matches_by_team(&self, team_id: Uuid) -> Result<Vec<Match>, DatabaseError> {
@@ -1051,6 +1069,8 @@ impl MatchRepository for MockMatchRepository {
 
         Ok(self
             .matches
+            .lock()
+            .unwrap()
             .iter()
             .filter(|m| m.team1_id == team_id || m.team2_id == team_id)
             .cloned()
@@ -1070,6 +1090,8 @@ impl MatchRepository for MockMatchRepository {
 
         Ok(self
             .matches
+            .lock()
+            .unwrap()
             .iter()
             .filter(|m| {
                 m.journee == Some(journee) && m.competition_id == competition_id
@@ -1097,6 +1119,8 @@ impl MatchRepository for MockMatchRepository {
 
         Ok(self
             .matches
+            .lock()
+            .unwrap()
             .iter()
             .filter(|m| {
                 m.competition_id == championship_id && m.status == MatchStatus::Completed

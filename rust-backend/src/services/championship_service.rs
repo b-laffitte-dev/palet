@@ -7,9 +7,8 @@ use async_trait::async_trait;
 use chrono::Utc;
 use palet_shared::{
     Championship, ChampionshipClassification, ChampionshipTeam, ClassificationPrimary,
-    ClassificationSecondary, ClassificationTertiary, CompetitionCategory, CompetitionFormat,
-    CompetitionMaterial, CompetitionStatus, CompetitionType, CreateChampionshipRequest,
-    MatchResult, PointsType, TeamClassificationStatus, TeamStats, UpdateChampionshipRequest,
+    ClassificationSecondary, ClassificationTertiary, CompetitionStatus,
+    CreateChampionshipRequest, TeamClassificationStatus, TeamStats, UpdateChampionshipRequest,
 };
 use std::sync::Arc;
 use uuid::Uuid;
@@ -150,7 +149,15 @@ pub enum ChampionshipServiceError {
 
 impl From<crate::db::DatabaseError> for ChampionshipServiceError {
     fn from(error: crate::db::DatabaseError) -> Self {
-        ChampionshipServiceError::RepositoryError(error.to_string())
+        match error {
+            crate::db::DatabaseError::NotFound(msg) => {
+                ChampionshipServiceError::NotFound(msg)
+            }
+            crate::db::DatabaseError::ValidationError(msg) => {
+                ChampionshipServiceError::ValidationError(msg)
+            }
+            other => ChampionshipServiceError::RepositoryError(other.to_string()),
+        }
     }
 }
 
@@ -481,7 +488,7 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
         let request = CreateChampionshipRequest {
             name,
             code: Some(format!("{}-{}", league, season).to_uppercase()),
-            season,
+            season: season.clone(),
             description: Some(format!(
                 "Championnat de {} de Palet Vendéen - Saison {}",
                 league, season
@@ -530,7 +537,7 @@ pub fn create_test_championship_request(
     CreateChampionshipRequest {
         name,
         code: Some(format!("{}-{}", league, season).to_uppercase()),
-        season,
+        season: season.clone(),
         description: Some(format!("Championnat de {} - {}", league, season)),
         league,
         divisions: vec!["D1".to_string()],
@@ -556,7 +563,7 @@ pub fn create_test_championship(
         id: Uuid::new_v4(),
         name,
         code: Some(format!("{}-{}", league, season).to_uppercase()),
-        season,
+        season: season.clone(),
         description: Some(format!("Championnat de {} - {}", league, season)),
         league,
         divisions: vec!["D1".to_string()],
@@ -704,10 +711,10 @@ mod tests {
         let service = DefaultChampionshipService::default();
         let result = service
             .create_palet_vendeen_championship(
-                name,
-                season,
-                league,
-                divisions,
+                name.clone(),
+                season.clone(),
+                league.clone(),
+                divisions.clone(),
                 total_journees,
                 organizer_id,
             )

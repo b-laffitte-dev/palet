@@ -6,8 +6,7 @@
 use async_trait::async_trait;
 use chrono::Utc;
 use palet_shared::{
-    Championship, CompetitionCategory, CompetitionMaterial, CompetitionType, CreateMatchRequest,
-    MancheScore, Match, MatchResult, MatchStatus, MatchWinner, PointsType, Team, TeamStats,
+    CompetitionType, CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner,
     UpdateMatchRequest,
 };
 use std::sync::Arc;
@@ -121,7 +120,13 @@ pub enum MatchServiceError {
 
 impl From<crate::db::DatabaseError> for MatchServiceError {
     fn from(error: crate::db::DatabaseError) -> Self {
-        MatchServiceError::RepositoryError(error.to_string())
+        match error {
+            crate::db::DatabaseError::NotFound(msg) => MatchServiceError::NotFound(msg),
+            crate::db::DatabaseError::ValidationError(msg) => {
+                MatchServiceError::ValidationError(msg)
+            }
+            other => MatchServiceError::RepositoryError(other.to_string()),
+        }
     }
 }
 
@@ -355,8 +360,9 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
             }
         }
 
-        // Validate date is in the future or today
-        if request.date < Utc::now() {
+        // Validate date is in the future or today (with a small tolerance
+        // for the elapsed time between the caller capturing `now` and this check)
+        if request.date < Utc::now() - chrono::Duration::seconds(1) {
             return Err(MatchServiceError::ValidationError(
                 "Match date cannot be in the past".to_string(),
             ));
@@ -609,7 +615,7 @@ mod tests {
         // Create a match
         let request = CreateMatchRequest {
             competition_id: Uuid::new_v4(),
-            competition_type: CompetitionType::Championnat,
+            competition_type: CompetitionType::Championship,
             team1_id,
             team2_id,
             date: Utc::now(),
@@ -643,7 +649,7 @@ mod tests {
         let match_obj = Match {
             id: Uuid::new_v4(),
             competition_id: Uuid::new_v4(),
-            competition_type: CompetitionType::Championnat,
+            competition_type: CompetitionType::Championship,
             journee: Some(1),
             phase: None,
             round: None,
@@ -685,7 +691,7 @@ mod tests {
         let match_obj = Match {
             id: Uuid::new_v4(),
             competition_id: Uuid::new_v4(),
-            competition_type: CompetitionType::Championnat,
+            competition_type: CompetitionType::Championship,
             journee: Some(1),
             phase: None,
             round: None,

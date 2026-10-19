@@ -4,9 +4,8 @@
 
 use actix_web::{web, HttpResponse, Responder};
 use palet_shared::{
-    ApiResponse, Championship, ChampionshipClassification, ClassificationPrimary,
-    ClassificationRules, ClassificationSecondary, ClassificationTertiary, CompetitionStatus,
-    CreateChampionshipRequest, PaginatedResponse, Pagination, UpdateChampionshipRequest,
+    ApiResponse, Championship, ChampionshipClassification, CreateChampionshipRequest,
+    PaginatedResponse, Pagination, UpdateChampionshipRequest,
 };
 use uuid::Uuid;
 
