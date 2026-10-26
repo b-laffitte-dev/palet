@@ -11,6 +11,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::repositories::enum_conv::enum_from_db_string;
 
 // ============================================
 // CLUB REPOSITORY TRAIT (Interface)
@@ -71,7 +72,8 @@ impl PostgresClubRepository {
         let postal_code: Option<String> = row.get("postal_code");
         let league: String = row.get("league");
         let division: String = row.get("division");
-        let status: ClubStatus = ClubStatus::Active; // TODO: Read from DB
+        let status_str: String = row.get("status");
+        let status: ClubStatus = enum_from_db_string(&status_str).unwrap_or(ClubStatus::Active);
         let players_count: i32 = row.get("players_count");
         let teams_count: i32 = row.get("teams_count");
         let contact_email: Option<String> = row.get("contact_email");

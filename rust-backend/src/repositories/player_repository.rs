@@ -89,7 +89,9 @@ impl PostgresPlayerRepository {
         let category: String = row.get("category");
         let license_number: String = row.get("license_number");
         let license_date: chrono::DateTime<Utc> = row.get("license_date");
-        let license_status: LicenseStatus = LicenseStatus::Valid; // TODO: Read from DB
+        let license_status_str: String = row.get("license_status");
+        let license_status: LicenseStatus =
+            enum_from_db_string(&license_status_str).unwrap_or(LicenseStatus::Valid);
         let registration_date: chrono::DateTime<Utc> = row.get("registration_date");
         let created_at: chrono::DateTime<Utc> = row.get("created_at");
         let updated_at: chrono::DateTime<Utc> = row.get("updated_at");

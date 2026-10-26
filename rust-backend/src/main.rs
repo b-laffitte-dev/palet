@@ -180,26 +180,65 @@ async fn main() -> std::io::Result<()> {
                     .route("/{id}", web::get().to(match_handler::get_match))
                     .route("/{id}", web::put().to(match_handler::update_match))
                     .route("/{id}", web::delete().to(match_handler::delete_match))
-                    .route("/competition/{competition_id}", web::get().to(match_handler::get_matches_by_competition))
-                    .route("/status/{status}", web::get().to(match_handler::get_matches_by_status))
+                    .route(
+                        "/competition/{competition_id}",
+                        web::get().to(match_handler::get_matches_by_competition),
+                    )
+                    .route(
+                        "/status/{status}",
+                        web::get().to(match_handler::get_matches_by_status),
+                    )
                     .route("/{id}/start", web::post().to(match_handler::start_match))
-                    .route("/{id}/complete", web::post().to(match_handler::complete_match))
+                    .route(
+                        "/{id}/complete",
+                        web::post().to(match_handler::complete_match),
+                    )
                     .route("/{id}/manche", web::post().to(match_handler::add_manche)),
             )
             // Championship endpoints
             .service(
                 web::scope("/championnats")
                     .route("", web::get().to(championship_handler::get_championships))
-                    .route("", web::post().to(championship_handler::create_championship))
-                    .route("/{id}", web::get().to(championship_handler::get_championship))
-                    .route("/{id}", web::put().to(championship_handler::update_championship))
-                    .route("/{id}", web::delete().to(championship_handler::delete_championship))
-                    .route("/league/{league}", web::get().to(championship_handler::get_championships_by_league))
-                    .route("/season/{season}", web::get().to(championship_handler::get_championships_by_season))
-                    .route("/{id}/start", web::post().to(championship_handler::start_championship))
-                    .route("/{id}/next-journee", web::post().to(championship_handler::next_journee))
-                    .route("/{id}/classification", web::get().to(championship_handler::get_championship_classification))
-                    .route("/{id}/classification", web::put().to(championship_handler::update_championship_classification)),
+                    .route(
+                        "",
+                        web::post().to(championship_handler::create_championship),
+                    )
+                    .route(
+                        "/{id}",
+                        web::get().to(championship_handler::get_championship),
+                    )
+                    .route(
+                        "/{id}",
+                        web::put().to(championship_handler::update_championship),
+                    )
+                    .route(
+                        "/{id}",
+                        web::delete().to(championship_handler::delete_championship),
+                    )
+                    .route(
+                        "/league/{league}",
+                        web::get().to(championship_handler::get_championships_by_league),
+                    )
+                    .route(
+                        "/season/{season}",
+                        web::get().to(championship_handler::get_championships_by_season),
+                    )
+                    .route(
+                        "/{id}/start",
+                        web::post().to(championship_handler::start_championship),
+                    )
+                    .route(
+                        "/{id}/next-journee",
+                        web::post().to(championship_handler::next_journee),
+                    )
+                    .route(
+                        "/{id}/classification",
+                        web::get().to(championship_handler::get_championship_classification),
+                    )
+                    .route(
+                        "/{id}/classification",
+                        web::put().to(championship_handler::update_championship_classification),
+                    ),
             )
             // Default service for unmatched routes
             .default_service(web::route().to(not_found_handler))

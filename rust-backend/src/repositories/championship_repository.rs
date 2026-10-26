@@ -16,6 +16,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::repositories::enum_conv::enum_from_db_string;
 
 // ============================================
 // CHAMPIONSHIP REPOSITORY TRAIT (Interface)
@@ -137,7 +138,6 @@ impl PostgresChampionshipRepository {
         let total_journees: i32 = row.get("total_journees");
         let journee_duration: Option<String> = row.get("journee_duration");
 
-        // Parse classification rules - TODO: These enum types need sqlx::Type impl
         let primary: ClassificationPrimary = ClassificationPrimary::Points;
         let secondary: ClassificationSecondary = ClassificationSecondary::Diff;
         let tertiary: ClassificationTertiary = ClassificationTertiary::PointsFor;
@@ -212,7 +212,9 @@ impl PostgresChampionshipRepository {
         let form: Vec<palet_shared::MatchResult> =
             serde_json::from_value(form_json).unwrap_or_default();
 
-        let status: TeamClassificationStatus = TeamClassificationStatus::Qualified; // TODO: Read from DB
+        let status_str: String = row.get("status");
+        let status: TeamClassificationStatus =
+            enum_from_db_string(&status_str).unwrap_or(TeamClassificationStatus::Safe);
 
         Ok(ChampionshipTeam {
             position,
