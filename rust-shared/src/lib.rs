@@ -180,7 +180,7 @@ pub struct AuthState {
     pub two_factor_pending: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct SocialLinks {
     pub facebook: Option<String>,
     pub twitter: Option<String>,
@@ -812,6 +812,7 @@ impl Timestamped for Match {
 pub enum MatchWinner {
     Team1,
     Team2,
+    Draw,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]

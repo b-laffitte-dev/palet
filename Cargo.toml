@@ -2,8 +2,10 @@
 members = [
     "rust-backend",
     "rust-shared",
-    "rust-mobile",
     "rust-frontend",
+]
+exclude = [
+    "rust-mobile",
 ]
 resolver = "2"
 

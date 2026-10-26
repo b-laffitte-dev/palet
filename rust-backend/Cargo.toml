@@ -63,3 +63,6 @@ path = "src/lib.rs"
 [[bin]]
 name = "palet-backend"
 path = "src/main.rs"
+
+[package.metadata.docs.rs]
+all-features = true
