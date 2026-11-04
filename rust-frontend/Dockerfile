@@ -25,6 +25,9 @@ COPY --from=builder /app/rust-frontend/pkg /usr/share/nginx/html/pkg
 # Copy index.html
 COPY rust-frontend/index.html /usr/share/nginx/html/index.html
 
+# Copy design styles (ported from origin/main web/src/styles)
+COPY rust-frontend/styles /usr/share/nginx/html/styles
+
 # Copy nginx configuration
 COPY rust-frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
