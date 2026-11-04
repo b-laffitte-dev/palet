@@ -1,72 +1,8 @@
 //! Palet Vendéen Frontend - Dioxus Implementation
 //!
-//! Main entry point for the web application
+//! The web application lives in the library crate (`lib.rs`), which wasm-pack
+//! compiles to WASM. This binary is only a thin shim around that entry point.
 
-use dioxus::prelude::*;
-use log::info;
-
-mod components;
-mod hooks;
-mod pages;
-mod services;
-mod utils;
-
-use pages::{
-    actualites::Actualites, championship_detail::ChampionnatDetail, championships::Championnats,
-    club_detail::ClubDetail, clubs::Clubs, connexion::Connexion, federation::Federation,
-    home::Home, inscription::Inscription, not_found::NotFound, player_detail::PlayerDetail,
-    players::Joueurs, tournament_detail::TournamentDetail, tournaments::Tournois,
-};
-
-/// Route definitions
-#[derive(Clone, Debug, PartialEq, Routable)]
-#[rustfmt::skip]
-enum Route {
-    #[route("/")]
-    Home,
-    #[route("/championnats")]
-    Championnats,
-    #[route("/championnats/:id")]
-    ChampionnatDetail { id: String },
-    #[route("/tournois")]
-    Tournois,
-    #[route("/tournois/:id")]
-    TournamentDetail { id: String },
-    #[route("/clubs")]
-    Clubs,
-    #[route("/clubs/:id")]
-    ClubDetail { id: String },
-    #[route("/joueurs")]
-    Joueurs,
-    #[route("/joueurs/:id")]
-    PlayerDetail { id: String },
-    #[route("/actualites")]
-    Actualites,
-    #[route("/federation")]
-    Federation,
-    #[route("/connexion")]
-    Connexion,
-    #[route("/inscription")]
-    Inscription,
-    #[route("/404")]
-    NotFound,
-}
-
-/// Main App component
-#[component]
-fn App() -> Element {
-    rsx! {
-        Router::<Route> {}
-    }
-}
-
-/// Main entry point for WASM
-pub fn main() {
-    // Initialize logging
-    wasm_logger::init(wasm_logger::Config::default());
-
-    info!("Starting Palet Vendéen Frontend with Dioxus...");
-
-    // Launch the app
-    launch(App);
+fn main() {
+    palet_frontend::start();
 }

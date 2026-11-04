@@ -28,6 +28,9 @@ COPY rust-frontend/index.html /usr/share/nginx/html/index.html
 # Copy nginx configuration
 COPY rust-frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Ensure nginx (worker user) can read the served files regardless of host file modes
+RUN chmod -R a+rX /usr/share/nginx/html
+
 # Expose port
 EXPOSE 80
 

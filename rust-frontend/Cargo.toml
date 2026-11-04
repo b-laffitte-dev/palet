@@ -6,7 +6,7 @@ authors = ["Palet Vendéen Team"]
 description = "Frontend web application for Palet Vendéen - Dioxus implementation"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 # Dioxus for web
