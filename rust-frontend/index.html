@@ -9,11 +9,13 @@
 <body>
     <div id="main"></div>
     <script type="module">
-        import init from './pkg/palet_frontend.js';
-        async function run() {
+        // Production (nginx + wasm-pack): load the bundle from ./pkg.
+        // Under `dx serve`, the CLI injects its own loader for /wasm/...,
+        // so a missing ./pkg here simply means "nothing to do".
+        try {
+            const { default: init } = await import('./pkg/palet_frontend.js');
             await init();
-        }
-        run();
+        } catch (_) { /* dev server (dx) provides its own loader */ }
     </script>
 </body>
 </html>
