@@ -1,0 +1,68 @@
+[package]
+name = "palet-backend"
+version = "0.1.0"
+edition = "2021"
+authors = ["Palet Vendéen Team"]
+description = "Backend API for Palet Vendéen - Rust implementation"
+
+[dependencies]
+# Async trait
+async-trait = "0.1.92"
+
+# Web framework
+actix-web = "4.17.0"
+actix-cors = "0.7.2"
+
+# Database
+sqlx = { version = "^0.9.0", features = ["postgres", "runtime-tokio", "tls-rustls", "uuid", "chrono", "json"] }
+
+# Error handling
+thiserror = "2.0.21"
+
+# UUID with SQLx support
+uuid = { version = "1.28.0", features = ["v4", "serde"] }
+
+# Time with SQLx support
+chrono = { version = "0.4.45", features = ["serde"] }
+
+# Async runtime
+tokio = { version = "1.53.3", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+
+# Configuration
+config = { version = "0.15.27", features = ["toml", "json", "ini"] }
+env_logger = "0.11.11"
+log = "0.4.34"
+dotenv = "0.15"
+
+# Shared types
+palet-shared = { path = "../rust-shared" }
+
+# OpenAPI documentation
+utoipa = { version = "6.0.0", features = ["actix_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "10.0.1", features = ["actix-web"] }
+
+[dev-dependencies]
+actix-http-test = "3.3.0"
+actix-rt = "2.15.0"
+serial_test = "4.0.1"
+tokio = { version = "1.53.3", features = ["full", "test-util"] }
+async-trait = "0.1.92"
+mockall = "0.15.0"
+
+[features]
+default = []
+
+[lib]
+name = "palet_backend"
+path = "src/lib.rs"
+
+[[bin]]
+name = "palet-backend"
+path = "src/main.rs"
+
+[package.metadata.docs.rs]
+all-features = true

@@ -1,0 +1,159 @@
+name: Rust Nightly
+
+on:
+  schedule:
+    # Run every Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Test with nightly Rust
+  nightly-test:
+    name: Nightly Rust Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust (nightly)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly
+          components: rustfmt, clippy
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Test backend with nightly
+        working-directory: rust-backend
+        run: |
+          cargo +nightly check
+          cargo +nightly fmt --all -- --check
+          cargo +nightly clippy --all-targets --all-features -- -D warnings
+
+      - name: Test frontend with nightly
+        working-directory: rust-frontend
+        run: |
+          cargo +nightly check --features web
+          cargo +nightly fmt --all -- --check
+          cargo +nightly clippy --all-targets --all-features -- -D warnings
+
+      - name: Test shared with nightly
+        working-directory: rust-shared
+        run: |
+          cargo +nightly check
+          cargo +nightly fmt --all -- --check
+          cargo +nightly clippy --all-targets --all-features -- -D warnings
+
+  # Check for Rust updates
+  rust-update-check:
+    name: Rust Update Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for Rust updates
+        uses: dtolnay/rust-toolchain@stable
+        id: toolchain
+        with:
+          toolchain: stable
+
+      - name: Get current Rust version
+        id: current
+        run: |
+          echo "VERSION=$(rustc --version | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: Compare versions
+        run: |
+          echo "Current: ${{ steps.current.outputs.VERSION }}"
+          echo "Latest stable: ${{ steps.toolchain.outputs.rustc }}"
+          if [ "${{ steps.current.outputs.VERSION }}" != "${{ steps.toolchain.outputs.rustc }}" ]; then
+            echo "::warning::New Rust version available: ${{ steps.toolchain.outputs.rustc }}"
+          fi
+
+  # Security audit with nightly
+  security-audit:
+    name: Security Audit (Nightly)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust (nightly)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly
+
+      - name: Install cargo-audit
+        run: cargo +nightly install cargo-audit
+
+      - name: Run security audit
+        run: |
+          cargo +nightly audit --deny warnings
+          cargo +nightly audit --deny vulnerabilities
+
+  # Performance benchmarks
+  benchmarks:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust (nightly)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly
+
+      - name: Install cargo-criterion
+        run: cargo +nightly install cargo-criterion
+
+      - name: Run benchmarks
+        working-directory: rust-backend
+        run: |
+          cargo +nightly bench --bench backend -- --output-format=json > benchmarks.json || true
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: rust-backend/benchmarks.json
+          retention-days: 30
+
+  # Documentation check
+  docs-check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust (nightly)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly
+
+      - name: Install cargo-deadlinks
+        run: cargo +nightly install cargo-deadlinks
+
+      - name: Check for dead links
+        run: |
+          cargo +nightly deadlinks --check || true
+
+      - name: Install cargo-outdated
+        run: cargo +nightly install cargo-outdated
+
+      - name: Check for outdated dependencies
+        run: |
+          cargo +nightly outdated --workspace --exit-code 1 || true

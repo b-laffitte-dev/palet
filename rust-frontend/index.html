@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palet Vendéen</title>
+    <link rel="stylesheet" href="./styles/design-system.css" />
+</head>
+<body>
+    <div id="main"></div>
+    <script type="module">
+        // Production (nginx + wasm-pack): load the bundle from ./pkg.
+        // Under `dx serve`, the CLI injects its own loader for /wasm/...,
+        // so a missing ./pkg here simply means "nothing to do".
+        try {
+            const { default: init } = await import('./pkg/palet_frontend.js');
+            await init();
+        } catch (_) { /* dev server (dx) provides its own loader */ }
+    </script>
+</body>
+</html>

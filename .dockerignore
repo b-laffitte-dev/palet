@@ -1,0 +1,8 @@
+target/
+**/target/
+.git/
+**/node_modules/
+**/pkg/
+docs/
+*.md
+docker-compose.yml

@@ -1,0 +1,13 @@
+# Dioxus CLI configuration for the web frontend.
+#
+# `dx serve --port 8081` (run from this directory, or via scripts/dev.sh):
+#   - builds the WASM app into target/dx/.../web/public/wasm/
+#   - serves index.html + everything in ./public (e.g. public/styles -> /styles)
+#   - live-reloads the browser on every change to src/, index.html or public/
+#
+# The port is passed with --port (or DIOXUS_DEVSERVER_PORT); 8081 avoids
+# clashing with the dockerized web container on 8080.
+
+[application]
+# Static files served as-is at the web root (styles/, images, ...).
+public_dir = "public"

@@ -1,0 +1,257 @@
+name: Rust Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+    paths:
+      - 'rust-backend/**'
+      - 'rust-frontend/**'
+      - 'rust-shared/**'
+      - 'rust-mobile/**'
+      - 'Cargo.toml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Create GitHub Release
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create-release.outputs.id }}
+      upload_url: ${{ steps.create-release.outputs.upload_url }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: |
+          TAG=${{ github.ref_name }}
+          VERSION=${TAG#v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Tag: $TAG, Version: $VERSION"
+
+      - name: Create GitHub Release
+        id: create-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Palet Vendéen v${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Changelog
+            
+            ### New Features
+            - 
+            
+            ### Bug Fixes
+            - 
+            
+            ### Changes
+            - 
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build and release backend
+  release-backend:
+    name: Release Backend
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Get version
+        id: version
+        run: |
+          TAG=${{ github.ref_name }}
+          VERSION=${TAG#v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build backend (Linux x86_64)
+        working-directory: rust-backend
+        run: |
+          cargo build --release
+          mkdir -p release
+          cp target/release/palet-backend release/palet-backend-linux-x86_64
+
+      - name: Build backend (Linux ARM64)
+        working-directory: rust-backend
+        run: |
+          cargo build --release --target aarch64-unknown-linux-gnu
+          mkdir -p release
+          cp target/aarch64-unknown-linux-gnu/release/palet-backend release/palet-backend-linux-aarch64
+
+      - name: Create tar.gz archives
+        working-directory: rust-backend
+        run: |
+          tar -czvf release/palet-backend-linux-x86_64.tar.gz -C release palet-backend-linux-x86_64
+          tar -czvf release/palet-backend-linux-aarch64.tar.gz -C release palet-backend-linux-aarch64
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            rust-backend/release/palet-backend-linux-x86_64
+            rust-backend/release/palet-backend-linux-x86_64.tar.gz
+            rust-backend/release/palet-backend-linux-aarch64
+            rust-backend/release/palet-backend-linux-aarch64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build and release frontend
+  release-frontend:
+    name: Release Frontend
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+
+      - name: Build frontend (WASM)
+        working-directory: rust-frontend
+        run: |
+          wasm-pack build --target web --out-name palet_frontend --out-dir ./pkg
+          mkdir -p release/pkg
+          cp -r pkg/* release/pkg/
+          cp -r static release/ || true
+
+      - name: Create tar.gz archive
+        working-directory: rust-frontend
+        run: |
+          tar -czvf release/palet-frontend-wasm.tar.gz -C release .
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            rust-frontend/release/palet-frontend-wasm.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build and release Docker images
+  release-docker:
+    name: Release Docker Images
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Get version
+        id: version
+        run: |
+          TAG=${{ github.ref_name }}
+          VERSION=${TAG#v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: rust-backend/Dockerfile
+          push: true
+          tags: |
+            ${{ github.repository_owner }}/palet-backend:latest
+            ${{ github.repository_owner }}/palet-backend:${{ steps.version.outputs.VERSION }}
+            ${{ github.repository_owner }}/palet-backend:${{ github.sha }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: rust-frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ github.repository_owner }}/palet-frontend:latest
+            ${{ github.repository_owner }}/palet-frontend:${{ steps.version.outputs.VERSION }}
+            ${{ github.repository_owner }}/palet-frontend:${{ github.sha }}
+
+  # Build and release mobile (Tauri)
+  release-mobile:
+    name: Release Mobile
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Build mobile app (Linux)
+        working-directory: rust-mobile
+        run: |
+          cargo build --release --features mobile
+          mkdir -p release
+          cp target/release/palet-mobile release/palet-mobile-linux
+
+      - name: Create tar.gz archive
+        working-directory: rust-mobile
+        run: |
+          tar -czvf release/palet-mobile-linux.tar.gz -C release .
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            rust-mobile/release/palet-mobile-linux.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Publish to crates.io (shared library)
+  publish-shared:
+    name: Publish Shared Library
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Publish to crates.io
+        working-directory: rust-shared
+        run: cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
