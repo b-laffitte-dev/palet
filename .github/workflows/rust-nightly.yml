@@ -18,7 +18,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Rust (nightly)
         uses: dtolnay/rust-toolchain@nightly
@@ -57,7 +57,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Check for Rust updates
         uses: dtolnay/rust-toolchain@stable
@@ -85,7 +85,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Rust (nightly)
         uses: dtolnay/rust-toolchain@nightly
@@ -108,7 +108,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Rust (nightly)
         uses: dtolnay/rust-toolchain@nightly
@@ -124,7 +124,7 @@ jobs:
           cargo +nightly bench --bench backend -- --output-format=json > benchmarks.json || true
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: benchmark-results
           path: rust-backend/benchmarks.json
@@ -137,7 +137,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Rust (nightly)
         uses: dtolnay/rust-toolchain@nightly
