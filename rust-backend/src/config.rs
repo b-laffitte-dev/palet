@@ -75,7 +75,7 @@ impl Default for AppConfig {
 
 /// Load configuration from environment and files
 pub fn load_config() -> Result<AppConfig, ConfigError> {
-    dotenv::dotenv().ok();
+    dotenvy::dotenv().ok();
 
     let mut builder = ConfigBuilder::builder()
         .add_source(FileSource::with_name("config/default").required(false));

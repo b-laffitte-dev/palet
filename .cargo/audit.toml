@@ -1,0 +1,5 @@
+# cargo-audit configuration
+# h2 0.3.x is pinned by actix-http 3.x (required by actix-web 4.x); no patched 0.3.x exists.
+# Re-evaluate when migrating to actix-web 5 / actix-http 4 (h2 0.4).
+[advisories]
+ignore = ["RUSTSEC-2026-0258"]
