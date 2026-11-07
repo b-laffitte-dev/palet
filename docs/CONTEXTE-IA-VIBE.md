@@ -82,7 +82,8 @@ palet/
 │       ├── hooks/  utils/     # format, validation
 ├── rust-mobile/                # Dioxus mobile (miroir de rust-frontend, hors workspace)
 ├── rust-shared/src/            # lib.rs (User, Club, Player, Team, Competition…), championship_types.rs, competition_types.rs, match_types.rs
-├── skills/                     # rust-tdd, kiss, rust-idioms, dioxus-patterns, responsive-mobile
+├── .vibe/                      # config Vibe du dépôt (chargée si dossier « trusted »)
+│   └── skills/                 # rust-tdd, kiss, rust-idioms, dioxus-patterns, responsive-mobile
 ├── scripts/                    # check-rust.sh, dev.sh (dx serve --port 8081)
 └── docs/                       # voir §8 pour le statut de chaque document
 ```
@@ -223,7 +224,7 @@ Résolus par le code (le code gagne) :
 
 ## 10. Skills et conventions pour l'agent (résumé de `AGENTS.md`)
 
-Avant **toute tâche**, scanner les `triggers:` des `skills/*/SKILL.md` et
+Avant **toute tâche**, scanner les `triggers:` des `.vibe/skills/*/SKILL.md` et
 charger les skills matchés (plusieurs possibles) : `rust-tdd` (test/bug/"ça ne
 marche pas"), `kiss` (simplifier/refactor), `rust-idioms` (ownership/clippy/
 "compile pas"), `dioxus-patterns` (composant/page/rsx/route/UI),
@@ -235,3 +236,21 @@ Conventions : workspace Rust ; commandes qualité `cargo fmt --all`,
 `cargo check -p palet-frontend --target wasm32-unknown-unknown`. TDD obligatoire
 pour la logique métier (voir skill `rust-tdd`). KISS partout. Pas de `unwrap`/
 `panic` en prod (skill `rust-idioms`).
+
+---
+
+## 11. Conformité Mistral Vibe — structure des fichiers agent
+
+Conventions officielles (docs.mistral.ai/vibe) appliquées à ce dépôt :
+
+| Élément | Convention Vibe | Dans ce repo |
+|---|---|---|
+| Instructions agent | `AGENTS.md` à la racine du dépôt, découvert et injecté automatiquement dans le contexte | ✅ `AGENTS.md` |
+| Config projet Vibe | `.vibe/` à la racine, chargé uniquement si le dossier est « trusted » | ✅ `.vibe/` |
+| Skills | `.vibe/skills/<nom>/SKILL.md` — spec Agent Skills : frontmatter YAML avec `name` (égal au nom du dossier) + `description` (≤ 1024 caractères) obligatoires ; ici champ custom `triggers:` en plus. Chaque skill est invocable via `/<nom>` | ✅ `.vibe/skills/` (5 skills : rust-tdd, kiss, rust-idioms, dioxus-patterns, responsive-mobile) |
+| Agents custom | `.vibe/agents/*.toml` (TOML) | aucun — pas nécessaire |
+| Prompts nommés | `.vibe/prompts/*.md` | aucun — pas nécessaire |
+| Fichier de contexte consolidé | doc de référence du projet, lié depuis `AGENTS.md` | ✅ `docs/CONTEXTE-IA-VIBE.md` (ce fichier), pointé par `AGENTS.md` |
+
+Règle : ne pas remettre les skills dans un dossier `skills/` à la racine — Vibe
+ne les découvrirait pas (hors `skill_paths` custom dans `.vibe/config.toml`).

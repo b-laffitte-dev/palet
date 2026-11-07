@@ -1,8 +1,15 @@
 # Skills du projet Palet Vendéen
 
 Compétences réutilisables pour les agents de code (et les humains) qui travaillent
-sur ce dépôt. Chaque skill vit dans son propre dossier avec un fichier `SKILL.md`
-au format standard (frontmatter `name` + `description`, puis les instructions).
+sur ce dépôt. Emplacement `.vibe/skills/` : découvert automatiquement par
+Mistral Vibe à la racine du dépôt (spec Agent Skills), et chaque skill est aussi
+invocable manuellement via `/nom-du-skill`.
+
+Chaque skill vit dans son propre dossier (nom du dossier = champ `name`) avec un
+fichier `SKILL.md` au format standard Agent Skills : frontmatter YAML
+(`name` + `description` obligatoires, ≤ 1024 caractères, plus ici un champ
+custom `triggers:` lu par le `AGENTS.md` racine), puis les instructions en
+Markdown.
 
 | Skill | Quand l'utiliser |
 |---|---|

@@ -1,12 +1,18 @@
 # AGENTS.md — Palet Vendéen
 
+> Ce fichier est découvert et injecté automatiquement par Mistral Vibe
+> (AGENTS.md à la racine du dépôt). La configuration projet Vibe vit dans
+> `.vibe/` à la racine : skills dans `.vibe/skills/` (spec Agent Skills),
+> agents custom dans `.vibe/agents/*.toml`, prompts dans `.vibe/prompts/`.
+> Vibe ne charge `.vibe/` que si le dossier est « trusted ».
+
 ## Activation automatique des skills (signaux faibles)
 
 Avant de commencer **toute tâche**, scanner le message de l'utilisateur à la
 recherche des signaux faibles déclarés dans le champ `triggers:` du frontmatter
-de chaque `skills/*/SKILL.md` :
+de chaque `.vibe/skills/*/SKILL.md` :
 
-1. Lire les frontmatters de tous les skills (`skills/*/SKILL.md`).
+1. Lire les frontmatters de tous les skills (`.vibe/skills/*/SKILL.md`).
 2. Pour chaque skill dont un trigger matche la demande — mot-clé, intention ou
    synonyme (ex. « corrige ce bug » → `rust-tdd`, « c'est trop le bazar dans ce
    fichier » → `kiss`, « la page déborde sur téléphone » → `responsive-mobile`) —
@@ -27,7 +33,8 @@ de chaque `skills/*/SKILL.md` :
 - Commandes de qualité (voir `README.md`) : `cargo fmt --all`,
   `cargo clippy --workspace --all-targets -- -D warnings`, `cargo test --workspace`,
   et `cargo check -p palet-frontend --target wasm32-unknown-unknown` pour le WASM.
-- Skills disponibles : voir `skills/README.md`.
+- Skills disponibles : `.vibe/skills/` (voir `.vibe/skills/README.md`) —
+  aussi invocables manuellement via `/nom-du-skill` dans Vibe.
 - **Contexte projet consolidé pour l'agent IA : `docs/CONTEXTE-IA-VIBE.md`** —
   lire ce fichier en premier : stack réelle (Rust Actix-web + Dioxus 0.7),
   routes, design system réel, statut de chaque doc de `docs/` (certains sont
