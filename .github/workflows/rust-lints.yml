@@ -9,6 +9,7 @@ on:
       - 'rust-shared/**'
       - 'rust-mobile/**'
       - 'Cargo.toml'
+      - '.github/workflows/rust-lints.yml'
   pull_request:
     branches: [main, project/rust]
     paths:
@@ -16,6 +17,7 @@ on:
       - 'rust-frontend/**'
       - 'rust-shared/**'
       - 'Cargo.toml'
+      - '.github/workflows/rust-lints.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
