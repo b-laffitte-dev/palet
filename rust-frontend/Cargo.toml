@@ -36,9 +36,6 @@ wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 web-sys = { version = "0.3", features = ["Window", "Document", "HtmlElement", "console", "Location", "XmlHttpRequest", "Response"] }
 
-# Regex for validation
-regex = "1"
-
 [features]
 default = ["web"]
 web = []
@@ -48,3 +45,5 @@ wasm-opt = false
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
+dioxus-ssr = "0.7"
+pretty_assertions = "1"

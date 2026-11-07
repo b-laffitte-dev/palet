@@ -75,29 +75,43 @@
 }
 .to-brand-green-600 {
   --_gradient-to: var(--color-brand-green-600);
-}
-
-/* Hover states */
-.hover\:text-white:hover {
-  color: #fff;
-}
-.hover\:text-brand-green-300:hover {
-  color: var(--color-brand-green-300);
-}
-.hover\:bg-brand-green-500:hover {
-  background-color: var(--color-brand-green-500);
-}
-.hover\:bg-red-500:hover {
-  background-color: var(--color-danger-500);
-}
-.hover\:bg-brand-green-700\/50:hover {
-  background-color: color-mix(in srgb, var(--color-brand-green-700) 50%, transparent);
-}
-.hover\:bg-brand-green-800\/10:hover {
-  background-color: color-mix(in srgb, var(--color-brand-green-800) 10%, transparent);
-}
-.hover\:bg-brand-green-800\/20:hover {
-  background-color: color-mix(in srgb, var(--color-brand-green-800) 20%, transparent);
+}@media (hover: hover) {
+  
+  
+  /* Hover states */
+  .hover\:text-white:hover {
+    color: #fff;
+  }
+}@media (hover: hover) {
+  
+  .hover\:text-brand-green-300:hover {
+    color: var(--color-brand-green-300);
+  }
+}@media (hover: hover) {
+  
+  .hover\:bg-brand-green-500:hover {
+    background-color: var(--color-brand-green-500);
+  }
+}@media (hover: hover) {
+  
+  .hover\:bg-red-500:hover {
+    background-color: var(--color-danger-500);
+  }
+}@media (hover: hover) {
+  
+  .hover\:bg-brand-green-700\/50:hover {
+    background-color: color-mix(in srgb, var(--color-brand-green-700) 50%, transparent);
+  }
+}@media (hover: hover) {
+  
+  .hover\:bg-brand-green-800\/10:hover {
+    background-color: color-mix(in srgb, var(--color-brand-green-800) 10%, transparent);
+  }
+}@media (hover: hover) {
+  
+  .hover\:bg-brand-green-800\/20:hover {
+    background-color: color-mix(in srgb, var(--color-brand-green-800) 20%, transparent);
+  }
 }
 
 /* Focus / disabled states */

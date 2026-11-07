@@ -352,6 +352,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7d902e3d592a523def97af8f317b08ce16b7ab854c1985a0c671e6f15cebc236"
 
 [[package]]
+name = "askama_escape"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3df27b8d5ddb458c5fb1bbc1ce172d4a38c614a97d550b0ac89003897fb01de4"
+
+[[package]]
 name = "async-stream"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1163,6 +1169,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "diff"
+version = "0.1.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56254986775e3233ffa9c4d7d3faaf6d36a2c09d30b20687e9f88bc8bafc16c8"
+
+[[package]]
 name = "digest"
 version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1221,7 +1233,7 @@ dependencies = [
  "dioxus-cli-config",
  "http 1.5.0",
  "infer",
- "jni 0.21.1",
+ "jni",
  "js-sys",
  "ndk",
  "ndk-context",
@@ -1598,6 +1610,18 @@ dependencies = [
  "rustc-hash 2.1.3",
  "tracing",
  "warnings",
+]
+
+[[package]]
+name = "dioxus-ssr"
+version = "0.7.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4544ecf908962909de403bfdf94f771b036e9e1857e371cd3279841a15a892e6"
+dependencies = [
+ "askama_escape",
+ "dioxus-core",
+ "dioxus-core-types",
+ "rustc-hash 2.1.3",
 ]
 
 [[package]]
@@ -2577,36 +2601,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "jni"
-version = "0.22.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5efd9a482cf3a427f00d6b35f14332adc7902ce91efb778580e180ff90fa3498"
-dependencies = [
- "cfg-if",
- "combine",
- "jni-macros",
- "jni-sys 0.4.1",
- "log",
- "simd_cesu8",
- "thiserror 2.0.21",
- "walkdir",
- "windows-link",
-]
-
-[[package]]
-name = "jni-macros"
-version = "0.22.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a00109accc170f0bdb141fed3e393c565b6f5e072365c3bd58f5b062591560a3"
-dependencies = [
- "proc-macro2",
- "quote",
- "rustc_version",
- "simd_cesu8",
- "syn 2.0.119",
-]
-
-[[package]]
 name = "jni-sys"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2813,15 +2807,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "malloc_buf"
-version = "0.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62bb907fe88d54d8d9ce32a3cceab4218ed2f6b7d35617cafe9adf84e43919cb"
-dependencies = [
- "libc",
-]
-
-[[package]]
 name = "manganis"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2829,7 +2814,7 @@ checksum = "1ed2af894a724a0b6e521f9efe84f98cfdc74a4de6828efef77ffd3b1679fd52"
 dependencies = [
  "const-serialize 0.7.2",
  "const-serialize 0.8.0-alpha.0",
- "jni 0.21.1",
+ "jni",
  "manganis-core",
  "manganis-macro",
  "ndk-context",
@@ -3089,15 +3074,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "objc"
-version = "0.2.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "915b1b472bc21c53464d6c8461c9d3af805ba1ef837e1cac254428f4a77177b1"
-dependencies = [
- "malloc_buf",
-]
-
-[[package]]
 name = "objc2"
 version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3173,11 +3149,12 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "dioxus",
+ "dioxus-ssr",
  "dioxus-web",
  "js-sys",
  "log",
  "palet-shared",
- "regex",
+ "pretty_assertions",
  "serde",
  "serde_json",
  "uuid",
@@ -3193,8 +3170,6 @@ name = "palet-shared"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "jni 0.22.4",
- "objc",
  "serde",
  "serde_json",
  "utoipa",
@@ -3338,6 +3313,16 @@ checksum = "d0de1b847b39c8131db0467e9df1ff60e6d0562ab8e9a16e568ad0fdb372e2f2"
 dependencies = [
  "predicates-core",
  "termtree",
+]
+
+[[package]]
+name = "pretty_assertions"
+version = "1.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ae130e2f271fbc2ac3a40fb1d07180839cdbbe443c7a27e1e3c13c5cac0116d"
+dependencies = [
+ "diff",
+ "yansi",
 ]
 
 [[package]]
@@ -3991,16 +3976,6 @@ name = "simd-adler32"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a219298ac11a56ea9a6d2120044824d6f01aeb034955e7af7bc16858527deea"
-
-[[package]]
-name = "simd_cesu8"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11031e251abf8611c80f460e19dbdeb54a66db918e49c65a7065b46ac7aec520"
-dependencies = [
- "rustc_version",
- "simdutf8",
-]
 
 [[package]]
 name = "simdutf8"
@@ -5401,6 +5376,12 @@ dependencies = [
  "encoding_rs",
  "hashlink",
 ]
+
+[[package]]
+name = "yansi"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfe53a6657fd280eaa890a3bc59152892ffa3e30101319d168b781ed6529b049"
 
 [[package]]
 name = "yoke"

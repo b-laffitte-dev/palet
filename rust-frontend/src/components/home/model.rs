@@ -244,33 +244,27 @@ fn pick_championship(championships: &[Championship]) -> Option<Championship> {
         .cloned()
 }
 
-fn build_hero(
-    m: Option<&Match>,
-    clubs: &[Club],
-    championship: Option<&Championship>,
-) -> Option<HeroMatch> {
-    let m = m?;
-    let (name1, abbr1) = team_label(clubs, &m.team1_id);
-    let (name2, abbr2) = team_label(clubs, &m.team2_id);
-
-    let (score1, score2, manche) = match &m.current_scores {
+fn hero_scores(m: &Match) -> (Option<i32>, Option<i32>, Option<i32>) {
+    match &m.current_scores {
         Some(cs) => (Some(cs.team1), Some(cs.team2), Some(cs.manche)),
         None => (m.team1_score, m.team2_score, m.current_manche),
-    };
+    }
+}
 
-    let live = m.status == MatchStatus::InProgress;
-    let finished = m.status == MatchStatus::Completed;
-    let badge = if live {
+fn hero_badge(live: bool, finished: bool, manche: Option<i32>) -> String {
+    if live {
         format!("LIVE — Manche {}", manche.unwrap_or(1))
     } else if finished {
         "TERMINÉ".to_string()
     } else {
         "À VENIR".to_string()
-    };
+    }
+}
 
-    let kicker = if live {
+fn hero_kicker(m: &Match, championship: Option<&Championship>) -> String {
+    let base = if m.status == MatchStatus::InProgress {
         "MATCH EN DIRECT".to_string()
-    } else if finished {
+    } else if m.status == MatchStatus::Completed {
         "DERNIER RÉSULTAT".to_string()
     } else {
         "PROCHAIN MATCH".to_string()
@@ -279,38 +273,46 @@ fn build_hero(
         (Some(phase), _, _) => phase.to_uppercase(),
         (_, Some(round), _) => round.to_uppercase(),
         (_, _, Some(j)) => format!("JOURNÉE {j}"),
-        _ => kicker,
+        _ => base,
     };
-    let kicker = match championship {
+    match championship {
         Some(c) => format!("{} — {}", kicker, c.name.to_uppercase()),
         None => kicker,
-    };
+    }
+}
 
-    let subtitle = format_match_datetime(m);
-    let info = m
-        .location
-        .clone()
-        .unwrap_or_else(|| "Terrain clos municipal".to_string());
+fn team_side(clubs: &[Club], team_id: &Uuid, subtitle: &str, score: Option<i32>) -> TeamSide {
+    let (name, abbr) = team_label(clubs, team_id);
+    TeamSide {
+        name,
+        abbr,
+        subtitle: subtitle.to_string(),
+        score,
+    }
+}
+
+fn build_hero(
+    m: Option<&Match>,
+    clubs: &[Club],
+    championship: Option<&Championship>,
+) -> Option<HeroMatch> {
+    let m = m?;
+    let (score1, score2, manche) = hero_scores(m);
+    let live = m.status == MatchStatus::InProgress;
+    let finished = m.status == MatchStatus::Completed;
 
     Some(HeroMatch {
-        kicker,
-        subtitle,
-        info,
+        kicker: hero_kicker(m, championship),
+        subtitle: format_match_datetime(m),
+        info: m
+            .location
+            .clone()
+            .unwrap_or_else(|| "Terrain clos municipal".to_string()),
         live,
         finished,
-        badge,
-        team1: TeamSide {
-            name: name1,
-            abbr: abbr1,
-            subtitle: "Équipe 1".to_string(),
-            score: score1,
-        },
-        team2: TeamSide {
-            name: name2,
-            abbr: abbr2,
-            subtitle: "Équipe 2".to_string(),
-            score: score2,
-        },
+        badge: hero_badge(live, finished, manche),
+        team1: team_side(clubs, &m.team1_id, "Équipe 1", score1),
+        team2: team_side(clubs, &m.team2_id, "Équipe 2", score2),
     })
 }
 
@@ -368,6 +370,50 @@ fn build_live(live: &[Match], completed: &[Match], clubs: &[Club]) -> (Vec<LiveI
     (items, journee)
 }
 
+fn standing_zone(status: &TeamClassificationStatus) -> Zone {
+    match status {
+        TeamClassificationStatus::Qualified => Zone::Qualif,
+        TeamClassificationStatus::Barrage => Zone::Barrage,
+        TeamClassificationStatus::Relegated => Zone::Releg,
+        TeamClassificationStatus::Safe => Zone::Safe,
+    }
+}
+
+fn standing_row(t: &palet_shared::ChampionshipTeam, clubs: &[Club]) -> StandingRow {
+    let (club, abbr) = team_label(clubs, &t.team_id);
+    StandingRow {
+        position: t.position,
+        club,
+        abbr,
+        played: t.stats.matches,
+        wins: t.stats.wins,
+        losses: t.stats.losses,
+        diff: t.stats.diff,
+        points: t.stats.points,
+        form: t.form.clone(),
+        zone: standing_zone(&t.status),
+    }
+}
+
+fn standings_title(championship: Option<&Championship>, division: &str) -> String {
+    let name = championship
+        .map(|c| c.name.to_uppercase())
+        .unwrap_or_else(|| "CHAMPIONNAT".to_string());
+    if division.is_empty() {
+        name
+    } else {
+        format!("{name} — {division}")
+    }
+}
+
+fn standings_subtitle(journee: Option<i32>, championship: Option<&Championship>) -> String {
+    let j = journee.or_else(|| championship.and_then(|c| c.current_journee));
+    match j {
+        Some(j) => format!("Classement après {j} journées"),
+        None => "Classement de la saison".to_string(),
+    }
+}
+
 fn build_standings(
     classification: &[ChampionshipClassification],
     clubs: &[Club],
@@ -385,44 +431,14 @@ fn build_standings(
             c.teams
                 .iter()
                 .take(6)
-                .map(|t| {
-                    let (club, abbr) = team_label(clubs, &t.team_id);
-                    StandingRow {
-                        position: t.position,
-                        club,
-                        abbr,
-                        played: t.stats.matches,
-                        wins: t.stats.wins,
-                        losses: t.stats.losses,
-                        diff: t.stats.diff,
-                        points: t.stats.points,
-                        form: t.form.clone(),
-                        zone: match t.status {
-                            TeamClassificationStatus::Qualified => Zone::Qualif,
-                            TeamClassificationStatus::Barrage => Zone::Barrage,
-                            TeamClassificationStatus::Relegated => Zone::Releg,
-                            TeamClassificationStatus::Safe => Zone::Safe,
-                        },
-                    }
-                })
+                .map(|t| standing_row(t, clubs))
                 .collect(),
         ),
         None => (String::new(), None, Vec::new()),
     };
 
-    let name = championship
-        .map(|c| c.name.to_uppercase())
-        .unwrap_or_else(|| "CHAMPIONNAT".to_string());
-    let title = if division.is_empty() {
-        name
-    } else {
-        format!("{name} — {division}")
-    };
-    let subtitle = match (journee, championship.and_then(|c| c.current_journee)) {
-        (Some(j), _) => format!("Classement après {j} journées"),
-        (None, Some(j)) => format!("Classement après {j} journées"),
-        (None, None) => "Classement de la saison".to_string(),
-    };
+    let title = standings_title(championship, &division);
+    let subtitle = standings_subtitle(journee, championship);
 
     (title, division, subtitle, rows)
 }

@@ -5,14 +5,17 @@
 
 use async_trait::async_trait;
 use chrono::Utc;
+#[cfg(test)]
+use palet_shared::CompetitionType;
 use palet_shared::{
-    CompetitionType, CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner,
-    UpdateMatchRequest,
+    CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner, UpdateMatchRequest,
 };
 use std::sync::Arc;
 use uuid::Uuid;
 
-use crate::repositories::match_repository::{MatchRepository, MockMatchRepository};
+use crate::repositories::match_repository::MatchRepository;
+#[cfg(test)]
+use crate::repositories::match_repository::MockMatchRepository;
 
 // ============================================
 // MATCH SERVICE TRAIT (Interface)
@@ -430,8 +433,10 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
 // ============================================
 
 /// Default match service with mock repository for testing
+#[cfg(test)]
 pub type DefaultMatchService = MatchServiceImpl<MockMatchRepository>;
 
+#[cfg(test)]
 impl Default for DefaultMatchService {
     fn default() -> Self {
         Self::new(Arc::new(MockMatchRepository::new()))
@@ -443,6 +448,7 @@ impl Default for DefaultMatchService {
 // ============================================
 
 /// Helper function to create a test match request
+#[cfg(test)]
 pub fn create_test_match_request(
     competition_type: CompetitionType,
     team1_id: Uuid,
@@ -463,6 +469,7 @@ pub fn create_test_match_request(
 }
 
 /// Helper function to create a test match
+#[cfg(test)]
 pub fn create_test_match(
     competition_type: CompetitionType,
     team1_id: Uuid,

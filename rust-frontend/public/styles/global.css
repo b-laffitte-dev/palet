@@ -25,6 +25,7 @@ ul {
 /* Set core body defaults */
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -652,6 +653,7 @@ select {
 }
 .h-screen {
   height: 100vh;
+  height: 100dvh;
 }
 .h-min {
   height: min-content;
@@ -684,6 +686,7 @@ select {
 }
 .min-h-screen {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Max height */
@@ -707,6 +710,7 @@ select {
 }
 .max-h-screen {
   max-height: 100vh;
+  max-height: 100dvh;
 }
 
 /* Padding */

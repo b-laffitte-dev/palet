@@ -6,6 +6,7 @@ use actix_web::{web, HttpResponse, Responder};
 use palet_shared::{ApiResponse, Club, CreateClubRequest, PaginatedResponse, Pagination};
 use uuid::Uuid;
 
+use crate::db::DatabaseError;
 use crate::AppState;
 
 /// Get all clubs
@@ -109,6 +110,13 @@ pub async fn create_club(
             message: Some("Club created successfully".to_string()),
             success: true,
         }),
+        Err(DatabaseError::ValidationError(msg)) => {
+            HttpResponse::BadRequest().json(ApiResponse::<()> {
+                data: (),
+                message: Some(msg),
+                success: false,
+            })
+        }
         Err(e) => {
             log::error!("Failed to create club: {:?}", e);
             HttpResponse::InternalServerError().json(ApiResponse::<()> {

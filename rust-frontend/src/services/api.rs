@@ -12,8 +12,7 @@
 //! `with_base_url` still allows overriding this explicitly.
 
 use palet_shared::{
-    ApiResponse, Championship, ChampionshipClassification, Club, Federation, Match,
-    PaginatedResponse, Player, Tournament,
+    ApiResponse, Championship, ChampionshipClassification, Club, Match, PaginatedResponse,
 };
 use serde::de::DeserializeOwned;
 use wasm_bindgen::JsCast;
@@ -87,33 +86,10 @@ impl ApiService {
         Ok(response.data.data)
     }
 
-    /// Get a specific club by ID
-    pub async fn get_club(&self, _id: String) -> Result<Club, String> {
-        Ok(Club {
-            id: uuid::Uuid::new_v4(),
-            name: "Test Club".to_string(),
-            nickname: None,
-            code: "TC001".to_string(),
-            logo: None,
-            address: None,
-            city: "Test City".to_string(),
-            postal_code: None,
-            league: "Deux-Sèvres".to_string(),
-            division: "D1".to_string(),
-            status: palet_shared::ClubStatus::Active,
-            players_count: 0,
-            teams_count: 0,
-            contact_email: None,
-            contact_phone: None,
-            website: None,
-            social: palet_shared::SocialLinks {
-                facebook: None,
-                twitter: None,
-                instagram: None,
-            },
-            created_at: chrono::Utc::now(),
-            updated_at: chrono::Utc::now(),
-        })
+    /// Get a specific club by ID — GET /clubs/{id}
+    pub async fn get_club(&self, id: String) -> Result<Club, String> {
+        let response: ApiResponse<Club> = self.get_json(&format!("/clubs/{id}")).await?;
+        Ok(response.data)
     }
 
     /// Get all matches — GET /matchs
@@ -130,12 +106,6 @@ impl ApiService {
         let response: ApiResponse<Vec<Match>> =
             self.get_json(&format!("/matchs/status/{status}")).await?;
         Ok(response.data)
-    }
-
-    /// Get all tournaments
-    pub async fn get_tournaments(&self) -> Result<Vec<Tournament>, String> {
-        // In a real implementation, use reqwest or web-sys
-        Ok(vec![])
     }
 
     /// Get all championships — GET /championnats
@@ -156,21 +126,6 @@ impl ApiService {
             .get_json(&format!("/championnats/{championship_id}/classification"))
             .await?;
         Ok(response.data)
-    }
-
-    /// Get all players
-    pub async fn get_players(&self) -> Result<Vec<Player>, String> {
-        Ok(vec![])
-    }
-
-    /// Get a specific player by ID
-    pub async fn get_player(&self, _id: String) -> Result<Player, String> {
-        Err("Not implemented".to_string())
-    }
-
-    /// Get federations
-    pub async fn get_federations(&self) -> Result<Vec<Federation>, String> {
-        Ok(vec![])
     }
 }
 

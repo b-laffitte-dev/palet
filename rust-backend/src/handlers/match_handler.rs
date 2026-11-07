@@ -10,6 +10,7 @@ use palet_shared::{
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::db::DatabaseError;
 use crate::AppState;
 
 /// Get all matches
@@ -197,6 +198,13 @@ pub async fn create_match(
             message: Some("Match created successfully".to_string()),
             success: true,
         }),
+        Err(DatabaseError::ValidationError(msg)) => {
+            HttpResponse::BadRequest().json(ApiResponse::<()> {
+                data: (),
+                message: Some(msg),
+                success: false,
+            })
+        }
         Err(e) => {
             log::error!("Failed to create match: {:?}", e);
             HttpResponse::InternalServerError().json(ApiResponse::<()> {

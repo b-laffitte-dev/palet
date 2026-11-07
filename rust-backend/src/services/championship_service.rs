@@ -5,17 +5,19 @@
 
 use async_trait::async_trait;
 use chrono::Utc;
+#[cfg(test)]
+use palet_shared::TeamStats;
 use palet_shared::{
     Championship, ChampionshipClassification, ChampionshipTeam, ClassificationPrimary,
     ClassificationSecondary, ClassificationTertiary, CompetitionStatus, CreateChampionshipRequest,
-    TeamClassificationStatus, TeamStats, UpdateChampionshipRequest,
+    TeamClassificationStatus, UpdateChampionshipRequest,
 };
 use std::sync::Arc;
 use uuid::Uuid;
 
-use crate::repositories::championship_repository::{
-    ChampionshipRepository, MockChampionshipRepository,
-};
+use crate::repositories::championship_repository::ChampionshipRepository;
+#[cfg(test)]
+use crate::repositories::championship_repository::MockChampionshipRepository;
 
 // ============================================
 // CHAMPIONSHIP SERVICE TRAIT (Interface)
@@ -522,8 +524,10 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
 // ============================================
 
 /// Default championship service with mock repository for testing
+#[cfg(test)]
 pub type DefaultChampionshipService = ChampionshipServiceImpl<MockChampionshipRepository>;
 
+#[cfg(test)]
 impl Default for DefaultChampionshipService {
     fn default() -> Self {
         Self::new(Arc::new(MockChampionshipRepository::new()))
@@ -535,6 +539,7 @@ impl Default for DefaultChampionshipService {
 // ============================================
 
 /// Helper function to create a test championship request
+#[cfg(test)]
 pub fn create_test_championship_request(
     name: String,
     season: String,
@@ -560,6 +565,7 @@ pub fn create_test_championship_request(
 }
 
 /// Helper function to create a test championship
+#[cfg(test)]
 pub fn create_test_championship(
     name: String,
     season: String,
@@ -591,7 +597,9 @@ pub fn create_test_championship(
 }
 
 /// Helper function to create a test championship team
+// allow justifié : fixture de test qui couvre tous les champs de TeamStats en un appel
 #[allow(clippy::too_many_arguments)]
+#[cfg(test)]
 pub fn create_test_championship_team(
     position: i32,
     team_id: Uuid,

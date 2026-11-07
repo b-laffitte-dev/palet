@@ -16,7 +16,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
-use crate::repositories::enum_conv::enum_from_db_string;
+use crate::repositories::enum_conv::{enum_from_db_string, to_json_string};
 
 // ============================================
 // CHAMPIONSHIP REPOSITORY TRAIT (Interface)
@@ -138,16 +138,24 @@ impl PostgresChampionshipRepository {
         let total_journees: i32 = row.get("total_journees");
         let journee_duration: Option<String> = row.get("journee_duration");
 
-        let primary: ClassificationPrimary = ClassificationPrimary::Points;
-        let secondary: ClassificationSecondary = ClassificationSecondary::Diff;
-        let tertiary: ClassificationTertiary = ClassificationTertiary::PointsFor;
+        let primary_str: String = row.get("classification_primary");
+        let primary: ClassificationPrimary =
+            enum_from_db_string(&primary_str).unwrap_or(ClassificationPrimary::Points);
+        let secondary_str: String = row.get("classification_secondary");
+        let secondary: ClassificationSecondary =
+            enum_from_db_string(&secondary_str).unwrap_or(ClassificationSecondary::Diff);
+        let tertiary_str: String = row.get("classification_tertiary");
+        let tertiary: ClassificationTertiary =
+            enum_from_db_string(&tertiary_str).unwrap_or(ClassificationTertiary::PointsFor);
         let classification_rules = palet_shared::ClassificationRules {
             primary,
             secondary,
             tertiary,
         };
 
-        let status: CompetitionStatus = CompetitionStatus::Pending;
+        let status_str: String = row.get("status");
+        let status: CompetitionStatus =
+            enum_from_db_string(&status_str).unwrap_or(CompetitionStatus::Pending);
         let current_journee: Option<i32> = row.get("current_journee");
         let current_phase: Option<String> = row.get("current_phase");
         let organizer_id: Uuid = row.get("organizer_id");
@@ -275,10 +283,12 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .bind(&championship.divisions)
             .bind(championship.total_journees)
             .bind(championship.journee_duration)
-            .bind(serde_json::to_string(&championship.classification_rules.primary).unwrap())
-            .bind(serde_json::to_string(&championship.classification_rules.secondary).unwrap())
-            .bind(serde_json::to_string(&championship.classification_rules.tertiary).unwrap())
-            .bind(serde_json::to_string(&championship.status).unwrap())
+            .bind(to_json_string(&championship.classification_rules.primary)?)
+            .bind(to_json_string(
+                &championship.classification_rules.secondary,
+            )?)
+            .bind(to_json_string(&championship.classification_rules.tertiary)?)
+            .bind(to_json_string(&championship.status)?)
             .bind(championship.current_journee)
             .bind(championship.current_phase)
             .bind(championship.organizer_id)
@@ -325,12 +335,9 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
         request: UpdateChampionshipRequest,
     ) -> Result<Option<Championship>, DatabaseError> {
         // Check if championship exists
-        let existing = self.get_championship(championship_id).await?;
-        if existing.is_none() {
+        let Some(mut championship) = self.get_championship(championship_id).await? else {
             return Ok(None);
-        }
-
-        let mut championship = existing.unwrap();
+        };
 
         // Update fields from request
         if let Some(name) = request.name {
@@ -403,10 +410,12 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .bind(championship.divisions)
             .bind(championship.total_journees)
             .bind(championship.journee_duration)
-            .bind(serde_json::to_string(&championship.classification_rules.primary).unwrap())
-            .bind(serde_json::to_string(&championship.classification_rules.secondary).unwrap())
-            .bind(serde_json::to_string(&championship.classification_rules.tertiary).unwrap())
-            .bind(serde_json::to_string(&championship.status).unwrap())
+            .bind(to_json_string(&championship.classification_rules.primary)?)
+            .bind(to_json_string(
+                &championship.classification_rules.secondary,
+            )?)
+            .bind(to_json_string(&championship.classification_rules.tertiary)?)
+            .bind(to_json_string(&championship.status)?)
             .bind(championship.current_journee)
             .bind(championship.current_phase)
             .bind(championship.updated_at)
@@ -467,7 +476,7 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
     ) -> Result<Vec<Championship>, DatabaseError> {
         let query = "SELECT * FROM championships WHERE status = $1 ORDER BY season DESC, name";
         let rows = sqlx::query(query)
-            .bind(serde_json::to_string(&status).unwrap())
+            .bind(to_json_string(&status)?)
             .fetch_all(&*self.pool)
             .await?;
 
@@ -750,12 +759,14 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
 
 /// Mock implementation of ChampionshipRepository for testing
 #[derive(Clone, Default)]
+#[cfg(test)]
 pub struct MockChampionshipRepository {
     pub championships: std::sync::Arc<std::sync::Mutex<Vec<Championship>>>,
     pub classifications: std::sync::Arc<std::sync::Mutex<Vec<ChampionshipClassification>>>,
     pub should_fail: bool,
 }
 
+#[cfg(test)]
 impl MockChampionshipRepository {
     pub fn new() -> Self {
         Self::default()
@@ -778,6 +789,7 @@ impl MockChampionshipRepository {
 }
 
 #[async_trait]
+#[cfg(test)]
 impl ChampionshipRepository for MockChampionshipRepository {
     async fn create_championship(
         &self,

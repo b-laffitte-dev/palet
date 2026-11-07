@@ -11,7 +11,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
-use crate::repositories::enum_conv::enum_from_db_string;
+use crate::repositories::enum_conv::{enum_from_db_string, to_json_string};
 
 // ============================================
 // CLUB REPOSITORY TRAIT (Interface)
@@ -170,7 +170,7 @@ impl ClubRepository for PostgresClubRepository {
             .bind(club.postal_code)
             .bind(&club.league)
             .bind(&club.division)
-            .bind(serde_json::to_string(&club.status).unwrap())
+            .bind(to_json_string(&club.status)?)
             .bind(club.players_count)
             .bind(club.teams_count)
             .bind(club.contact_email)
@@ -215,12 +215,9 @@ impl ClubRepository for PostgresClubRepository {
         request: UpdateClubRequest,
     ) -> Result<Option<Club>, DatabaseError> {
         // Check if club exists
-        let existing = self.get_club(club_id).await?;
-        if existing.is_none() {
+        let Some(mut club) = self.get_club(club_id).await? else {
             return Ok(None);
-        }
-
-        let mut club = existing.unwrap();
+        };
 
         // Update fields from request
         if let Some(name) = request.name {
@@ -334,7 +331,7 @@ impl ClubRepository for PostgresClubRepository {
     async fn get_clubs_by_status(&self, status: ClubStatus) -> Result<Vec<Club>, DatabaseError> {
         let query = "SELECT * FROM clubs WHERE status = $1 ORDER BY name";
         let rows = sqlx::query(query)
-            .bind(serde_json::to_string(&status).unwrap())
+            .bind(to_json_string(&status)?)
             .fetch_all(&*self.pool)
             .await?;
 
@@ -379,11 +376,13 @@ impl ClubRepository for PostgresClubRepository {
 
 /// Mock implementation of ClubRepository for testing
 #[derive(Clone, Default)]
+#[cfg(test)]
 pub struct MockClubRepository {
     pub clubs: std::sync::Arc<std::sync::Mutex<Vec<Club>>>,
     pub should_fail: bool,
 }
 
+#[cfg(test)]
 impl MockClubRepository {
     pub fn new() -> Self {
         Self::default()
@@ -406,6 +405,7 @@ impl MockClubRepository {
 }
 
 #[async_trait]
+#[cfg(test)]
 impl ClubRepository for MockClubRepository {
     async fn create_club(&self, request: CreateClubRequest) -> Result<Club, DatabaseError> {
         if self.should_fail {

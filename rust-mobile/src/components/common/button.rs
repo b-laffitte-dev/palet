@@ -78,7 +78,8 @@ pub fn Button(props: ButtonProps) -> Element {
             r#type: "{button_type}",
             class: "{combined_classes}",
             disabled: props.disabled || props.loading,
-            onclick: move |_| {},
+            onclick: move |evt| props.onclick.call(evt),
+            {props.children}
         }
     }
 }

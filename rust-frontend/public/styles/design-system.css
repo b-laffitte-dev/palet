@@ -419,6 +419,7 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-dark);
@@ -467,10 +468,12 @@ a {
 ::-webkit-scrollbar-thumb {
   background: var(--color-neutral-300);
   border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-neutral-400);
+}@media (hover: hover) {
+  
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-neutral-400);
+  }
 }
 
 /* Selection styling */
@@ -756,12 +759,14 @@ a {
 .bg-amber-900\/20,
 .bg-red-900\/20 {
   transition: background-color var(--transition-colors);
-}
-
-.bg-primary-800\/20:hover,
-.bg-amber-900\/20:hover,
-.bg-red-900\/20:hover {
-  background-color: rgba(26, 61, 46, 0.3) !important;
+}@media (hover: hover) {
+  
+  
+  .bg-primary-800\/20:hover,
+  .bg-amber-900\/20:hover,
+  .bg-red-900\/20:hover {
+    background-color: rgba(26, 61, 46, 0.3) !important;
+  }
 }
 
 /* Text colors for brand palette */
@@ -817,11 +822,13 @@ a {
 }
 .border-primary-700\/50 {
   border-color: rgba(6, 78, 59, 0.5);
-}
-
-/* Hover text color utilities */
-.hover\:text-green-dark:hover {
-  color: var(--color-brand-green);
+}@media (hover: hover) {
+  
+  
+  /* Hover text color utilities */
+  .hover\:text-green-dark:hover {
+    color: var(--color-brand-green);
+  }
 }
 
 /* Gradient utilities */

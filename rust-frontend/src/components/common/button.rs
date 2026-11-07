@@ -1,5 +1,4 @@
 //! Button component for Palet Vendéen
-#![allow(dead_code)]
 
 use dioxus::prelude::*;
 
@@ -79,7 +78,47 @@ pub fn Button(props: ButtonProps) -> Element {
             r#type: "{button_type}",
             class: "{combined_classes}",
             disabled: props.disabled || props.loading,
-            onclick: move |_| {},
+            onclick: move |evt| props.onclick.call(evt),
+            {props.children}
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[component]
+    fn TestChildren() -> Element {
+        rsx! { Button { "Connexion" } }
+    }
+
+    #[component]
+    fn TestDanger() -> Element {
+        rsx! { Button { variant: ButtonVariant::Danger, "Supprimer" } }
+    }
+
+    fn render(app: fn() -> Element) -> String {
+        let mut dom = VirtualDom::new(app);
+        dom.rebuild_in_place();
+        dioxus_ssr::render(&dom)
+    }
+
+    #[test]
+    fn button_rend_les_children() {
+        let html = render(TestChildren);
+        assert!(
+            html.contains("Connexion"),
+            "les children du bouton doivent être rendus, got: {html}"
+        );
+    }
+
+    #[test]
+    fn button_applique_la_classe_variant() {
+        let html = render(TestDanger);
+        assert!(
+            html.contains("bg-red-600"),
+            "la classe de la variante Danger doit être présente, got: {html}"
+        );
     }
 }

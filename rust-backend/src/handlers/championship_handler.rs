@@ -9,6 +9,7 @@ use palet_shared::{
 };
 use uuid::Uuid;
 
+use crate::db::DatabaseError;
 use crate::AppState;
 
 /// Get all championships
@@ -195,6 +196,13 @@ pub async fn create_championship(
             message: Some("Championnat created successfully".to_string()),
             success: true,
         }),
+        Err(DatabaseError::ValidationError(msg)) => {
+            HttpResponse::BadRequest().json(ApiResponse::<()> {
+                data: (),
+                message: Some(msg),
+                success: false,
+            })
+        }
         Err(e) => {
             log::error!("Failed to create championship: {:?}", e);
             HttpResponse::InternalServerError().json(ApiResponse::<()> {

@@ -7,11 +7,12 @@
    BUTTONS
    ============================================ */
 
-/* Responsive button sizes */
+/* Responsive button sizes — cible tactile >= 44px dès le mobile (Apple HIG) */
 .btn-responsive {
   padding: var(--spacing-3) var(--spacing-4);
   font-size: var(--text-body-sm);
-  min-height: 40px;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 
 @media (min-width: 640px) {
@@ -321,10 +322,12 @@
 .table-responsive-container::-webkit-scrollbar-thumb {
   background: var(--border-primary);
   border-radius: 3px;
-}
-
-.table-responsive-container::-webkit-scrollbar-thumb:hover {
-  background: var(--border-secondary);
+}@media (hover: hover) {
+  
+  
+  .table-responsive-container::-webkit-scrollbar-thumb:hover {
+    background: var(--border-secondary);
+  }
 }
 
 /* Table font sizes for mobile */

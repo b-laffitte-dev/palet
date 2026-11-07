@@ -14,6 +14,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::repositories::enum_conv::{enum_from_db_string, to_json_string};
 
 // ============================================
 // MATCH REPOSITORY TRAIT (Interface)
@@ -107,8 +108,10 @@ impl PostgresMatchRepository {
     async fn row_to_match(row: sqlx::postgres::PgRow) -> Result<Match, sqlx::Error> {
         let id: Uuid = row.get("id");
         let competition_id: Uuid = row.get("competition_id");
+        let competition_type_str: String = row.get("competition_type");
         let competition_type: palet_shared::CompetitionType =
-            palet_shared::CompetitionType::Championship;
+            enum_from_db_string(&competition_type_str)
+                .unwrap_or(palet_shared::CompetitionType::Championship);
         let journee: Option<i32> = row.get("journee");
         let phase: Option<String> = row.get("phase");
         let round: Option<String> = row.get("round");
@@ -116,8 +119,13 @@ impl PostgresMatchRepository {
         let team2_id: Uuid = row.get("team2_id");
         let team1_score: Option<i32> = row.get("team1_score");
         let team2_score: Option<i32> = row.get("team2_score");
-        let winner: Option<MatchWinner> = None;
-        let manches: Option<Vec<MancheScore>> = None;
+        let winner_str: Option<String> = row.get("winner");
+        let winner: Option<MatchWinner> = winner_str
+            .as_deref()
+            .and_then(|s| enum_from_db_string(s).ok());
+        let manches_json: Option<serde_json::Value> = row.get("manches");
+        let manches: Option<Vec<MancheScore>> =
+            manches_json.and_then(|v| serde_json::from_value(v).ok());
         let best_of: Option<i32> = row.get("best_of");
         let current_manche: Option<i32> = row.get("current_manche");
         let current_scores = row.get("current_scores");
@@ -125,7 +133,9 @@ impl PostgresMatchRepository {
             Some(value) => serde_json::from_value(value).ok(),
             None => None,
         };
-        let status: MatchStatus = MatchStatus::Scheduled;
+        let status_str: String = row.get("status");
+        let status: MatchStatus =
+            enum_from_db_string(&status_str).unwrap_or(MatchStatus::Scheduled);
         let verified: bool = row.get("verified");
         let verified_by: Option<Uuid> = row.get("verified_by");
         let verified_at: Option<chrono::DateTime<Utc>> = row.get("verified_at");
@@ -228,7 +238,7 @@ impl MatchRepository for PostgresMatchRepository {
         let row = sqlx::query(query)
             .bind(match_obj.id)
             .bind(match_obj.competition_id)
-            .bind(serde_json::to_string(&match_obj.competition_type).unwrap())
+            .bind(to_json_string(&match_obj.competition_type)?)
             .bind(match_obj.journee)
             .bind(match_obj.phase)
             .bind(match_obj.round)
@@ -236,12 +246,12 @@ impl MatchRepository for PostgresMatchRepository {
             .bind(match_obj.team2_id)
             .bind(match_obj.team1_score)
             .bind(match_obj.team2_score)
-            .bind(serde_json::to_string(&match_obj.winner).unwrap())
+            .bind(to_json_string(&match_obj.winner)?)
             .bind(sqlx::types::Json(&match_obj.manches))
             .bind(match_obj.best_of)
             .bind(match_obj.current_manche)
             .bind(sqlx::types::Json(match_obj.current_scores))
-            .bind(serde_json::to_string(&match_obj.status).unwrap())
+            .bind(to_json_string(&match_obj.status)?)
             .bind(match_obj.verified)
             .bind(match_obj.verified_by)
             .bind(match_obj.verified_at)
@@ -306,7 +316,7 @@ impl MatchRepository for PostgresMatchRepository {
     ) -> Result<Vec<Match>, DatabaseError> {
         let query = "SELECT * FROM matches WHERE status = $1 ORDER BY date";
         let rows = sqlx::query(query)
-            .bind(serde_json::to_string(&status).unwrap())
+            .bind(to_json_string(&status)?)
             .fetch_all(&*self.pool)
             .await?;
 
@@ -323,12 +333,9 @@ impl MatchRepository for PostgresMatchRepository {
         request: UpdateMatchRequest,
     ) -> Result<Option<Match>, DatabaseError> {
         // Check if match exists
-        let existing = self.get_match(match_id).await?;
-        if existing.is_none() {
+        let Some(mut match_obj) = self.get_match(match_id).await? else {
             return Ok(None);
-        }
-
-        let mut match_obj = existing.unwrap();
+        };
 
         // Update fields from request
         if let Some(team1_score) = request.team1_score {
@@ -365,8 +372,8 @@ impl MatchRepository for PostgresMatchRepository {
         let row = sqlx::query(query)
             .bind(match_obj.team1_score)
             .bind(match_obj.team2_score)
-            .bind(serde_json::to_string(&match_obj.winner).unwrap())
-            .bind(serde_json::to_string(&match_obj.status).unwrap())
+            .bind(to_json_string(&match_obj.winner)?)
+            .bind(to_json_string(&match_obj.status)?)
             .bind(match_obj.verified)
             .bind(match_obj.updated_at)
             .bind(match_id)
@@ -421,7 +428,7 @@ impl MatchRepository for PostgresMatchRepository {
 
         let row = sqlx::query(query)
             .bind(match_id)
-            .bind(serde_json::to_string(&winner).unwrap())
+            .bind(to_json_string(&winner)?)
             .fetch_one(&*self.pool)
             .await?;
 
@@ -672,11 +679,13 @@ impl MatchRepository for PostgresMatchRepository {
 
 /// Mock implementation of MatchRepository for testing
 #[derive(Clone, Default)]
+#[cfg(test)]
 pub struct MockMatchRepository {
     pub matches: std::sync::Arc<std::sync::Mutex<Vec<Match>>>,
     pub should_fail: bool,
 }
 
+#[cfg(test)]
 impl MockMatchRepository {
     pub fn new() -> Self {
         Self::default()
@@ -699,6 +708,7 @@ impl MockMatchRepository {
 }
 
 #[async_trait]
+#[cfg(test)]
 impl MatchRepository for MockMatchRepository {
     async fn create_match(&self, request: CreateMatchRequest) -> Result<Match, DatabaseError> {
         if self.should_fail {

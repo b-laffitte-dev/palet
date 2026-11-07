@@ -33,6 +33,7 @@
   background: #fff;
   color: #333;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   font-family: "Segoe UI", "Inter", Arial, sans-serif;
@@ -94,10 +95,12 @@
 .pv-topbar-link {
   color: var(--pv-mist);
   text-decoration: none;
-}
-
-.pv-topbar-link:hover {
-  color: #fff;
+}@media (hover: hover) {
+  
+  
+  .pv-topbar-link:hover {
+    color: #fff;
+  }
 }
 
 .pv-sep {
@@ -181,10 +184,12 @@
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-}
-
-.pv-nav-link:hover {
-  color: #fff;
+}@media (hover: hover) {
+  
+  
+  .pv-nav-link:hover {
+    color: #fff;
+  }
 }
 
 .pv-nav-link.active {
@@ -202,11 +207,13 @@
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
-}
-
-.pv-btn-gold:hover {
-  background: var(--pv-gold-dark);
-  color: #fff;
+}@media (hover: hover) {
+  
+  
+  .pv-btn-gold:hover {
+    background: var(--pv-gold-dark);
+    color: #fff;
+  }
 }
 
 /* ===== Hero (featured match) ===== */
@@ -442,10 +449,12 @@
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-}
-
-.pv-section-link:hover {
-  background: var(--pv-green-hero-b);
+}@media (hover: hover) {
+  
+  
+  .pv-section-link:hover {
+    background: var(--pv-green-hero-b);
+  }
 }
 
 .pv-empty {
@@ -708,10 +717,12 @@
   text-decoration: none;
   align-self: flex-start;
   margin-top: auto;
-}
-
-.pv-btn-dark:hover {
-  background: var(--pv-green-hero-b);
+}@media (hover: hover) {
+  
+  
+  .pv-btn-dark:hover {
+    background: var(--pv-green-hero-b);
+  }
 }
 
 /* ===== Top cards ===== */
@@ -842,10 +853,12 @@
   padding: 20px;
   text-decoration: none;
   display: block;
-}
-
-.pv-space:hover {
-  background: #175741;
+}@media (hover: hover) {
+  
+  
+  .pv-space:hover {
+    background: #175741;
+  }
 }
 
 .pv-space-title {
@@ -886,10 +899,12 @@
 .pv-footer-links a {
   color: var(--pv-mist);
   text-decoration: none;
-}
-
-.pv-footer-links a:hover {
-  color: #fff;
+}@media (hover: hover) {
+  
+  
+  .pv-footer-links a:hover {
+    color: #fff;
+  }
 }
 
 .pv-footer-note {

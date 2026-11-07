@@ -173,12 +173,9 @@ impl TeamRepository for PostgresTeamRepository {
         status: Option<TeamStatus>,
     ) -> Result<Option<Team>, DatabaseError> {
         // Check if team exists
-        let existing = self.get_team(team_id).await?;
-        if existing.is_none() {
+        let Some(mut team) = self.get_team(team_id).await? else {
             return Ok(None);
-        }
-
-        let mut team = existing.unwrap();
+        };
 
         // Update fields
         if let Some(name) = name {
@@ -295,11 +292,13 @@ impl TeamRepository for PostgresTeamRepository {
 
 /// Mock implementation of TeamRepository for testing
 #[derive(Clone, Default)]
+#[cfg(test)]
 pub struct MockTeamRepository {
     pub teams: std::sync::Arc<std::sync::Mutex<Vec<Team>>>,
     pub should_fail: bool,
 }
 
+#[cfg(test)]
 impl MockTeamRepository {
     pub fn new() -> Self {
         Self::default()
@@ -322,6 +321,7 @@ impl MockTeamRepository {
 }
 
 #[async_trait]
+#[cfg(test)]
 impl TeamRepository for MockTeamRepository {
     async fn create_team(
         &self,

@@ -33,7 +33,7 @@ pub enum UserRole {
     Arbitre,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct User {
     pub id: Uuid,
     pub email: String,
@@ -108,7 +108,7 @@ pub enum UserStatus {
     Banned,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct UserPreferences {
     pub language: String,
     pub timezone: String,
@@ -123,26 +123,26 @@ pub enum DistanceUnit {
     Imperial,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct NotificationsPreferences {
     pub email: EmailNotifications,
     pub push: PushNotifications,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct EmailNotifications {
     pub results: bool,
     pub news: bool,
     pub reminders: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct PushNotifications {
     pub results: bool,
     pub matches: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Permission {
     pub id: Uuid,
     pub name: String,
@@ -161,7 +161,7 @@ pub enum PermissionCategory {
     Report,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct AuthToken {
     pub access_token: String,
     pub refresh_token: String,
@@ -169,7 +169,7 @@ pub struct AuthToken {
     pub token_type: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct AuthState {
     pub user: Option<User>,
     pub token: Option<AuthToken>,
@@ -180,7 +180,7 @@ pub struct AuthState {
     pub two_factor_pending: bool,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct SocialLinks {
     pub facebook: Option<String>,
     pub twitter: Option<String>,
@@ -191,7 +191,7 @@ pub struct SocialLinks {
 // CLUB TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Club {
     pub id: Uuid,
     pub name: String,
@@ -253,7 +253,7 @@ pub enum ClubStatus {
 // FEDERATION TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Federation {
     pub id: Uuid,
     pub name: String,
@@ -272,7 +272,7 @@ impl Identifiable for Federation {
 // PLAYER TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Player {
     pub id: Uuid,
     pub first_name: String,
@@ -349,7 +349,7 @@ pub enum LicenseStatus {
 // TEAM TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Team {
     pub id: Uuid,
     pub name: String,
@@ -383,7 +383,7 @@ impl Timestamped for Team {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, Default, PartialEq)]
 pub struct TeamStats {
     pub matches: i32,
     pub wins: i32,
@@ -444,7 +444,7 @@ pub enum CompetitionStatus {
     Cancelled,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Competition {
     pub id: Uuid,
     pub name: String,
@@ -533,7 +533,7 @@ pub enum PointsType {
 // CHAMPIONSHIP TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Championship {
     pub id: Uuid,
     pub name: String,
@@ -553,7 +553,7 @@ pub struct Championship {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct ClassificationRules {
     pub primary: ClassificationPrimary,
     pub secondary: ClassificationSecondary,
@@ -583,7 +583,7 @@ pub enum ClassificationTertiary {
     PointsAgainst,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct ChampionshipClassification {
     pub division: String,
     pub journee: i32,
@@ -591,7 +591,7 @@ pub struct ChampionshipClassification {
     pub teams: Vec<ChampionshipTeam>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct ChampionshipTeam {
     pub position: i32,
     pub team_id: Uuid,
@@ -621,7 +621,7 @@ pub enum TeamClassificationStatus {
 // TOURNAMENT TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Tournament {
     pub id: Uuid,
     pub name: String,
@@ -681,7 +681,7 @@ pub struct Tournament {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct TournamentPhase {
     pub id: Uuid,
     pub name: String,
@@ -699,7 +699,7 @@ pub enum TournamentPhaseType {
     Final,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct TournamentGroup {
     pub id: Uuid,
     pub name: String,
@@ -707,7 +707,7 @@ pub struct TournamentGroup {
     pub matches: Vec<TournamentMatch>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct TournamentMatch {
     pub id: Uuid,
     pub team1_id: Option<Uuid>,
@@ -723,7 +723,7 @@ pub struct TournamentMatch {
     pub manche: Option<i32>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct TournamentEligibility {
     pub require_license: bool,
     pub require_club: bool,
@@ -749,7 +749,7 @@ pub enum MatchStatus {
     Disputed,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Match {
     pub id: Uuid,
     pub competition_id: Uuid,
@@ -815,15 +815,16 @@ pub enum MatchWinner {
     Draw,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct MancheScore {
     pub number: i32,
     pub team1: i32,
     pub team2: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub winner: Option<MatchWinner>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct CurrentScores {
     pub team1: i32,
     pub team2: i32,
@@ -834,14 +835,14 @@ pub struct CurrentScores {
 // API RESPONSE TYPES
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct ApiResponse<T> {
     pub data: T,
     pub message: Option<String>,
     pub success: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct ApiError {
     pub message: String,
     pub code: String,
@@ -849,7 +850,7 @@ pub struct ApiError {
     pub details: Option<serde_json::Value>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct Pagination {
     pub current: i64,
     pub total: i64,
@@ -859,13 +860,13 @@ pub struct Pagination {
     pub has_previous: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct PaginatedResponse<T> {
     pub data: Vec<T>,
     pub pagination: Pagination,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct HealthCheck {
     pub statut: String,
     pub version: String,
@@ -892,7 +893,7 @@ pub enum CacheStatus {
 // REQUEST/RESPONSE DTOs - MATCH
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct CreateMatchRequest {
     pub competition_id: Uuid,
     pub competition_type: CompetitionType,
@@ -906,7 +907,7 @@ pub struct CreateMatchRequest {
     pub best_of: Option<i32>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct UpdateMatchRequest {
     pub team1_score: Option<i32>,
     pub team2_score: Option<i32>,
@@ -919,7 +920,7 @@ pub struct UpdateMatchRequest {
 // REQUEST/RESPONSE DTOs - CHAMPIONSHIP
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct CreateChampionshipRequest {
     pub name: String,
     pub code: Option<String>,
@@ -933,7 +934,7 @@ pub struct CreateChampionshipRequest {
     pub organizer_id: Uuid,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct UpdateChampionshipRequest {
     pub name: Option<String>,
     pub code: Option<String>,
@@ -953,7 +954,7 @@ pub struct UpdateChampionshipRequest {
 // REQUEST/RESPONSE DTOs - CLUB
 // ============================================
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct CreateClubRequest {
     pub name: String,
     pub nickname: Option<String>,
@@ -968,7 +969,7 @@ pub struct CreateClubRequest {
     pub website: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct UpdateClubRequest {
     pub name: Option<String>,
     pub nickname: Option<String>,
@@ -982,7 +983,7 @@ pub struct UpdateClubRequest {
     pub website: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct CreatePlayerRequest {
     pub first_name: String,
     pub last_name: String,
@@ -996,7 +997,7 @@ pub struct CreatePlayerRequest {
     pub license_date: Option<DateTime<Utc>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct CreateTournamentRequest {
     pub name: String,
     pub code: Option<String>,

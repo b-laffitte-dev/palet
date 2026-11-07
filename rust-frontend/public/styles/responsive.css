@@ -770,10 +770,12 @@ footer {
 .table-container::-webkit-scrollbar-thumb {
   background: var(--border-primary);
   border-radius: 3px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-  background: var(--border-secondary);
+}@media (hover: hover) {
+  
+  
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--border-secondary);
+  }
 }
 
 @media (max-width: 767px) {
@@ -970,12 +972,14 @@ footer {
     font-size: var(--text-body-l);
     border-bottom: 1px solid var(--border-dark);
     transition: all var(--transition-colors);
-  }
-
-  .mobile-nav a:hover {
-    color: var(--color-brand-green);
-    background-color: rgba(0, 166, 81, 0.05);
-  }
+  }@media (hover: hover) {
+  
+  
+    .mobile-nav a:hover {
+      color: var(--color-brand-green);
+      background-color: rgba(0, 166, 81, 0.05);
+    }
+}
 
   .mobile-nav a.active {
     color: var(--color-brand-green);
@@ -993,11 +997,13 @@ footer {
     font-size: var(--text-heading-xl);
     line-height: 1;
     padding: var(--spacing-2);
-  }
-
-  .mobile-nav-close:hover {
-    color: var(--color-brand-green);
-  }
+  }@media (hover: hover) {
+  
+  
+    .mobile-nav-close:hover {
+      color: var(--color-brand-green);
+    }
+}
 
   /* Mobile menu overlay */
   .mobile-nav-overlay {
@@ -1169,11 +1175,13 @@ footer {
     white-space: nowrap;
     z-index: 10;
     display: none;
-  }
-
-  .classification-table th.abbr:hover::after {
-    display: block;
-  }
+  }@media (hover: hover) {
+  
+  
+    .classification-table th.abbr:hover::after {
+      display: block;
+    }
+}
 }
 
 /* Pagination - Responsive */
@@ -1638,4 +1646,33 @@ footer {
   .text-dark-secondary {
     color: var(--color-neutral-300) !important;
   }
+}
+
+/* ============================================
+   SAFE AREAS & TOUCH (iPhone notch, barre home)
+   viewport-fit=cover est posé dans index.html
+   ============================================ */
+
+/* Haut de page : ne pas passer sous l'encoche */
+.pv-topbar {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Barre de navigation mobile fixe en bas */
+nav.fixed.bottom-0 {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Pied de page : au-dessus de la barre home */
+footer,
+.pv-footer {
+  padding-bottom: calc(var(--spacing-6) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Cibles tactiles : supprimer le délai de tap de 300ms */
+button,
+.btn,
+.btn-responsive,
+a {
+  touch-action: manipulation;
 }

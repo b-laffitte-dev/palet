@@ -247,12 +247,9 @@ impl PlayerRepository for PostgresPlayerRepository {
         request: CreatePlayerRequest,
     ) -> Result<Option<Player>, DatabaseError> {
         // Check if player exists
-        let existing = self.get_player(player_id).await?;
-        if existing.is_none() {
+        let Some(mut player) = self.get_player(player_id).await? else {
             return Ok(None);
-        }
-
-        let mut player = existing.unwrap();
+        };
 
         // Update fields from request
         player.full_name = format!("{} {}", request.first_name, request.last_name);
@@ -412,11 +409,13 @@ impl PlayerRepository for PostgresPlayerRepository {
 
 /// Mock implementation of PlayerRepository for testing
 #[derive(Clone, Default)]
+#[cfg(test)]
 pub struct MockPlayerRepository {
     pub players: std::sync::Arc<std::sync::Mutex<Vec<Player>>>,
     pub should_fail: bool,
 }
 
+#[cfg(test)]
 impl MockPlayerRepository {
     pub fn new() -> Self {
         Self::default()
@@ -439,6 +438,7 @@ impl MockPlayerRepository {
 }
 
 #[async_trait]
+#[cfg(test)]
 impl PlayerRepository for MockPlayerRepository {
     async fn create_player(&self, request: CreatePlayerRequest) -> Result<Player, DatabaseError> {
         if self.should_fail {
