@@ -170,8 +170,9 @@ jobs:
       # Passing base=main + head=HEAD on a push to main makes BASE == HEAD and the
       # action exits 1 ("BASE and HEAD commits are the same").
       # `filter` is not a valid input of trufflesecurity/trufflehog and fails the step.
+      # Note: --include-paths expects a file of patterns, not an inline list.
       - name: Check for hardcoded secrets
         uses: trufflesecurity/trufflehog@main
         with:
           path: .
-          extra_args: --only-verified --include-paths=rust-backend,rust-frontend,rust-shared,rust-mobile
+          extra_args: --only-verified
