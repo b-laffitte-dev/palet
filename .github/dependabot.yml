@@ -1,0 +1,50 @@
+version: 2
+
+updates:
+  # GitHub Actions utilisées dans .github/workflows/
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+
+  # Workspace Cargo racine (rust-backend, rust-shared, rust-frontend)
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+
+  # rust-mobile est exclu du workspace (Cargo.toml + Cargo.lock dédiés)
+  - package-ecosystem: "cargo"
+    directory: "/rust-mobile"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+
+  # Images Docker du docker-compose.yml racine (postgres:17)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+
+  # Dockerfile du backend (rust:slim, debian:bookworm-slim)
+  - package-ecosystem: "docker"
+    directory: "/rust-backend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+
+  # Dockerfile du frontend (rust:slim, nginx:alpine)
+  - package-ecosystem: "docker"
+    directory: "/rust-frontend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
