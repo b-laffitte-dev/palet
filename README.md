@@ -77,6 +77,12 @@ cargo test --workspace
 cargo clippy --workspace
 ```
 
+## Skills (bonnes pratiques)
+
+Le dossier [`skills/`](skills/README.md) rassemble les compétences à appliquer
+sur le projet : TDD en Rust/Dioxus, KISS, idiomes Rust, patterns Dioxus 0.7 et
+design responsive mobile-first.
+
 ## API
 
 L'API REST expose les ressources suivantes :
