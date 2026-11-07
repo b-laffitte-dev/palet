@@ -28,4 +28,8 @@ de chaque `skills/*/SKILL.md` :
   `cargo clippy --workspace --all-targets -- -D warnings`, `cargo test --workspace`,
   et `cargo check -p palet-frontend --target wasm32-unknown-unknown` pour le WASM.
 - Skills disponibles : voir `skills/README.md`.
-- Documentation projet : `docs/` (architecture, design system, guides responsive).
+- **Contexte projet consolidé pour l'agent IA : `docs/CONTEXTE-IA-VIBE.md`** —
+  lire ce fichier en premier : stack réelle (Rust Actix-web + Dioxus 0.7),
+  routes, design system réel, statut de chaque doc de `docs/` (certains sont
+  obsolètes, le code gagne sur les conflits).
+- Documentation projet : `docs/` (contexte métier, design system, guides responsive).
