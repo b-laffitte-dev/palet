@@ -1,20 +1,44 @@
 //! Carrousel des matchs des journées en cours, une slide par division.
 //!
-//! Remplace l'ancienne bande « scores en direct » : on navigue d'une
-//! division à l'autre (flèches + dots), chaque slide liste les matchs de la
-//! journée en cours de la ligue concernée (live, à venir et terminés).
+//! On navigue d'une division à l'autre (flèches + dots) ; chaque slide liste
+//! les matchs de la journée en cours de la ligue concernée (live, à venir et
+//! terminés). Un clic sur une carte remonte la sélection vers la home
+//! ([`CarouselSelection`]), qui l'affiche dans le hero.
 
-use super::model::{CarouselMatch, DivisionSlide};
+use super::model::{CarouselMatch, CarouselSelection, DivisionSlide};
 use dioxus::prelude::*;
+use uuid::Uuid;
 
 #[component]
-pub fn JourneeCarousel(slides: Vec<DivisionSlide>) -> Element {
+pub fn JourneeCarousel(
+    slides: Vec<DivisionSlide>,
+    on_select: EventHandler<CarouselSelection>,
+) -> Element {
     let mut index = use_signal(|| 0usize);
+    let mut selected = use_signal(|| Option::<Uuid>::None);
     let count = slides.len();
     let current = clamp_index(*index.read(), count);
 
     let go_prev = move |_| index.set(clamp_index(current.saturating_sub(1), count));
     let go_next = move |_| index.set(clamp_index(current + 1, count));
+
+    // Clic sur une carte : on la marque sélectionnée et on remonte le match
+    // vers la home (affiché dans le hero).
+    let select = move |sel: CarouselSelection| {
+        selected.set(Some(sel.m.id));
+        on_select.call(sel);
+    };
+
+    // Match dont la carte est marquée « selected » : celui cliqué, sinon le
+    // premier live, sinon le premier match.
+    let all: Vec<&CarouselMatch> = slides.iter().flat_map(|s| s.matches.iter()).collect();
+    let clicked_id = *selected.read();
+    let selected_id = all
+        .iter()
+        .find(|m| Some(m.id) == clicked_id)
+        .or_else(|| all.iter().find(|m| m.live))
+        .or_else(|| all.first())
+        .map(|m| m.id);
 
     rsx! {
         section { class: "pv-carousel",
@@ -57,6 +81,8 @@ pub fn JourneeCarousel(slides: Vec<DivisionSlide>) -> Element {
                                     key: "{slide.league}::{slide.name}",
                                     slide: slide.clone(),
                                     visible: i == current,
+                                    selected_id,
+                                    on_select: select,
                                 }
                             }
                         }
@@ -92,7 +118,12 @@ fn clamp_index(i: usize, count: usize) -> usize {
 }
 
 #[component]
-fn SlideView(slide: DivisionSlide, visible: bool) -> Element {
+fn SlideView(
+    slide: DivisionSlide,
+    visible: bool,
+    selected_id: Option<Uuid>,
+    on_select: EventHandler<CarouselSelection>,
+) -> Element {
     let journee_label = slide
         .journee
         .map(|j| format!("Journée {j}"))
@@ -112,7 +143,17 @@ fn SlideView(slide: DivisionSlide, visible: bool) -> Element {
             }
             div { class: "pv-slide-matches",
                 for (i, m) in slide.matches.iter().enumerate() {
-                    MatchCard { key: "{i}", m: m.clone() }
+                    MatchCard {
+                        key: "{i}",
+                        m: m.clone(),
+                        selected: Some(m.id) == selected_id,
+                        selection: CarouselSelection {
+                            division: slide.label.clone(),
+                            journee: slide.journee,
+                            m: m.clone(),
+                        },
+                        on_select,
+                    }
                 }
             }
         }
@@ -120,13 +161,26 @@ fn SlideView(slide: DivisionSlide, visible: bool) -> Element {
 }
 
 #[component]
-fn MatchCard(m: CarouselMatch) -> Element {
+fn MatchCard(
+    m: CarouselMatch,
+    selected: bool,
+    selection: CarouselSelection,
+    on_select: EventHandler<CarouselSelection>,
+) -> Element {
     let score = match (m.score1, m.score2) {
         (Some(a), Some(b)) => format!("{a} — {b}"),
         _ => "– · –".to_string(),
     };
+    let card_class = if selected {
+        "pv-match-card selected"
+    } else {
+        "pv-match-card"
+    };
     rsx! {
-        div { class: "pv-match-card",
+        button {
+            class: "{card_class}",
+            aria_pressed: "{selected}",
+            onclick: move |_| on_select.call(selection.clone()),
             div { class: "pv-match-top",
                 span {
                     class: if m.live { "pv-match-status live" } else { "pv-match-status" },
@@ -167,6 +221,7 @@ mod tests {
 
     fn card(team1: &str, team2: &str, status: &str, live: bool) -> CarouselMatch {
         CarouselMatch {
+            id: Uuid::new_v4(),
             team1: team1.to_string(),
             team2: team2.to_string(),
             abbr1: "AA".to_string(),
@@ -175,14 +230,26 @@ mod tests {
             score2: Some(11),
             status_label: status.to_string(),
             live,
+            finished: status == "TERMINÉ",
             meta: "Manche 3".to_string(),
+            when: "Manche 3".to_string(),
+            location: "Boulodrome".to_string(),
+            date_label: "08/11/2026".to_string(),
+            best_of: Some(13),
+            manches: vec![],
+            winner_name: None,
         }
     }
 
     fn render(slides: Vec<DivisionSlide>) -> String {
         #[component]
         fn TestApp(slides: Vec<DivisionSlide>) -> Element {
-            rsx! { JourneeCarousel { slides } }
+            rsx! {
+                JourneeCarousel {
+                    slides,
+                    on_select: move |_: CarouselSelection| {},
+                }
+            }
         }
         let mut dom = VirtualDom::new_with_props(TestApp, TestAppProps { slides });
         dom.rebuild_in_place();
@@ -231,6 +298,57 @@ mod tests {
         assert!(html.contains("Challans"), "équipe manquante: {html}");
         // La piste est positionnée sur la première slide.
         assert!(html.contains("translateX(-0%)"), "got: {html}");
+        // Toutes les cartes sont des boutons cliquables.
+        assert_eq!(html.matches("aria-pressed").count(), 2, "got: {html}");
+    }
+
+    #[test]
+    fn la_carte_du_premier_match_live_est_selectionnee_par_defaut() {
+        let html = render(vec![
+            slide(
+                "D1",
+                "Vendée",
+                7,
+                vec![card("Challans", "Herbiers", "À VENIR", false)],
+            ),
+            slide(
+                "D2",
+                "Deux-Sèvres",
+                3,
+                vec![card("Airvault", "Cerizay", "EN DIRECT", true)],
+            ),
+        ]);
+
+        // Une seule carte sélectionnée : celle du match live (slide D2).
+        assert_eq!(
+            html.matches("pv-match-card selected").count(),
+            1,
+            "got: {html}"
+        );
+        assert_eq!(
+            html.matches("aria-pressed=\"true\"").count(),
+            1,
+            "got: {html}"
+        );
+        // Plus de zone détail dans le carrousel : elle vit dans le hero.
+        assert!(!html.contains("pv-carousel-detail"), "got: {html}");
+    }
+
+    #[test]
+    fn sans_match_live_la_premiere_carte_est_selectionnee() {
+        let html = render(vec![slide(
+            "D1",
+            "Vendée",
+            7,
+            vec![card("Challans", "Herbiers", "À VENIR", false)],
+        )]);
+
+        assert_eq!(
+            html.matches("pv-match-card selected").count(),
+            1,
+            "got: {html}"
+        );
+        assert!(html.contains("pv-match-card"), "got: {html}");
     }
 
     #[test]

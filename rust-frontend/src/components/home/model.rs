@@ -6,7 +6,7 @@
 
 use palet_shared::{
     Championship, ChampionshipClassification, Club, CompetitionType, Division, Match, MatchResult,
-    MatchStatus, TeamClassificationStatus,
+    MatchStatus, MatchWinner, TeamClassificationStatus,
 };
 use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
@@ -40,9 +40,18 @@ pub struct HeroMatch {
     pub team2: TeamSide,
 }
 
+/// Une manche jouée, affichée dans le détail du match.
+#[derive(Debug, Clone, PartialEq)]
+pub struct CarouselManche {
+    pub number: i32,
+    pub team1: i32,
+    pub team2: i32,
+}
+
 /// Une carte match dans le carrousel des journées en cours.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct CarouselMatch {
+    pub id: Uuid,
     pub team1: String,
     pub team2: String,
     pub abbr1: String,
@@ -51,7 +60,26 @@ pub struct CarouselMatch {
     pub score2: Option<i32>,
     pub status_label: String,
     pub live: bool,
+    pub finished: bool,
+    /// Ligne méta de la carte : « Manche 2 · Lieu » ou « 14h30 · Lieu ».
     pub meta: String,
+    /// Heure ou manche en cours seule ("14h30", "Manche 2").
+    pub when: String,
+    pub location: String,
+    /// Date du match ("08/11/2026").
+    pub date_label: String,
+    pub best_of: Option<i32>,
+    pub manches: Vec<CarouselManche>,
+    /// Nom du vainqueur quand le match est terminé.
+    pub winner_name: Option<String>,
+}
+
+/// Match sélectionné dans le carrousel, remonté vers la home (pour le hero).
+#[derive(Debug, Clone, PartialEq)]
+pub struct CarouselSelection {
+    pub division: String,
+    pub journee: Option<i32>,
+    pub m: CarouselMatch,
 }
 
 /// Une slide du carrousel : une division (dans une ligue) et les matchs de
@@ -453,36 +481,30 @@ fn carousel_scores(m: &Match) -> (Option<i32>, Option<i32>) {
     }
 }
 
-/// Ligne méta de la carte : manche en cours, heure, lieu (les parties
-/// disponibles, séparées par « · »).
-fn carousel_meta(m: &Match) -> String {
-    let mut parts: Vec<String> = Vec::new();
-    if m.status == MatchStatus::InProgress {
-        let manche = m
-            .current_scores
+/// Partie « quand » (manche en cours, ou heure) et lieu d'un match.
+fn carousel_when_location(m: &Match) -> (String, String) {
+    let when = if m.status == MatchStatus::InProgress {
+        m.current_scores
             .as_ref()
             .map(|cs| cs.manche)
             .or(m.current_manche)
-            .filter(|n| *n > 0);
-        if let Some(n) = manche {
-            parts.push(format!("Manche {n}"));
-        }
+            .filter(|n| *n > 0)
+            .map(|n| format!("Manche {n}"))
+            .unwrap_or_default()
     } else {
         // `time` n'est pas toujours renseigné : retombe sur l'heure de `date`.
-        let time = m
-            .time
+        m.time
             .as_ref()
             .filter(|t| !t.is_empty())
             .cloned()
-            .unwrap_or_else(|| m.date.format("%Hh%M").to_string());
-        parts.push(time);
-    }
-    if let Some(location) = &m.location {
-        if !location.is_empty() {
-            parts.push(location.clone());
-        }
-    }
-    parts.join(" · ")
+            .unwrap_or_else(|| m.date.format("%Hh%M").to_string())
+    };
+    let location = m
+        .location
+        .clone()
+        .filter(|l| !l.is_empty())
+        .unwrap_or_default();
+    (when, location)
 }
 
 fn carousel_match(m: &Match, clubs: &[Club]) -> CarouselMatch {
@@ -490,7 +512,21 @@ fn carousel_match(m: &Match, clubs: &[Club]) -> CarouselMatch {
     let (name2, abbr2) = team_label(clubs, &m.team2_id);
     let (status_label, live) = carousel_status_label(m);
     let (score1, score2) = carousel_scores(m);
+    let (when, location) = carousel_when_location(m);
+    let meta = match (when.is_empty(), location.is_empty()) {
+        (true, true) => String::new(),
+        (false, true) => when.clone(),
+        (true, false) => location.clone(),
+        (false, false) => format!("{when} · {location}"),
+    };
+    let winner_name = match (&m.winner, &m.status) {
+        (Some(MatchWinner::Team1), MatchStatus::Completed) => Some(name1.clone()),
+        (Some(MatchWinner::Team2), MatchStatus::Completed) => Some(name2.clone()),
+        (Some(MatchWinner::Draw), MatchStatus::Completed) => Some("Match nul".to_string()),
+        _ => None,
+    };
     CarouselMatch {
+        id: m.id,
         team1: name1,
         team2: name2,
         abbr1,
@@ -499,7 +535,67 @@ fn carousel_match(m: &Match, clubs: &[Club]) -> CarouselMatch {
         score2,
         status_label,
         live,
-        meta: carousel_meta(m),
+        finished: m.status == MatchStatus::Completed,
+        meta,
+        when,
+        location,
+        date_label: m.date.format("%d/%m/%Y").to_string(),
+        best_of: m.best_of,
+        manches: m
+            .manches
+            .clone()
+            .unwrap_or_default()
+            .iter()
+            .map(|s| CarouselManche {
+                number: s.number,
+                team1: s.team1,
+                team2: s.team2,
+            })
+            .collect(),
+        winner_name,
+    }
+}
+
+/// Kicker du hero pour un match sélectionné dans le carrousel.
+fn selection_kicker(sel: &CarouselSelection) -> String {
+    match sel.journee {
+        Some(j) => format!("{} — JOURNÉE {j}", sel.division.to_uppercase()),
+        None => sel.division.to_uppercase(),
+    }
+}
+
+/// Construit le [`HeroMatch`] affiché dans le hero quand on clique sur une
+/// carte du carrousel (même forme que le hero alimenté par l'API).
+pub fn hero_from_carousel(sel: &CarouselSelection) -> HeroMatch {
+    let m = &sel.m;
+    let subtitle = if m.when.is_empty() {
+        m.date_label.clone()
+    } else {
+        format!("{} · {}", m.date_label, m.when)
+    };
+    HeroMatch {
+        kicker: selection_kicker(sel),
+        subtitle,
+        info: if m.location.is_empty() {
+            "Terrain clos municipal".to_string()
+        } else {
+            m.location.clone()
+        },
+        live: m.live,
+        finished: m.finished,
+        badge: m.status_label.clone(),
+        team1: TeamSide {
+            name: m.team1.clone(),
+            abbr: m.abbr1.clone(),
+            subtitle: "Équipe 1".to_string(),
+            score: m.score1,
+        },
+        team2: TeamSide {
+            name: m.team2.clone(),
+            abbr: m.abbr2.clone(),
+            subtitle: "Équipe 2".to_string(),
+            score: m.score2,
+        },
     }
 }
 
@@ -812,7 +908,8 @@ mod tests {
     use super::*;
     use chrono::Utc;
     use palet_shared::{
-        ChampionshipTeam, CompetitionStatus, CurrentScores, TeamClassificationStatus, TeamStats,
+        ChampionshipTeam, CompetitionStatus, CurrentScores, MancheScore, MatchWinner,
+        TeamClassificationStatus, TeamStats,
     };
 
     fn club(id: Uuid, name: &str, city: &str) -> Club {
@@ -1228,7 +1325,22 @@ mod tests {
             .expect("date")
             .with_timezone(&Utc);
         match &status {
-            MatchStatus::InProgress => {}
+            MatchStatus::InProgress => {
+                m.manches = Some(vec![
+                    MancheScore {
+                        number: 1,
+                        team1: 6,
+                        team2: 4,
+                        winner: None,
+                    },
+                    MancheScore {
+                        number: 2,
+                        team1: 72,
+                        team2: 68,
+                        winner: None,
+                    },
+                ]);
+            }
             MatchStatus::Scheduled => {
                 // L'API renvoie current_scores à 0 même sans manche jouée.
                 m.current_scores = Some(CurrentScores {
@@ -1249,6 +1361,7 @@ mod tests {
                 m.current_manche = Some(0);
                 m.team1_score = Some(13);
                 m.team2_score = Some(8);
+                m.winner = Some(MatchWinner::Team1);
             }
             _ => {
                 m.current_scores = None;
@@ -1343,10 +1456,13 @@ mod tests {
         let herbiers = f.clubs[0].id;
         let challans = f.clubs[1].id;
         let lucon = f.clubs[2].id;
+        let done = match_fixture(herbiers, lucon, 7, MatchStatus::Completed);
+        let live = match_fixture(challans, herbiers, 7, MatchStatus::InProgress);
+        let id_live = live.id;
         let matchs = vec![
-            match_fixture(herbiers, lucon, 7, MatchStatus::Completed),
+            done,
             match_fixture(lucon, herbiers, 7, MatchStatus::Scheduled),
-            match_fixture(challans, herbiers, 7, MatchStatus::InProgress),
+            live,
         ];
 
         let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
@@ -1364,6 +1480,13 @@ mod tests {
         assert_eq!(matches[0].score1, Some(72));
         assert_eq!(matches[0].score2, Some(68));
         assert_eq!(matches[0].abbr1, "CS");
+        // Détail du match sélectionné : id, manches, date, best_of.
+        assert_eq!(matches[0].id, id_live);
+        assert_eq!(matches[0].manches.len(), 2);
+        assert_eq!(matches[0].manches[0].number, 1);
+        assert_eq!(matches[0].manches[0].team1, 6);
+        assert_eq!(matches[0].date_label, "08/11/2026");
+        assert_eq!(matches[0].best_of, Some(13));
         assert_eq!(matches[1].status_label, "À VENIR");
         assert!(!matches[1].live);
         // current_scores à 0 ne doit pas masquer l'absence de score.
@@ -1377,6 +1500,10 @@ mod tests {
         );
         assert_eq!(matches[2].status_label, "TERMINÉ");
         assert_eq!(matches[2].score1, Some(13));
+        assert_eq!(
+            matches[2].winner_name.as_deref(),
+            Some("Les Herbiers Palet")
+        );
     }
 
     #[test]
@@ -1441,5 +1568,87 @@ mod tests {
         let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
 
         assert!(slides.is_empty(), "slides: {slides:?}");
+    }
+
+    #[test]
+    fn carousel_match_expose_when_location_et_finished() {
+        let f = carousel_fixture();
+        let herbiers = f.clubs[0].id;
+        let challans = f.clubs[1].id;
+        let lucon = f.clubs[2].id;
+        let matchs = vec![
+            match_fixture(challans, herbiers, 7, MatchStatus::InProgress),
+            match_fixture(lucon, herbiers, 7, MatchStatus::Scheduled),
+            match_fixture(herbiers, lucon, 7, MatchStatus::Completed),
+        ];
+
+        let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
+        let matches = &slides[0].matches;
+
+        assert_eq!(matches[0].when, "Manche 24");
+        assert_eq!(matches[0].location, "Terrain clos de La Roche-sur-Yon");
+        assert!(matches[0].meta.contains("Manche 24"));
+        assert!(!matches[0].finished);
+        assert_eq!(matches[1].when, "14h30");
+        assert!(!matches[1].finished);
+        assert!(matches[2].finished);
+    }
+
+    #[test]
+    fn hero_from_carousel_reprend_la_forme_du_hero() {
+        let f = carousel_fixture();
+        let challans = f.clubs[1].id;
+        let herbiers = f.clubs[0].id;
+        let matchs = vec![match_fixture(
+            challans,
+            herbiers,
+            7,
+            MatchStatus::InProgress,
+        )];
+        let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
+        let m = slides[0].matches[0].clone();
+        let sel = CarouselSelection {
+            division: slides[0].label.clone(),
+            journee: slides[0].journee,
+            m,
+        };
+
+        let hero = hero_from_carousel(&sel);
+
+        assert_eq!(hero.kicker, "D1 — JOURNÉE 7");
+        assert_eq!(hero.subtitle, "08/11/2026 · Manche 24");
+        assert_eq!(hero.info, "Terrain clos de La Roche-sur-Yon");
+        assert!(hero.live);
+        assert!(!hero.finished);
+        assert_eq!(hero.badge, "EN DIRECT");
+        assert_eq!(hero.team1.name, "Challans Sport Palet");
+        assert_eq!(hero.team1.abbr, "CS");
+        assert_eq!(hero.team1.score, Some(72));
+        assert_eq!(hero.team2.name, "Les Herbiers Palet");
+        assert_eq!(hero.team2.score, Some(68));
+    }
+
+    #[test]
+    fn hero_from_carousel_match_termine_sans_lieu() {
+        let f = carousel_fixture();
+        let herbiers = f.clubs[0].id;
+        let lucon = f.clubs[2].id;
+        let mut m = match_fixture(herbiers, lucon, 7, MatchStatus::Completed);
+        m.location = None;
+        let matchs = vec![m];
+        let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
+        let sel = CarouselSelection {
+            division: "D1".to_string(),
+            journee: None,
+            m: slides[0].matches[0].clone(),
+        };
+
+        let hero = hero_from_carousel(&sel);
+
+        assert_eq!(hero.kicker, "D1");
+        assert!(hero.finished);
+        assert_eq!(hero.badge, "TERMINÉ");
+        assert_eq!(hero.info, "Terrain clos municipal");
+        assert_eq!(hero.team1.score, Some(13));
     }
 }

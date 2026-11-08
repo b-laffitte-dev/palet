@@ -5,6 +5,7 @@
 //! top of the championship, spaces and footer. All dynamic sections are fed
 //! from the backend API through [`ApiService`] (see [`HomeData::load`]).
 
+use crate::components::home::model::{hero_from_carousel, CarouselSelection};
 use crate::components::home::{
     HeroSection, HomeData, HomeFooter, JourneeCarousel, SiteHeader, Spaces, Standings, TopBar,
     TopPlayers, Upcoming,
@@ -21,6 +22,9 @@ pub fn Home() -> Element {
     });
     // Active standings tab (division name); falls back to the first tab.
     let mut active = use_signal(String::new);
+    // Match sélectionné dans le carrousel des journées en cours : affiché
+    // dans le hero à la place du match en vedette par défaut.
+    let mut selection = use_signal(|| Option::<CarouselSelection>::None);
 
     let active_name = {
         let selected = active.read().clone();
@@ -36,14 +40,23 @@ pub fn Home() -> Element {
         }
     };
 
+    // Hero : match sélectionné dans le carrousel, sinon match en vedette.
+    let hero = match &*selection.read() {
+        Some(sel) => Some(hero_from_carousel(sel)),
+        None => data.read().as_ref().and_then(|h| h.hero.clone()),
+    };
+
     rsx! {
         div { class: "pv-page",
             TopBar {}
             SiteHeader {}
             main {
                 if let Some(home) = &*data.read() {
-                    HeroSection { hero: home.hero.clone() }
-                    JourneeCarousel { slides: home.slides.clone() }
+                    JourneeCarousel {
+                        slides: home.slides.clone(),
+                        on_select: move |sel: CarouselSelection| selection.set(Some(sel)),
+                    }
+                    HeroSection { hero }
                     Standings {
                         title: home.championship_name.clone(),
                         subtitle: home.subtitle.clone(),

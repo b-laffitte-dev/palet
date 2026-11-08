@@ -415,6 +415,8 @@
   margin-top: 12px;
 }
 
+/* Le détail du match cliqué s'affiche dans le hero (pv-hero), pas ici. */
+
 .pv-carousel-viewport {
   overflow: hidden;
   margin-top: 14px;
@@ -469,9 +471,27 @@
 }
 
 .pv-match-card {
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   background: var(--pv-green-card);
+  border: 1px solid transparent;
   border-radius: 8px;
   padding: 10px 20px 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .pv-match-card:hover {
+    border-color: rgba(245, 213, 118, 0.5);
+  }
+}
+
+.pv-match-card.selected {
+  border-color: var(--pv-gold);
 }
 
 .pv-match-top {
