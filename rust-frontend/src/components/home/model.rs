@@ -5,12 +5,16 @@
 //! `/championnats`), so this layer is a pure transformation of their data.
 
 use palet_shared::{
-    Championship, ChampionshipClassification, Club, CompetitionType, Match, MatchResult,
+    Championship, ChampionshipClassification, Club, CompetitionType, Division, Match, MatchResult,
     MatchStatus, TeamClassificationStatus,
 };
+use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::services::api::ApiService;
+
+/// League (département) whose divisions are shown as tabs on the home page.
+pub const HOME_LEAGUE: &str = "Deux-Sèvres";
 
 // ============================================
 // VIEW MODELS (plain data, easy to render)
@@ -113,6 +117,20 @@ pub struct TopCard {
     pub stats: Vec<(String, String)>,
 }
 
+/// One standings tab: a division (any league) and its classification rows.
+#[derive(Clone, PartialEq)]
+pub struct DivisionTab {
+    /// Division name, e.g. "D1"
+    pub name: String,
+    /// League (département) of the division, e.g. "Deux-Sèvres"
+    pub league: String,
+    /// Label shown on the tab: `name`, or `name (league)` when several
+    /// leagues share the same division name.
+    pub label: String,
+    pub journee: Option<i32>,
+    pub rows: Vec<StandingRow>,
+}
+
 /// Everything the home page needs, loaded once from the API.
 #[derive(Clone, Default)]
 pub struct HomeData {
@@ -120,9 +138,9 @@ pub struct HomeData {
     pub live: Vec<LiveItem>,
     pub journee: Option<i32>,
     pub championship_name: String,
-    pub division: String,
     pub subtitle: String,
-    pub standings: Vec<StandingRow>,
+    /// One tab per division, all leagues (dynamic, federal space).
+    pub tabs: Vec<DivisionTab>,
     pub events: Vec<EventCard>,
     pub top: Vec<TopCard>,
 }
@@ -194,7 +212,15 @@ impl HomeData {
             .get_matches_by_status("scheduled")
             .await
             .unwrap_or_default();
-        let championships = api.get_championships().await.unwrap_or_default();
+        // Home standings show the department league (Deux-Sèvres); fall back
+        // to all championships while the league has none yet.
+        let mut championships = api
+            .get_championships_by_league(HOME_LEAGUE)
+            .await
+            .unwrap_or_default();
+        if championships.is_empty() {
+            championships = api.get_championships().await.unwrap_or_default();
+        }
 
         let championship = pick_championship(&championships);
         let classification = match &championship {
@@ -204,6 +230,32 @@ impl HomeData {
                 .unwrap_or_default(),
             None => Vec::new(),
         };
+        // Division tabs are dynamic (managed from the federal space) and show
+        // ALL divisions, every league; fall back to the championship's own
+        // divisions when none are registered.
+        let db_divisions = api.get_divisions(None).await.unwrap_or_default();
+        let divisions = resolve_divisions(&db_divisions, championship.as_ref(), &classification);
+
+        // One classification per league appearing in the tabs.
+        let mut classification_by_league = HashMap::new();
+        if let Some(c) = &championship {
+            classification_by_league.insert(c.league.clone(), classification.clone());
+        }
+        for (_, league) in &divisions {
+            if !classification_by_league.contains_key(league) {
+                let champs = api
+                    .get_championships_by_league(league)
+                    .await
+                    .unwrap_or_default();
+                if let Some(c) = pick_championship(&champs) {
+                    let classif = api
+                        .get_championship_classification(c.id)
+                        .await
+                        .unwrap_or_default();
+                    classification_by_league.insert(league.clone(), classif);
+                }
+            }
+        }
 
         let hero = build_hero(
             live.first().or(scheduled.first()),
@@ -211,19 +263,22 @@ impl HomeData {
             championship.as_ref(),
         );
         let (live_items, journee) = build_live(&live, &completed, &clubs);
-        let (championship_name, division, subtitle, standings) =
-            build_standings(&classification, &clubs, championship.as_ref());
+        let (championship_name, subtitle, tabs) = build_tabs(
+            &divisions,
+            &classification_by_league,
+            &clubs,
+            championship.as_ref(),
+        );
         let events = build_events(&scheduled, &clubs);
-        let top = build_top(&standings);
+        let top = build_top(&tabs);
 
         HomeData {
             hero,
             live: live_items,
             journee,
             championship_name,
-            division,
             subtitle,
-            standings,
+            tabs,
             events,
             top,
         }
@@ -395,52 +450,106 @@ fn standing_row(t: &palet_shared::ChampionshipTeam, clubs: &[Club]) -> StandingR
     }
 }
 
-fn standings_title(championship: Option<&Championship>, division: &str) -> String {
-    let name = championship
-        .map(|c| c.name.to_uppercase())
-        .unwrap_or_else(|| "CHAMPIONNAT".to_string());
-    if division.is_empty() {
-        name
-    } else {
-        format!("{name} — {division}")
-    }
-}
-
-fn standings_subtitle(journee: Option<i32>, championship: Option<&Championship>) -> String {
-    let j = journee.or_else(|| championship.and_then(|c| c.current_journee));
-    match j {
-        Some(j) => format!("Classement après {j} journées"),
-        None => "Classement de la saison".to_string(),
-    }
-}
-
-fn build_standings(
+/// Divisions for the home tabs as `(name, league)` pairs, in tab order.
+///
+/// All dynamic divisions registered in the federal space win (they are
+/// already ordered by `position`, across every league); otherwise fall back
+/// to the championship's own divisions, then to whatever divisions exist in
+/// the classification.
+fn resolve_divisions(
+    db_divisions: &[Division],
+    championship: Option<&Championship>,
     classification: &[ChampionshipClassification],
+) -> Vec<(String, String)> {
+    if !db_divisions.is_empty() {
+        return db_divisions
+            .iter()
+            .map(|d| (d.name.clone(), d.league.clone()))
+            .collect();
+    }
+    let league = championship.map(|c| c.league.clone()).unwrap_or_default();
+    if let Some(c) = championship {
+        if !c.divisions.is_empty() {
+            return c
+                .divisions
+                .iter()
+                .map(|n| (n.clone(), league.clone()))
+                .collect();
+        }
+    }
+    classification
+        .iter()
+        .map(|c| (c.division.clone(), league.clone()))
+        .collect()
+}
+
+/// Tab label per division: the name alone, or `name (league)` when several
+/// leagues share the same division name (keeps tabs distinguishable).
+fn division_labels(divisions: &[(String, String)]) -> Vec<String> {
+    let mut counts: HashMap<&str, usize> = HashMap::new();
+    for (name, _) in divisions {
+        *counts.entry(name.as_str()).or_default() += 1;
+    }
+    divisions
+        .iter()
+        .map(|(name, league)| {
+            if counts[name.as_str()] > 1 {
+                format!("{name} ({league})")
+            } else {
+                name.clone()
+            }
+        })
+        .collect()
+}
+
+/// Build one tab per division (all leagues); the classification of a division
+/// is looked up in its own league. A division without classification yet gets
+/// an empty `rows` (the UI shows a placeholder).
+fn build_tabs(
+    divisions: &[(String, String)],
+    classification_by_league: &HashMap<String, Vec<ChampionshipClassification>>,
     clubs: &[Club],
     championship: Option<&Championship>,
-) -> (String, String, String, Vec<StandingRow>) {
-    let division_name = classification
+) -> (String, String, Vec<DivisionTab>) {
+    let labels = division_labels(divisions);
+    let tabs: Vec<DivisionTab> = divisions
         .iter()
-        .find(|c| c.division == "D1")
-        .or_else(|| classification.first());
+        .zip(labels)
+        .map(|((name, league), label)| {
+            let classif = classification_by_league
+                .get(league)
+                .and_then(|cs| cs.iter().find(|c| &c.division == name));
+            DivisionTab {
+                name: name.clone(),
+                league: league.clone(),
+                label,
+                journee: classif.map(|c| c.journee),
+                rows: classif
+                    .map(|c| {
+                        c.teams
+                            .iter()
+                            .take(6)
+                            .map(|t| standing_row(t, clubs))
+                            .collect()
+                    })
+                    .unwrap_or_default(),
+            }
+        })
+        .collect();
 
-    let (division, journee, rows) = match division_name {
-        Some(c) => (
-            c.division.clone(),
-            Some(c.journee),
-            c.teams
-                .iter()
-                .take(6)
-                .map(|t| standing_row(t, clubs))
-                .collect(),
-        ),
-        None => (String::new(), None, Vec::new()),
+    let title = championship
+        .map(|c| c.name.to_uppercase())
+        .unwrap_or_else(|| "CHAMPIONNAT".to_string());
+    let journee = tabs
+        .iter()
+        .find_map(|t| t.journee)
+        .or_else(|| championship.and_then(|c| c.current_journee));
+    let subtitle = match journee {
+        Some(j) => format!("Classement après {j} journées"),
+        None => "Classement de la saison".to_string(),
     };
 
-    let title = standings_title(championship, &division);
-    let subtitle = standings_subtitle(journee, championship);
-
-    (title, division, subtitle, rows)
+    (title, subtitle, tabs)
 }
 
 fn build_events(scheduled: &[Match], clubs: &[Club]) -> Vec<EventCard> {
@@ -501,13 +610,20 @@ fn build_events(scheduled: &[Match], clubs: &[Club]) -> Vec<EventCard> {
         .collect()
 }
 
-fn build_top(standings: &[StandingRow]) -> Vec<TopCard> {
+fn build_top(tabs: &[DivisionTab]) -> Vec<TopCard> {
     let accents = [Accent::Gold, Accent::Green, Accent::Amber];
     let badges = ["Leader", "Dauphin", "Troisième"];
     let kinds = [BadgeKind::Mvp, BadgeKind::TopScorer, BadgeKind::Revelation];
 
-    standings
+    // Podium of the first division that has a classification.
+    let rows: &[StandingRow] = tabs
         .iter()
+        .find(|t| !t.rows.is_empty())
+        .or(tabs.first())
+        .map(|t| t.rows.as_slice())
+        .unwrap_or(&[]);
+
+    rows.iter()
         .take(3)
         .enumerate()
         .map(|(i, row)| {
@@ -629,11 +745,81 @@ mod tests {
         assert_eq!(hero.info, "Terrain clos de La Roche-sur-Yon");
     }
 
+    fn division(name: &str, position: i32) -> Division {
+        division_in(name, position, HOME_LEAGUE)
+    }
+
+    fn division_in(name: &str, position: i32, league: &str) -> Division {
+        Division {
+            id: Uuid::new_v4(),
+            name: name.to_string(),
+            league: league.to_string(),
+            season: "2026-2027".to_string(),
+            position,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        }
+    }
+
+    fn classification_of(
+        division_name: &str,
+        journee: i32,
+        team_id: Uuid,
+    ) -> ChampionshipClassification {
+        ChampionshipClassification {
+            division: division_name.to_string(),
+            journee,
+            updated_at: Utc::now(),
+            teams: vec![ChampionshipTeam {
+                position: 1,
+                team_id,
+                stats: TeamStats {
+                    matches: 2,
+                    wins: 2,
+                    draws: 0,
+                    losses: 0,
+                    points_for: 26,
+                    points_against: 10,
+                    diff: 16,
+                    points: 6,
+                    win_rate: 100.0,
+                },
+                form: vec![MatchResult::Win],
+                status: TeamClassificationStatus::Qualified,
+            }],
+        }
+    }
+
+    fn championship_fixture(divisions: Vec<String>) -> Championship {
+        Championship {
+            id: Uuid::new_v4(),
+            name: "Championnat Deux-Sèvres".to_string(),
+            code: None,
+            season: "2026-2027".to_string(),
+            description: None,
+            league: HOME_LEAGUE.to_string(),
+            divisions,
+            total_journees: 14,
+            journee_duration: None,
+            classification_rules: palet_shared::ClassificationRules {
+                primary: palet_shared::ClassificationPrimary::Points,
+                secondary: palet_shared::ClassificationSecondary::Diff,
+                tertiary: palet_shared::ClassificationTertiary::PointsFor,
+            },
+            status: CompetitionStatus::InProgress,
+            current_journee: Some(3),
+            current_phase: None,
+            organizer_id: Uuid::new_v4(),
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        }
+    }
+
     #[test]
     fn standings_map_zones_and_stats() {
         let team_id = Uuid::new_v4();
         let clubs = vec![club(team_id, "Luçon Palet Club", "Luçon")];
-        let mut team = ChampionshipTeam {
+        let team = ChampionshipTeam {
             position: 1,
             team_id,
             stats: TeamStats {
@@ -650,7 +836,6 @@ mod tests {
             form: vec![MatchResult::Win, MatchResult::Loss],
             status: TeamClassificationStatus::Qualified,
         };
-        team.position = 1;
         let classification = vec![ChampionshipClassification {
             division: "D1".to_string(),
             journee: 12,
@@ -658,11 +843,18 @@ mod tests {
             teams: vec![team],
         }];
 
-        let (title, division, subtitle, rows) = build_standings(&classification, &clubs, None);
+        let divisions = resolve_divisions(&[], None, &classification);
+        let mut by_league = HashMap::new();
+        by_league.insert(String::new(), classification.clone());
+        let (title, subtitle, tabs) = build_tabs(&divisions, &by_league, &clubs, None);
 
-        assert_eq!(division, "D1");
         assert!(title.contains("CHAMPIONNAT"));
         assert!(subtitle.contains("12 journées"));
+        assert_eq!(tabs.len(), 1);
+        assert_eq!(tabs[0].name, "D1");
+        assert_eq!(tabs[0].label, "D1");
+        assert_eq!(tabs[0].journee, Some(12));
+        let rows = &tabs[0].rows;
         assert_eq!(rows.len(), 1);
         assert_eq!(rows[0].club, "Luçon Palet Club");
         assert_eq!(rows[0].abbr, "LP");
@@ -670,6 +862,137 @@ mod tests {
         assert_eq!(rows[0].diff, 84);
         assert_eq!(rows[0].zone, Zone::Qualif);
         assert_eq!(rows[0].form.len(), 2);
+    }
+
+    #[test]
+    fn tabs_follow_dynamic_divisions_and_allow_empty_classification() {
+        let team_id = Uuid::new_v4();
+        let clubs = vec![club(team_id, "Luçon Palet Club", "Luçon")];
+        let classification = vec![ChampionshipClassification {
+            division: "D1".to_string(),
+            journee: 3,
+            updated_at: Utc::now(),
+            teams: vec![ChampionshipTeam {
+                position: 1,
+                team_id,
+                stats: TeamStats {
+                    matches: 2,
+                    wins: 2,
+                    draws: 0,
+                    losses: 0,
+                    points_for: 26,
+                    points_against: 10,
+                    diff: 16,
+                    points: 6,
+                    win_rate: 100.0,
+                },
+                form: vec![MatchResult::Win, MatchResult::Win],
+                status: TeamClassificationStatus::Qualified,
+            }],
+        }];
+        let db = vec![division("D1", 1), division("D2", 2), division("D3", 3)];
+
+        let divisions = resolve_divisions(&db, None, &classification);
+        assert_eq!(
+            divisions,
+            vec![
+                ("D1".to_string(), HOME_LEAGUE.to_string()),
+                ("D2".to_string(), HOME_LEAGUE.to_string()),
+                ("D3".to_string(), HOME_LEAGUE.to_string()),
+            ]
+        );
+
+        let mut by_league = HashMap::new();
+        by_league.insert(HOME_LEAGUE.to_string(), classification.clone());
+        let (_, _, tabs) = build_tabs(&divisions, &by_league, &clubs, None);
+
+        assert_eq!(tabs.len(), 3);
+        assert_eq!(tabs[0].name, "D1");
+        assert_eq!(tabs[0].rows.len(), 1);
+        assert!(tabs[1].rows.is_empty());
+        assert_eq!(tabs[1].journee, None);
+        assert_eq!(tabs[2].name, "D3");
+    }
+
+    #[test]
+    fn tabs_look_up_classification_in_their_own_league() {
+        let lucon = Uuid::new_v4();
+        let challans = Uuid::new_v4();
+        let clubs = vec![
+            club(lucon, "Luçon Palet Club", "Luçon"),
+            club(challans, "Challans Sport Palet", "Challans"),
+        ];
+        let db = vec![
+            division_in("D1", 1, HOME_LEAGUE),
+            division_in("D1", 1, "Vendée"),
+        ];
+        let mut by_league: HashMap<String, Vec<ChampionshipClassification>> = HashMap::new();
+        by_league.insert(
+            HOME_LEAGUE.to_string(),
+            vec![classification_of("D1", 7, lucon)],
+        );
+        by_league.insert(
+            "Vendée".to_string(),
+            vec![classification_of("D1", 9, challans)],
+        );
+
+        let divisions = resolve_divisions(&db, None, &[]);
+        let (_, _, tabs) = build_tabs(&divisions, &by_league, &clubs, None);
+
+        assert_eq!(tabs.len(), 2);
+        // Same division name in two leagues: the label disambiguates.
+        assert_eq!(tabs[0].label, format!("D1 ({HOME_LEAGUE})"));
+        assert_eq!(tabs[1].label, "D1 (Vendée)");
+        assert_eq!(tabs[0].rows[0].club, "Luçon Palet Club");
+        assert_eq!(tabs[0].journee, Some(7));
+        assert_eq!(tabs[1].rows[0].club, "Challans Sport Palet");
+        assert_eq!(tabs[1].journee, Some(9));
+    }
+
+    #[test]
+    fn division_labels_add_league_only_on_name_collision() {
+        let divisions = vec![
+            ("D1".to_string(), HOME_LEAGUE.to_string()),
+            ("D1".to_string(), "Vendée".to_string()),
+            ("D2".to_string(), HOME_LEAGUE.to_string()),
+        ];
+
+        assert_eq!(
+            division_labels(&divisions),
+            vec![
+                format!("D1 ({HOME_LEAGUE})"),
+                "D1 (Vendée)".to_string(),
+                "D2".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn resolve_divisions_prefers_db_then_championship_then_classification() {
+        let classification = vec![ChampionshipClassification {
+            division: "D9".to_string(),
+            journee: 1,
+            updated_at: Utc::now(),
+            teams: vec![],
+        }];
+        let championship = championship_fixture(vec!["D1".to_string(), "D2".to_string()]);
+
+        assert_eq!(
+            resolve_divisions(&[], None, &classification),
+            vec![("D9".to_string(), String::new())]
+        );
+        assert_eq!(
+            resolve_divisions(&[], Some(&championship), &classification),
+            vec![
+                ("D1".to_string(), HOME_LEAGUE.to_string()),
+                ("D2".to_string(), HOME_LEAGUE.to_string()),
+            ]
+        );
+        let db = vec![division("D5", 1)];
+        assert_eq!(
+            resolve_divisions(&db, Some(&championship), &classification),
+            vec![("D5".to_string(), HOME_LEAGUE.to_string())]
+        );
     }
 
     #[test]

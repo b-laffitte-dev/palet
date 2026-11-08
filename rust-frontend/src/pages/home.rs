@@ -19,6 +19,22 @@ pub fn Home() -> Element {
         let api = ApiService::new();
         async move { HomeData::load(&api).await }
     });
+    // Active standings tab (division name); falls back to the first tab.
+    let mut active = use_signal(String::new);
+
+    let active_name = {
+        let selected = active.read().clone();
+        let tabs = data
+            .read()
+            .as_ref()
+            .map(|h| h.tabs.clone())
+            .unwrap_or_default();
+        if tabs.iter().any(|t| t.label == selected) {
+            selected
+        } else {
+            tabs.first().map(|t| t.label.clone()).unwrap_or_default()
+        }
+    };
 
     rsx! {
         div { class: "pv-page",
@@ -31,7 +47,9 @@ pub fn Home() -> Element {
                     Standings {
                         title: home.championship_name.clone(),
                         subtitle: home.subtitle.clone(),
-                        rows: home.standings.clone(),
+                        tabs: home.tabs.clone(),
+                        active: active_name.clone(),
+                        on_select: move |name: String| active.set(name),
                     }
                     Upcoming { events: home.events.clone() }
                     TopPlayers { cards: home.top.clone() }

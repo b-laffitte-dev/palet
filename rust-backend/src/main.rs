@@ -17,7 +17,9 @@ use utoipa_swagger_ui::SwaggerUi;
 use palet_backend::{
     config::load_config,
     db::Database,
-    handlers::{championship_handler, club_handler, health_handler, match_handler},
+    handlers::{
+        championship_handler, club_handler, division_handler, health_handler, match_handler,
+    },
     AppState,
 };
 
@@ -50,6 +52,10 @@ use palet_backend::{
         championship_handler::next_journee,
         championship_handler::get_championship_classification,
         championship_handler::update_championship_classification,
+        division_handler::get_divisions,
+        division_handler::get_division,
+        division_handler::create_division,
+        division_handler::delete_division,
     ),
     components(),
     tags(
@@ -57,6 +63,7 @@ use palet_backend::{
         (name = "Clubs", description = "Club management endpoints"),
         (name = "Matchs", description = "Match management endpoints"),
         (name = "Championnats", description = "Championship management endpoints"),
+        (name = "Divisions", description = "Departmental division management endpoints"),
     ),
     info(
         title = "Palet Vendéen API",
@@ -141,7 +148,11 @@ async fn main() -> std::io::Result<()> {
     info!("Database connection established");
 
     // Create database wrapper
-    let database = Arc::new(Database::new(pool));
+    let database = Database::new(pool);
+    if let Err(e) = database.initialize().await {
+        error!("Failed to initialize database schema: {:?}", e);
+    }
+    let database = Arc::new(database);
     let app_config = Arc::new(config);
 
     // Build application state
@@ -239,6 +250,14 @@ async fn main() -> std::io::Result<()> {
                         "/{id}/classification",
                         web::put().to(championship_handler::update_championship_classification),
                     ),
+            )
+            // Division endpoints (espace fédéral)
+            .service(
+                web::scope("/divisions")
+                    .route("", web::get().to(division_handler::get_divisions))
+                    .route("", web::post().to(division_handler::create_division))
+                    .route("/{id}", web::get().to(division_handler::get_division))
+                    .route("/{id}", web::delete().to(division_handler::delete_division)),
             )
             // Default service for unmatched routes
             .default_service(web::route().to(not_found_handler))

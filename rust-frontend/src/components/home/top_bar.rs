@@ -7,7 +7,7 @@ pub fn TopBar() -> Element {
     rsx! {
         div { class: "pv-topbar",
             div { class: "pv-container pv-topbar-inner",
-                span { class: "pv-topbar-left", "Fédération de Palet Vendéen" }
+                span { class: "pv-topbar-left", "CDSP 79" }
                 div { class: "pv-topbar-right",
                     span { class: "pv-live-label",
                         span { class: "pv-live-dot" }

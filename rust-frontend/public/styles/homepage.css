@@ -463,6 +463,55 @@
   padding: 24px 0;
 }
 
+/* ===== Division tabs (standings) ===== */
+.pv-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 18px;
+}
+
+.pv-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.pv-tab {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--pv-line);
+  background: #fff;
+  color: var(--pv-text);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pv-tab.active {
+  background: var(--pv-green-hero-a);
+  border-color: var(--pv-green-hero-a);
+  color: var(--pv-gold);
+}
+
+@media (hover: hover) {
+  .pv-tab:hover:not(.active) {
+    background: var(--pv-bg-alt);
+  }
+}
+
+@media (min-width: 1024px) {
+  .pv-tab {
+    padding: 12px 34px;
+    font-size: 15px;
+  }
+}
+
 /* ===== Standings table ===== */
 .pv-table-wrap {
   overflow-x: auto;

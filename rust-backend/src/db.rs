@@ -9,6 +9,7 @@ use std::sync::Arc;
 pub use crate::repositories::{
     championship_repository::{ChampionshipRepository, PostgresChampionshipRepository},
     club_repository::{ClubRepository, PostgresClubRepository},
+    division_repository::{DivisionRepository, PostgresDivisionRepository},
     match_repository::{MatchRepository, PostgresMatchRepository},
     player_repository::{PlayerRepository, PostgresPlayerRepository},
     team_repository::{PostgresTeamRepository, TeamRepository},
@@ -77,6 +78,7 @@ pub struct Database {
     pub clubs: Arc<dyn ClubRepository + Send + Sync>,
     pub players: Arc<dyn PlayerRepository + Send + Sync>,
     pub teams: Arc<dyn TeamRepository + Send + Sync>,
+    pub divisions: Arc<dyn DivisionRepository + Send + Sync>,
 }
 
 impl Database {
@@ -91,6 +93,7 @@ impl Database {
             clubs: Arc::new(PostgresClubRepository::new(pool.clone())),
             players: Arc::new(PostgresPlayerRepository::new(pool.clone())),
             teams: Arc::new(PostgresTeamRepository::new(pool.clone())),
+            divisions: Arc::new(PostgresDivisionRepository::new(pool.clone())),
         }
     }
 
@@ -111,11 +114,28 @@ impl Database {
         }
     }
 
-    /// Initialize database schema (if migrations directory exists)
+    /// Initialize database schema (idempotent, no migrations directory yet)
     pub async fn initialize(&self) -> Result<(), DatabaseError> {
-        // Try to run migrations if migrations directory exists
-        // For now, we'll skip this as we don't have migrations set up yet
-        // In production, you would use sqlx::migrate!()
+        // Divisions are dynamic (managed from the federal space), so the
+        // table is created here if missing. Other tables are provisioned
+        // out of band; when a migrations/ directory exists, switch to
+        // sqlx::migrate!().
+        sqlx::query(
+            r#"
+            CREATE TABLE IF NOT EXISTS divisions (
+                id uuid PRIMARY KEY,
+                name text NOT NULL,
+                league text NOT NULL,
+                season text NOT NULL,
+                position integer NOT NULL DEFAULT 1,
+                created_at timestamptz NOT NULL,
+                updated_at timestamptz NOT NULL,
+                UNIQUE (league, season, name)
+            )
+            "#,
+        )
+        .execute(&*self.pool)
+        .await?;
         Ok(())
     }
 

@@ -269,6 +269,79 @@ impl Identifiable for Federation {
 }
 
 // ============================================
+// DIVISION TYPES
+// ============================================
+
+/// A departmental division (D1, D2, D3…) of a league (département).
+///
+/// Divisions are dynamic: the federal space (`/federation`) can create as
+/// many as needed for a league and season, and the home page renders one tab
+/// per division.
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct Division {
+    pub id: Uuid,
+    /// Short label shown on the tab, e.g. "D1"
+    pub name: String,
+    /// Department league, e.g. "Deux-Sèvres"
+    pub league: String,
+    /// Season, e.g. "2026-2027"
+    pub season: String,
+    /// Display order of the tab (1 = first)
+    pub position: i32,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+impl Identifiable for Division {
+    fn id(&self) -> &Uuid {
+        &self.id
+    }
+}
+
+impl Timestamped for Division {
+    fn created_at(&self) -> &DateTime<Utc> {
+        &self.created_at
+    }
+    fn updated_at(&self) -> &DateTime<Utc> {
+        &self.updated_at
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct CreateDivisionRequest {
+    pub name: String,
+    pub league: String,
+    pub season: String,
+}
+
+impl CreateDivisionRequest {
+    /// Normalize (trim, uppercase name) and validate the request.
+    ///
+    /// Returns the normalized `(name, league, season)` or an error message
+    /// suitable for a 400 response.
+    pub fn validated(&self) -> Result<(String, String, String), String> {
+        let name = self.name.trim().to_uppercase();
+        if name.is_empty() {
+            return Err("Le nom de la division est requis (ex. D4)".to_string());
+        }
+        if name.len() > 12 || !name.chars().all(|c| c.is_ascii_alphanumeric()) {
+            return Err(
+                "Le nom de la division doit être alphanumérique (12 caractères max)".to_string(),
+            );
+        }
+        let league = self.league.trim().to_string();
+        if league.is_empty() {
+            return Err("La ligue (département) est requise".to_string());
+        }
+        let season = self.season.trim().to_string();
+        if season.is_empty() {
+            return Err("La saison est requise (ex. 2026-2027)".to_string());
+        }
+        Ok((name, league, season))
+    }
+}
+
+// ============================================
 // PLAYER TYPES
 // ============================================
 
@@ -1046,4 +1119,83 @@ pub fn format_date(date: &DateTime<Utc>) -> String {
 /// Format date and time for display
 pub fn format_datetime(date: &DateTime<Utc>) -> String {
     date.format("%Y-%m-%d %H:%M:%S").to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn division_json_round_trip() {
+        let division = Division {
+            id: Uuid::new_v4(),
+            name: "D1".to_string(),
+            league: "Deux-Sèvres".to_string(),
+            season: "2026-2027".to_string(),
+            position: 1,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        };
+
+        let json = serde_json::to_string(&division).expect("serialize");
+        let back: Division = serde_json::from_str(&json).expect("deserialize");
+
+        assert_eq!(back, division);
+        assert_eq!(back.name, "D1");
+        assert_eq!(back.league, "Deux-Sèvres");
+    }
+
+    #[test]
+    fn create_division_request_normalizes_name() {
+        let req = CreateDivisionRequest {
+            name: " d4 ".to_string(),
+            league: " Deux-Sèvres ".to_string(),
+            season: " 2026-2027 ".to_string(),
+        };
+
+        let (name, league, season) = req.validated().expect("valid");
+
+        assert_eq!(name, "D4");
+        assert_eq!(league, "Deux-Sèvres");
+        assert_eq!(season, "2026-2027");
+    }
+
+    #[test]
+    fn create_division_request_rejects_empty_name() {
+        let req = CreateDivisionRequest {
+            name: "   ".to_string(),
+            league: "Deux-Sèvres".to_string(),
+            season: "2026-2027".to_string(),
+        };
+
+        assert!(req.validated().is_err());
+    }
+
+    #[test]
+    fn create_division_request_rejects_invalid_name() {
+        let req = CreateDivisionRequest {
+            name: "D!@#".to_string(),
+            league: "Deux-Sèvres".to_string(),
+            season: "2026-2027".to_string(),
+        };
+
+        assert!(req.validated().is_err());
+    }
+
+    #[test]
+    fn create_division_request_requires_league_and_season() {
+        let req = CreateDivisionRequest {
+            name: "D1".to_string(),
+            league: " ".to_string(),
+            season: "2026-2027".to_string(),
+        };
+        assert!(req.validated().is_err());
+
+        let req = CreateDivisionRequest {
+            name: "D1".to_string(),
+            league: "Deux-Sèvres".to_string(),
+            season: "".to_string(),
+        };
+        assert!(req.validated().is_err());
+    }
 }
