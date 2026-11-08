@@ -1,12 +1,12 @@
 //! Home page for Palet Vendéen
 //!
 //! Layout follows `docs/maquettes/homepage.png`: top bar, header, live match
-//! hero, live scores band, standings, upcoming events, top of the
-//! championship, spaces and footer. All dynamic sections are fed from the
-//! backend API through [`ApiService`] (see [`HomeData::load`]).
+//! hero, journee carousel (matches by division), standings, upcoming events,
+//! top of the championship, spaces and footer. All dynamic sections are fed
+//! from the backend API through [`ApiService`] (see [`HomeData::load`]).
 
 use crate::components::home::{
-    HeroSection, HomeData, HomeFooter, LiveScores, SiteHeader, Spaces, Standings, TopBar,
+    HeroSection, HomeData, HomeFooter, JourneeCarousel, SiteHeader, Spaces, Standings, TopBar,
     TopPlayers, Upcoming,
 };
 use crate::services::api::ApiService;
@@ -43,7 +43,7 @@ pub fn Home() -> Element {
             main {
                 if let Some(home) = &*data.read() {
                     HeroSection { hero: home.hero.clone() }
-                    LiveScores { items: home.live.clone(), journee: home.journee }
+                    JourneeCarousel { slides: home.slides.clone() }
                     Standings {
                         title: home.championship_name.clone(),
                         subtitle: home.subtitle.clone(),

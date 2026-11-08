@@ -5,7 +5,7 @@
 
 pub mod hero;
 pub mod home_footer;
-pub mod live_scores;
+pub mod journee_carousel;
 pub mod model;
 pub mod site_header;
 pub mod spaces;
@@ -16,7 +16,7 @@ pub mod upcoming;
 
 pub use hero::HeroSection;
 pub use home_footer::HomeFooter;
-pub use live_scores::LiveScores;
+pub use journee_carousel::JourneeCarousel;
 pub use model::HomeData;
 pub use site_header::SiteHeader;
 pub use spaces::Spaces;

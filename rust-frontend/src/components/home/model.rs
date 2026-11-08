@@ -8,7 +8,7 @@ use palet_shared::{
     Championship, ChampionshipClassification, Club, CompetitionType, Division, Match, MatchResult,
     MatchStatus, TeamClassificationStatus,
 };
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
 use crate::services::api::ApiService;
@@ -40,14 +40,29 @@ pub struct HeroMatch {
     pub team2: TeamSide,
 }
 
-#[derive(Clone, PartialEq, Default)]
-pub struct LiveItem {
+/// Une carte match dans le carrousel des journées en cours.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct CarouselMatch {
     pub team1: String,
     pub team2: String,
+    pub abbr1: String,
+    pub abbr2: String,
     pub score1: Option<i32>,
     pub score2: Option<i32>,
-    pub status: String,
+    pub status_label: String,
     pub live: bool,
+    pub meta: String,
+}
+
+/// Une slide du carrousel : une division (dans une ligue) et les matchs de
+/// sa journée en cours.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct DivisionSlide {
+    pub name: String,
+    pub league: String,
+    pub label: String,
+    pub journee: Option<i32>,
+    pub matches: Vec<CarouselMatch>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -135,8 +150,8 @@ pub struct DivisionTab {
 #[derive(Clone, Default)]
 pub struct HomeData {
     pub hero: Option<HeroMatch>,
-    pub live: Vec<LiveItem>,
-    pub journee: Option<i32>,
+    /// Matchs des journées en cours, regroupés par division (carrousel).
+    pub slides: Vec<DivisionSlide>,
     pub championship_name: String,
     pub subtitle: String,
     /// One tab per division, all leagues (dynamic, federal space).
@@ -213,13 +228,15 @@ impl HomeData {
             .await
             .unwrap_or_default();
         // Home standings show the department league (Deux-Sèvres); fall back
-        // to all championships while the league has none yet.
+        // to all championships while the league has none yet. The full list
+        // is kept too: the carousel needs the current journee of every league.
+        let all_championships = api.get_championships().await.unwrap_or_default();
         let mut championships = api
             .get_championships_by_league(HOME_LEAGUE)
             .await
             .unwrap_or_default();
         if championships.is_empty() {
-            championships = api.get_championships().await.unwrap_or_default();
+            championships = all_championships.clone();
         }
 
         let championship = pick_championship(&championships);
@@ -262,7 +279,11 @@ impl HomeData {
             &clubs,
             championship.as_ref(),
         );
-        let (live_items, journee) = build_live(&live, &completed, &clubs);
+        let mut all_matches: Vec<Match> = Vec::new();
+        all_matches.extend(live.iter().cloned());
+        all_matches.extend(scheduled.iter().cloned());
+        all_matches.extend(completed.iter().cloned());
+        let slides = build_carousel(&all_matches, &clubs, &all_championships, &divisions);
         let (championship_name, subtitle, tabs) = build_tabs(
             &divisions,
             &classification_by_league,
@@ -274,8 +295,7 @@ impl HomeData {
 
         HomeData {
             hero,
-            live: live_items,
-            journee,
+            slides,
             championship_name,
             subtitle,
             tabs,
@@ -371,58 +391,197 @@ fn build_hero(
     })
 }
 
-fn build_live(live: &[Match], completed: &[Match], clubs: &[Club]) -> (Vec<LiveItem>, Option<i32>) {
-    let mut items = Vec::new();
-    let mut journee = live.first().and_then(|m| m.journee);
+// ============================================
+// CAROUSEL — matchs des journées en cours, par division
+// ============================================
 
-    for m in live.iter().take(3) {
-        let (name1, _) = team_label(clubs, &m.team1_id);
-        let (name2, _) = team_label(clubs, &m.team2_id);
+/// Journée en cours par ligue : `current_journee` de chaque championnat en
+/// cours (plusieurs ligues peuvent avoir une journée en cours en même temps).
+fn current_journees_by_league(championships: &[Championship]) -> HashMap<String, i32> {
+    let mut by_league = HashMap::new();
+    for c in championships {
+        if c.status == palet_shared::CompetitionStatus::InProgress {
+            if let Some(j) = c.current_journee {
+                by_league.entry(c.league.clone()).or_insert(j);
+            }
+        }
+    }
+    by_league
+}
+
+/// Fallback quand aucun championnat n'est en cours : la plus grande journée
+/// ayant encore des matchs non terminés.
+fn fallback_journee(matches: &[&Match]) -> Option<i32> {
+    matches
+        .iter()
+        .filter(|m| !matches!(m.status, MatchStatus::Completed | MatchStatus::Cancelled))
+        .filter_map(|m| m.journee)
+        .max()
+}
+
+/// Ordre d'affichage dans une slide : live d'abord, puis à venir, puis terminés.
+fn match_rank(m: &Match) -> u8 {
+    match m.status {
+        MatchStatus::InProgress => 0,
+        MatchStatus::Scheduled => 1,
+        MatchStatus::Completed => 2,
+        MatchStatus::Disputed => 3,
+        MatchStatus::Postponed => 4,
+        MatchStatus::Cancelled => 5,
+    }
+}
+
+fn carousel_status_label(m: &Match) -> (String, bool) {
+    let (label, live) = match m.status {
+        MatchStatus::InProgress => ("EN DIRECT", true),
+        MatchStatus::Scheduled => ("À VENIR", false),
+        MatchStatus::Completed => ("TERMINÉ", false),
+        MatchStatus::Postponed => ("REPORTÉ", false),
+        MatchStatus::Cancelled => ("ANNULÉ", false),
+        MatchStatus::Disputed => ("CONTESTÉ", false),
+    };
+    (label.to_string(), live)
+}
+
+/// Scores affichés sur la carte : le score live (`current_scores`) uniquement
+/// quand le match est en cours — l'API renvoie `current_scores = 0-0` même
+/// pour les matchs planifiés/terminés, ce qui masquerait le vrai score.
+fn carousel_scores(m: &Match) -> (Option<i32>, Option<i32>) {
+    match (&m.current_scores, &m.status) {
+        (Some(cs), MatchStatus::InProgress) => (Some(cs.team1), Some(cs.team2)),
+        _ => (m.team1_score, m.team2_score),
+    }
+}
+
+/// Ligne méta de la carte : manche en cours, heure, lieu (les parties
+/// disponibles, séparées par « · »).
+fn carousel_meta(m: &Match) -> String {
+    let mut parts: Vec<String> = Vec::new();
+    if m.status == MatchStatus::InProgress {
         let manche = m
             .current_scores
             .as_ref()
             .map(|cs| cs.manche)
-            .or(m.current_manche);
-        journee = journee.or(m.journee);
-        items.push(LiveItem {
-            team1: name1,
-            team2: name2,
-            score1: m
-                .current_scores
-                .as_ref()
-                .map(|cs| cs.team1)
-                .or(m.team1_score),
-            score2: m
-                .current_scores
-                .as_ref()
-                .map(|cs| cs.team2)
-                .or(m.team2_score),
-            status: match manche {
-                Some(n) => format!("Manche {n} · en cours"),
-                None => "En cours".to_string(),
-            },
-            live: true,
-        });
+            .or(m.current_manche)
+            .filter(|n| *n > 0);
+        if let Some(n) = manche {
+            parts.push(format!("Manche {n}"));
+        }
+    } else {
+        // `time` n'est pas toujours renseigné : retombe sur l'heure de `date`.
+        let time = m
+            .time
+            .as_ref()
+            .filter(|t| !t.is_empty())
+            .cloned()
+            .unwrap_or_else(|| m.date.format("%Hh%M").to_string());
+        parts.push(time);
+    }
+    if let Some(location) = &m.location {
+        if !location.is_empty() {
+            parts.push(location.clone());
+        }
+    }
+    parts.join(" · ")
+}
+
+fn carousel_match(m: &Match, clubs: &[Club]) -> CarouselMatch {
+    let (name1, abbr1) = team_label(clubs, &m.team1_id);
+    let (name2, abbr2) = team_label(clubs, &m.team2_id);
+    let (status_label, live) = carousel_status_label(m);
+    let (score1, score2) = carousel_scores(m);
+    CarouselMatch {
+        team1: name1,
+        team2: name2,
+        abbr1,
+        abbr2,
+        score1,
+        score2,
+        status_label,
+        live,
+        meta: carousel_meta(m),
+    }
+}
+
+/// Division et ligue d'un match, déduites du club de l'équipe 1 (les matchs de
+/// championnat opposent deux clubs d'une même division).
+fn match_division(clubs: &[Club], m: &Match) -> (String, String) {
+    match clubs.iter().find(|c| c.id == m.team1_id) {
+        Some(c) => (c.division.clone(), c.league.clone()),
+        None => ("Divers".to_string(), String::new()),
+    }
+}
+
+/// Construit les slides du carrousel : une par division ayant des matchs sur
+/// les journées en cours (toutes ligues confondues), ordonnée comme les
+/// divisions enregistrées dans l'espace fédéral.
+fn build_carousel(
+    matches: &[Match],
+    clubs: &[Club],
+    championships: &[Championship],
+    divisions_order: &[(String, String)],
+) -> Vec<DivisionSlide> {
+    let journees = current_journees_by_league(championships);
+    let fallback = fallback_journee(&matches.iter().collect::<Vec<_>>());
+    let active: HashSet<i32> = if journees.is_empty() {
+        fallback.into_iter().collect()
+    } else {
+        journees.values().copied().collect()
+    };
+    if active.is_empty() {
+        return Vec::new();
     }
 
-    // Fill the band with the most recently completed matches.
-    let mut done: Vec<&Match> = completed.iter().collect();
-    done.sort_by_key(|m| std::cmp::Reverse(m.date));
-    for m in done.into_iter().take(3 - items.len().min(3)) {
-        let (name1, _) = team_label(clubs, &m.team1_id);
-        let (name2, _) = team_label(clubs, &m.team2_id);
-        journee = journee.or(m.journee);
-        items.push(LiveItem {
-            team1: name1,
-            team2: name2,
-            score1: m.team1_score,
-            score2: m.team2_score,
-            status: "Terminé".to_string(),
-            live: false,
-        });
+    // Grouper les matchs des journées en cours par (division, ligue).
+    let mut groups: HashMap<(String, String), Vec<&Match>> = HashMap::new();
+    for m in matches {
+        if m.journee.is_some_and(|j| active.contains(&j)) {
+            groups.entry(match_division(clubs, m)).or_default().push(m);
+        }
+    }
+    if groups.is_empty() {
+        return Vec::new();
     }
 
-    (items, journee)
+    let keys: Vec<(String, String)> = groups.keys().cloned().collect();
+    let labels = division_labels(&keys);
+
+    let mut slides: Vec<DivisionSlide> = keys
+        .into_iter()
+        .zip(labels)
+        .map(|(key, label)| {
+            let mut ms = groups[&key].clone();
+            ms.sort_by(|a, b| {
+                match_rank(a)
+                    .cmp(&match_rank(b))
+                    .then_with(|| a.date.cmp(&b.date))
+            });
+            DivisionSlide {
+                journee: journees.get(&key.1).copied().or(fallback),
+                name: key.0.clone(),
+                league: key.1.clone(),
+                label,
+                matches: ms.iter().map(|m| carousel_match(m, clubs)).collect(),
+            }
+        })
+        .collect();
+
+    // Ordre des slides : position des divisions enregistrées, puis le reste
+    // (ex. "Divers") par ligue puis nom.
+    slides.sort_by(|a, b| {
+        let pos = |s: &DivisionSlide| {
+            divisions_order
+                .iter()
+                .position(|(n, l)| *n == s.name && *l == s.league)
+        };
+        match (pos(a), pos(b)) {
+            (Some(x), Some(y)) => x.cmp(&y),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => (&a.league, &a.name).cmp(&(&b.league, &b.name)),
+        }
+    });
+    slides
 }
 
 fn standing_zone(status: &TeamClassificationStatus) -> Zone {
@@ -1048,5 +1207,239 @@ mod tests {
         let picked = pick_championship(&[pending, d1.clone()]).expect("championship");
         assert_eq!(picked.name, "D1");
         assert_eq!(picked.status, CompetitionStatus::InProgress);
+    }
+
+    // ===== Carrousel des journées en cours =====
+
+    fn club_in(id: Uuid, name: &str, division: &str, league: &str) -> Club {
+        let mut c = club(id, name, "ville");
+        c.division = division.to_string();
+        c.league = league.to_string();
+        c
+    }
+
+    fn match_fixture(team1: Uuid, team2: Uuid, journee: i32, status: MatchStatus) -> Match {
+        let mut m = live_match(team1, team2);
+        m.journee = Some(journee);
+        m.status = status.clone();
+        // Les vrais matchs ont `time = None` : l'heure est dans `date`.
+        m.time = None;
+        m.date = chrono::DateTime::parse_from_rfc3339("2026-11-08T14:30:00Z")
+            .expect("date")
+            .with_timezone(&Utc);
+        match &status {
+            MatchStatus::InProgress => {}
+            MatchStatus::Scheduled => {
+                // L'API renvoie current_scores à 0 même sans manche jouée.
+                m.current_scores = Some(CurrentScores {
+                    team1: 0,
+                    team2: 0,
+                    manche: 0,
+                });
+                m.current_manche = Some(0);
+                m.team1_score = None;
+                m.team2_score = None;
+            }
+            MatchStatus::Completed => {
+                m.current_scores = Some(CurrentScores {
+                    team1: 0,
+                    team2: 0,
+                    manche: 0,
+                });
+                m.current_manche = Some(0);
+                m.team1_score = Some(13);
+                m.team2_score = Some(8);
+            }
+            _ => {
+                m.current_scores = None;
+                m.current_manche = None;
+            }
+        }
+        m
+    }
+
+    fn championship_in(league: &str, journee: i32) -> Championship {
+        let mut c = championship_fixture(vec!["D1".to_string()]);
+        c.league = league.to_string();
+        c.current_journee = Some(journee);
+        c.status = CompetitionStatus::InProgress;
+        c
+    }
+
+    struct CarouselFixture {
+        clubs: Vec<Club>,
+        matchs: Vec<Match>,
+        championships: Vec<Championship>,
+        order: Vec<(String, String)>,
+    }
+
+    fn carousel_fixture() -> CarouselFixture {
+        let herbiers = Uuid::new_v4();
+        let challans = Uuid::new_v4();
+        let lucon = Uuid::new_v4();
+        let airvault = Uuid::new_v4();
+        let cerizay = Uuid::new_v4();
+        let niort = Uuid::new_v4();
+        let clubs = vec![
+            club_in(herbiers, "Les Herbiers Palet", "D1", "Vendée"),
+            club_in(challans, "Challans Sport Palet", "D1", "Vendée"),
+            club_in(lucon, "Luçon Palet Club", "D1", "Vendée"),
+            club_in(airvault, "Airvault Palet Club", "D2", HOME_LEAGUE),
+            club_in(cerizay, "Cerizay Palet Club", "D2", HOME_LEAGUE),
+            club_in(niort, "Niort Palet Club", "D1", HOME_LEAGUE),
+        ];
+        let matchs = vec![
+            // Journée 7 en cours en Vendée : 1 live + 1 à venir.
+            match_fixture(challans, herbiers, 7, MatchStatus::InProgress),
+            match_fixture(lucon, herbiers, 7, MatchStatus::Scheduled),
+            // Journée 3 en cours dans les Deux-Sèvres.
+            match_fixture(airvault, cerizay, 3, MatchStatus::Scheduled),
+            // Hors journées en cours : J8 (à venir) et J6 (terminée) en Vendée.
+            match_fixture(herbiers, challans, 8, MatchStatus::Scheduled),
+            match_fixture(herbiers, lucon, 6, MatchStatus::Completed),
+        ];
+        let championships = vec![
+            championship_in("Vendée", 7),
+            championship_in(HOME_LEAGUE, 3),
+        ];
+        let order = vec![
+            ("D1".to_string(), HOME_LEAGUE.to_string()),
+            ("D2".to_string(), HOME_LEAGUE.to_string()),
+            ("D1".to_string(), "Vendée".to_string()),
+        ];
+        CarouselFixture {
+            clubs,
+            matchs,
+            championships,
+            order,
+        }
+    }
+
+    #[test]
+    fn carousel_groupe_par_division_et_filtre_les_journees_en_cours() {
+        let f = carousel_fixture();
+
+        let slides = build_carousel(&f.matchs, &f.clubs, &f.championships, &f.order);
+
+        // J8 et J6 sont exclus : seules les journées en cours (7 Vendée, 3 79).
+        assert_eq!(slides.len(), 2, "slides: {slides:?}");
+        // Ordre imposé par `order` : D2 Deux-Sèvres (position 1) avant D1 Vendée (position 2).
+        assert_eq!(slides[0].name, "D2");
+        assert_eq!(slides[0].league, HOME_LEAGUE);
+        assert_eq!(slides[0].journee, Some(3));
+        assert_eq!(slides[0].matches.len(), 1);
+        assert_eq!(slides[1].name, "D1");
+        assert_eq!(slides[1].league, "Vendée");
+        assert_eq!(slides[1].journee, Some(7));
+        assert_eq!(slides[1].matches.len(), 2);
+        // Labels sans collision de nom.
+        assert_eq!(slides[0].label, "D2");
+        assert_eq!(slides[1].label, "D1");
+    }
+
+    #[test]
+    fn carousel_trie_live_puis_scheduled_puis_termine_avec_labels() {
+        let f = carousel_fixture();
+        let herbiers = f.clubs[0].id;
+        let challans = f.clubs[1].id;
+        let lucon = f.clubs[2].id;
+        let matchs = vec![
+            match_fixture(herbiers, lucon, 7, MatchStatus::Completed),
+            match_fixture(lucon, herbiers, 7, MatchStatus::Scheduled),
+            match_fixture(challans, herbiers, 7, MatchStatus::InProgress),
+        ];
+
+        let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
+
+        assert_eq!(slides.len(), 1);
+        let matches = &slides[0].matches;
+        assert_eq!(matches.len(), 3);
+        assert!(matches[0].live);
+        assert_eq!(matches[0].status_label, "EN DIRECT");
+        assert!(
+            matches[0].meta.contains("Manche 24"),
+            "meta: {}",
+            matches[0].meta
+        );
+        assert_eq!(matches[0].score1, Some(72));
+        assert_eq!(matches[0].score2, Some(68));
+        assert_eq!(matches[0].abbr1, "CS");
+        assert_eq!(matches[1].status_label, "À VENIR");
+        assert!(!matches[1].live);
+        // current_scores à 0 ne doit pas masquer l'absence de score.
+        assert_eq!(matches[1].score1, None);
+        assert_eq!(matches[1].score2, None);
+        // Heure retombe sur `date` quand `time` est absent.
+        assert!(
+            matches[1].meta.contains("14h30"),
+            "meta: {}",
+            matches[1].meta
+        );
+        assert_eq!(matches[2].status_label, "TERMINÉ");
+        assert_eq!(matches[2].score1, Some(13));
+    }
+
+    #[test]
+    fn carousel_fallback_sur_journee_max_quand_aucun_championnat_en_cours() {
+        let f = carousel_fixture();
+        let herbiers = f.clubs[0].id;
+        let challans = f.clubs[1].id;
+        let lucon = f.clubs[2].id;
+        let matchs = vec![
+            match_fixture(herbiers, lucon, 5, MatchStatus::Scheduled),
+            match_fixture(challans, herbiers, 8, MatchStatus::InProgress),
+            match_fixture(herbiers, challans, 6, MatchStatus::Completed),
+        ];
+        let mut pending = championship_fixture(vec!["D1".to_string()]);
+        pending.status = CompetitionStatus::Pending;
+        pending.current_journee = None;
+
+        let slides = build_carousel(&matchs, &f.clubs, &[pending], &f.order);
+
+        // Fallback : plus grande journée avec des matchs non terminés = 8.
+        assert_eq!(slides.len(), 1);
+        assert_eq!(slides[0].journee, Some(8));
+        assert_eq!(slides[0].matches.len(), 1);
+        assert!(slides[0].matches[0].live);
+    }
+
+    #[test]
+    fn carousel_desambigue_les_labels_en_cas_de_collision_de_nom() {
+        let f = carousel_fixture();
+        let herbiers = f.clubs[0].id;
+        let niort = f.clubs[5].id;
+        let airvault = f.clubs[3].id;
+        // Même journée en cours (7) dans les deux ligues, et même nom de
+        // division (D1) des deux côtés.
+        let matchs = vec![
+            match_fixture(herbiers, f.clubs[2].id, 7, MatchStatus::Scheduled),
+            match_fixture(niort, airvault, 7, MatchStatus::Scheduled),
+        ];
+        let championships = vec![
+            championship_in("Vendée", 7),
+            championship_in(HOME_LEAGUE, 7),
+        ];
+
+        let slides = build_carousel(&matchs, &f.clubs, &championships, &f.order);
+
+        assert_eq!(slides.len(), 2);
+        let labels: Vec<&str> = slides.iter().map(|s| s.label.as_str()).collect();
+        assert!(labels.contains(&"D1 (Vendée)"), "labels: {labels:?}");
+        assert!(
+            labels.contains(&format!("D1 ({HOME_LEAGUE})").as_str()),
+            "labels: {labels:?}"
+        );
+    }
+
+    #[test]
+    fn carousel_est_vide_quand_aucun_match_sur_les_journees_en_cours() {
+        let f = carousel_fixture();
+        let herbiers = f.clubs[0].id;
+        let challans = f.clubs[1].id;
+        let matchs = vec![match_fixture(herbiers, challans, 6, MatchStatus::Completed)];
+
+        let slides = build_carousel(&matchs, &f.clubs, &f.championships, &f.order);
+
+        assert!(slides.is_empty(), "slides: {slides:?}");
     }
 }
