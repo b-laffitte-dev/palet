@@ -11,7 +11,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
-use crate::repositories::enum_conv::{enum_from_db_string, to_json_string};
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 
 // ============================================
 // CLUB REPOSITORY TRAIT (Interface)
@@ -170,7 +170,7 @@ impl ClubRepository for PostgresClubRepository {
             .bind(club.postal_code)
             .bind(&club.league)
             .bind(&club.division)
-            .bind(to_json_string(&club.status)?)
+            .bind(enum_to_db_string(&club.status))
             .bind(club.players_count)
             .bind(club.teams_count)
             .bind(club.contact_email)
@@ -331,7 +331,7 @@ impl ClubRepository for PostgresClubRepository {
     async fn get_clubs_by_status(&self, status: ClubStatus) -> Result<Vec<Club>, DatabaseError> {
         let query = "SELECT * FROM clubs WHERE status = $1 ORDER BY name";
         let rows = sqlx::query(query)
-            .bind(to_json_string(&status)?)
+            .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
             .await?;
 

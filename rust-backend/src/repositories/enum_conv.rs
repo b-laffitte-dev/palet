@@ -16,7 +16,22 @@ pub fn enum_from_db_string<T: serde::de::DeserializeOwned>(
         .map_err(|e| DatabaseError::ProtocolError(format!("invalid enum value '{}': {}", value, e)))
 }
 
-/// Sérialise une valeur en JSON text pour un bind SQLx (sans panic).
-pub fn to_json_string<T: serde::Serialize>(value: &T) -> Result<String, DatabaseError> {
-    serde_json::to_string(value).map_err(|e| DatabaseError::ProtocolError(e.to_string()))
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use palet_shared::MatchStatus;
+
+    #[test]
+    fn enum_to_db_string_ecrit_enum_sans_guillemets() {
+        // Les colonnes TEXT et les littéraux SQL du repo utilisent la valeur
+        // nue ('in_progress'), pas la string JSON quotée ('"in_progress"').
+        assert_eq!(enum_to_db_string(&MatchStatus::InProgress), "in_progress");
+    }
+
+    #[test]
+    fn round_trip_enum_via_db_string() {
+        let s = enum_to_db_string(&MatchStatus::Completed);
+        let back: MatchStatus = enum_from_db_string(&s).expect("deserialize");
+        assert_eq!(back, MatchStatus::Completed);
+    }
 }

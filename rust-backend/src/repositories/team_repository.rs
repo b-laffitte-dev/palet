@@ -199,7 +199,7 @@ impl TeamRepository for PostgresTeamRepository {
                 name = COALESCE($1, name),
                 captain_id = COALESCE($2, captain_id),
                 stats = COALESCE($3, stats),
-                status = COALESCE($4::team_status, status),
+                status = COALESCE($4, status),
                 updated_at = $5
             WHERE id = $6
             RETURNING *

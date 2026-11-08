@@ -14,7 +14,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
-use crate::repositories::enum_conv::{enum_from_db_string, to_json_string};
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 
 // ============================================
 // MATCH REPOSITORY TRAIT (Interface)
@@ -238,7 +238,7 @@ impl MatchRepository for PostgresMatchRepository {
         let row = sqlx::query(query)
             .bind(match_obj.id)
             .bind(match_obj.competition_id)
-            .bind(to_json_string(&match_obj.competition_type)?)
+            .bind(enum_to_db_string(&match_obj.competition_type))
             .bind(match_obj.journee)
             .bind(match_obj.phase)
             .bind(match_obj.round)
@@ -246,12 +246,12 @@ impl MatchRepository for PostgresMatchRepository {
             .bind(match_obj.team2_id)
             .bind(match_obj.team1_score)
             .bind(match_obj.team2_score)
-            .bind(to_json_string(&match_obj.winner)?)
+            .bind(enum_to_db_string(&match_obj.winner))
             .bind(sqlx::types::Json(&match_obj.manches))
             .bind(match_obj.best_of)
             .bind(match_obj.current_manche)
             .bind(sqlx::types::Json(match_obj.current_scores))
-            .bind(to_json_string(&match_obj.status)?)
+            .bind(enum_to_db_string(&match_obj.status))
             .bind(match_obj.verified)
             .bind(match_obj.verified_by)
             .bind(match_obj.verified_at)
@@ -316,7 +316,7 @@ impl MatchRepository for PostgresMatchRepository {
     ) -> Result<Vec<Match>, DatabaseError> {
         let query = "SELECT * FROM matches WHERE status = $1 ORDER BY date";
         let rows = sqlx::query(query)
-            .bind(to_json_string(&status)?)
+            .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
             .await?;
 
@@ -362,7 +362,7 @@ impl MatchRepository for PostgresMatchRepository {
                 team1_score = COALESCE($1, team1_score),
                 team2_score = COALESCE($2, team2_score),
                 winner = COALESCE($3, winner),
-                status = COALESCE($4::match_status, status),
+                status = COALESCE($4, status),
                 verified = COALESCE($5, verified),
                 updated_at = $6
             WHERE id = $7
@@ -372,8 +372,8 @@ impl MatchRepository for PostgresMatchRepository {
         let row = sqlx::query(query)
             .bind(match_obj.team1_score)
             .bind(match_obj.team2_score)
-            .bind(to_json_string(&match_obj.winner)?)
-            .bind(to_json_string(&match_obj.status)?)
+            .bind(enum_to_db_string(&match_obj.winner))
+            .bind(enum_to_db_string(&match_obj.status))
             .bind(match_obj.verified)
             .bind(match_obj.updated_at)
             .bind(match_id)
@@ -428,7 +428,7 @@ impl MatchRepository for PostgresMatchRepository {
 
         let row = sqlx::query(query)
             .bind(match_id)
-            .bind(to_json_string(&winner)?)
+            .bind(enum_to_db_string(&winner))
             .fetch_one(&*self.pool)
             .await?;
 

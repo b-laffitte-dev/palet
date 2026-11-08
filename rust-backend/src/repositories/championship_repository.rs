@@ -16,7 +16,7 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
-use crate::repositories::enum_conv::{enum_from_db_string, to_json_string};
+use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 
 // ============================================
 // CHAMPIONSHIP REPOSITORY TRAIT (Interface)
@@ -283,12 +283,16 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .bind(&championship.divisions)
             .bind(championship.total_journees)
             .bind(championship.journee_duration)
-            .bind(to_json_string(&championship.classification_rules.primary)?)
-            .bind(to_json_string(
+            .bind(enum_to_db_string(
+                &championship.classification_rules.primary,
+            ))
+            .bind(enum_to_db_string(
                 &championship.classification_rules.secondary,
-            )?)
-            .bind(to_json_string(&championship.classification_rules.tertiary)?)
-            .bind(to_json_string(&championship.status)?)
+            ))
+            .bind(enum_to_db_string(
+                &championship.classification_rules.tertiary,
+            ))
+            .bind(enum_to_db_string(&championship.status))
             .bind(championship.current_journee)
             .bind(championship.current_phase)
             .bind(championship.organizer_id)
@@ -390,10 +394,10 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
                 divisions = COALESCE($6, divisions),
                 total_journees = COALESCE($7, total_journees),
                 journee_duration = COALESCE($8, journee_duration),
-                classification_primary = COALESCE($9::classification_primary, classification_primary),
-                classification_secondary = COALESCE($10::classification_secondary, classification_secondary),
-                classification_tertiary = COALESCE($11::classification_tertiary, classification_tertiary),
-                status = COALESCE($12::competition_status, status),
+                classification_primary = COALESCE($9, classification_primary),
+                classification_secondary = COALESCE($10, classification_secondary),
+                classification_tertiary = COALESCE($11, classification_tertiary),
+                status = COALESCE($12, status),
                 current_journee = COALESCE($13, current_journee),
                 current_phase = COALESCE($14, current_phase),
                 updated_at = $15
@@ -410,12 +414,16 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             .bind(championship.divisions)
             .bind(championship.total_journees)
             .bind(championship.journee_duration)
-            .bind(to_json_string(&championship.classification_rules.primary)?)
-            .bind(to_json_string(
+            .bind(enum_to_db_string(
+                &championship.classification_rules.primary,
+            ))
+            .bind(enum_to_db_string(
                 &championship.classification_rules.secondary,
-            )?)
-            .bind(to_json_string(&championship.classification_rules.tertiary)?)
-            .bind(to_json_string(&championship.status)?)
+            ))
+            .bind(enum_to_db_string(
+                &championship.classification_rules.tertiary,
+            ))
+            .bind(enum_to_db_string(&championship.status))
             .bind(championship.current_journee)
             .bind(championship.current_phase)
             .bind(championship.updated_at)
@@ -476,7 +484,7 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
     ) -> Result<Vec<Championship>, DatabaseError> {
         let query = "SELECT * FROM championships WHERE status = $1 ORDER BY season DESC, name";
         let rows = sqlx::query(query)
-            .bind(to_json_string(&status)?)
+            .bind(enum_to_db_string(&status))
             .fetch_all(&*self.pool)
             .await?;
 
