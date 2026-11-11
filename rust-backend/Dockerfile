@@ -8,7 +8,10 @@ FROM busybox:1.37-musl AS busybox
 # ── Build stage ──────────────────────────────────────────────────────────────
 # rust:alpine = musl natif → le binaire produit est 100 % statique,
 # directement exécutable dans un FROM scratch (runtime).
-FROM rust:1.90-alpine3.21 AS builder
+# Tag "stable" (et non une version épinglée) : fidèle au rust-toolchain du
+# repo (channel = "stable") et à la CI — sinon le lockfile dérive inévitablement
+# hors du MSRV de l'image (ex. sqlx 0.9 exige rustc ≥ 1.94, image 1.90 cassée).
+FROM rust:stable-alpine3.21 AS builder
 
 # sqlx utilise tls-rustls → pas besoin de openssl-dev.
 # build-base = gcc/musl-dev pour le linker ; ca-certificates est copié

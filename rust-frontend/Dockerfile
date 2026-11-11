@@ -2,7 +2,10 @@
 # ── Build stage ──────────────────────────────────────────────────────────────
 # slim-trixie (Debian 13, glibc ≥ 2.38) : requis sur aarch64 où wasm-bindgen
 # 0.2.100 n'existe qu'en build gnu (le build musl aarch64 n'est pas publié).
-FROM rust:1.90-slim-trixie AS builder
+# Tag "stable" (et non une version épinglée) : fidèle au rust-toolchain du
+# repo (channel = "stable") et à la CI — sinon le lockfile dérive inévitablement
+# hors du MSRV de l'image (ex. sqlx 0.9 exige rustc ≥ 1.94, image 1.90 cassée).
+FROM rust:stable-slim-trixie AS builder
 
 # wasm-pack via binaire précompilé (évite un cargo install de ~2 min à chaque build).
 # wasm-bindgen-cli est requis par wasm-pack — binaire précompilé aussi.
