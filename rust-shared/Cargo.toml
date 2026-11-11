@@ -17,9 +17,6 @@ utoipa = { version = "6.0.0", features = ["macros", "chrono", "uuid"] }
 uuid = { version = "1.28.0", features = ["v4", "serde"] }
 chrono = { version = "0.4.45", features = ["serde"] }
 
-# Validation
-validator = { version = "0.21.0", features = ["derive"] }
-
 [features]
 default = []
 mobile = []

@@ -46,12 +46,6 @@ utoipa = { version = "6.0.0", features = ["actix_extras", "chrono", "uuid"] }
 utoipa-swagger-ui = { version = "10.0.1", features = ["actix-web"] }
 
 [dev-dependencies]
-actix-http-test = "3.3.0"
-actix-rt = "2.15.0"
-serial_test = "4.0.1"
-tokio = { version = "1.53.3", features = ["full", "test-util"] }
-async-trait = "0.1.92"
-mockall = "0.15.0"
 
 [features]
 default = []
