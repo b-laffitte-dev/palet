@@ -14,7 +14,7 @@ actix-web = "4.17.0"
 actix-cors = "0.7.2"
 
 # Database
-sqlx = { version = "^0.9.0", features = ["postgres", "runtime-tokio", "tls-rustls", "uuid", "chrono", "json"] }
+sqlx = { version = "^0.9.0", default-features = false, features = ["postgres", "runtime-tokio", "tls-rustls", "uuid", "chrono", "json"] }
 
 # Error handling
 thiserror = "2.0.21"
