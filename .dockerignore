@@ -38,7 +38,8 @@ Dockerfile
 
 # Toolchain local : s'il était copié dans l'image, rustup chercherait à
 # synchroniser la dernière "stable" par-dessus le toolchain de l'image
-# (rust:stable-*). La cible wasm32 est ajoutée explicitement dans le Dockerfile.
+# (rust:slim-trixie / rust:alpine3.21). La cible wasm32 est ajoutée
+# explicitement dans le Dockerfile.
 rust-toolchain
 rust-toolchain.toml
 
