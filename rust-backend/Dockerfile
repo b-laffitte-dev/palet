@@ -39,12 +39,17 @@ RUN mkdir -p rust-backend/src rust-frontend/src rust-shared/src \
 # .dockerignore exclut déjà target/, .git/, docs/, etc. — le contexte reste léger.
 COPY . .
 
-# BuildKit cache mounts : le registre crates.io et target/ sont montés en cache,
+# BuildKit cache mounts : target/ et le registre crates.io sont montés en cache,
 # ils ne polluent pas les layers de l'image finale.
+# Comme pour le frontend, on ne cache QUE registry/cache et registry/index :
+# registry/src (sources extraites) reste dans la layer du conteneur pour
+# éviter qu'un build interrompu n'y laisse un .cargo-ok corrompu qui bloquerait
+# tous les builds suivants ("File exists (os error 17)").
 # On prépare en plus un répertoire /runtime autonome (binaire + config + certs +
 # passwd/group + tmp) : le stage final n'aura ainsi qu'UN SEUL COPY → 1 layer.
 RUN --mount=type=cache,target=/app/target \
-    --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/registry/cache \
+    --mount=type=cache,target=/usr/local/cargo/registry/index \
     cargo build --release --locked --bin palet-backend \
     && strip /app/target/release/palet-backend \
     && mkdir -p /runtime/app /runtime/bin /runtime/etc/ssl/certs /runtime/tmp \

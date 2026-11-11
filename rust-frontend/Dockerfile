@@ -43,12 +43,18 @@ RUN mkdir -p rust-backend/src rust-frontend/src rust-shared/src \
 # .dockerignore exclut déjà target/, .git/, docs/, etc.
 COPY . .
 
-# BuildKit cache mounts pour le registre et le target.
+# BuildKit cache mounts pour le target et le registre.
+# On ne monte en cache QUE registry/cache (les .crate téléchargés) et
+# registry/index : registry/src (sources extraites par cargo) reste dans la
+# layer du conteneur, car un build interrompu y laisse un marqueur .cargo-ok
+# corrompu qui fait échouer tous les builds suivants avec
+# "failed to open ... .cargo-ok: File exists (os error 17)".
 # Le binaire produit reste dans le cache mount : on le copie explicitement
 # hors du mount (dans /www) à la fin du RUN, sinon le COPY --from=builder
 # du stage final ne le trouverait pas.
 RUN --mount=type=cache,target=/app/target \
-    --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/registry/cache \
+    --mount=type=cache,target=/usr/local/cargo/registry/index \
     cd rust-frontend && wasm-pack build --release --target web --out-name palet_frontend --out-dir ./pkg
 
 # ── Docroot préparé DANS le builder ─────────────────────────────────────────

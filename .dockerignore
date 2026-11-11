@@ -36,6 +36,12 @@ docker-compose*.yml
 Dockerfile
 **/Dockerfile
 
+# Toolchain local : s'il était copié dans l'image, rustup téléchargerait la
+# dernière "stable" au lieu d'utiliser le toolchain épinglé de l'image
+# (rust:1.90). La cible wasm32 est ajoutée explicitement dans le Dockerfile.
+rust-toolchain
+rust-toolchain.toml
+
 # Fichiers divers
 .DS_Store
 *.log
