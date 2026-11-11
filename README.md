@@ -59,6 +59,12 @@ docker compose up --build
 # web  : Frontend WASM + nginx sur le port 8080
 ```
 
+À la **première initialisation** de la base (volume `pgdata` vide), le script
+`dev-data/init-db.sh` est exécuté automatiquement par le conteneur `db`
+(monté dans `/docker-entrypoint-initdb.d`) : il charge `dev-data/schema.sql`
+puis `dev-data/data.sql`. Pour re-seeder from scratch :
+`docker compose down -v && docker compose up`.
+
 ## Qualité
 
 ```bash

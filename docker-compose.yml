@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Seed dev : exécuté une seule fois, à la première initialisation
+      # (volume pgdata vide), via /docker-entrypoint-initdb.d.
+      # Pour re-seeder : docker compose down -v && docker compose up
+      - ./dev-data:/dev-data:ro
+      - ./dev-data/init-db.sh:/docker-entrypoint-initdb.d/01-seed-dev-data.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U palet"]
       interval: 5s
@@ -30,7 +35,9 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      # Image scratch : seul busybox est présent, et on cible 127.0.0.1
+      # (pas de /etc/hosts dans l'image → "localhost" non résoluble).
+      test: ["CMD", "/bin/busybox", "wget", "-q", "-O-", "http://127.0.0.1:3000/health"]
       interval: 10s
       timeout: 5s
       retries: 5

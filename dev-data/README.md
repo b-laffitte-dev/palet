@@ -41,3 +41,10 @@ docker exec -i palet-db-1 psql -U palet -d <base_cible> -f - < dev-data/data.sql
 ```
 
 > Cible : une base **vide** (le dump ne contient pas de `DROP`/`TRUNCATE`).
+
+## Seed automatique (docker compose)
+
+`init-db.sh` est monté dans `/docker-entrypoint-initdb.d` du service `db`
+(docker-compose.yml) : à la première initialisation du volume `pgdata`,
+PostgreSQL l'exécute et charge `schema.sql` puis `data.sql` dans la base
+`palet`. Re-seeder from scratch : `docker compose down -v && docker compose up`.
