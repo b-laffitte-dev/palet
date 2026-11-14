@@ -3,7 +3,7 @@
 # Variante musl = binaire 100 % statique (la variante par défaut est glibc :
 # sans son loader dans un conteneur scratch, elle serait inexécutable).
 # Copiée telle quelle dans le stage final pour le healthcheck (wget).
-FROM busybox:1.37-musl AS busybox
+FROM busybox:1.38-musl AS busybox
 
 # ── Build stage ──────────────────────────────────────────────────────────────
 # rust:alpine = musl natif → le binaire produit est 100 % statique,
