@@ -77,7 +77,7 @@ RUN mkdir -p /www \
     && chmod -R a+rX /www
 
 # ── Sources nginx (binaire + conf de base) ───────────────────────────────────
-FROM nginx:1.27-alpine AS nginxsrc
+FROM nginx:1.29-alpine AS nginxsrc
 
 # ── Runtime stage : alpine + nginx minimal ───────────────────────────────────
 # nginx:alpine complet pèse ~79 Mo (modules dynamiques, pages par défaut, etc.).
