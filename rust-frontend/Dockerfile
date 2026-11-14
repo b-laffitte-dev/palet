@@ -83,7 +83,7 @@ FROM nginx:1.27-alpine AS nginxsrc
 # nginx:alpine complet pèse ~79 Mo (modules dynamiques, pages par défaut, etc.).
 # Ici on ne garde que le binaire nginx (1,2 Mo, musl) + ses 4 libs dynamiques
 # (pcre2, libssl, libcrypto, zlib) + la conf de base : ~20 Mo au total.
-FROM alpine:3.21
+FROM alpine:3.24
 
 RUN apk add --no-cache ca-certificates pcre2 libssl3 libcrypto3 zlib \
     && addgroup -S nginx && adduser -S nginx -G nginx \
