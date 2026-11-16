@@ -182,6 +182,7 @@ Storybook/Tailwind dans le code.
 |---|---|---|
 | `contexte-metier/` (3 docs + JSON) | ✅ **Valide** — référence métier | Confirmé par le code (règles 13/15, classement) |
 | `specifications-fonctionnelles.md` | ⚠️ **Métier valide, tech obsolète** | Acteurs/modules/règles bons ; sections React/Tokens/OpenAPI-zod à lire comme intention, pas comme stack |
+| `enrichissement-fonctionnel-sporteasy.md` | ✅ **Intention fonctionnelle valide** | Enrichissement fonctionnel (Module 8) inspiré de SportEasy : dispo/convocations/compo/feuille de match/covoiturage/assiduité/cagnotte — **fonctionnel uniquement, rien n'est implémenté** |
 | `plan-migration-donnees.md` | ⚠️ **Intention valide** | Sources FNSMR/CVDP réelles ; mais aucune migration SQL n'existe encore (`db.rs` le confirme) |
 | `design-system/` (README, colors, typography, components, layouts, icons, pages/) | ⚠️ **Intention de design** | Palette/composants décrits ≠ CSS réel (§6). Les pages décrites correspondent aux routes réelles |
 | `maquettes/homepage.svg|png` | ✅ Référence visuelle | La home Dioxus en est l'implémentation |
