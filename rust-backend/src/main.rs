@@ -18,7 +18,8 @@ use palet_backend::{
     config::load_config,
     db::Database,
     handlers::{
-        championship_handler, club_handler, division_handler, health_handler, match_handler,
+        auth_handler, championship_handler, club_handler, division_handler, health_handler,
+        match_handler,
     },
     AppState,
 };
@@ -28,6 +29,11 @@ use palet_backend::{
 #[openapi(
     paths(
         health_handler::health_check,
+        auth_handler::register,
+        auth_handler::login,
+        auth_handler::refresh,
+        auth_handler::me,
+        auth_handler::logout,
         club_handler::get_clubs,
         club_handler::create_club,
         club_handler::get_club,
@@ -60,6 +66,7 @@ use palet_backend::{
     components(),
     tags(
         (name = "Health", description = "Health check endpoints"),
+        (name = "Auth", description = "Authentication endpoints (register, login, refresh, me, logout)"),
         (name = "Clubs", description = "Club management endpoints"),
         (name = "Matchs", description = "Match management endpoints"),
         (name = "Championnats", description = "Championship management endpoints"),
@@ -176,6 +183,15 @@ async fn main() -> std::io::Result<()> {
             .service(SwaggerUi::new("/api-docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
             // Health check endpoint
             .route("/health", web::get().to(health_handler::health_check))
+            // Auth endpoints (register/login/refresh publics, me/logout avec JWT)
+            .service(
+                web::scope("/auth")
+                    .route("/register", web::post().to(auth_handler::register))
+                    .route("/login", web::post().to(auth_handler::login))
+                    .route("/refresh", web::post().to(auth_handler::refresh))
+                    .route("/me", web::get().to(auth_handler::me))
+                    .route("/logout", web::post().to(auth_handler::logout)),
+            )
             // Club endpoints
             .service(
                 web::scope("/clubs")

@@ -1,4 +1,4 @@
-//! Configuration management for Palet Venden Backend
+//! Configuration management for Palet Vendéen Backend
 
 use config::{Config as ConfigBuilder, ConfigError, Environment, File as FileSource};
 use serde::Deserialize;
@@ -26,6 +26,8 @@ pub struct AppConfig {
     pub jwt_secret: String,
     /// JWT expiration in hours
     pub jwt_expiration_hours: u64,
+    /// Refresh token expiration in days
+    pub jwt_refresh_expiration_days: u64,
 }
 
 impl AppConfig {
@@ -50,9 +52,25 @@ impl AppConfig {
                 .unwrap_or_else(|_| "info".to_string()),
             jwt_secret: settings
                 .get_string("jwt_secret")
-                .unwrap_or_else(|_| "change-me-in-production".to_string()),
+                .unwrap_or_else(|_| "dev-only-insecure-secret".to_string()),
             jwt_expiration_hours: settings.get_int("jwt_expiration_hours").unwrap_or(24) as u64,
+            jwt_refresh_expiration_days: settings
+                .get_int("jwt_refresh_expiration_days")
+                .unwrap_or(7) as u64,
         })
+    }
+
+    /// Refuse de démarrer en production avec un secret JWT faible ou par défaut.
+    pub fn validate(&self) -> Result<(), String> {
+        if self.environment == "production"
+            && (self.jwt_secret.len() < 32 || self.jwt_secret == "dev-only-insecure-secret")
+        {
+            return Err(
+                "PALET__JWT_SECRET est requis en production (>= 32 caractères, voir .env.example)"
+                    .to_string(),
+            );
+        }
+        Ok(())
     }
 }
 
@@ -67,8 +85,9 @@ impl Default for AppConfig {
             cors_max_age: 86400,
             environment: "development".to_string(),
             log_level: "info".to_string(),
-            jwt_secret: "change-me-in-production".to_string(),
+            jwt_secret: "dev-only-insecure-secret".to_string(),
             jwt_expiration_hours: 24,
+            jwt_refresh_expiration_days: 7,
         }
     }
 }
@@ -93,7 +112,9 @@ pub fn load_config() -> Result<AppConfig, ConfigError> {
     );
 
     let settings = builder.build()?;
-    AppConfig::from_settings(settings)
+    let config = AppConfig::from_settings(settings)?;
+    config.validate().map_err(ConfigError::Message)?;
+    Ok(config)
 }
 
 #[cfg(test)]
@@ -117,5 +138,23 @@ mod tests {
         let config = AppConfig::from_settings(settings.build().unwrap()).unwrap();
         assert_eq!(config.host, "127.0.0.1");
         assert_eq!(config.port, 8080);
+    }
+
+    #[test]
+    fn validate_accepte_le_secret_dev_hors_production() {
+        let config = AppConfig::default();
+        assert!(config.validate().is_ok());
+    }
+
+    #[test]
+    fn validate_rejete_un_secret_faible_en_production() {
+        let prod = |jwt_secret: &str| AppConfig {
+            environment: "production".to_string(),
+            jwt_secret: jwt_secret.to_string(),
+            ..Default::default()
+        };
+        assert!(prod("dev-only-insecure-secret").validate().is_err());
+        assert!(prod("trop-court").validate().is_err());
+        assert!(prod(&"x".repeat(64)).validate().is_ok());
     }
 }

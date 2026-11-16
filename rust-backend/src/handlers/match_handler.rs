@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::middleware::auth::OfficialUser;
 use crate::AppState;
 
 /// Get all matches
@@ -189,6 +190,7 @@ pub async fn get_matches_by_status(
     )
 )]
 pub async fn create_match(
+    _official: OfficialUser,
     state: web::Data<AppState>,
     request: web::Json<CreateMatchRequest>,
 ) -> impl Responder {
@@ -232,6 +234,7 @@ pub async fn create_match(
     )
 )]
 pub async fn update_match(
+    _official: OfficialUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
     request: web::Json<UpdateMatchRequest>,
@@ -277,7 +280,11 @@ pub async fn update_match(
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn delete_match(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+pub async fn delete_match(
+    _official: OfficialUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
     match state.db.matches.delete_match(*id).await {
         Ok(deleted) => {
             if deleted {
@@ -320,7 +327,11 @@ pub async fn delete_match(state: web::Data<AppState>, id: web::Path<Uuid>) -> im
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn start_match(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+pub async fn start_match(
+    _official: OfficialUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
     match state.db.matches.start_match(*id).await {
         Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {
             data: match_obj,
@@ -354,6 +365,7 @@ pub async fn start_match(state: web::Data<AppState>, id: web::Path<Uuid>) -> imp
     )
 )]
 pub async fn complete_match(
+    _official: OfficialUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
     winner: web::Query<MatchWinner>,
@@ -392,6 +404,7 @@ pub async fn complete_match(
     )
 )]
 pub async fn add_manche(
+    _official: OfficialUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
     request: web::Json<AddMancheRequest>,

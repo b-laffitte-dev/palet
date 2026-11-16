@@ -7,9 +7,11 @@ base `palet`, user `palet`), généré avec `pg_dump` (PostgreSQL 17).
 
 | Fichier | Contenu |
 |---|---|
-| `schema.sql` | Schéma complet : tables, types enum, contraintes, index (`--schema-only`) |
 | `data.sql` | Toutes les données en INSERT, ordonnées selon les FK (`--data-only --column-inserts`) |
 | `<table>.sql` | Données d'une seule table (restore sélectif) |
+
+Le **schéma** ne vit plus ici : il est géré par les migrations SQLx dans
+`rust-backend/migrations/` (`0001_baseline.sql` = schéma historique).
 
 Tables extraites : `championships`, `clubs`, `divisions`,
 `championship_teams`, `matches`, `championship_classifications`.
@@ -21,8 +23,8 @@ Ordre de chargement si restore table par table (dépendances FK) :
 ## Ré-extraire depuis la base de dev
 
 ```bash
-# Schéma + données complètes
-docker exec palet-db-1 pg_dump -U palet -d palet --schema-only --no-owner --no-privileges > dev-data/schema.sql
+# Données complètes (le schéma se re-extrait via une migration : pg_dump --schema-only
+# puis nettoyage, ou édition manuelle de rust-backend/migrations/)
 docker exec palet-db-1 pg_dump -U palet -d palet --data-only --column-inserts --no-owner --no-privileges > dev-data/data.sql
 
 # Une table à la fois
@@ -34,10 +36,10 @@ done
 ## Restaurer dans une base vide
 
 ```bash
-docker exec -i palet-db-1 psql -U palet -d <base_cible> -f - < dev-data/schema.sql
+docker exec -i palet-db-1 psql -U palet -d <base_cible> -f - < rust-backend/migrations/0001_baseline.sql
 docker exec -i palet-db-1 psql -U palet -d <base_cible> -f - < dev-data/data.sql
 # ou, hors conteneur :
-# psql "postgres://palet:palet@localhost:5432/<base_cible>" -f dev-data/schema.sql -f dev-data/data.sql
+# psql "postgres://palet:palet@localhost:5432/<base_cible>" -f rust-backend/migrations/0001_baseline.sql -f dev-data/data.sql
 ```
 
 > Cible : une base **vide** (le dump ne contient pas de `DROP`/`TRUNCATE`).
@@ -46,5 +48,7 @@ docker exec -i palet-db-1 psql -U palet -d <base_cible> -f - < dev-data/data.sql
 
 `init-db.sh` est monté dans `/docker-entrypoint-initdb.d` du service `db`
 (docker-compose.yml) : à la première initialisation du volume `pgdata`,
-PostgreSQL l'exécute et charge `schema.sql` puis `data.sql` dans la base
-`palet`. Re-seeder from scratch : `docker compose down -v && docker compose up`.
+PostgreSQL l'exécute et charge la migration baseline
+(`rust-backend/migrations/0001_baseline.sql`, montée dans `/migrations`) puis
+`data.sql` dans la base `palet`. Re-seeder from scratch :
+`docker compose down -v && docker compose up`.

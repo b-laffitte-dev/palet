@@ -169,6 +169,76 @@ pub struct AuthToken {
     pub token_type: String,
 }
 
+/// Inscription d'un nouveau compte (rôle `player` attribué par défaut).
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct RegisterRequest {
+    pub email: String,
+    pub password: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub club_id: Option<Uuid>,
+    pub license_number: Option<String>,
+}
+
+impl RegisterRequest {
+    /// Normalise l'email (trim + minuscules) et valide la requête.
+    ///
+    /// Retourne l'email normalisé ou un message d'erreur pour un 400.
+    pub fn validated(&self) -> Result<String, String> {
+        let email = self.email.trim().to_lowercase();
+        let local = email.split('@').next().unwrap_or("");
+        let domain = email.split('@').nth(1).unwrap_or("");
+        if local.is_empty()
+            || !domain.contains('.')
+            || domain.starts_with('.')
+            || domain.ends_with('.')
+        {
+            return Err(format!("Adresse email invalide : {}", self.email));
+        }
+        if self.password.len() < 8 {
+            return Err("Le mot de passe doit contenir au moins 8 caractères".to_string());
+        }
+        if self.first_name.trim().is_empty() || self.last_name.trim().is_empty() {
+            return Err("Le prénom et le nom sont requis".to_string());
+        }
+        Ok(email)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct LoginRequest {
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct RefreshTokenRequest {
+    pub refresh_token: String,
+}
+
+/// Profil public d'un utilisateur (jamais de hash de mot de passe).
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct UserProfile {
+    pub id: Uuid,
+    pub email: String,
+    pub username: Option<String>,
+    pub first_name: String,
+    pub last_name: String,
+    pub role: UserRole,
+    pub club_id: Option<Uuid>,
+    pub license_number: Option<String>,
+    pub category: String,
+    pub status: UserStatus,
+    pub email_verified: bool,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct AuthResponse {
+    pub token: AuthToken,
+    pub user: UserProfile,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
 pub struct AuthState {
     pub user: Option<User>,
@@ -1197,5 +1267,78 @@ mod tests {
             season: "".to_string(),
         };
         assert!(req.validated().is_err());
+    }
+
+    fn valid_register_request() -> RegisterRequest {
+        RegisterRequest {
+            email: "Jean.DUPONT@Example.fr".to_string(),
+            password: "motdepasse-solide".to_string(),
+            first_name: "Jean".to_string(),
+            last_name: "Dupont".to_string(),
+            club_id: None,
+            license_number: None,
+        }
+    }
+
+    #[test]
+    fn register_request_normalizes_email_and_accepts_valid_input() {
+        let email = valid_register_request().validated().expect("valid");
+        assert_eq!(email, "jean.dupont@example.fr");
+    }
+
+    #[test]
+    fn register_request_rejects_invalid_emails() {
+        for email in [
+            "pas-un-email",
+            "@domaine.fr",
+            "jean@",
+            "jean@domaine",
+            "jean@.fr",
+        ] {
+            let mut req = valid_register_request();
+            req.email = email.to_string();
+            assert!(req.validated().is_err(), "email rejeté attendu : {email}");
+        }
+    }
+
+    #[test]
+    fn register_request_rejects_short_password_and_empty_names() {
+        let mut req = valid_register_request();
+        req.password = "court".to_string();
+        assert!(req.validated().is_err());
+
+        let mut req = valid_register_request();
+        req.first_name = "  ".to_string();
+        assert!(req.validated().is_err());
+    }
+
+    #[test]
+    fn auth_response_json_round_trip() {
+        let response = AuthResponse {
+            token: AuthToken {
+                access_token: "access".to_string(),
+                refresh_token: "refresh".to_string(),
+                expires_in: 86400,
+                token_type: "Bearer".to_string(),
+            },
+            user: UserProfile {
+                id: Uuid::new_v4(),
+                email: "jean.dupont@example.fr".to_string(),
+                username: None,
+                first_name: "Jean".to_string(),
+                last_name: "Dupont".to_string(),
+                role: UserRole::Player,
+                club_id: None,
+                license_number: Some("85-12345".to_string()),
+                category: "senior".to_string(),
+                status: UserStatus::Active,
+                email_verified: false,
+                created_at: Utc::now(),
+            },
+        };
+        let json = serde_json::to_string(&response).expect("serialize");
+        let back: AuthResponse = serde_json::from_str(&json).expect("deserialize");
+        assert_eq!(back, response);
+        assert_eq!(back.user.role, UserRole::Player);
     }
 }

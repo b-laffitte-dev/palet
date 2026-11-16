@@ -7,6 +7,7 @@ use palet_shared::{ApiResponse, Club, CreateClubRequest, PaginatedResponse, Pagi
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::middleware::auth::AdminUser;
 use crate::AppState;
 
 /// Get all clubs
@@ -101,6 +102,7 @@ pub async fn get_club(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl R
     )
 )]
 pub async fn create_club(
+    _admin: AdminUser,
     state: web::Data<AppState>,
     request: web::Json<CreateClubRequest>,
 ) -> impl Responder {

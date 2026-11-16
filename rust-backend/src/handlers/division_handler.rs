@@ -8,6 +8,7 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::middleware::auth::AdminUser;
 use crate::AppState;
 
 /// Query params for `GET /divisions`
@@ -99,6 +100,7 @@ pub async fn get_division(state: web::Data<AppState>, id: web::Path<Uuid>) -> im
     )
 )]
 pub async fn create_division(
+    _admin: AdminUser,
     state: web::Data<AppState>,
     request: web::Json<CreateDivisionRequest>,
 ) -> impl Responder {
@@ -145,7 +147,11 @@ pub async fn create_division(
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn delete_division(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+pub async fn delete_division(
+    _admin: AdminUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
     match state.db.divisions.delete_division(*id).await {
         Ok(deleted) => {
             if deleted {

@@ -61,9 +61,22 @@ docker compose up --build
 
 À la **première initialisation** de la base (volume `pgdata` vide), le script
 `dev-data/init-db.sh` est exécuté automatiquement par le conteneur `db`
-(monté dans `/docker-entrypoint-initdb.d`) : il charge `dev-data/schema.sql`
-puis `dev-data/data.sql`. Pour re-seeder from scratch :
+(monté dans `/docker-entrypoint-initdb.d`) : il charge la migration baseline
+`rust-backend/migrations/0001_baseline.sql` puis `dev-data/data.sql`.
+Au démarrage, le backend applique les migrations SQLx (`rust-backend/migrations/`,
+via `sqlx::migrate!`) : la baseline déjà chargée par le seed est marquée comme
+appliquée, seules les suivantes sont jouées. Pour re-seeder from scratch :
 `docker compose down -v && docker compose up`.
+
+### Variables d'environnement (service `api`)
+
+Copier `.env.example` en `.env` (gitignoré) : `cp .env.example .env`.
+
+- `PALET__JWT_SECRET` — **obligatoire** en production (≥ 32 caractères,
+  généré ex. via `openssl rand -hex 32`). Le backend refuse de démarrer en
+  production avec le secret de dev. Aucun secret n'est commité.
+- `PALET__DATABASE_URL`, `PALET__ENVIRONMENT`, `PALET__PORT`, etc. — voir
+  `rust-backend/config/default.toml` (préfixe `PALET__`).
 
 ## Qualité
 
@@ -97,8 +110,13 @@ L'API REST expose les ressources suivantes :
 | Ressource | Endpoints |
 |-----------|-----------|
 | Health | `GET /health` |
+| Auth | `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `GET /auth/me`, `POST /auth/logout` |
 | Clubs | `GET/POST /clubs`, `GET /clubs/{id}` |
 | Matchs | `GET/POST /matchs`, `GET/PUT/DELETE /matchs/{id}`, `GET /matchs/competition/{id}`, `GET /matchs/status/{status}`, `POST /matchs/{id}/start`, `POST /matchs/{id}/complete`, `POST /matchs/{id}/manche` |
 | Championnats | `GET/POST /championnats`, `GET/PUT/DELETE /championnats/{id}`, `GET /championnats/league/{league}`, `GET /championnats/season/{season}`, `POST /championnats/{id}/start`, `POST /championnats/{id}/next-journee`, `GET/PUT /championnats/{id}/classification` |
 
 Documentation OpenAPI interactive : `http://localhost:3000/api-docs`
+
+> Les routes en lecture (GET) sont publiques ; les routes d'écriture exigent un
+> JWT access (`Authorization: Bearer <token>`) avec le bon rôle : arbitre/admin
+> pour les matchs, admin commission pour clubs/championnats/divisions.
