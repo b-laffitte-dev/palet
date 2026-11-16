@@ -69,6 +69,10 @@ Ce document décrit les spécifications fonctionnelles détaillées pour l'appli
 | Consulter classements | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Consulter actualités | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
+> 👉 **Matrice détaillée des droits** (niveaux L/C/M/S/V/A, périmètres, règles
+> transverses, zoom espace équipe E1–E12) :
+> [`docs/matrice-acteurs-droits.md`](matrice-acteurs-droits.md)
+
 ---
 
 ## 🎯 Fonctionnalités par Module
