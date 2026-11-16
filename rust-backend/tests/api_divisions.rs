@@ -8,13 +8,14 @@
 use actix_web::{http::StatusCode, test, web, App};
 use async_trait::async_trait;
 use chrono::Utc;
+use palet_backend::services::auth_service::{create_token, Claims, ACCESS_TOKEN_TYPE};
 use palet_backend::{
     config::AppConfig,
     db::{Database, DatabaseError, DivisionRepository},
     handlers::division_handler,
     AppState,
 };
-use palet_shared::{ApiResponse, CreateDivisionRequest, Division};
+use palet_shared::{ApiResponse, CreateDivisionRequest, Division, UserRole};
 use sqlx::postgres::PgPoolOptions;
 use std::sync::{Arc, Mutex};
 use uuid::Uuid;
@@ -126,6 +127,33 @@ macro_rules! init_app {
     };
 }
 
+fn claims_for(role: UserRole) -> Claims {
+    Claims {
+        sub: Uuid::new_v4().to_string(),
+        email: "admin@example.fr".to_string(),
+        role,
+        club_id: None,
+        token_type: ACCESS_TOKEN_TYPE.to_string(),
+        iat: Utc::now().timestamp(),
+        exp: (Utc::now() + chrono::Duration::hours(1)).timestamp(),
+    }
+}
+
+fn admin_token() -> String {
+    create_token(
+        &AppConfig::default().jwt_secret,
+        &claims_for(UserRole::CommissionAdmin),
+    )
+    .expect("token admin")
+}
+
+fn admin_auth() -> (actix_web::http::header::HeaderName, String) {
+    (
+        actix_web::http::header::AUTHORIZATION,
+        format!("Bearer {}", admin_token()),
+    )
+}
+
 fn division_body(name: &str) -> serde_json::Value {
     serde_json::json!({
         "name": name,
@@ -153,6 +181,7 @@ async fn create_division_returns_201_with_normalized_name_and_position() {
 
     let req = test::TestRequest::post()
         .uri("/divisions")
+        .insert_header(admin_auth())
         .set_json(division_body(" d1 "))
         .to_request();
     let resp = test::call_service(&app, req).await;
@@ -172,6 +201,7 @@ async fn create_several_divisions_appends_positions_and_lists_them_ordered() {
     for name in ["D1", "D2", "D3"] {
         let req = test::TestRequest::post()
             .uri("/divisions")
+            .insert_header(admin_auth())
             .set_json(division_body(name))
             .to_request();
         let resp = test::call_service(&app, req).await;
@@ -196,12 +226,14 @@ async fn create_division_rejects_duplicate_with_400() {
 
     let req = test::TestRequest::post()
         .uri("/divisions")
+        .insert_header(admin_auth())
         .set_json(division_body("D1"))
         .to_request();
     test::call_service(&app, req).await;
 
     let req = test::TestRequest::post()
         .uri("/divisions")
+        .insert_header(admin_auth())
         .set_json(division_body("D1"))
         .to_request();
     let resp = test::call_service(&app, req).await;
@@ -217,6 +249,7 @@ async fn create_division_rejects_empty_name_with_400() {
 
     let req = test::TestRequest::post()
         .uri("/divisions")
+        .insert_header(admin_auth())
         .set_json(division_body("   "))
         .to_request();
     let resp = test::call_service(&app, req).await;
@@ -230,6 +263,7 @@ async fn league_filter_returns_only_matching_divisions() {
 
     let req = test::TestRequest::post()
         .uri("/divisions")
+        .insert_header(admin_auth())
         .set_json(division_body("D1"))
         .to_request();
     test::call_service(&app, req).await;
@@ -248,6 +282,7 @@ async fn delete_division_returns_200_then_404_and_get_404_after_delete() {
 
     let req = test::TestRequest::post()
         .uri("/divisions")
+        .insert_header(admin_auth())
         .set_json(division_body("D1"))
         .to_request();
     let resp = test::call_service(&app, req).await;
@@ -262,6 +297,7 @@ async fn delete_division_returns_200_then_404_and_get_404_after_delete() {
 
     let req = test::TestRequest::delete()
         .uri(&format!("/divisions/{id}"))
+        .insert_header(admin_auth())
         .to_request();
     let resp = test::call_service(&app, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
@@ -270,6 +306,7 @@ async fn delete_division_returns_200_then_404_and_get_404_after_delete() {
 
     let req = test::TestRequest::delete()
         .uri(&format!("/divisions/{id}"))
+        .insert_header(admin_auth())
         .to_request();
     let resp = test::call_service(&app, req).await;
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -279,4 +316,32 @@ async fn delete_division_returns_200_then_404_and_get_404_after_delete() {
         .to_request();
     let resp = test::call_service(&app, req).await;
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+}
+
+#[actix_web::test]
+async fn create_division_requires_admin_token_401_then_403() {
+    let app = init_app!();
+
+    let req = test::TestRequest::post()
+        .uri("/divisions")
+        .set_json(division_body("D1"))
+        .to_request();
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+
+    let player_token = create_token(
+        &AppConfig::default().jwt_secret,
+        &claims_for(UserRole::Player),
+    )
+    .expect("token player");
+    let req = test::TestRequest::post()
+        .uri("/divisions")
+        .insert_header((
+            actix_web::http::header::AUTHORIZATION,
+            format!("Bearer {player_token}"),
+        ))
+        .set_json(division_body("D1"))
+        .to_request();
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }

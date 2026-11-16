@@ -10,6 +10,7 @@ use palet_shared::{
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
+use crate::middleware::auth::AdminUser;
 use crate::AppState;
 
 /// Get all championships
@@ -182,6 +183,7 @@ pub async fn get_championships_by_season(
     )
 )]
 pub async fn create_championship(
+    _admin: AdminUser,
     state: web::Data<AppState>,
     request: web::Json<CreateChampionshipRequest>,
 ) -> impl Responder {
@@ -230,6 +232,7 @@ pub async fn create_championship(
     )
 )]
 pub async fn update_championship(
+    _admin: AdminUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
     request: web::Json<UpdateChampionshipRequest>,
@@ -276,6 +279,7 @@ pub async fn update_championship(
     )
 )]
 pub async fn delete_championship(
+    _admin: AdminUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
 ) -> impl Responder {
@@ -321,7 +325,11 @@ pub async fn delete_championship(
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn start_championship(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+pub async fn start_championship(
+    _admin: AdminUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
     match state.db.championships.start_championship(*id).await {
         Ok(championship) => HttpResponse::Ok().json(ApiResponse {
             data: championship,
@@ -354,7 +362,11 @@ pub async fn start_championship(state: web::Data<AppState>, id: web::Path<Uuid>)
         (status = 500, description = "Internal server error")
     )
 )]
-pub async fn next_journee(state: web::Data<AppState>, id: web::Path<Uuid>) -> impl Responder {
+pub async fn next_journee(
+    _admin: AdminUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
     match state.db.championships.next_journee(*id).await {
         Ok(championship) => HttpResponse::Ok().json(ApiResponse {
             data: championship,
@@ -428,6 +440,7 @@ pub async fn get_championship_classification(
     )
 )]
 pub async fn update_championship_classification(
+    _admin: AdminUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
     request: web::Json<ChampionshipClassification>,

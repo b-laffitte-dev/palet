@@ -13,6 +13,7 @@ services:
       # (volume pgdata vide), via /docker-entrypoint-initdb.d.
       # Pour re-seeder : docker compose down -v && docker compose up
       - ./dev-data:/dev-data:ro
+      - ./rust-backend/migrations:/migrations:ro
       - ./dev-data/init-db.sh:/docker-entrypoint-initdb.d/01-seed-dev-data.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U palet"]
@@ -28,7 +29,9 @@ services:
       PALET__DATABASE_URL: postgres://palet:palet@db:5432/palet
       PALET__ENVIRONMENT: production
       PALET__LOG_LEVEL: info
-      PALET__JWT_SECRET: super-secret-key-for-production
+      # Secret JWT obligatoire hors dev : définir PALET__JWT_SECRET dans .env
+      # (voir .env.example). Aucun secret en dur dans ce fichier.
+      PALET__JWT_SECRET: ${PALET__JWT_SECRET:?PALET__JWT_SECRET requis dans .env (voir .env.example)}
     ports:
       - "3000:3000"
     depends_on:

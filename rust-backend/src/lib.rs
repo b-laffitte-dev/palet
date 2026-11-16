@@ -1,12 +1,13 @@
-//! Palet Venden Backend Library
+//! Palet Vendéen Backend Library
 //!
-//! This crate provides the backend functionality for the Palet Venden application.
+//! This crate provides the backend functionality for the Palet Vendéen application.
 //! It includes database connectivity, handlers, and configuration.
 
 // Re-export all public modules for use in tests and other crates
 pub mod config;
 pub mod db;
 pub mod handlers;
+pub mod middleware;
 pub mod models;
 pub mod repositories;
 pub mod services;

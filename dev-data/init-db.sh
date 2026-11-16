@@ -5,14 +5,16 @@
 # uniquement quand le volume de données est vide (première initialisation).
 # Voir le service `db` dans docker-compose.yml.
 #
-# Ordre : schema d'abord, puis les données (data.sql contient tous les INSERT,
-# ordonnés selon les FK).
+# Ordre : schéma d'abord (migration baseline sqlx, montée dans /migrations),
+# puis les données (data.sql contient tous les INSERT, ordonnés selon les FK).
+# Le backend, au démarrage, marque cette baseline comme appliquée dans
+# _sqlx_migrations puis joue les migrations suivantes (voir db.rs).
 
 set -e
 
-echo "init-db: chargement du schéma (schema.sql)..."
+echo "init-db: chargement du schéma (migration baseline 0001)..."
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
-    --file=/dev-data/schema.sql || exit 1
+    --file=/migrations/0001_baseline.sql || exit 1
 
 echo "init-db: chargement des données (data.sql)..."
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \

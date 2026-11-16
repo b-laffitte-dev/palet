@@ -13,6 +13,7 @@ pub use crate::repositories::{
     match_repository::{MatchRepository, PostgresMatchRepository},
     player_repository::{PlayerRepository, PostgresPlayerRepository},
     team_repository::{PostgresTeamRepository, TeamRepository},
+    user_repository::{PostgresUserRepository, UserRepository},
 };
 
 // ============================================
@@ -79,6 +80,7 @@ pub struct Database {
     pub players: Arc<dyn PlayerRepository + Send + Sync>,
     pub teams: Arc<dyn TeamRepository + Send + Sync>,
     pub divisions: Arc<dyn DivisionRepository + Send + Sync>,
+    pub users: Arc<dyn UserRepository + Send + Sync>,
 }
 
 impl Database {
@@ -94,6 +96,7 @@ impl Database {
             players: Arc::new(PostgresPlayerRepository::new(pool.clone())),
             teams: Arc::new(PostgresTeamRepository::new(pool.clone())),
             divisions: Arc::new(PostgresDivisionRepository::new(pool.clone())),
+            users: Arc::new(PostgresUserRepository::new(pool.clone())),
         }
     }
 
@@ -114,28 +117,18 @@ impl Database {
         }
     }
 
-    /// Initialize database schema (idempotent, no migrations directory yet)
+    /// Apply SQL migrations from `./migrations` (sqlx::migrate!).
+    ///
+    /// In docker dev, the database is pre-seeded by dev-data/init-db.sh which
+    /// loads the 0001 baseline itself: in that case the baseline is marked as
+    /// already applied in `_sqlx_migrations` (with its real checksum) before
+    /// running the migrator, so only the following migrations are executed.
     pub async fn initialize(&self) -> Result<(), DatabaseError> {
-        // Divisions are dynamic (managed from the federal space), so the
-        // table is created here if missing. Other tables are provisioned
-        // out of band; when a migrations/ directory exists, switch to
-        // sqlx::migrate!().
-        sqlx::query(
-            r#"
-            CREATE TABLE IF NOT EXISTS divisions (
-                id uuid PRIMARY KEY,
-                name text NOT NULL,
-                league text NOT NULL,
-                season text NOT NULL,
-                position integer NOT NULL DEFAULT 1,
-                created_at timestamptz NOT NULL,
-                updated_at timestamptz NOT NULL,
-                UNIQUE (league, season, name)
-            )
-            "#,
-        )
-        .execute(&*self.pool)
-        .await?;
+        adopt_seeded_baseline(&self.pool).await?;
+        sqlx::migrate!("./migrations")
+            .run(&*self.pool)
+            .await
+            .map_err(|e| DatabaseError::MigrationError(e.to_string()))?;
         Ok(())
     }
 
@@ -151,6 +144,52 @@ impl Database {
 // ============================================
 // DATABASE INITIALIZATION
 // ============================================
+
+/// Mark migration 0001 (baseline) as applied when the database was pre-seeded
+/// outside sqlx (docker-entrypoint-initdb.d loading 0001_baseline.sql directly):
+/// the `clubs` table exists but `_sqlx_migrations` does not.
+async fn adopt_seeded_baseline(pool: &PgPool) -> Result<(), DatabaseError> {
+    let seeded: bool = sqlx::query_scalar(
+        r#"SELECT EXISTS (
+               SELECT 1 FROM information_schema.tables
+               WHERE table_schema = 'public' AND table_name = 'clubs'
+           ) AND NOT EXISTS (
+               SELECT 1 FROM information_schema.tables
+               WHERE table_schema = 'public' AND table_name = '_sqlx_migrations'
+           )"#,
+    )
+    .fetch_one(pool)
+    .await?;
+    if !seeded {
+        return Ok(());
+    }
+    sqlx::query(
+        r#"CREATE TABLE IF NOT EXISTS _sqlx_migrations (
+            version BIGINT PRIMARY KEY,
+            description TEXT NOT NULL,
+            installed_on TIMESTAMPTZ NOT NULL DEFAULT now(),
+            success BOOLEAN NOT NULL,
+            checksum BYTEA NOT NULL,
+            execution_time BIGINT NOT NULL
+        )"#,
+    )
+    .execute(pool)
+    .await?;
+    let migrator = sqlx::migrate!("./migrations");
+    if let Some(baseline) = migrator.migrations.iter().find(|m| m.version == 1) {
+        sqlx::query(
+            r#"INSERT INTO _sqlx_migrations (version, description, success, checksum, execution_time)
+               VALUES ($1, $2, true, $3, 0)
+               ON CONFLICT (version) DO NOTHING"#,
+        )
+        .bind(baseline.version)
+        .bind(&baseline.description)
+        .bind(&baseline.checksum[..])
+        .execute(pool)
+        .await?;
+    }
+    Ok(())
+}
 
 /// Initialize database connection pool from URL
 pub async fn create_pool(database_url: &str) -> Result<PgPool, DatabaseError> {

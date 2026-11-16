@@ -1,5 +1,6 @@
 //! Request handlers for Palet Vendéen Backend
 
+pub mod auth_handler;
 pub mod championship_handler;
 pub mod club_handler;
 pub mod division_handler;
