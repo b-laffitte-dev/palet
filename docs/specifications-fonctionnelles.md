@@ -69,6 +69,10 @@ Ce document décrit les spécifications fonctionnelles détaillées pour l'appli
 | Consulter classements | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Consulter actualités | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
+> 👉 **Matrice détaillée des droits** (niveaux L/C/M/S/V/A, périmètres, règles
+> transverses, zoom espace équipe E1–E12) :
+> [`docs/matrice-acteurs-droits.md`](matrice-acteurs-droits.md)
+
 ---
 
 ## 🎯 Fonctionnalités par Module
@@ -829,3 +833,34 @@ interface NotificationPreferences {
 - Access Token : JWT, durée 15 minutes
 - Refresh Token : Durée 7 jours
 - Stockage : sessionStorage (par défaut), localStorage (si 
+
+---
+
+## 🏟️ Module 8 : Espace Équipe & Engagement (enrichissement inspiré de SportEasy)
+
+Ce module enrichit les modules 1 à 7 avec la **vie d'équipe au quotidien**,
+inspirée de la plateforme SportEasy : disponibilités, convocations, composition
+d'équipe, feuille de match digitale, covoiturage, tâches/sondages, annonces avec
+accusé de lecture, album médias, bilan d'assiduité, cagnotte du club et page
+publique de l'équipe.
+
+👉 **Spécification détaillée complète** :
+[`docs/enrichissement-fonctionnel-sporteasy.md`](enrichissement-fonctionnel-sporteasy.md)
+(fonctionnel uniquement, aucune implémentation prescrite).
+
+Résumé des sous-modules :
+
+| Sous-module | Fonction | Priorité |
+|---|---|---|
+| E1 | Espace équipe (« vestiaire numérique »), rôles et postes | MVP |
+| E2 | Calendrier d'équipe (matchs, entraînements, déplacements, rappels, export iCalendar) | MVP |
+| E3 | Disponibilités oui/non/incertain + motifs, clôture et relances automatiques | MVP |
+| E4 | Convocations et composition doublette/triplette (postes : pointeur, milieu, tireur) | MVP |
+| E5 | Feuille de match digitale (manche par manche, remplaçants, co-signature capitaines + arbitre) | MVP |
+| E6 | Covoiturage pour les déplacements | V2 |
+| E7 | Tâches « qui ramène quoi » (palets, maitres, plaque) et sondages | V2 |
+| E8 | Annonces d'équipe avec accusé de lecture + fil de discussion | MVP / V2 |
+| E9 | Album photos/vidéos par événement | V2 |
+| E10 | Bilan d'assiduité, vote du meilleur joueur, forme de l'équipe | V2 / V3 |
+| E11 | Cagnotte du club (cotisations, amendes d'absence, dépenses) | V3 |
+| E12 | Page publique équipe/club (effectif, calendrier, résultats, médias) | V2 |
