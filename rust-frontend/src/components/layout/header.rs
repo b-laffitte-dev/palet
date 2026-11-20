@@ -1,6 +1,7 @@
 //! Header component for Palet Vendéen
 
 use crate::components::common::{Button, ButtonSize, ButtonVariant, Logo};
+use crate::hooks::use_auth::{logout, use_auth};
 use dioxus::prelude::*;
 
 /// Header component
@@ -22,7 +23,36 @@ pub fn Header() -> Element {
                         }
                     }
                     div { class: "flex items-center space-x-4",
-                        Link { to: "/connexion", Button { variant: ButtonVariant::Ghost, size: ButtonSize::S } }
+                        {
+                            let auth = use_auth();
+                            let user = auth.read().user.clone();
+                            match user {
+                                Some(u) => rsx! {
+                                    span { class: "text-brand-green-200 text-sm hidden sm:inline",
+                                        "{u.first_name} {u.last_name}"
+                                    }
+                                    Link { to: "/mon-compte",
+                                        Button { variant: ButtonVariant::Secondary, size: ButtonSize::S, "Mon compte" }
+                                    }
+                                    Button {
+                                        variant: ButtonVariant::Ghost,
+                                        size: ButtonSize::S,
+                                        onclick: move |_| {
+                                            spawn(async move { logout().await });
+                                        },
+                                        "Déconnexion"
+                                    }
+                                },
+                                None => rsx! {
+                                    Link { to: "/inscription",
+                                        Button { variant: ButtonVariant::Secondary, size: ButtonSize::S, "Inscription" }
+                                    }
+                                    Link { to: "/connexion",
+                                        Button { variant: ButtonVariant::Primary, size: ButtonSize::S, "Connexion" }
+                                    }
+                                },
+                            }
+                        }
                     }
                 }
             }

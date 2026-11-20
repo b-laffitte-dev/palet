@@ -161,9 +161,9 @@ impl CompetitionRepository for PostgresCompetitionRepository {
     }
 
     async fn get_competition(&self, id: Uuid) -> Result<Option<CompetitionEvent>, DatabaseError> {
-        let row = sqlx::query(
-            "SELECT c.id, c.name, c.code, c.competition_type, c.category, c.material, c.season, c.description, c.location, c.format, c.registration_start, c.registration_end, c.start_date, c.end_date, c.status, c.max_teams, c.fee, c.is_public, c.organizer_id, c.created_at, c.updated_at, (SELECT count(*)::int FROM registrations r WHERE r.competition_id = c.id) AS registered_teams FROM competitions c WHERE c.id = $1",
-        )
+        let row = sqlx::query(sqlx::AssertSqlSafe(format!(
+            "SELECT {EVENT_SELECT} FROM competitions c WHERE c.id = $1"
+        )))
         .bind(id)
         .fetch_optional(&*self.pool)
         .await?;
@@ -176,9 +176,7 @@ impl CompetitionRepository for PostgresCompetitionRepository {
         status: Option<CompetitionStatus>,
         season: Option<String>,
     ) -> Result<Vec<CompetitionEvent>, DatabaseError> {
-        let mut query = String::from(
-            "SELECT c.id, c.name, c.code, c.competition_type, c.category, c.material, c.season, c.description, c.location, c.format, c.registration_start, c.registration_end, c.start_date, c.end_date, c.status, c.max_teams, c.fee, c.is_public, c.organizer_id, c.created_at, c.updated_at, (SELECT count(*)::int FROM registrations r WHERE r.competition_id = c.id) AS registered_teams FROM competitions c",
-        );
+        let mut query = format!("SELECT {EVENT_SELECT} FROM competitions c");
         let mut conditions: Vec<String> = Vec::new();
         if competition_type.is_some() {
             conditions.push("c.competition_type = $1".to_string());

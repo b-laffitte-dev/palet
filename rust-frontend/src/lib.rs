@@ -12,11 +12,13 @@ use dioxus::prelude::*;
 use log::info;
 use wasm_bindgen::prelude::wasm_bindgen;
 
+use hooks::use_auth::provide_auth;
 use pages::{
-    actualites::Actualites, championship_detail::ChampionnatDetail, championships::Championnats,
-    club_detail::ClubDetail, clubs::Clubs, connexion::Connexion, federation::Federation,
-    home::Home, inscription::Inscription, not_found::NotFound, player_detail::PlayerDetail,
-    players::Joueurs, tournament_detail::TournamentDetail, tournaments::Tournois,
+    actualite_detail::ActualiteDetail, actualites::Actualites,
+    championship_detail::ChampionnatDetail, championships::Championnats, club_detail::ClubDetail,
+    clubs::Clubs, compte::MonCompte, connexion::Connexion, federation::Federation, home::Home,
+    inscription::Inscription, not_found::NotFound, player_detail::PlayerDetail, players::Joueurs,
+    tournament_detail::TournamentDetail, tournaments::Tournois,
 };
 
 /// Route definitions
@@ -43,6 +45,10 @@ enum Route {
     PlayerDetail { id: String },
     #[route("/actualites")]
     Actualites,
+    #[route("/actualites/:id")]
+    ActualiteDetail { id: String },
+    #[route("/mon-compte")]
+    MonCompte,
     #[route("/federation")]
     Federation,
     #[route("/connexion")]
@@ -56,6 +62,7 @@ enum Route {
 /// Main App component
 #[component]
 fn App() -> Element {
+    provide_auth();
     rsx! {
         Router::<Route> {}
     }

@@ -444,10 +444,10 @@ impl CompetitionRepository for MockCompetitionRepository {
             .filter(|e| {
                 competition_type
                     .as_ref()
-                    .map_or(true, |t| &e.competition_type == t)
+                    .is_none_or(|t| &e.competition_type == t)
             })
-            .filter(|e| status.as_ref().map_or(true, |s| &e.status == s))
-            .filter(|e| season.as_ref().map_or(true, |s| &e.season == s))
+            .filter(|e| status.as_ref().is_none_or(|s| &e.status == s))
+            .filter(|e| season.as_ref().is_none_or(|s| &e.season == s))
             .cloned()
             .collect())
     }
@@ -765,9 +765,9 @@ impl NewsRepository for MockNewsRepository {
             .unwrap()
             .iter()
             .filter(|a| a.published)
-            .filter(|a| category.as_ref().map_or(true, |c| &a.category == c))
+            .filter(|a| category.as_ref().is_none_or(|c| &a.category == c))
             .filter(|a| {
-                needle.as_ref().map_or(true, |n| {
+                needle.as_ref().is_none_or(|n| {
                     a.title.to_lowercase().contains(n) || a.content.to_lowercase().contains(n)
                 })
             })
@@ -998,7 +998,7 @@ async fn joueurs_get_public_post_protege_par_scope_club() {
     assert_eq!(body.data.len(), 1);
 
     let req = test::TestRequest::get()
-        .uri(&format!("/joueurs?q=dupont"))
+        .uri("/joueurs?q=dupont")
         .to_request();
     let resp = test::call_service(&app, req).await;
     let body: ApiResponse<Vec<Player>> = test::read_body_json(resp).await;

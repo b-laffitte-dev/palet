@@ -1,1 +1,3 @@
 //! Hooks module for Palet Vendéen Frontend
+
+pub mod use_auth;
