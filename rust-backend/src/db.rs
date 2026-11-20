@@ -9,8 +9,10 @@ use std::sync::Arc;
 pub use crate::repositories::{
     championship_repository::{ChampionshipRepository, PostgresChampionshipRepository},
     club_repository::{ClubRepository, PostgresClubRepository},
+    competition_repository::{CompetitionRepository, PostgresCompetitionRepository},
     division_repository::{DivisionRepository, PostgresDivisionRepository},
     match_repository::{MatchRepository, PostgresMatchRepository},
+    news_repository::{NewsRepository, PostgresNewsRepository},
     player_repository::{PlayerRepository, PostgresPlayerRepository},
     team_repository::{PostgresTeamRepository, TeamRepository},
     user_repository::{PostgresUserRepository, UserRepository},
@@ -81,6 +83,8 @@ pub struct Database {
     pub teams: Arc<dyn TeamRepository + Send + Sync>,
     pub divisions: Arc<dyn DivisionRepository + Send + Sync>,
     pub users: Arc<dyn UserRepository + Send + Sync>,
+    pub competitions: Arc<dyn CompetitionRepository + Send + Sync>,
+    pub news: Arc<dyn NewsRepository + Send + Sync>,
 }
 
 impl Database {
@@ -97,6 +101,8 @@ impl Database {
             teams: Arc::new(PostgresTeamRepository::new(pool.clone())),
             divisions: Arc::new(PostgresDivisionRepository::new(pool.clone())),
             users: Arc::new(PostgresUserRepository::new(pool.clone())),
+            competitions: Arc::new(PostgresCompetitionRepository::new(pool.clone())),
+            news: Arc::new(PostgresNewsRepository::new(pool.clone())),
         }
     }
 
@@ -187,6 +193,44 @@ async fn adopt_seeded_baseline(pool: &PgPool) -> Result<(), DatabaseError> {
         .bind(&baseline.checksum[..])
         .execute(pool)
         .await?;
+    }
+    Ok(())
+}
+
+/// Applique les seeds de dev (fichiers SQL du dossier `seed_dir`) si la table
+/// `users` est vide. Appelé après les migrations, uniquement si `seed_dir` est
+/// non vide et l'environnement n'est pas "production" (voir main.rs).
+pub async fn seed_dev_data(pool: &PgPool, seed_dir: &str) -> Result<(), DatabaseError> {
+    if seed_dir.is_empty() {
+        return Ok(());
+    }
+    let count: i64 = sqlx::query_scalar("SELECT count(*) FROM users")
+        .fetch_one(pool)
+        .await?;
+    if count > 0 {
+        return Ok(());
+    }
+    const SEED_FILES: [&str; 5] = [
+        "players.sql",
+        "teams.sql",
+        "team_players.sql",
+        "users_seed.sql",
+        "news.sql",
+    ];
+    for name in SEED_FILES {
+        let path = format!("{seed_dir}/{name}");
+        let content = std::fs::read_to_string(&path)
+            .map_err(|e| DatabaseError::MigrationError(format!("lecture de {path}: {e}")))?;
+        let cleaned = content
+            .lines()
+            .filter(|l| !l.trim_start().starts_with('\\'))
+            .collect::<Vec<_>>()
+            .join("\n");
+        sqlx::raw_sql(sqlx::AssertSqlSafe(cleaned))
+            .execute(pool)
+            .await
+            .map_err(|e| DatabaseError::MigrationError(format!("seed {name}: {e}")))?;
+        log::info!("seed appliqué: {name}");
     }
     Ok(())
 }

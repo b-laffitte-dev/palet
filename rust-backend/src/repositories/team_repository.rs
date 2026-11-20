@@ -5,7 +5,7 @@
 use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
 use chrono::Utc;
-use palet_shared::{Team, TeamStats, TeamStatus};
+use palet_shared::{Team, TeamMember, TeamMemberRole, TeamMemberWithPlayer, TeamStats, TeamStatus};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
 use uuid::Uuid;
@@ -45,6 +45,24 @@ pub trait TeamRepository {
 
     // Search Operations
     async fn search_teams(&self, query: String) -> Result<Vec<Team>, DatabaseError>;
+
+    // Effectif (table team_players)
+    async fn add_player_to_team(
+        &self,
+        team_id: Uuid,
+        player_id: Uuid,
+        role: TeamMemberRole,
+        position: Option<String>,
+    ) -> Result<TeamMember, DatabaseError>;
+    async fn remove_player_from_team(
+        &self,
+        team_id: Uuid,
+        player_id: Uuid,
+    ) -> Result<bool, DatabaseError>;
+    async fn get_team_members(
+        &self,
+        team_id: Uuid,
+    ) -> Result<Vec<TeamMemberWithPlayer>, DatabaseError>;
 }
 
 // ============================================
@@ -284,6 +302,97 @@ impl TeamRepository for PostgresTeamRepository {
         }
         Ok(teams)
     }
+
+    async fn add_player_to_team(
+        &self,
+        team_id: Uuid,
+        player_id: Uuid,
+        role: TeamMemberRole,
+        position: Option<String>,
+    ) -> Result<TeamMember, DatabaseError> {
+        let now = Utc::now();
+        let row = sqlx::query(
+            r#"
+            INSERT INTO team_players (team_id, player_id, role, position, joined_at)
+            VALUES ($1, $2, $3, $4, $5)
+            ON CONFLICT (team_id, player_id) DO UPDATE SET role = $3, position = $4
+            RETURNING *
+            "#,
+        )
+        .bind(team_id)
+        .bind(player_id)
+        .bind(enum_to_db_string(&role))
+        .bind(&position)
+        .bind(now)
+        .fetch_one(&*self.pool)
+        .await?;
+
+        if role == TeamMemberRole::Captain {
+            sqlx::query("UPDATE teams SET captain_id = $1, updated_at = $2 WHERE id = $3")
+                .bind(player_id)
+                .bind(now)
+                .bind(team_id)
+                .execute(&*self.pool)
+                .await?;
+        }
+
+        let member = TeamMember {
+            team_id: row.get("team_id"),
+            player_id: row.get("player_id"),
+            role: enum_from_db_string(&row.get::<String, _>("role"))?,
+            position: row.get("position"),
+            joined_at: row.get("joined_at"),
+        };
+        Ok(member)
+    }
+
+    async fn remove_player_from_team(
+        &self,
+        team_id: Uuid,
+        player_id: Uuid,
+    ) -> Result<bool, DatabaseError> {
+        let result = sqlx::query("DELETE FROM team_players WHERE team_id = $1 AND player_id = $2")
+            .bind(team_id)
+            .bind(player_id)
+            .execute(&*self.pool)
+            .await?;
+        Ok(result.rows_affected() > 0)
+    }
+
+    async fn get_team_members(
+        &self,
+        team_id: Uuid,
+    ) -> Result<Vec<TeamMemberWithPlayer>, DatabaseError> {
+        let rows = sqlx::query(
+            r#"
+            SELECT tp.team_id, tp.player_id, tp.role, tp.position, tp.joined_at, p.*
+            FROM team_players tp
+            JOIN players p ON p.id = tp.player_id
+            WHERE tp.team_id = $1
+            ORDER BY tp.role DESC, p.last_name, p.first_name
+            "#,
+        )
+        .bind(team_id)
+        .fetch_all(&*self.pool)
+        .await?;
+
+        let mut members = Vec::new();
+        for row in rows {
+            members.push(TeamMemberWithPlayer {
+                team_id: row.get("team_id"),
+                player_id: row.get("player_id"),
+                role: enum_from_db_string(&row.get::<String, _>("role"))?,
+                position: row.get("position"),
+                joined_at: row.get("joined_at"),
+                player:
+                    crate::repositories::player_repository::PostgresPlayerRepository::row_to_player(
+                        row,
+                    )
+                    .await?,
+            });
+        }
+        Ok(members)
+    }
 }
 
 // ============================================
@@ -496,5 +605,31 @@ impl TeamRepository for MockTeamRepository {
             .filter(|t| t.name.to_lowercase().contains(&query_lower))
             .cloned()
             .collect())
+    }
+    async fn add_player_to_team(
+        &self,
+        _team_id: Uuid,
+        _player_id: Uuid,
+        _role: TeamMemberRole,
+        _position: Option<String>,
+    ) -> Result<TeamMember, DatabaseError> {
+        Err(DatabaseError::NotFound(
+            "mock: effectif non géré".to_string(),
+        ))
+    }
+
+    async fn remove_player_from_team(
+        &self,
+        _team_id: Uuid,
+        _player_id: Uuid,
+    ) -> Result<bool, DatabaseError> {
+        Ok(false)
+    }
+
+    async fn get_team_members(
+        &self,
+        _team_id: Uuid,
+    ) -> Result<Vec<TeamMemberWithPlayer>, DatabaseError> {
+        Ok(Vec::new())
     }
 }

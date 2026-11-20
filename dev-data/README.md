@@ -16,9 +16,13 @@ Le **schéma** ne vit plus ici : il est géré par les migrations SQLx dans
 Tables extraites : `championships`, `clubs`, `divisions`,
 `championship_teams`, `matches`, `championship_classifications`.
 
-Ordre de chargement si restore table par table (dépendances FK) :
-`championships` → `clubs` → `divisions` → `championship_teams` →
-`matches` → `championship_classifications`.
+Seeds Vague 1 (générés, pas des dumps) : `players.sql`, `teams.sql` (une équipe
+par club, `id = club_id`), `team_players.sql`, `users_seed.sql` (comptes de
+démo, mot de passe `Palet2026!`), `news.sql`.
+
+Ordre de chargement (dépendances FK, utilisé par `init-db.sh`) :
+`data.sql` → `players.sql` → `teams.sql` → `team_players.sql` →
+`users_seed.sql` → `news.sql`.
 
 ## Ré-extraire depuis la base de dev
 

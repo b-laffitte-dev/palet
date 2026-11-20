@@ -18,8 +18,8 @@ use palet_backend::{
     config::load_config,
     db::Database,
     handlers::{
-        auth_handler, championship_handler, club_handler, division_handler, health_handler,
-        match_handler,
+        auth_handler, championship_handler, club_handler, competition_handler, division_handler,
+        health_handler, match_handler, news_handler, player_handler, team_handler,
     },
     AppState,
 };
@@ -62,6 +62,33 @@ use palet_backend::{
         division_handler::get_division,
         division_handler::create_division,
         division_handler::delete_division,
+        player_handler::get_players,
+        player_handler::get_player,
+        player_handler::create_player,
+        player_handler::update_player,
+        player_handler::delete_player,
+        team_handler::get_teams,
+        team_handler::get_team,
+        team_handler::get_effectif,
+        team_handler::create_team,
+        team_handler::update_team,
+        team_handler::delete_team,
+        team_handler::add_team_member,
+        team_handler::remove_team_member,
+        competition_handler::get_competitions,
+        competition_handler::get_competition,
+        competition_handler::create_competition,
+        competition_handler::update_competition,
+        competition_handler::delete_competition,
+        competition_handler::register_team,
+        competition_handler::get_inscriptions,
+        competition_handler::confirm_inscription,
+        competition_handler::generer_calendrier,
+        news_handler::get_actualites,
+        news_handler::get_actualite,
+        news_handler::create_actualite,
+        news_handler::update_actualite,
+        news_handler::delete_actualite,
     ),
     components(),
     tags(
@@ -71,6 +98,10 @@ use palet_backend::{
         (name = "Matchs", description = "Match management endpoints"),
         (name = "Championnats", description = "Championship management endpoints"),
         (name = "Divisions", description = "Departmental division management endpoints"),
+        (name = "Joueurs", description = "Player management endpoints"),
+        (name = "Equipes", description = "Team management endpoints"),
+        (name = "Competitions", description = "Tournament/cup event endpoints and registrations"),
+        (name = "Actualites", description = "News endpoints"),
     ),
     info(
         title = "Palet Vendéen API",
@@ -155,9 +186,14 @@ async fn main() -> std::io::Result<()> {
     info!("Database connection established");
 
     // Create database wrapper
-    let database = Database::new(pool);
+    let database = Database::new(pool.clone());
     if let Err(e) = database.initialize().await {
         error!("Failed to initialize database schema: {:?}", e);
+    }
+    if !config.seed_dir.is_empty() && config.environment != "production" {
+        if let Err(e) = palet_backend::db::seed_dev_data(&pool, &config.seed_dir).await {
+            error!("Failed to seed dev data: {:?}", e);
+        }
     }
     let database = Arc::new(database);
     let app_config = Arc::new(config);
@@ -266,6 +302,73 @@ async fn main() -> std::io::Result<()> {
                         "/{id}/classification",
                         web::put().to(championship_handler::update_championship_classification),
                     ),
+            )
+            // Player endpoints
+            .service(
+                web::scope("/joueurs")
+                    .route("", web::get().to(player_handler::get_players))
+                    .route("", web::post().to(player_handler::create_player))
+                    .route("/{id}", web::get().to(player_handler::get_player))
+                    .route("/{id}", web::put().to(player_handler::update_player))
+                    .route("/{id}", web::delete().to(player_handler::delete_player)),
+            )
+            // Team endpoints
+            .service(
+                web::scope("/equipes")
+                    .route("", web::get().to(team_handler::get_teams))
+                    .route("", web::post().to(team_handler::create_team))
+                    .route("/{id}", web::get().to(team_handler::get_team))
+                    .route("/{id}", web::put().to(team_handler::update_team))
+                    .route("/{id}", web::delete().to(team_handler::delete_team))
+                    .route("/{id}/effectif", web::get().to(team_handler::get_effectif))
+                    .route(
+                        "/{id}/joueurs",
+                        web::post().to(team_handler::add_team_member),
+                    )
+                    .route(
+                        "/{id}/joueurs/{player_id}",
+                        web::delete().to(team_handler::remove_team_member),
+                    ),
+            )
+            // Competition (tournoi/coupe/open) endpoints
+            .service(
+                web::scope("/competitions")
+                    .route("", web::get().to(competition_handler::get_competitions))
+                    .route("", web::post().to(competition_handler::create_competition))
+                    .route("/{id}", web::get().to(competition_handler::get_competition))
+                    .route(
+                        "/{id}",
+                        web::put().to(competition_handler::update_competition),
+                    )
+                    .route(
+                        "/{id}",
+                        web::delete().to(competition_handler::delete_competition),
+                    )
+                    .route(
+                        "/{id}/inscrire",
+                        web::post().to(competition_handler::register_team),
+                    )
+                    .route(
+                        "/{id}/inscriptions",
+                        web::get().to(competition_handler::get_inscriptions),
+                    )
+                    .route(
+                        "/{id}/inscriptions/{team_id}/confirmer",
+                        web::post().to(competition_handler::confirm_inscription),
+                    )
+                    .route(
+                        "/{id}/generer",
+                        web::post().to(competition_handler::generer_calendrier),
+                    ),
+            )
+            // News endpoints
+            .service(
+                web::scope("/actualites")
+                    .route("", web::get().to(news_handler::get_actualites))
+                    .route("", web::post().to(news_handler::create_actualite))
+                    .route("/{id}", web::get().to(news_handler::get_actualite))
+                    .route("/{id}", web::put().to(news_handler::update_actualite))
+                    .route("/{id}", web::delete().to(news_handler::delete_actualite)),
             )
             // Division endpoints (espace fédéral)
             .service(

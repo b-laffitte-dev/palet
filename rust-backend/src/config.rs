@@ -28,6 +28,8 @@ pub struct AppConfig {
     pub jwt_expiration_hours: u64,
     /// Refresh token expiration in days
     pub jwt_refresh_expiration_days: u64,
+    /// Dossier de seeds SQL appliqués au démarrage en dev (vide = aucun seed)
+    pub seed_dir: String,
 }
 
 impl AppConfig {
@@ -57,6 +59,7 @@ impl AppConfig {
             jwt_refresh_expiration_days: settings
                 .get_int("jwt_refresh_expiration_days")
                 .unwrap_or(7) as u64,
+            seed_dir: settings.get_string("seed_dir").unwrap_or_default(),
         })
     }
 
@@ -88,6 +91,7 @@ impl Default for AppConfig {
             jwt_secret: "dev-only-insecure-secret".to_string(),
             jwt_expiration_hours: 24,
             jwt_refresh_expiration_days: 7,
+            seed_dir: String::new(),
         }
     }
 }

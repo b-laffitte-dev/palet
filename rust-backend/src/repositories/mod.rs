@@ -5,9 +5,11 @@
 
 pub mod championship_repository;
 pub mod club_repository;
+pub mod competition_repository;
 pub mod division_repository;
 pub mod enum_conv;
 pub mod match_repository;
+pub mod news_repository;
 pub mod player_repository;
 pub mod team_repository;
 pub mod user_repository;

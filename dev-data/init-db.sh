@@ -16,8 +16,11 @@ echo "init-db: chargement du schéma (migration baseline 0001)..."
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
     --file=/migrations/0001_baseline.sql || exit 1
 
-echo "init-db: chargement des données (data.sql)..."
+echo "init-db: chargement des données historiques (data.sql)..."
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
     --file=/dev-data/data.sql || exit 1
+
+# Les seeds Vague 1 (players/teams/users/news) sont appliqués par le backend
+# au démarrage, après les migrations (PALET__SEED_DIR, voir docker-compose.yml).
 
 echo "init-db: seed terminé."

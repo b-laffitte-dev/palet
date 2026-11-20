@@ -64,7 +64,7 @@ impl PostgresPlayerRepository {
     }
 
     // Helper function to convert database row to Player
-    async fn row_to_player(row: sqlx::postgres::PgRow) -> Result<Player, DatabaseError> {
+    pub(crate) async fn row_to_player(row: sqlx::postgres::PgRow) -> Result<Player, DatabaseError> {
         let id: Uuid = row.get("id");
         let first_name: String = row.get("first_name");
         let last_name: String = row.get("last_name");
