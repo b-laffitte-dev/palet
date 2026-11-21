@@ -3,6 +3,10 @@
 pub mod auth_handler;
 pub mod championship_handler;
 pub mod club_handler;
+pub mod competition_handler;
 pub mod division_handler;
 pub mod health_handler;
 pub mod match_handler;
+pub mod news_handler;
+pub mod player_handler;
+pub mod team_handler;

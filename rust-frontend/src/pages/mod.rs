@@ -1,10 +1,12 @@
 //! Pages module for Palet Vendéen Frontend
 
+pub mod actualite_detail;
 pub mod actualites;
 pub mod championship_detail;
 pub mod championships;
 pub mod club_detail;
 pub mod clubs;
+pub mod compte;
 pub mod connexion;
 pub mod federation;
 pub mod home;

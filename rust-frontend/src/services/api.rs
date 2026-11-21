@@ -12,8 +12,10 @@
 //! `with_base_url` still allows overriding this explicitly.
 
 use palet_shared::{
-    ApiResponse, Championship, ChampionshipClassification, Club, CreateDivisionRequest, Division,
-    Match, PaginatedResponse,
+    ApiResponse, AuthResponse, AuthToken, Championship, ChampionshipClassification, Club,
+    CompetitionEvent, CreateDivisionRequest, Division, LoginRequest, Match, NewsArticle,
+    PaginatedResponse, Player, RefreshTokenRequest, RegisterRequest, Registration, Team,
+    TeamMemberWithPlayer, UserProfile,
 };
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -92,16 +94,21 @@ impl ApiService {
 
         let init = web_sys::RequestInit::new();
         init.set_method(method);
+        let headers = web_sys::Headers::new().map_err(|e| format!("headers: {e:?}"))?;
+        if let Some(token) = stored_access_token() {
+            headers
+                .set("Authorization", &format!("Bearer {token}"))
+                .map_err(|e| format!("authorization header: {e:?}"))?;
+        }
         if let Some(body) = body {
             let json = serde_json::to_string(body)
                 .map_err(|e| format!("encoding body for {url} failed: {e}"))?;
             init.set_body(&JsValue::from_str(&json));
-            let headers = web_sys::Headers::new().map_err(|e| format!("headers: {e:?}"))?;
             headers
                 .set("Content-Type", "application/json")
                 .map_err(|e| format!("content-type header: {e:?}"))?;
-            init.set_headers(headers.as_ref());
         }
+        init.set_headers(headers.as_ref());
 
         let response_value = JsFuture::from(window.fetch_with_str_and_init(&url, &init))
             .await
@@ -208,6 +215,273 @@ impl ApiService {
     pub async fn delete_division(&self, id: uuid::Uuid) -> Result<bool, String> {
         let response: ApiResponse<bool> = self.delete_json(&format!("/divisions/{id}")).await?;
         Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Auth
+    // --------------------------------------------
+
+    /// POST /auth/register — renvoie la session (auto-login)
+    pub async fn register(&self, request: &RegisterRequest) -> Result<AuthResponse, String> {
+        let response: ApiResponse<AuthResponse> = self.post_json("/auth/register", request).await?;
+        Ok(response.data)
+    }
+
+    /// POST /auth/login
+    pub async fn login(&self, request: &LoginRequest) -> Result<AuthResponse, String> {
+        let response: ApiResponse<AuthResponse> = self.post_json("/auth/login", request).await?;
+        Ok(response.data)
+    }
+
+    /// GET /auth/me (token requis)
+    pub async fn me(&self) -> Result<UserProfile, String> {
+        let response: ApiResponse<UserProfile> = self.get_json("/auth/me").await?;
+        Ok(response.data)
+    }
+
+    /// POST /auth/refresh — rotation du refresh token
+    pub async fn refresh(&self, refresh_token: &str) -> Result<AuthResponse, String> {
+        let response: ApiResponse<AuthResponse> = self
+            .post_json(
+                "/auth/refresh",
+                &RefreshTokenRequest {
+                    refresh_token: refresh_token.to_string(),
+                },
+            )
+            .await?;
+        Ok(response.data)
+    }
+
+    /// POST /auth/logout — révoque le refresh token
+    pub async fn logout(&self, refresh_token: &str) -> Result<bool, String> {
+        let response: ApiResponse<bool> = self
+            .post_json(
+                "/auth/logout",
+                &RefreshTokenRequest {
+                    refresh_token: refresh_token.to_string(),
+                },
+            )
+            .await?;
+        Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Championnats & matchs
+    // --------------------------------------------
+
+    /// Get a championship by ID — GET /championnats/{id}
+    pub async fn get_championship(&self, id: uuid::Uuid) -> Result<Championship, String> {
+        let response: ApiResponse<Championship> =
+            self.get_json(&format!("/championnats/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Get matches of a competition — GET /matchs/competition/{id}
+    pub async fn get_matches_by_competition(
+        &self,
+        competition_id: uuid::Uuid,
+    ) -> Result<Vec<Match>, String> {
+        let response: ApiResponse<Vec<Match>> = self
+            .get_json(&format!("/matchs/competition/{competition_id}"))
+            .await?;
+        Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Joueurs & équipes
+    // --------------------------------------------
+
+    /// Get players, optional filters — GET /joueurs?q=&club_id=&category=
+    pub async fn get_joueurs(
+        &self,
+        q: Option<&str>,
+        club_id: Option<uuid::Uuid>,
+        category: Option<&str>,
+    ) -> Result<Vec<Player>, String> {
+        let mut path = "/joueurs?".to_string();
+        let mut sep = "";
+        if let Some(q) = q {
+            path.push_str(&format!("{sep}q={}", url_encode(q)));
+            sep = "&";
+        }
+        if let Some(id) = club_id {
+            path.push_str(&format!("{sep}club_id={id}"));
+            sep = "&";
+        }
+        if let Some(c) = category {
+            path.push_str(&format!("{sep}category={}", url_encode(c)));
+        }
+        let response: ApiResponse<Vec<Player>> = self.get_json(&path).await?;
+        Ok(response.data)
+    }
+
+    /// Get a player — GET /joueurs/{id}
+    pub async fn get_joueur(&self, id: uuid::Uuid) -> Result<Player, String> {
+        let response: ApiResponse<Player> = self.get_json(&format!("/joueurs/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Get teams, optional filters — GET /equipes?club_id=&q=
+    pub async fn get_equipes(
+        &self,
+        club_id: Option<uuid::Uuid>,
+        q: Option<&str>,
+    ) -> Result<Vec<Team>, String> {
+        let mut path = "/equipes?".to_string();
+        if let Some(id) = club_id {
+            path.push_str(&format!("club_id={id}"));
+        }
+        if let Some(q) = q {
+            if club_id.is_some() {
+                path.push('&');
+            }
+            path.push_str(&format!("q={}", url_encode(q)));
+        }
+        let response: ApiResponse<Vec<Team>> = self.get_json(&path).await?;
+        Ok(response.data)
+    }
+
+    /// Get a team — GET /equipes/{id}
+    pub async fn get_equipe(&self, id: uuid::Uuid) -> Result<Team, String> {
+        let response: ApiResponse<Team> = self.get_json(&format!("/equipes/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Get team effectif — GET /equipes/{id}/effectif
+    pub async fn get_effectif(&self, id: uuid::Uuid) -> Result<Vec<TeamMemberWithPlayer>, String> {
+        let response: ApiResponse<Vec<TeamMemberWithPlayer>> =
+            self.get_json(&format!("/equipes/{id}/effectif")).await?;
+        Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Compétitions (tournois/coupe) & inscriptions
+    // --------------------------------------------
+
+    /// Get competitions — GET /competitions?type=&status=&season=
+    pub async fn get_competitions(
+        &self,
+        competition_type: Option<&str>,
+        status: Option<&str>,
+    ) -> Result<Vec<CompetitionEvent>, String> {
+        let mut path = "/competitions?".to_string();
+        let mut sep = "";
+        if let Some(t) = competition_type {
+            path.push_str(&format!("{sep}type={t}"));
+            sep = "&";
+        }
+        if let Some(s) = status {
+            path.push_str(&format!("{sep}status={s}"));
+        }
+        let response: ApiResponse<Vec<CompetitionEvent>> = self.get_json(&path).await?;
+        Ok(response.data)
+    }
+
+    /// Get a competition — GET /competitions/{id}
+    pub async fn get_competition(&self, id: uuid::Uuid) -> Result<CompetitionEvent, String> {
+        let response: ApiResponse<CompetitionEvent> =
+            self.get_json(&format!("/competitions/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Get registrations — GET /competitions/{id}/inscriptions
+    pub async fn get_inscriptions(&self, id: uuid::Uuid) -> Result<Vec<Registration>, String> {
+        let response: ApiResponse<Vec<Registration>> = self
+            .get_json(&format!("/competitions/{id}/inscriptions"))
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Register a team — POST /competitions/{id}/inscrire (token requis)
+    pub async fn inscrire(
+        &self,
+        id: uuid::Uuid,
+        team_id: uuid::Uuid,
+    ) -> Result<Registration, String> {
+        let response: ApiResponse<Registration> = self
+            .post_json(
+                &format!("/competitions/{id}/inscrire"),
+                &serde_json::json!({ "team_id": team_id }),
+            )
+            .await?;
+        Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Actualités
+    // --------------------------------------------
+
+    /// Get published news — GET /actualites?category=&q=
+    pub async fn get_actualites(
+        &self,
+        category: Option<&str>,
+        q: Option<&str>,
+    ) -> Result<Vec<NewsArticle>, String> {
+        let mut path = "/actualites?".to_string();
+        let mut sep = "";
+        if let Some(c) = category {
+            path.push_str(&format!("{sep}category={}", url_encode(c)));
+            sep = "&";
+        }
+        if let Some(q) = q {
+            path.push_str(&format!("{sep}q={}", url_encode(q)));
+        }
+        let response: ApiResponse<Vec<NewsArticle>> = self.get_json(&path).await?;
+        Ok(response.data)
+    }
+
+    /// Get a published article — GET /actualites/{id}
+    pub async fn get_actualite(&self, id: uuid::Uuid) -> Result<NewsArticle, String> {
+        let response: ApiResponse<NewsArticle> =
+            self.get_json(&format!("/actualites/{id}")).await?;
+        Ok(response.data)
+    }
+}
+
+// ============================================
+// SESSION (localStorage)
+// ============================================
+
+const KEY_ACCESS: &str = "palet.access_token";
+const KEY_REFRESH: &str = "palet.refresh_token";
+const KEY_USER: &str = "palet.user";
+
+fn local_storage() -> Option<web_sys::Storage> {
+    web_sys::window().and_then(|w| w.local_storage().ok().flatten())
+}
+
+/// Access token stocké (None si déconnecté)
+pub fn stored_access_token() -> Option<String> {
+    local_storage().and_then(|s| s.get_item(KEY_ACCESS).ok().flatten())
+}
+
+pub fn stored_refresh_token() -> Option<String> {
+    local_storage().and_then(|s| s.get_item(KEY_REFRESH).ok().flatten())
+}
+
+pub fn stored_user() -> Option<UserProfile> {
+    local_storage()
+        .and_then(|s| s.get_item(KEY_USER).ok().flatten())
+        .and_then(|json| serde_json::from_str::<UserProfile>(&json).ok())
+}
+
+/// Persiste la session après login/register/refresh
+pub fn save_session(token: &AuthToken, user: &UserProfile) {
+    if let Some(s) = local_storage() {
+        let _ = s.set_item(KEY_ACCESS, &token.access_token);
+        let _ = s.set_item(KEY_REFRESH, &token.refresh_token);
+        if let Ok(json) = serde_json::to_string(user) {
+            let _ = s.set_item(KEY_USER, &json);
+        }
+    }
+}
+
+/// Supprime la session (logout)
+pub fn clear_session() {
+    if let Some(s) = local_storage() {
+        let _ = s.remove_item(KEY_ACCESS);
+        let _ = s.remove_item(KEY_REFRESH);
+        let _ = s.remove_item(KEY_USER);
     }
 }
 

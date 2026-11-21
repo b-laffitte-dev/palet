@@ -916,3 +916,30 @@
     margin-bottom: var(--spacing-8);
   }
 }
+
+/* ===== Pages génériques (listes, fiches, formulaires) — Vague 1 ===== */
+.page-title { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #fff; margin-bottom: .5rem; }
+.page-sub { color: var(--color-brand-green-200); margin-bottom: 1.5rem; }
+.page-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.page-card { display: block; background: var(--color-brand-green-950); border: 1px solid var(--color-brand-green-800); border-radius: .75rem; padding: 1rem 1.25rem; color: var(--color-brand-green-100); text-decoration: none; }
+.page-card:hover { border-color: var(--color-brand-green-500); }
+.page-card h3 { color: #fff; font-weight: 700; margin-bottom: .25rem; }
+.page-card .muted { color: var(--color-brand-green-200); font-size: .875rem; }
+.page-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem; align-items: center; }
+.page-input { background: var(--color-brand-green-950); border: 1px solid var(--color-brand-green-700); color: #fff; border-radius: .5rem; padding: .55rem .8rem; font-size: 1rem; min-height: 44px; }
+.page-input:focus { outline: 2px solid var(--color-brand-green-500); }
+.page-form { display: flex; flex-direction: column; gap: .9rem; max-width: 26rem; }
+.page-form label { color: var(--color-brand-green-200); font-size: .875rem; display: flex; flex-direction: column; gap: .3rem; }
+.page-error { color: #fca5a5; font-size: .875rem; }
+.page-empty { color: var(--color-brand-green-200); }
+.page-detail { display: grid; gap: 1.5rem; }
+.kv { display: grid; grid-template-columns: 10rem 1fr; gap: .25rem .75rem; margin: 0; }
+.kv dt { color: var(--color-brand-green-200); }
+.kv dd { color: #fff; margin: 0; }
+.badge { display: inline-block; padding: .15rem .55rem; border-radius: 9999px; font-size: .75rem; font-weight: 600; background: var(--color-brand-green-800); color: var(--color-brand-green-100); }
+.badge.orange { background: var(--color-brand-orange-700); color: #fff; }
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.table th { text-align: left; color: var(--color-brand-green-200); font-weight: 600; padding: .5rem .75rem; border-bottom: 1px solid var(--color-brand-green-800); }
+.table td { padding: .5rem .75rem; border-bottom: 1px solid var(--color-brand-green-900); color: #fff; }
+@media (max-width: 640px) { .kv { grid-template-columns: 1fr; } }

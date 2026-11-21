@@ -975,6 +975,229 @@ pub struct CurrentScores {
 }
 
 // ============================================
+// TEAM MEMBERSHIP (effectifs des équipes)
+// ============================================
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TeamMemberRole {
+    Captain,
+    Member,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct TeamMember {
+    pub team_id: Uuid,
+    pub player_id: Uuid,
+    pub role: TeamMemberRole,
+    pub position: Option<String>,
+    pub joined_at: DateTime<Utc>,
+}
+
+/// Membre d'équipe avec sa fiche joueur jointe (GET /equipes/{id}/effectif).
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct TeamMemberWithPlayer {
+    pub team_id: Uuid,
+    pub player_id: Uuid,
+    pub role: TeamMemberRole,
+    pub position: Option<String>,
+    pub joined_at: DateTime<Utc>,
+    pub player: Player,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct CreateTeamRequest {
+    pub name: String,
+    pub club_id: Uuid,
+    pub captain_id: Option<Uuid>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct UpdateTeamRequest {
+    pub name: Option<String>,
+    pub captain_id: Option<Uuid>,
+    pub status: Option<TeamStatus>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct AddTeamMemberRequest {
+    pub player_id: Uuid,
+    pub role: Option<TeamMemberRole>,
+    pub position: Option<String>,
+}
+
+// ============================================
+// COMPETITIONS (tournois, coupes, opens) + INSCRIPTIONS
+// ============================================
+
+/// Une compétition "événement" (tournoi/coupe/open), distincte du championnat
+/// de ligue (table `championships`). Ses matchs vivent dans `matches` avec
+/// `competition_type` = tournoi/coupe/amical.
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct CompetitionEvent {
+    pub id: Uuid,
+    pub name: String,
+    pub code: Option<String>,
+    pub competition_type: CompetitionType,
+    pub category: CompetitionCategory,
+    pub material: CompetitionMaterial,
+    pub season: String,
+    pub description: Option<String>,
+    pub location: Option<String>,
+    pub format: CompetitionFormat,
+    pub registration_start: Option<DateTime<Utc>>,
+    pub registration_end: Option<DateTime<Utc>>,
+    pub start_date: Option<DateTime<Utc>>,
+    pub end_date: Option<DateTime<Utc>>,
+    pub status: CompetitionStatus,
+    pub max_teams: Option<i32>,
+    /// Nombre d'inscriptions (tous statuts), calculé à la lecture.
+    pub registered_teams: i32,
+    pub fee: Option<f64>,
+    pub is_public: bool,
+    pub organizer_id: Uuid,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct CreateCompetitionRequest {
+    pub name: String,
+    pub code: Option<String>,
+    pub competition_type: CompetitionType,
+    pub category: CompetitionCategory,
+    pub material: CompetitionMaterial,
+    pub season: String,
+    pub description: Option<String>,
+    pub location: Option<String>,
+    pub format: CompetitionFormat,
+    pub registration_start: Option<DateTime<Utc>>,
+    pub registration_end: Option<DateTime<Utc>>,
+    pub start_date: Option<DateTime<Utc>>,
+    pub end_date: Option<DateTime<Utc>>,
+    pub max_teams: Option<i32>,
+    pub fee: Option<f64>,
+    pub is_public: bool,
+    pub organizer_id: Uuid,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct UpdateCompetitionRequest {
+    pub name: Option<String>,
+    pub code: Option<String>,
+    pub status: Option<CompetitionStatus>,
+    pub description: Option<String>,
+    pub location: Option<String>,
+    pub format: Option<CompetitionFormat>,
+    pub registration_start: Option<DateTime<Utc>>,
+    pub registration_end: Option<DateTime<Utc>>,
+    pub start_date: Option<DateTime<Utc>>,
+    pub end_date: Option<DateTime<Utc>>,
+    pub max_teams: Option<i32>,
+    pub fee: Option<f64>,
+    pub is_public: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct RegisterTeamRequest {
+    pub team_id: Uuid,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RegistrationStatus {
+    Pending,
+    Confirmed,
+    Waitlist,
+    Cancelled,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct Registration {
+    pub competition_id: Uuid,
+    pub team_id: Uuid,
+    pub status: RegistrationStatus,
+    pub registered_by: Uuid,
+    pub paid: bool,
+    pub created_at: DateTime<Utc>,
+    pub confirmed_at: Option<DateTime<Utc>>,
+    pub confirmed_by: Option<Uuid>,
+}
+
+// ============================================
+// ACTUALITÉS (news)
+// ============================================
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct NewsArticle {
+    pub id: Uuid,
+    pub title: String,
+    pub slug: String,
+    pub excerpt: Option<String>,
+    pub content: String,
+    pub image: Option<String>,
+    pub category: String,
+    pub author_id: Option<Uuid>,
+    pub published: bool,
+    pub published_at: Option<DateTime<Utc>>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct CreateNewsRequest {
+    pub title: String,
+    pub excerpt: Option<String>,
+    pub content: String,
+    pub image: Option<String>,
+    #[serde(default = "default_news_category")]
+    pub category: String,
+    #[serde(default)]
+    pub published: bool,
+}
+
+fn default_news_category() -> String {
+    "general".to_string()
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct UpdateNewsRequest {
+    pub title: Option<String>,
+    pub excerpt: Option<String>,
+    pub content: Option<String>,
+    pub image: Option<String>,
+    pub category: Option<String>,
+    pub published: Option<bool>,
+}
+
+/// Slug URL depuis un titre : minuscules, accents retirés, non-alphanum → tiret.
+pub fn slugify(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+    let mut last_dash = true;
+    for ch in input.chars() {
+        let lower = ch.to_lowercase().next().unwrap_or(ch);
+        let mapped = match lower {
+            'à' | 'â' | 'ä' => 'a',
+            'é' | 'è' | 'ê' | 'ë' => 'e',
+            'ì' | 'î' | 'ï' => 'i',
+            'ò' | 'ô' | 'ö' => 'o',
+            'ù' | 'û' | 'ü' => 'u',
+            'ç' => 'c',
+            'ñ' => 'n',
+            other => other,
+        };
+        if mapped.is_ascii_alphanumeric() {
+            out.push(mapped);
+            last_dash = false;
+        } else if !last_dash {
+            out.push('-');
+            last_dash = true;
+        }
+    }
+    out.trim_end_matches('-').to_string()
+}
+
+// ============================================
 // API RESPONSE TYPES
 // ============================================
 
@@ -1340,5 +1563,27 @@ mod tests {
         let back: AuthResponse = serde_json::from_str(&json).expect("deserialize");
         assert_eq!(back, response);
         assert_eq!(back.user.role, UserRole::Player);
+    }
+
+    #[test]
+    fn slugify_normalise_un_titre() {
+        assert_eq!(
+            slugify("Championnat de Vendée 2026-2027 !"),
+            "championnat-de-vendee-2026-2027"
+        );
+        assert_eq!(
+            slugify("  Coupe des Clubs 79 — édition été  "),
+            "coupe-des-clubs-79-edition-ete"
+        );
+        assert_eq!(slugify("Équipe"), "equipe");
+        assert_eq!(slugify("---"), "");
+    }
+
+    #[test]
+    fn registration_status_serializes_snake_case() {
+        let status = RegistrationStatus::Waitlist;
+        assert_eq!(serde_json::to_string(&status).unwrap(), "\"waitlist\"");
+        let back: RegistrationStatus = serde_json::from_str("\"confirmed\"").unwrap();
+        assert_eq!(back, RegistrationStatus::Confirmed);
     }
 }

@@ -27,13 +27,16 @@ services:
       dockerfile: rust-backend/Dockerfile
     environment:
       PALET__DATABASE_URL: postgres://palet:palet@db:5432/palet
-      PALET__ENVIRONMENT: production
+      PALET__ENVIRONMENT: ${PALET__ENVIRONMENT:-development}
+      PALET__SEED_DIR: ${PALET__SEED_DIR:-/seed}
       PALET__LOG_LEVEL: info
       # Secret JWT obligatoire hors dev : définir PALET__JWT_SECRET dans .env
       # (voir .env.example). Aucun secret en dur dans ce fichier.
       PALET__JWT_SECRET: ${PALET__JWT_SECRET:?PALET__JWT_SECRET requis dans .env (voir .env.example)}
     ports:
       - "3000:3000"
+    volumes:
+      - ./dev-data:/seed:ro
     depends_on:
       db:
         condition: service_healthy
