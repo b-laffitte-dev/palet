@@ -89,45 +89,90 @@ impl ApiService {
         path: &str,
         body: Option<&impl Serialize>,
     ) -> Result<T, String> {
-        let url = format!("{}{}", self.base_url, path);
-        let window = web_sys::window().ok_or_else(|| "no window available".to_string())?;
+        self.request_json_inner(method, path, body, true).await
+    }
 
-        let init = web_sys::RequestInit::new();
-        init.set_method(method);
-        let headers = web_sys::Headers::new().map_err(|e| format!("headers: {e:?}"))?;
-        if let Some(token) = stored_access_token() {
-            headers
-                .set("Authorization", &format!("Bearer {token}"))
-                .map_err(|e| format!("authorization header: {e:?}"))?;
-        }
-        if let Some(body) = body {
-            let json = serde_json::to_string(body)
-                .map_err(|e| format!("encoding body for {url} failed: {e}"))?;
-            init.set_body(&JsValue::from_str(&json));
-            headers
-                .set("Content-Type", "application/json")
-                .map_err(|e| format!("content-type header: {e:?}"))?;
-        }
-        init.set_headers(headers.as_ref());
-
-        let response_value = JsFuture::from(window.fetch_with_str_and_init(&url, &init))
+    /// POST without a body.
+    async fn post_empty<T: DeserializeOwned>(&self, path: &str) -> Result<T, String> {
+        self.request_json("POST", path, None::<&serde_json::Value>)
             .await
-            .map_err(|e| format!("request to {url} failed: {e:?}"))?;
-        let response: web_sys::Response = response_value
-            .dyn_into()
-            .map_err(|_| format!("response of {url} is not a fetch Response"))?;
+    }
 
-        let text_value = JsFuture::from(response.text().map_err(|e| format!("{e:?}"))?)
-            .await
-            .map_err(|e| format!("reading body of {url} failed: {e:?}"))?;
-        let body = text_value
-            .as_string()
-            .ok_or_else(|| format!("body of {url} is not a string"))?;
+    /// Inner HTTP helper (loop, not recursion): on a 401, tries one silent
+    /// token refresh (`POST /auth/refresh` with the stored refresh token),
+    /// persists the new session, then replays the original request exactly once.
+    async fn request_json_inner<T: DeserializeOwned>(
+        &self,
+        method: &str,
+        path: &str,
+        body: Option<&impl Serialize>,
+        allow_refresh_retry: bool,
+    ) -> Result<T, String> {
+        let mut allow_refresh = allow_refresh_retry;
+        loop {
+            let url = format!("{}{}", self.base_url, path);
+            let window = web_sys::window().ok_or_else(|| "no window available".to_string())?;
 
-        if !response.ok() {
-            return Err(format!("HTTP {} for {url}: {body}", response.status()));
+            let init = web_sys::RequestInit::new();
+            init.set_method(method);
+            let headers = web_sys::Headers::new().map_err(|e| format!("headers: {e:?}"))?;
+            if let Some(token) = stored_access_token() {
+                headers
+                    .set("Authorization", &format!("Bearer {token}"))
+                    .map_err(|e| format!("authorization header: {e:?}"))?;
+            }
+            if let Some(body) = body {
+                let json = serde_json::to_string(body)
+                    .map_err(|e| format!("encoding body for {url} failed: {e}"))?;
+                init.set_body(&JsValue::from_str(&json));
+                headers
+                    .set("Content-Type", "application/json")
+                    .map_err(|e| format!("content-type header: {e:?}"))?;
+            }
+            init.set_headers(headers.as_ref());
+
+            let response_value = JsFuture::from(window.fetch_with_str_and_init(&url, &init))
+                .await
+                .map_err(|e| format!("request to {url} failed: {e:?}"))?;
+            let response: web_sys::Response = response_value
+                .dyn_into()
+                .map_err(|_| format!("response of {url} is not a fetch Response"))?;
+
+            let text_value = JsFuture::from(response.text().map_err(|e| format!("{e:?}"))?)
+                .await
+                .map_err(|e| format!("reading body of {url} failed: {e:?}"))?;
+            let response_body = text_value
+                .as_string()
+                .ok_or_else(|| format!("body of {url} is not a string"))?;
+
+            // 401 -> refresh silencieux (une seule fois) puis on rejoue la requête
+            if response.status() == 401 && allow_refresh && path != "/auth/refresh" {
+                allow_refresh = false;
+                if let Some(refresh_token) = stored_refresh_token() {
+                    let refresh_req = RefreshTokenRequest { refresh_token };
+                    let refreshed: Result<AuthResponse, String> = Box::pin(
+                        self.request_json_inner("POST", "/auth/refresh", Some(&refresh_req), false),
+                    )
+                    .await;
+                    if let Ok(session) = refreshed {
+                        save_session(&session.token, &session.user);
+                        // rejoue la requête originale avec le nouveau token
+                        continue;
+                    }
+                    // refresh invalide/expiré : on déconnecte proprement
+                    clear_session();
+                }
+            }
+
+            if !response.ok() {
+                return Err(format!(
+                    "HTTP {} for {url}: {response_body}",
+                    response.status()
+                ));
+            }
+            return serde_json::from_str(&response_body)
+                .map_err(|e| format!("decoding {url} failed: {e}"));
         }
-        serde_json::from_str(&body).map_err(|e| format!("decoding {url} failed: {e}"))
     }
 
     /// Get all clubs — GET /clubs
@@ -403,6 +448,99 @@ impl ApiService {
                 &format!("/competitions/{id}/inscrire"),
                 &serde_json::json!({ "team_id": team_id }),
             )
+            .await?;
+        Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Matchs — espace arbitre
+    // --------------------------------------------
+
+    /// Get a match — GET /matchs/{id}
+    pub async fn get_match(&self, id: uuid::Uuid) -> Result<Match, String> {
+        let response: ApiResponse<Match> = self.get_json(&format!("/matchs/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Start a match — POST /matchs/{id}/start (arbitre)
+    pub async fn start_match(&self, id: uuid::Uuid) -> Result<Match, String> {
+        let response: ApiResponse<Match> = self.post_empty(&format!("/matchs/{id}/start")).await?;
+        Ok(response.data)
+    }
+
+    /// Add (or replace) a manche — POST /matchs/{id}/manche (arbitre)
+    pub async fn add_manche(
+        &self,
+        id: uuid::Uuid,
+        team1_score: i32,
+        team2_score: i32,
+        current_manche: i32,
+    ) -> Result<Match, String> {
+        let response: ApiResponse<Match> = self
+            .post_json(
+                &format!("/matchs/{id}/manche"),
+                &serde_json::json!({
+                    "team1_score": team1_score,
+                    "team2_score": team2_score,
+                    "current_manche": current_manche,
+                }),
+            )
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Complete a match — POST /matchs/{id}/complete?winner=team1|team2|draw (arbitre)
+    pub async fn complete_match(&self, id: uuid::Uuid, winner: &str) -> Result<Match, String> {
+        let response: ApiResponse<Match> = self
+            .post_empty(&format!("/matchs/{id}/complete?winner={winner}"))
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Verify a completed match — POST /matchs/{id}/verify (arbitre)
+    pub async fn verify_match(&self, id: uuid::Uuid) -> Result<Match, String> {
+        let response: ApiResponse<Match> = self.post_empty(&format!("/matchs/{id}/verify")).await?;
+        Ok(response.data)
+    }
+
+    /// Cancel the verification — POST /matchs/{id}/unverify (arbitre)
+    pub async fn unverify_match(&self, id: uuid::Uuid) -> Result<Match, String> {
+        let response: ApiResponse<Match> =
+            self.post_empty(&format!("/matchs/{id}/unverify")).await?;
+        Ok(response.data)
+    }
+
+    // --------------------------------------------
+    // Effectifs — espace club
+    // --------------------------------------------
+
+    /// Add a player to a team — POST /equipes/{id}/joueurs (responsable du club)
+    pub async fn add_team_member(
+        &self,
+        team_id: uuid::Uuid,
+        player_id: uuid::Uuid,
+        role: Option<&str>,
+    ) -> Result<TeamMemberWithPlayer, String> {
+        let response: ApiResponse<TeamMemberWithPlayer> = self
+            .post_json(
+                &format!("/equipes/{team_id}/joueurs"),
+                &serde_json::json!({
+                    "player_id": player_id,
+                    "role": role,
+                }),
+            )
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Remove a player from a team — DELETE /equipes/{id}/joueurs/{player_id}
+    pub async fn remove_team_member(
+        &self,
+        team_id: uuid::Uuid,
+        player_id: uuid::Uuid,
+    ) -> Result<bool, String> {
+        let response: ApiResponse<bool> = self
+            .delete_json(&format!("/equipes/{team_id}/joueurs/{player_id}"))
             .await?;
         Ok(response.data)
     }

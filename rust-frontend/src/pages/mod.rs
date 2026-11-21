@@ -2,6 +2,8 @@
 
 pub mod actualite_detail;
 pub mod actualites;
+pub mod arbitrage;
+pub mod arbitrage_match;
 pub mod championship_detail;
 pub mod championships;
 pub mod club_detail;
@@ -11,6 +13,7 @@ pub mod connexion;
 pub mod federation;
 pub mod home;
 pub mod inscription;
+pub mod mon_club;
 pub mod not_found;
 pub mod player_detail;
 pub mod players;

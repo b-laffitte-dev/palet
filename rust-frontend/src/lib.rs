@@ -14,10 +14,11 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 use hooks::use_auth::provide_auth;
 use pages::{
-    actualite_detail::ActualiteDetail, actualites::Actualites,
-    championship_detail::ChampionnatDetail, championships::Championnats, club_detail::ClubDetail,
-    clubs::Clubs, compte::MonCompte, connexion::Connexion, federation::Federation, home::Home,
-    inscription::Inscription, not_found::NotFound, player_detail::PlayerDetail, players::Joueurs,
+    actualite_detail::ActualiteDetail, actualites::Actualites, arbitrage::Arbitrage,
+    arbitrage_match::ArbitrageMatch, championship_detail::ChampionnatDetail,
+    championships::Championnats, club_detail::ClubDetail, clubs::Clubs, compte::MonCompte,
+    connexion::Connexion, federation::Federation, home::Home, inscription::Inscription,
+    mon_club::MonClub, not_found::NotFound, player_detail::PlayerDetail, players::Joueurs,
     tournament_detail::TournamentDetail, tournaments::Tournois,
 };
 
@@ -49,6 +50,12 @@ enum Route {
     ActualiteDetail { id: String },
     #[route("/mon-compte")]
     MonCompte,
+    #[route("/mon-club")]
+    MonClub,
+    #[route("/arbitrage")]
+    Arbitrage,
+    #[route("/arbitrage/:id")]
+    ArbitrageMatch { id: String },
     #[route("/federation")]
     Federation,
     #[route("/connexion")]

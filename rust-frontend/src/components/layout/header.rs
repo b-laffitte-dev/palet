@@ -2,6 +2,7 @@
 
 use crate::components::common::{Button, ButtonSize, ButtonVariant, Logo};
 use crate::hooks::use_auth::{logout, use_auth};
+use crate::utils::labels::{is_club_manager, is_match_official};
 use dioxus::prelude::*;
 
 /// Header component
@@ -20,6 +21,18 @@ pub fn Header() -> Element {
                             Link { to: "/championnats", class: "text-brand-green-200 hover:text-white transition-colors", "Championnats" }
                             Link { to: "/actualites", class: "text-brand-green-200 hover:text-white transition-colors", "Actualités" }
                             Link { to: "/federation", class: "text-brand-green-200 hover:text-white transition-colors", "Fédération" }
+                            {
+                                let auth = use_auth();
+                                let user = auth.read().user.clone();
+                                if let Some(u) = &user {
+                                    if is_match_official(&u.role) {
+                                        let _ = rsx! { Link { to: "/arbitrage", class: "text-brand-orange-300 hover:text-white transition-colors", "Arbitrage" } };
+                                    }
+                                    if is_club_manager(&u.role) && u.club_id.is_some() {
+                                        let _ = rsx! { Link { to: "/mon-club", class: "text-brand-orange-300 hover:text-white transition-colors", "Mon club" } };
+                                    }
+                                }
+                            }
                         }
                     }
                     div { class: "flex items-center space-x-4",
