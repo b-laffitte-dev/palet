@@ -47,6 +47,8 @@ use palet_backend::{
         match_handler::start_match,
         match_handler::complete_match,
         match_handler::add_manche,
+        match_handler::verify_match,
+        match_handler::unverify_match,
         championship_handler::get_championships,
         championship_handler::get_championship,
         championship_handler::get_championships_by_league,
@@ -256,7 +258,12 @@ async fn main() -> std::io::Result<()> {
                         "/{id}/complete",
                         web::post().to(match_handler::complete_match),
                     )
-                    .route("/{id}/manche", web::post().to(match_handler::add_manche)),
+                    .route("/{id}/manche", web::post().to(match_handler::add_manche))
+                    .route("/{id}/verify", web::post().to(match_handler::verify_match))
+                    .route(
+                        "/{id}/unverify",
+                        web::post().to(match_handler::unverify_match),
+                    ),
             )
             // Championship endpoints
             .service(

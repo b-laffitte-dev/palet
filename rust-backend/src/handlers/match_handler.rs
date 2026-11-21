@@ -355,7 +355,8 @@ pub async fn start_match(
     path = "/matchs/{id}/complete",
     tag = "Matchs",
     params(
-        ("id", description = "Match ID")
+        ("id", description = "Match ID"),
+        ("winner", Query, description = "Vainqueur : team1, team2 ou draw")
     ),
     responses(
         (status = 200, description = "Match completed", body = Match),
@@ -368,9 +369,14 @@ pub async fn complete_match(
     _official: OfficialUser,
     state: web::Data<AppState>,
     id: web::Path<Uuid>,
-    winner: web::Query<MatchWinner>,
+    query: web::Query<CompleteMatchQuery>,
 ) -> impl Responder {
-    match state.db.matches.complete_match(*id, winner.0.clone()).await {
+    match state
+        .db
+        .matches
+        .complete_match(*id, query.winner.clone())
+        .await
+    {
         Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {
             data: match_obj,
             message: Some("Match completed successfully".to_string()),
@@ -439,9 +445,108 @@ pub async fn add_manche(
     }
 }
 
+/// Verify a completed match (arbitre / commission)
+#[utoipa::path(
+    post,
+    path = "/matchs/{id}/verify",
+    tag = "Matchs",
+    params(
+        ("id", description = "Match ID")
+    ),
+    responses(
+        (status = 200, description = "Match verified", body = Match),
+        (status = 400, description = "Invalid operation (match not completed)"),
+        (status = 404, description = "Match not found"),
+        (status = 500, description = "Internal server error")
+    )
+)]
+pub async fn verify_match(
+    official: OfficialUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
+    let verifier_id = match Uuid::parse_str(&official.0.sub) {
+        Ok(u) => u,
+        Err(_) => {
+            return HttpResponse::Unauthorized().json(ApiResponse::<()> {
+                data: (),
+                message: Some("Claim sub invalide".to_string()),
+                success: false,
+            })
+        }
+    };
+    match state.db.matches.verify_match(*id, verifier_id).await {
+        Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {
+            data: match_obj,
+            message: Some("Match vérifié".to_string()),
+            success: true,
+        }),
+        Err(DatabaseError::NotFound(msg)) => HttpResponse::NotFound().json(ApiResponse::<()> {
+            data: (),
+            message: Some(msg),
+            success: false,
+        }),
+        Err(e) => {
+            log::error!("Failed to verify match: {:?}", e);
+            HttpResponse::BadRequest().json(ApiResponse::<()> {
+                data: (),
+                message: Some(format!("Vérification impossible : {e}")),
+                success: false,
+            })
+        }
+    }
+}
+
+/// Unverify a match (arbitre / commission)
+#[utoipa::path(
+    post,
+    path = "/matchs/{id}/unverify",
+    tag = "Matchs",
+    params(
+        ("id", description = "Match ID")
+    ),
+    responses(
+        (status = 200, description = "Match unverified", body = Match),
+        (status = 404, description = "Match not found"),
+        (status = 500, description = "Internal server error")
+    )
+)]
+pub async fn unverify_match(
+    _official: OfficialUser,
+    state: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> impl Responder {
+    match state.db.matches.unverify_match(*id).await {
+        Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {
+            data: match_obj,
+            message: Some("Vérification annulée".to_string()),
+            success: true,
+        }),
+        Err(DatabaseError::NotFound(msg)) => HttpResponse::NotFound().json(ApiResponse::<()> {
+            data: (),
+            message: Some(msg),
+            success: false,
+        }),
+        Err(e) => {
+            log::error!("Failed to unverify match: {:?}", e);
+            HttpResponse::InternalServerError().json(ApiResponse::<()> {
+                data: (),
+                message: Some("Failed to unverify match".to_string()),
+                success: false,
+            })
+        }
+    }
+}
+
 // ============================================
 // REQUEST/RESPONSE TYPES
 // ============================================
+
+/// Query params of POST /matchs/{id}/complete
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
+pub struct CompleteMatchQuery {
+    pub winner: MatchWinner,
+}
 
 /// Request to add a manche
 #[derive(Debug, Serialize, Deserialize, utoipa::ToSchema)]
