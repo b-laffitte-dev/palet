@@ -47,6 +47,50 @@ pub fn ArbitrageMatch(id: String) -> Element {
         Some(Ok(t)) => t.clone(),
         _ => Vec::new(),
     };
+    // disponibilités du match (rechargées avec le match via `version`)
+    let dispos = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            let _v = version();
+            async move {
+                match match_id {
+                    Some(u) => api.get_dispos(u).await,
+                    None => Ok(Default::default()),
+                }
+            }
+        }
+    });
+    // joueurs pour résoudre les noms des dispo
+    let all_players = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move { api.get_joueurs(None, None, None).await }
+        }
+    });
+    // joueurs du club de l'utilisateur connecté (pour déclarer une dispo)
+    let user_club_id = user.as_ref().and_then(|u| u.club_id);
+    let club_players = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move {
+                match user_club_id {
+                    Some(c) => api.get_joueurs(None, Some(c), None).await,
+                    None => Ok(Vec::new()),
+                }
+            }
+        }
+    });
+    let players_list: Vec<palet_shared::Player> = match &*all_players.read() {
+        Some(Ok(p)) => p.clone(),
+        _ => Vec::new(),
+    };
+    let club_players_list: Vec<palet_shared::Player> = match &*club_players.read() {
+        Some(Ok(p)) => p.clone(),
+        _ => Vec::new(),
+    };
 
     // formulaire manche + fin de match
     let mut s1 = use_signal(String::new);
@@ -54,7 +98,11 @@ pub fn ArbitrageMatch(id: String) -> Element {
     let mut winner = use_signal(|| "team1".to_string());
     let mut busy = use_signal(|| false);
     let mut feedback = use_signal(|| Option::<(bool, String)>::None);
+    let mut dispo_player = use_signal(|| Option::<Uuid>::None);
+    let mut dispo_status = use_signal(|| "disponible".to_string());
+    let mut dispo_comment = use_signal(String::new);
 
+    let api_dispo = api.clone();
     let run_action = move |action: MatchAction| {
         let api = api.clone();
         busy.set(true);
@@ -160,6 +208,107 @@ pub fn ArbitrageMatch(id: String) -> Element {
                                                         }
                                                     }
                                                 }
+                                            }
+                                        }
+                                    }
+                                }
+                                section { class: "page-card",
+                                    h3 { "Disponibilités" }
+                                    match &*dispos.read() {
+                                        Some(Ok(d)) => {
+                                            let pname = |pid: &Uuid| -> String {
+                                                players_list.iter().find(|p| &p.id == pid).map(|p| p.full_name.clone()).unwrap_or_else(|| pid.to_string().chars().take(8).collect())
+                                            };
+                                            rsx! {
+                                                p { class: "page-sub",
+                                                    span { class: "badge", "✅ {d.disponibles}" }
+                                                    span { class: "badge orange", "❌ {d.indisponibles}" }
+                                                    span { class: "badge", "❓ {d.incertains}" }
+                                                    span { "  ({d.total} déclaration(s))" }
+                                                }
+                                                if !d.disponibilites.is_empty() {
+                                                    div { class: "table-wrap",
+                                                        table { class: "table",
+                                                            thead { tr { th { "Joueur" } th { "Statut" } th { "Commentaire" } } }
+                                                            tbody {
+                                                                for dd in &d.disponibilites {
+                                                                    {
+                                                                        let pid = dd.player_id;
+                                                                        rsx! {
+                                                                            tr { key: "{pid}",
+                                                                                td { "{pname(&pid)}" }
+                                                                                td { span { class: "badge", "{dd.status:?}" } }
+                                                                                td { "{dd.commentaire.clone().unwrap_or_default()}" }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Some(Err(e)) => rsx! { p { class: "page-error", "Erreur dispo : {e}" } },
+                                        None => rsx! { p { class: "page-empty", "Chargement…" } },
+                                    }
+                                    if user.is_some() && !club_players_list.is_empty() {
+                                        div { class: "page-form",
+                                            label {
+                                                "Ma disponibilité"
+                                                select {
+                                                    class: "page-input",
+                                                    onchange: move |evt: FormEvent| {
+                                                        let v = evt.value();
+                                                        dispo_player.set(if v.is_empty() { None } else { Uuid::parse_str(&v).ok() });
+                                                    },
+                                                    option { value: "", "Choisir un joueur…" }
+                                                    for p in &club_players_list {
+                                                        option { value: "{p.id}", "{p.full_name}" }
+                                                    }
+                                                }
+                                            }
+                                            label {
+                                                "Statut"
+                                                select {
+                                                    class: "page-input",
+                                                    onchange: move |evt: FormEvent| dispo_status.set(evt.value()),
+                                                    option { value: "disponible", "✅ Disponible" }
+                                                    option { value: "incertain", "❓ Incertain" }
+                                                    option { value: "indisponible", "❌ Indisponible" }
+                                                }
+                                            }
+                                            label {
+                                                "Commentaire"
+                                                input {
+                                                    class: "page-input",
+                                                    r#type: "text",
+                                                    placeholder: "Motif éventuel…",
+                                                    value: "{dispo_comment}",
+                                                    oninput: move |evt: FormEvent| dispo_comment.set(evt.value()),
+                                                }
+                                            }
+                                            Button {
+                                                variant: ButtonVariant::Secondary,
+                                                size: ButtonSize::M,
+                                                disabled: busy() || dispo_player.read().is_none(),
+                                                onclick: move |_| {
+                                                    let (Some(u), Some(pid)) = (match_id, *dispo_player.read()) else { return };
+                                                    let api = api_dispo.clone();
+                                                    let status = dispo_status.read().clone();
+                                                    let comment = dispo_comment.read().clone();
+                                                    busy.set(true);
+                                                    spawn(async move {
+                                                        let result = api.set_dispo(u, pid, &status, if comment.is_empty() { None } else { Some(comment) }).await;
+                                                        match result {
+                                                            Ok(_) => feedback.set(Some((true, "Disponibilité enregistrée".to_string()))),
+                                                            Err(e) => feedback.set(Some((false, e))),
+                                                        }
+                                                        version.set(version() + 1);
+                                                        busy.set(false);
+                                                    });
+                                                },
+                                                "Déclarer ma disponibilité"
                                             }
                                         }
                                     }

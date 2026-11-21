@@ -36,6 +36,18 @@ pub fn ClubDetail(id: String) -> Element {
             }
         }
     });
+    let stats = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move {
+                match club_id {
+                    Some(c) => api.get_club_stats(c).await,
+                    None => Err("Identifiant invalide".to_string()),
+                }
+            }
+        }
+    });
     let players = use_resource({
         let api = api.clone();
         move || {
@@ -63,6 +75,24 @@ pub fn ClubDetail(id: String) -> Element {
                             h1 { class: "page-title", "{c.name}" }
                             p { class: "page-sub", "{c.code} — {c.city} {c.postal_code.clone().unwrap_or_default()} · {c.league} · {c.division}" }
                             div { class: "page-detail",
+                                section { class: "page-card",
+                                    h3 { "Statistiques" }
+                                    match &*stats.read() {
+                                        Some(Ok(st)) => rsx! {
+                                            dl { class: "kv",
+                                                dt { "Équipes" } dd { "{st.teams_count}" }
+                                                dt { "Joueurs" } dd { "{st.players_count}" }
+                                                dt { "Matchs joués" } dd { "{st.matches_played}" }
+                                                dt { "Victoires" } dd { "{st.wins}" }
+                                                dt { "Défaites" } dd { "{st.losses}" }
+                                                dt { "Points marqués" } dd { "{st.points_for}" }
+                                                dt { "Taux de victoire" } dd { "{(st.win_rate * 100.0):.0} %" }
+                                            }
+                                        },
+                                        Some(Err(_)) => rsx! { p { class: "muted", "Stats indisponibles" } },
+                                        None => rsx! { p { class: "muted", "Chargement…" } },
+                                    }
+                                }
                                 section { class: "page-card",
                                     h3 { "Informations" }
                                     dl { class: "kv",
