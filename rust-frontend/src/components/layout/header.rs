@@ -25,12 +25,16 @@ pub fn Header() -> Element {
                             {
                                 let auth = use_auth();
                                 let user = auth.read().user.clone();
-                                if let Some(u) = &user {
-                                    if is_match_official(&u.role) {
-                                        let _ = rsx! { Link { to: "/arbitrage", class: "text-brand-orange-300 hover:text-white transition-colors", "Arbitrage" } };
+                                let arbitre = user.as_ref().is_some_and(|u| is_match_official(&u.role));
+                                let club_mgr = user
+                                    .as_ref()
+                                    .is_some_and(|u| is_club_manager(&u.role) && u.club_id.is_some());
+                                rsx! {
+                                    if arbitre {
+                                        Link { to: "/arbitrage", class: "text-brand-orange-300 hover:text-white transition-colors", "Arbitrage" }
                                     }
-                                    if is_club_manager(&u.role) && u.club_id.is_some() {
-                                        let _ = rsx! { Link { to: "/mon-club", class: "text-brand-orange-300 hover:text-white transition-colors", "Mon club" } };
+                                    if club_mgr {
+                                        Link { to: "/mon-club", class: "text-brand-orange-300 hover:text-white transition-colors", "Mon club" }
                                     }
                                 }
                             }
@@ -40,7 +44,7 @@ pub fn Header() -> Element {
                         {
                             let mut q = use_signal(String::new);
                             let navigator = use_navigator();
-                            let _ = rsx! {
+                            rsx! {
                                 form {
                                     class: "hidden md:flex items-center",
                                     onsubmit: move |evt: FormEvent| {
@@ -58,7 +62,7 @@ pub fn Header() -> Element {
                                         oninput: move |evt: FormEvent| q.set(evt.value()),
                                     }
                                 }
-                            };
+                            }
                         }
                         {
                             let unread = use_resource(|| {
@@ -73,16 +77,20 @@ pub fn Header() -> Element {
                             });
                             let auth = use_auth();
                             let connected = auth.read().user.is_some();
-                            if connected {
-                                let count = unread.read().clone().flatten().map(|u| u.unread).unwrap_or(0);
-                                rsx! {
+                            let count = if connected {
+                                unread.read().clone().flatten().map(|u| u.unread).unwrap_or(0)
+                            } else {
+                                0
+                            };
+                            rsx! {
+                                if connected {
                                     Link { to: "/notifications", class: "relative text-brand-green-200 hover:text-white transition-colors",
                                         "🔔"
                                         if count > 0 {
                                             span { class: "badge orange", style: "margin-left: .25rem;", "{count}" }
                                         }
                                     }
-                                };
+                                }
                             }
                         }
                         {

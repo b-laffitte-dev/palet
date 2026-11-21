@@ -677,7 +677,15 @@ const KEY_REFRESH: &str = "palet.refresh_token";
 const KEY_USER: &str = "palet.user";
 
 fn local_storage() -> Option<web_sys::Storage> {
-    web_sys::window().and_then(|w| w.local_storage().ok().flatten())
+    // Hors WASM (tests natifs), il n'y a pas de fenêtre : pas de localStorage.
+    #[cfg(target_arch = "wasm32")]
+    {
+        web_sys::window().and_then(|w| w.local_storage().ok().flatten())
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        None
+    }
 }
 
 /// Access token stocké (None si déconnecté)
