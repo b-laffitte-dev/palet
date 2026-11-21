@@ -7,3 +7,4 @@ pub mod championship_service;
 pub mod competition_service;
 pub mod match_service;
 pub mod palet_rules_service;
+pub mod stats_service;

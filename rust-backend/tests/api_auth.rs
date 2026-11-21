@@ -40,6 +40,16 @@ impl MockUserRepository {
 
 #[async_trait]
 impl UserRepository for MockUserRepository {
+    async fn find_by_license(&self, license: &str) -> Result<Option<UserAccount>, DatabaseError> {
+        Ok(self
+            .users
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|u| u.license_number.as_deref() == Some(license))
+            .cloned())
+    }
+
     async fn create_user(&self, new_user: NewUser) -> Result<UserAccount, DatabaseError> {
         let NewUser {
             email,

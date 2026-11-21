@@ -18,7 +18,8 @@ use pages::{
     arbitrage_match::ArbitrageMatch, championship_detail::ChampionnatDetail,
     championships::Championnats, club_detail::ClubDetail, clubs::Clubs, compte::MonCompte,
     connexion::Connexion, federation::Federation, home::Home, inscription::Inscription,
-    mon_club::MonClub, not_found::NotFound, player_detail::PlayerDetail, players::Joueurs,
+    mon_club::MonClub, not_found::NotFound, notifications::Notifications,
+    player_detail::PlayerDetail, players::Joueurs, recherche::Recherche,
     tournament_detail::TournamentDetail, tournaments::Tournois,
 };
 
@@ -56,6 +57,10 @@ enum Route {
     Arbitrage,
     #[route("/arbitrage/:id")]
     ArbitrageMatch { id: String },
+    #[route("/recherche/:q")]
+    Recherche { q: String },
+    #[route("/notifications")]
+    Notifications,
     #[route("/federation")]
     Federation,
     #[route("/connexion")]

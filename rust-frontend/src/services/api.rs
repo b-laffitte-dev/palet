@@ -12,10 +12,11 @@
 //! `with_base_url` still allows overriding this explicitly.
 
 use palet_shared::{
-    ApiResponse, AuthResponse, AuthToken, Championship, ChampionshipClassification, Club,
-    CompetitionEvent, CreateDivisionRequest, Division, LoginRequest, Match, NewsArticle,
-    PaginatedResponse, Player, RefreshTokenRequest, RegisterRequest, Registration, Team,
-    TeamMemberWithPlayer, UserProfile,
+    ApiResponse, AppNotification, AuthResponse, AuthToken, AvailabilitySummary, Championship,
+    ChampionshipClassification, Club, ClubStats, CompetitionEvent, CompetitionStats,
+    CreateDivisionRequest, Division, LoginRequest, Match, MatchAvailability, NewsArticle,
+    PaginatedResponse, Player, PlayerStats, RefreshTokenRequest, RegisterRequest, Registration,
+    SearchResults, SetAvailabilityRequest, Team, TeamMemberWithPlayer, UnreadCount, UserProfile,
 };
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -574,6 +575,97 @@ impl ApiService {
             self.get_json(&format!("/actualites/{id}")).await?;
         Ok(response.data)
     }
+
+    // --------------------------------------------
+    // Vague 3 : recherche, dispo, notifications, stats
+    // --------------------------------------------
+
+    /// Recherche globale — GET /recherche?q=
+    pub async fn search(&self, q: &str) -> Result<SearchResults, String> {
+        let response: ApiResponse<SearchResults> = self
+            .get_json(&format!("/recherche?q={}", url_encode(q)))
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Dispo d'un match — GET /matchs/{id}/dispos
+    pub async fn get_dispos(&self, id: uuid::Uuid) -> Result<AvailabilitySummary, String> {
+        let response: ApiResponse<AvailabilitySummary> =
+            self.get_json(&format!("/matchs/{id}/dispos")).await?;
+        Ok(response.data)
+    }
+
+    /// Déclare une dispo — POST /matchs/{id}/dispo (connecté)
+    pub async fn set_dispo(
+        &self,
+        id: uuid::Uuid,
+        player_id: uuid::Uuid,
+        status: &str,
+        commentaire: Option<String>,
+    ) -> Result<MatchAvailability, String> {
+        let response: ApiResponse<MatchAvailability> = self
+            .post_json(
+                &format!("/matchs/{id}/dispo"),
+                &SetAvailabilityRequest {
+                    player_id,
+                    status: serde_json::from_str(&format!("\"{status}\""))
+                        .map_err(|e| format!("statut invalide: {e}"))?,
+                    commentaire,
+                },
+            )
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Notifications du compte — GET /notifications?unread=
+    pub async fn get_notifications(
+        &self,
+        unread_only: bool,
+    ) -> Result<Vec<AppNotification>, String> {
+        let response: ApiResponse<Vec<AppNotification>> = self
+            .get_json(&format!("/notifications?unread={unread_only}"))
+            .await?;
+        Ok(response.data)
+    }
+
+    /// Compteur de non lues — GET /notifications/count
+    pub async fn get_unread_count(&self) -> Result<UnreadCount, String> {
+        let response: ApiResponse<UnreadCount> = self.get_json("/notifications/count").await?;
+        Ok(response.data)
+    }
+
+    /// Marque une notification lue — POST /notifications/{id}/lu
+    pub async fn mark_notification_read(&self, id: uuid::Uuid) -> Result<bool, String> {
+        let response: ApiResponse<bool> =
+            self.post_empty(&format!("/notifications/{id}/lu")).await?;
+        Ok(response.data)
+    }
+
+    /// Tout marquer comme lu — POST /notifications/tout-lu
+    pub async fn mark_all_notifications_read(&self) -> Result<i64, String> {
+        let response: ApiResponse<i64> = self.post_empty("/notifications/tout-lu").await?;
+        Ok(response.data)
+    }
+
+    /// Stats joueur — GET /stats/joueur/{id}
+    pub async fn get_player_stats(&self, id: uuid::Uuid) -> Result<PlayerStats, String> {
+        let response: ApiResponse<PlayerStats> =
+            self.get_json(&format!("/stats/joueur/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Stats club — GET /stats/club/{id}
+    pub async fn get_club_stats(&self, id: uuid::Uuid) -> Result<ClubStats, String> {
+        let response: ApiResponse<ClubStats> = self.get_json(&format!("/stats/club/{id}")).await?;
+        Ok(response.data)
+    }
+
+    /// Stats compétition — GET /stats/competition/{id}
+    pub async fn get_competition_stats(&self, id: uuid::Uuid) -> Result<CompetitionStats, String> {
+        let response: ApiResponse<CompetitionStats> =
+            self.get_json(&format!("/stats/competition/{id}")).await?;
+        Ok(response.data)
+    }
 }
 
 // ============================================
@@ -627,7 +719,7 @@ pub fn clear_session() {
 ///
 /// Pure Rust so it is unit-testable outside the browser (unlike
 /// `js_sys::encode_uri_component`).
-fn url_encode(segment: &str) -> String {
+pub fn url_encode(segment: &str) -> String {
     let mut out = String::with_capacity(segment.len());
     for b in segment.bytes() {
         match b {

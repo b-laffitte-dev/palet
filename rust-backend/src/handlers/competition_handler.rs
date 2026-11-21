@@ -342,11 +342,25 @@ pub async fn confirm_inscription(
         .confirm_registration(competition_id, team_id, admin_id)
         .await
     {
-        Ok(Some(registration)) => Ok(HttpResponse::Ok().json(ApiResponse {
-            data: registration,
-            message: Some("Inscription confirmée".to_string()),
-            success: true,
-        })),
+        Ok(Some(registration)) => {
+            // Notification au demandeur : inscription confirmée
+            let _ = state
+                .db
+                .notifications
+                .create(
+                    registration.registered_by,
+                    "inscription_confirmee",
+                    "Inscription confirmée",
+                    "Votre équipe est confirmée pour cette compétition.",
+                    Some(&format!("/tournois/{}", registration.competition_id)),
+                )
+                .await;
+            Ok(HttpResponse::Ok().json(ApiResponse {
+                data: registration,
+                message: Some("Inscription confirmée".to_string()),
+                success: true,
+            }))
+        }
         Ok(None) => Ok(db_error_response(DatabaseError::NotFound(
             "Inscription introuvable".to_string(),
         ))),

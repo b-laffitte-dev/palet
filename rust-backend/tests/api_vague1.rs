@@ -104,6 +104,16 @@ struct MockPlayerRepository {
 
 #[async_trait]
 impl PlayerRepository for MockPlayerRepository {
+    async fn find_by_license(&self, license: &str) -> Result<Option<Player>, DatabaseError> {
+        Ok(self
+            .players
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|p| p.license_number == license)
+            .cloned())
+    }
+
     async fn create_player(&self, request: CreatePlayerRequest) -> Result<Player, DatabaseError> {
         let mut players = self.players.lock().unwrap();
         if players.iter().any(|p| p.email == request.email) {
@@ -236,6 +246,16 @@ struct MockTeamRepository {
 
 #[async_trait]
 impl TeamRepository for MockTeamRepository {
+    async fn get_teams_of_player(&self, player_id: Uuid) -> Result<Vec<Team>, DatabaseError> {
+        let teams = self.teams.lock().unwrap().clone();
+        let members = self.members.lock().unwrap().clone();
+        Ok(members
+            .iter()
+            .filter(|m| m.player_id == player_id)
+            .filter_map(|m| teams.iter().find(|t| t.id == m.team_id).cloned())
+            .collect())
+    }
+
     async fn create_team(
         &self,
         name: String,

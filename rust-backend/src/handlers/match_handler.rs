@@ -476,11 +476,15 @@ pub async fn verify_match(
         }
     };
     match state.db.matches.verify_match(*id, verifier_id).await {
-        Ok(match_obj) => HttpResponse::Ok().json(ApiResponse {
-            data: match_obj,
-            message: Some("Match vérifié".to_string()),
-            success: true,
-        }),
+        Ok(match_obj) => {
+            // Notifications aux membres des deux équipes ayant un compte utilisateur
+            notify_match_verified(&state, &match_obj).await;
+            HttpResponse::Ok().json(ApiResponse {
+                data: match_obj,
+                message: Some("Match vérifié".to_string()),
+                success: true,
+            })
+        }
         Err(DatabaseError::NotFound(msg)) => HttpResponse::NotFound().json(ApiResponse::<()> {
             data: (),
             message: Some(msg),
@@ -534,6 +538,35 @@ pub async fn unverify_match(
                 message: Some("Failed to unverify match".to_string()),
                 success: false,
             })
+        }
+    }
+}
+
+/// Notifie les membres des deux équipes d'un match vérifié qui ont un compte
+/// utilisateur (relié au joueur par le numéro de licence).
+async fn notify_match_verified(state: &web::Data<AppState>, m: &Match) {
+    let title = "Match vérifié".to_string();
+    let message = format!(
+        "Le résultat du match du {} est officiel.",
+        m.date.format("%d/%m/%Y")
+    );
+    let link = format!("/arbitrage/{}", m.id);
+    for team_id in [m.team1_id, m.team2_id] {
+        if let Ok(members) = state.db.teams.get_team_members(team_id).await {
+            for member in members {
+                if let Ok(Some(user)) = state
+                    .db
+                    .users
+                    .find_by_license(&member.player.license_number)
+                    .await
+                {
+                    let _ = state
+                        .db
+                        .notifications
+                        .create(user.id, "match_verifie", &title, &message, Some(&link))
+                        .await;
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 use crate::components::common::{Button, ButtonSize, ButtonVariant, Logo};
 use crate::hooks::use_auth::{logout, use_auth};
+use crate::services::api::{url_encode, ApiService};
 use crate::utils::labels::{is_club_manager, is_match_official};
 use dioxus::prelude::*;
 
@@ -36,6 +37,54 @@ pub fn Header() -> Element {
                         }
                     }
                     div { class: "flex items-center space-x-4",
+                        {
+                            let mut q = use_signal(String::new);
+                            let navigator = use_navigator();
+                            let _ = rsx! {
+                                form {
+                                    class: "hidden md:flex items-center",
+                                    onsubmit: move |evt: FormEvent| {
+                                        evt.prevent_default();
+                                        let v = q.read().trim().to_string();
+                                        if v.chars().count() >= 2 {
+                                            navigator.push(format!("/recherche/{}", url_encode(&v)));
+                                        }
+                                    },
+                                    input {
+                                        class: "page-input",
+                                        r#type: "search",
+                                        placeholder: "Rechercher…",
+                                        value: "{q}",
+                                        oninput: move |evt: FormEvent| q.set(evt.value()),
+                                    }
+                                }
+                            };
+                        }
+                        {
+                            let unread = use_resource(|| {
+                                let api = ApiService::new();
+                                async move {
+                                    if crate::services::api::stored_access_token().is_some() {
+                                        api.get_unread_count().await.ok()
+                                    } else {
+                                        None
+                                    }
+                                }
+                            });
+                            let auth = use_auth();
+                            let connected = auth.read().user.is_some();
+                            if connected {
+                                let count = unread.read().clone().flatten().map(|u| u.unread).unwrap_or(0);
+                                rsx! {
+                                    Link { to: "/notifications", class: "relative text-brand-green-200 hover:text-white transition-colors",
+                                        "🔔"
+                                        if count > 0 {
+                                            span { class: "badge orange", style: "margin-left: .25rem;", "{count}" }
+                                        }
+                                    }
+                                };
+                            }
+                        }
                         {
                             let auth = use_auth();
                             let user = auth.read().user.clone();

@@ -1414,6 +1414,121 @@ pub fn format_datetime(date: &DateTime<Utc>) -> String {
     date.format("%Y-%m-%d %H:%M:%S").to_string()
 }
 
+// ============================================
+// VAGUE 3 : RECHERCHE, DISPONIBILITÉS, NOTIFICATIONS, STATS
+// ============================================
+
+/// Résultat global de la recherche — GET /recherche?q=
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct SearchResults {
+    pub clubs: Vec<Club>,
+    pub players: Vec<Player>,
+    pub teams: Vec<Team>,
+    pub competitions: Vec<CompetitionEvent>,
+    pub news: Vec<NewsArticle>,
+}
+
+/// Statut de disponibilité d'un joueur pour un match (Module 8, E3).
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AvailabilityStatus {
+    Disponible,
+    Indisponible,
+    Incertain,
+}
+
+/// Déclaration de disponibilité — ligne de `match_disponibilites`.
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct MatchAvailability {
+    pub match_id: Uuid,
+    pub player_id: Uuid,
+    pub status: AvailabilityStatus,
+    pub commentaire: Option<String>,
+    pub updated_at: DateTime<Utc>,
+}
+
+/// Corps de POST /matchs/{id}/dispo
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct SetAvailabilityRequest {
+    pub player_id: Uuid,
+    pub status: AvailabilityStatus,
+    pub commentaire: Option<String>,
+}
+
+/// Récap des dispo d'un match — GET /matchs/{id}/dispos
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct AvailabilitySummary {
+    pub total: i64,
+    pub disponibles: i64,
+    pub indisponibles: i64,
+    pub incertains: i64,
+    pub disponibilites: Vec<MatchAvailability>,
+}
+
+/// Notification in-app — table `notifications`.
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct AppNotification {
+    pub id: Uuid,
+    pub user_id: Uuid,
+    pub kind: String,
+    pub title: String,
+    pub message: String,
+    pub link: Option<String>,
+    pub read: bool,
+    pub created_at: DateTime<Utc>,
+}
+
+/// Compteur de notifications non lues — GET /notifications/count
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
+pub struct UnreadCount {
+    pub unread: i64,
+}
+
+/// Statistiques d'un joueur — GET /stats/joueur/{id}
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct PlayerStats {
+    pub player_id: Uuid,
+    pub matches_played: i64,
+    pub wins: i64,
+    pub losses: i64,
+    pub draws: i64,
+    pub points_for: i64,
+    pub points_against: i64,
+    pub avg_points_for: f64,
+    pub win_rate: f64,
+    /// Dispo déclarées (disponible = présent ou incertain) / total déclarées.
+    pub disponibilites_declarees: i64,
+    pub taux_disponible: f64,
+}
+
+/// Statistiques d'un club — GET /stats/club/{id}
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct ClubStats {
+    pub club_id: Uuid,
+    pub teams_count: i64,
+    pub players_count: i64,
+    pub matches_played: i64,
+    pub wins: i64,
+    pub losses: i64,
+    pub draws: i64,
+    pub points_for: i64,
+    pub points_against: i64,
+    pub win_rate: f64,
+}
+
+/// Statistiques d'une compétition — GET /stats/competition/{id}
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq, Default)]
+pub struct CompetitionStats {
+    pub competition_id: Uuid,
+    pub total_matches: i64,
+    pub completed: i64,
+    pub in_progress: i64,
+    pub scheduled: i64,
+    pub verified: i64,
+    pub avg_total_points: f64,
+    pub best_total_points: i64,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

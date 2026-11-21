@@ -63,6 +63,9 @@ pub trait TeamRepository {
         &self,
         team_id: Uuid,
     ) -> Result<Vec<TeamMemberWithPlayer>, DatabaseError>;
+
+    /// Équipes auxquelles appartient un joueur (table team_players).
+    async fn get_teams_of_player(&self, player_id: Uuid) -> Result<Vec<Team>, DatabaseError>;
 }
 
 // ============================================
@@ -393,6 +396,25 @@ impl TeamRepository for PostgresTeamRepository {
         }
         Ok(members)
     }
+
+    async fn get_teams_of_player(&self, player_id: Uuid) -> Result<Vec<Team>, DatabaseError> {
+        let rows = sqlx::query(
+            r#"
+            SELECT t.* FROM teams t
+            JOIN team_players tp ON tp.team_id = t.id
+            WHERE tp.player_id = $1
+            ORDER BY t.name
+            "#,
+        )
+        .bind(player_id)
+        .fetch_all(&*self.pool)
+        .await?;
+        let mut teams = Vec::new();
+        for row in rows {
+            teams.push(PostgresTeamRepository::row_to_team(row).await?);
+        }
+        Ok(teams)
+    }
 }
 
 // ============================================
@@ -630,6 +652,11 @@ impl TeamRepository for MockTeamRepository {
         &self,
         _team_id: Uuid,
     ) -> Result<Vec<TeamMemberWithPlayer>, DatabaseError> {
+        Ok(Vec::new())
+    }
+
+    async fn get_teams_of_player(&self, _player_id: Uuid) -> Result<Vec<Team>, DatabaseError> {
+        // ce mock interne ne gère pas les effectifs : aucune équipe
         Ok(Vec::new())
     }
 }

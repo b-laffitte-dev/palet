@@ -45,6 +45,7 @@ pub trait PlayerRepository {
 
     // Search Operations
     async fn search_players(&self, query: String) -> Result<Vec<Player>, DatabaseError>;
+    async fn find_by_license(&self, license: &str) -> Result<Option<Player>, DatabaseError>;
 }
 
 // ============================================
@@ -401,6 +402,17 @@ impl PlayerRepository for PostgresPlayerRepository {
         }
         Ok(players)
     }
+
+    async fn find_by_license(&self, license: &str) -> Result<Option<Player>, DatabaseError> {
+        let row = sqlx::query("SELECT * FROM players WHERE license_number = $1")
+            .bind(license)
+            .fetch_optional(&*self.pool)
+            .await?;
+        match row {
+            Some(r) => Ok(Some(PostgresPlayerRepository::row_to_player(r).await?)),
+            None => Ok(None),
+        }
+    }
 }
 
 // ============================================
@@ -662,5 +674,15 @@ impl PlayerRepository for MockPlayerRepository {
             })
             .cloned()
             .collect())
+    }
+
+    async fn find_by_license(&self, license: &str) -> Result<Option<Player>, DatabaseError> {
+        Ok(self
+            .players
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|p| p.license_number == license)
+            .cloned())
     }
 }

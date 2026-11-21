@@ -23,6 +23,20 @@ pub fn PlayerDetail(id: String) -> Element {
             }
         }
     });
+    let stats = use_resource({
+        let api = api.clone();
+        let id = id.clone();
+        move || {
+            let api = api.clone();
+            let id = id.clone();
+            async move {
+                match Uuid::parse_str(&id) {
+                    Ok(u) => api.get_player_stats(u).await,
+                    Err(_) => Err("Identifiant invalide".to_string()),
+                }
+            }
+        }
+    });
     let club = use_resource({
         let api = api.clone();
         let id = id.clone();
@@ -66,6 +80,26 @@ pub fn PlayerDetail(id: String) -> Element {
                                         dt { "Surnom" } dd { "{alias}" }
                                         dt { "Licence" } dd { "{p.license_number} — émise le {format_date_fr(&p.license_date)}" }
                                         dt { "Inscrit le" } dd { "{format_date_fr(&p.registration_date)}" }
+                                    }
+                                }
+                                section { class: "page-card",
+                                    h3 { "Statistiques" }
+                                    match &*stats.read() {
+                                        Some(Ok(st)) => rsx! {
+                                            dl { class: "kv",
+                                                dt { "Matchs joués" } dd { "{st.matches_played}" }
+                                                dt { "Victoires" } dd { "{st.wins}" }
+                                                dt { "Défaites" } dd { "{st.losses}" }
+                                                dt { "Nuls" } dd { "{st.draws}" }
+                                                dt { "Points marqués" } dd { "{st.points_for}" }
+                                                dt { "Points encaissés" } dd { "{st.points_against}" }
+                                                dt { "Moyenne/match" } dd { "{st.avg_points_for:.1}" }
+                                                dt { "Taux de victoire" } dd { "{(st.win_rate * 100.0):.0} %" }
+                                                dt { "Dispo déclarées" } dd { "{st.disponibilites_declarees} ({(st.taux_disponible * 100.0):.0} % disponible)" }
+                                            }
+                                        },
+                                        Some(Err(_)) => rsx! { p { class: "muted", "Stats indisponibles" } },
+                                        None => rsx! { p { class: "muted", "Chargement…" } },
                                     }
                                 }
                                 section { class: "page-card",

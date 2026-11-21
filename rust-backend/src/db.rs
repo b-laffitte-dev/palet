@@ -7,12 +7,14 @@ use std::sync::Arc;
 
 // Re-export repositories
 pub use crate::repositories::{
+    availability_repository::{AvailabilityRepository, PostgresAvailabilityRepository},
     championship_repository::{ChampionshipRepository, PostgresChampionshipRepository},
     club_repository::{ClubRepository, PostgresClubRepository},
     competition_repository::{CompetitionRepository, PostgresCompetitionRepository},
     division_repository::{DivisionRepository, PostgresDivisionRepository},
     match_repository::{MatchRepository, PostgresMatchRepository},
     news_repository::{NewsRepository, PostgresNewsRepository},
+    notification_repository::{NotificationRepository, PostgresNotificationRepository},
     player_repository::{PlayerRepository, PostgresPlayerRepository},
     team_repository::{PostgresTeamRepository, TeamRepository},
     user_repository::{PostgresUserRepository, UserRepository},
@@ -85,6 +87,8 @@ pub struct Database {
     pub users: Arc<dyn UserRepository + Send + Sync>,
     pub competitions: Arc<dyn CompetitionRepository + Send + Sync>,
     pub news: Arc<dyn NewsRepository + Send + Sync>,
+    pub disponibilites: Arc<dyn AvailabilityRepository + Send + Sync>,
+    pub notifications: Arc<dyn NotificationRepository + Send + Sync>,
 }
 
 impl Database {
@@ -103,6 +107,8 @@ impl Database {
             users: Arc::new(PostgresUserRepository::new(pool.clone())),
             competitions: Arc::new(PostgresCompetitionRepository::new(pool.clone())),
             news: Arc::new(PostgresNewsRepository::new(pool.clone())),
+            disponibilites: Arc::new(PostgresAvailabilityRepository::new(pool.clone())),
+            notifications: Arc::new(PostgresNotificationRepository::new(pool.clone())),
         }
     }
 

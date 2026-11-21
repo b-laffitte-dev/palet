@@ -71,6 +71,18 @@ pub fn TournamentDetail(id: String) -> Element {
             }
         }
     });
+    let stats = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move {
+                match comp_id {
+                    Some(u) => api.get_competition_stats(u).await,
+                    None => Err("Identifiant invalide".to_string()),
+                }
+            }
+        }
+    });
     let teams = use_resource({
         let api = api.clone();
         move || {
@@ -129,6 +141,23 @@ pub fn TournamentDetail(id: String) -> Element {
                                 span { "  {competition_type_label(&c.competition_type)} · {competition_category_label(&c.category)} · palets {competition_material_label(&c.material)} · {competition_format_label(&c.format)}" }
                             }
                             div { class: "page-detail",
+                                section { class: "page-card",
+                                    h3 { "Statistiques" }
+                                    match &*stats.read() {
+                                        Some(Ok(st)) => rsx! {
+                                            dl { class: "kv",
+                                                dt { "Matchs au total" } dd { "{st.total_matches}" }
+                                                dt { "Terminés" } dd { "{st.completed} ({st.verified} vérifiés)" }
+                                                dt { "En cours" } dd { "{st.in_progress}" }
+                                                dt { "Programmés" } dd { "{st.scheduled}" }
+                                                dt { "Moyenne de points/match" } dd { "{st.avg_total_points:.1}" }
+                                                dt { "Meilleur total" } dd { "{st.best_total_points}" }
+                                            }
+                                        },
+                                        Some(Err(_)) => rsx! { p { class: "muted", "Stats indisponibles" } },
+                                        None => rsx! { p { class: "muted", "Chargement…" } },
+                                    }
+                                }
                                 section { class: "page-card",
                                     h3 { "Informations" }
                                     dl { class: "kv",
