@@ -5,6 +5,7 @@
 use palet_shared::{
     CompetitionCategory, CompetitionFormat, CompetitionMaterial, CompetitionStatus,
     CompetitionType, MatchResult, MatchStatus, RegistrationStatus, TeamClassificationStatus,
+    TeamMemberRole,
 };
 
 pub fn competition_status_label(s: &CompetitionStatus) -> &'static str {
@@ -88,6 +89,33 @@ pub fn classification_status_label(s: &TeamClassificationStatus) -> &'static str
         TeamClassificationStatus::Relegated => "Relégué",
         TeamClassificationStatus::Safe => "Maintenu",
     }
+}
+
+pub fn team_member_role_label(r: &TeamMemberRole) -> &'static str {
+    match r {
+        TeamMemberRole::Captain => "Capitaine",
+        TeamMemberRole::Member => "Membre",
+    }
+}
+
+/// Vrai si le rôle peut officier sur les matchs (arbitre, commission, super admin).
+pub fn is_match_official(role: &palet_shared::UserRole) -> bool {
+    matches!(
+        role,
+        palet_shared::UserRole::Arbitre
+            | palet_shared::UserRole::CommissionAdmin
+            | palet_shared::UserRole::SuperAdmin
+    )
+}
+
+/// Vrai si le rôle peut gérer un club (responsable de club ou admin).
+pub fn is_club_manager(role: &palet_shared::UserRole) -> bool {
+    matches!(
+        role,
+        palet_shared::UserRole::ClubAdmin
+            | palet_shared::UserRole::CommissionAdmin
+            | palet_shared::UserRole::SuperAdmin
+    )
 }
 
 #[cfg(test)]

@@ -119,6 +119,44 @@ jobs:
         working-directory: rust-shared
         run: cargo test
 
+  # Test and build frontend (Dioxus WASM) — e2e navigateur non couvert en CI
+  # (pas de navigateur disponible) : on valide le build/link wasm complet.
+  frontend:
+    name: Frontend (Dioxus WASM)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust-frontend
+
+      - name: Check formatting
+        working-directory: rust-frontend
+        run: cargo fmt -- --check
+
+      - name: Run unit tests (host)
+        working-directory: rust-frontend
+        run: cargo test
+
+      - name: Check WASM target
+        working-directory: rust-frontend
+        run: cargo check --target wasm32-unknown-unknown
+
+      - name: Build WASM (full link)
+        working-directory: rust-frontend
+        run: cargo build --target wasm32-unknown-unknown
+
   # Build Docker images (only on push to main, not PR)
   docker:
     name: Docker Build
