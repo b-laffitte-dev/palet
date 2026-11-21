@@ -14,6 +14,7 @@ pub trait UserRepository: Send + Sync {
     async fn create_user(&self, new_user: NewUser) -> Result<UserAccount, DatabaseError>;
     async fn find_by_email(&self, email: &str) -> Result<Option<UserAccount>, DatabaseError>;
     async fn find_by_id(&self, id: Uuid) -> Result<Option<UserAccount>, DatabaseError>;
+    async fn find_by_license(&self, license: &str) -> Result<Option<UserAccount>, DatabaseError>;
     async fn update_last_login(&self, id: Uuid) -> Result<(), DatabaseError>;
     async fn create_refresh_token(
         &self,
@@ -114,6 +115,14 @@ impl UserRepository for PostgresUserRepository {
     async fn find_by_id(&self, id: Uuid) -> Result<Option<UserAccount>, DatabaseError> {
         let row = sqlx::query("SELECT * FROM users WHERE id = $1")
             .bind(id)
+            .fetch_optional(&*self.pool)
+            .await?;
+        row.map(Self::row_to_user).transpose()
+    }
+
+    async fn find_by_license(&self, license: &str) -> Result<Option<UserAccount>, DatabaseError> {
+        let row = sqlx::query("SELECT * FROM users WHERE license_number = $1")
+            .bind(license)
             .fetch_optional(&*self.pool)
             .await?;
         row.map(Self::row_to_user).transpose()

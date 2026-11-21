@@ -18,8 +18,9 @@ use palet_backend::{
     config::load_config,
     db::Database,
     handlers::{
-        auth_handler, championship_handler, club_handler, competition_handler, division_handler,
-        health_handler, match_handler, news_handler, player_handler, team_handler,
+        auth_handler, availability_handler, championship_handler, club_handler,
+        competition_handler, division_handler, health_handler, match_handler, news_handler,
+        notification_handler, player_handler, search_handler, stats_handler, team_handler,
     },
     AppState,
 };
@@ -49,6 +50,16 @@ use palet_backend::{
         match_handler::add_manche,
         match_handler::verify_match,
         match_handler::unverify_match,
+        availability_handler::get_dispos,
+        availability_handler::set_dispo,
+        search_handler::search,
+        notification_handler::list_notifications,
+        notification_handler::unread_count,
+        notification_handler::mark_read,
+        notification_handler::mark_all_read,
+        stats_handler::player_stats,
+        stats_handler::club_stats,
+        stats_handler::competition_stats,
         championship_handler::get_championships,
         championship_handler::get_championship,
         championship_handler::get_championships_by_league,
@@ -259,10 +270,41 @@ async fn main() -> std::io::Result<()> {
                         web::post().to(match_handler::complete_match),
                     )
                     .route("/{id}/manche", web::post().to(match_handler::add_manche))
+                    .route(
+                        "/{id}/dispos",
+                        web::get().to(availability_handler::get_dispos),
+                    )
+                    .route(
+                        "/{id}/dispo",
+                        web::post().to(availability_handler::set_dispo),
+                    )
                     .route("/{id}/verify", web::post().to(match_handler::verify_match))
                     .route(
                         "/{id}/unverify",
                         web::post().to(match_handler::unverify_match),
+                    ),
+            )
+            // Recherche globale
+            .service(web::scope("/recherche").route("", web::get().to(search_handler::search)))
+            // Notifications (compte connecté)
+            .service(
+                web::scope("/notifications")
+                    .route("", web::get().to(notification_handler::list_notifications))
+                    .route("/count", web::get().to(notification_handler::unread_count))
+                    .route("/{id}/lu", web::post().to(notification_handler::mark_read))
+                    .route(
+                        "/tout-lu",
+                        web::post().to(notification_handler::mark_all_read),
+                    ),
+            )
+            // Statistiques (analytics)
+            .service(
+                web::scope("/stats")
+                    .route("/joueur/{id}", web::get().to(stats_handler::player_stats))
+                    .route("/club/{id}", web::get().to(stats_handler::club_stats))
+                    .route(
+                        "/competition/{id}",
+                        web::get().to(stats_handler::competition_stats),
                     ),
             )
             // Championship endpoints
