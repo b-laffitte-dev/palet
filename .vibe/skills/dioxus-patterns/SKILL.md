@@ -46,14 +46,29 @@ let mut compteur = use_signal(|| 0);        // state local
 let total = use_memo(|| matchs().iter().map(|m| m.points).sum::<u32>()); // dérivé, recalculé quand les signaux lus changent
 use_effect(|| log::info!("compteur = {compteur}")); // effet de bord
 
-// state global/partagé
-use_context_provider(|| use_signal(|| Utilisateur::default()));
+// state global/partagé — JAMAIS de hook dans la closure de use_context_provider :
+// en 0.7.10, `use_hook` garde la liste des hooks empruntée pendant l'initialiseur,
+// donc `use_context_provider(|| use_signal(...))` panique au premier rendu
+// (BorrowMutError → "Uncaught RuntimeError: unreachable" → page noire).
+let user = use_signal(Utilisateur::default);   // hook, appelé au niveau du composant
+use_context_provider(|| user);                  // la closure ne fait que déplacer la valeur
+// dans les composants enfants :
 let user: Signal<Utilisateur> = use_context();
 ```
 
 - Lire un signal dans le `rsx!` (`{compteur}`) abonne le composant : il re-rend quand il change.
 - Lire finement : préférer `compteur.read()` dans une closure plutôt que de tout embarquer.
 - Ne pas mettre de `String`/`Vec` énorme dans un signal sans raison : préférer `use_memo` dérivé.
+
+### Règles des hooks et pièges du rsx! (0.7.10)
+
+- Les hooks (`use_signal`, `use_context`, `use_resource`, `use_navigator`, …) s'appellent
+  **toujours au niveau du composant, inconditionnellement** — jamais dans la closure
+  passée à un autre hook (`use_context_provider`, `use_hook`, …).
+- `rsx! { ... }` renvoie un `Result` qui doit être utilisé : `let _ = rsx! { ... };` ou
+  `rsx! { ... };` en statement ne rend **rien** (aucun warning si `let _ =`). Dans un
+  bloc Rust `{ ... }` du rsx, c'est la dernière expression (sans `;`) qui est rendue ;
+  pour un rendu conditionnel, utiliser le `if` natif du rsx : `if cond { Link { ... } }`.
 
 ## Async & data fetching
 
@@ -137,10 +152,26 @@ rust-frontend/src/
 
 ## Tests des composants (voir aussi le skill rust-tdd)
 
-- Rendu : `dioxus_ssr::render_element(rsx!{...})` + `pretty_assertions::assert_str_eq!`.
-- Hooks/state : piloter un `VirtualDom` manuellement (pattern `test_hook`, doc officielle 0.7).
-- Navigateur/WASM : `wasm-bindgen-test` (déjà en dev-dep) — `wasm-pack test --headless --chrome`.
-- E2E : Playwright + `dx serve`.
+Dev-dep dispo dans `rust-frontend` : **`dioxus-ssr` uniquement** (pas de `pretty_assertions`,
+pas encore de `wasm-bindgen-test`).
+
+- Rendu simple : `dioxus_ssr::render_element(rsx! { ... })`, comparer avec `assert_eq!`/`assert!(html.contains(...))`.
+- Hooks/state (VirtualDom piloté à la main) — pattern qui marche en 0.7.10 :
+  ```rust
+  let mut dom = VirtualDom::new(App);
+  dom.rebuild_in_place();
+  let html = dioxus_ssr::render(&dom);
+  ```
+  (exemple réel : test de régression `provide_auth_fournit_le_contexte_sans_panic` dans
+  `src/hooks/use_auth.rs` — un panic au rendu fait échouer le test).
+- Note : hors WASM, `web_sys::window()` panique — prévoir un `#[cfg(target_arch = "wasm32")]`
+  sur le code qui touche au navigateur (voir `local_storage()` dans `src/services/api.rs`).
+- Navigateur/WASM : ajouter `wasm-bindgen-test` en dev-dep si besoin, puis
+  `wasm-pack test --headless --chrome`.
+- E2E rapide sans Playwright : Chrome headless contre `dx serve` —
+  `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --no-sandbox --virtual-time-budget=20000 --dump-dom http://localhost:8081/`
+  (le DOM rendu + la console `CONSOLE:` en `--enable-logging=stderr` ; un panic WASM
+  laisse `<div id="main">` vide).
 
 ## Références
 
