@@ -126,6 +126,18 @@ for (const route of allRoutes) {
       `${route} : #main est vide (page blanche ?)`,
     ).toBeGreaterThan(50);
 
+    // le bandeau de la home (pv-topbar) doit être présent sur toutes les pages
+    await expect(
+      page.locator('.pv-topbar'),
+      `${route} : bandeau pv-topbar absent`,
+    ).toHaveCount(1);
+
+    // le header de la home (pv-header : logo + nav + CTA) aussi
+    await expect(
+      page.locator('header.pv-header'),
+      `${route} : header pv-header absent`,
+    ).toHaveCount(1);
+
     expect(
       issues.pageErrors,
       `${route} : exceptions JS non capturées`,
@@ -164,6 +176,42 @@ test('classement du championnat affiche les noms de clubs, pas des UUID', async 
   // le seed référence des id de clubs (ex. 38c14d11... = Niort Palet Club)
   expect(text).not.toMatch(/\b[0-9a-f]{8}\b/);
   expect(text).toContain('Niort');
+});
+
+test('menu actif dynamique dans le SiteHeader', async ({ page }) => {
+  const cases: Array<[string, string]> = [
+    ['/championnats', 'Championnat'],
+    ['/tournois', 'Tournois'],
+    ['/clubs', 'Clubs'],
+    ['/joueurs', 'Joueurs'],
+    ['/actualites', 'Actualités'],
+    ['/federation', 'Fédération'],
+  ];
+  for (const [route, label] of cases) {
+    await visit(page, route);
+    const active = page.locator('header.pv-header a.pv-nav-link.active');
+    await expect(active, `${route} : exactement un lien actif attendu`).toHaveCount(1);
+    expect(await active.innerText(), `${route} : menu actif`).toBe(label);
+  }
+  // page détail : la section parente reste active
+  if (ids.club) {
+    await visit(page, `/clubs/${ids.club}`);
+    const active = page.locator('header.pv-header a.pv-nav-link.active');
+    await expect(active).toHaveCount(1);
+    expect(await active.innerText()).toBe('Clubs');
+  }
+  // home : aucun lien actif
+  await visit(page, '/');
+  await expect(page.locator('header.pv-header a.pv-nav-link.active')).toHaveCount(0);
+});
+
+test('menu actif dynamique dans le Header sticky', async ({ page }) => {
+  const clubsLink = () =>
+    page.locator('header:not(.pv-header) nav a').filter({ hasText: 'Clubs' }).first();
+  await visit(page, '/clubs');
+  await expect(clubsLink(), '/clubs : lien Clubs actif').toHaveClass(/underline/);
+  await visit(page, '/tournois');
+  await expect(clubsLink(), '/tournois : lien Clubs inactif').not.toHaveClass(/underline/);
 });
 
 test('pas de débordement horizontal en mobile (375px)', async ({ page }) => {

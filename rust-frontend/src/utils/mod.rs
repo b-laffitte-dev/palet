@@ -3,4 +3,5 @@
 
 pub mod format;
 pub mod labels;
+pub mod nav;
 pub mod validation;

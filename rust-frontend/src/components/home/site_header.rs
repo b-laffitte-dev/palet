@@ -1,16 +1,20 @@
 //! Main header: gold palet logo, brand, navigation, "S'inscrire" CTA
 
+use crate::utils::nav::active_section;
+use crate::Route;
 use dioxus::prelude::*;
 
 #[component]
 pub fn SiteHeader() -> Element {
+    // Section active déduite de la route courante (pages détail incluses).
+    let section = active_section(&use_route::<Route>());
     let links = [
-        ("Championnat", "/championnats", true),
-        ("Tournois", "/tournois", false),
-        ("Clubs", "/clubs", false),
-        ("Joueurs", "/joueurs", false),
-        ("Fédération", "/federation", false),
-        ("Actualités", "/actualites", false),
+        ("Championnat", "/championnats"),
+        ("Tournois", "/tournois"),
+        ("Clubs", "/clubs"),
+        ("Joueurs", "/joueurs"),
+        ("Fédération", "/federation"),
+        ("Actualités", "/actualites"),
     ];
 
     rsx! {
@@ -28,10 +32,10 @@ pub fn SiteHeader() -> Element {
                     }
                 }
                 nav { class: "pv-nav",
-                    for (label, href, active) in links {
+                    for (label, href) in links {
                         Link {
                             to: href,
-                            class: if active { "pv-nav-link active" } else { "pv-nav-link" },
+                            class: if section == href { "pv-nav-link active" } else { "pv-nav-link" },
                             "{label}"
                         }
                     }
