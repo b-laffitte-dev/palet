@@ -1,6 +1,7 @@
 //! Tests d'intégration HTTP du backend (skill rust-tdd : dossier `tests/`,
-//! `actix_web::test`). Le pool est "lazy" : aucune base réelle n'est requise,
-//! `check_connection` renvoie alors `Ok(false)` (statut Disconnected).
+//! `actix_web::test`). Le pool est "lazy" et pointe vers un port fermé :
+//! aucune base réelle n'est requise, `check_connection` renvoie alors
+//! `Ok(false)` (statut Disconnected) de façon déterministe.
 
 use actix_web::{http::StatusCode, test, web, App, HttpRequest, HttpResponse, Responder};
 use palet_backend::{config::AppConfig, db::Database, handlers::health_handler, AppState};
@@ -12,7 +13,8 @@ fn test_state() -> web::Data<AppState> {
     let pool = PgPoolOptions::new()
         .max_connections(1)
         .acquire_timeout(std::time::Duration::from_millis(500))
-        .connect_lazy("postgres://palet:palet@localhost:5432/palet")
+        // Port volontairement fermé : le test ne dépend pas d'une base locale.
+        .connect_lazy("postgres://palet:palet@localhost:5999/palet")
         .expect("création du pool lazy");
     web::Data::new(AppState {
         db: Arc::new(Database::new(pool)),

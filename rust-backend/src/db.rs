@@ -119,7 +119,9 @@ impl Database {
 
     /// Check database connection
     pub async fn check_connection(&self) -> Result<bool, DatabaseError> {
-        let row = sqlx::query_scalar::<_, i64>("SELECT 1")
+        // `SELECT 1` renvoie un INT4 en PostgreSQL, que sqlx refuse de décoder
+        // en i64 : il faut caster explicitement en bigint.
+        let row = sqlx::query_scalar::<_, i64>("SELECT 1::bigint")
             .fetch_one(&*self.pool)
             .await;
 
@@ -216,12 +218,13 @@ pub async fn seed_dev_data(pool: &PgPool, seed_dir: &str) -> Result<(), Database
     if count > 0 {
         return Ok(());
     }
-    const SEED_FILES: [&str; 5] = [
+    const SEED_FILES: [&str; 6] = [
         "players.sql",
         "teams.sql",
         "team_players.sql",
         "users_seed.sql",
         "news.sql",
+        "competitions.sql",
     ];
     for name in SEED_FILES {
         let path = format!("{seed_dir}/{name}");
@@ -262,6 +265,29 @@ pub async fn initialize_database(database_url: &str) -> Result<Database, Databas
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// `check_connection` doit renvoyer `Ok(true)` quand la base répond.
+    ///
+    /// Sans base disponible (CI), le test est ignoré. Avec une base réelle
+    /// (docker compose up db), il attrape une régression de type SQL : un
+    /// littéral `SELECT 1` est un INT4 en PostgreSQL, illisible en `i64` par
+    /// sqlx — d'où le `::bigint` dans la requête.
+    #[tokio::test]
+    async fn check_connection_renvoie_true_avec_une_base_reelle() {
+        let url = std::env::var("PALET__DATABASE_URL")
+            .unwrap_or_else(|_| "postgres://palet:palet@localhost:5432/palet".to_string());
+        let Ok(pool) = PgPoolOptions::new()
+            .max_connections(1)
+            .acquire_timeout(std::time::Duration::from_secs(2))
+            .connect(&url)
+            .await
+        else {
+            eprintln!("base de test indisponible, test ignoré");
+            return;
+        };
+        let db = Database::new(pool);
+        assert!(db.check_connection().await.expect("check_connection"));
+    }
 
     #[tokio::test]
     async fn test_database_error_conversions() {

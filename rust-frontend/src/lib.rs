@@ -69,6 +69,10 @@ enum Route {
     Inscription,
     #[route("/404")]
     NotFound,
+    // Catch-all : toute URL inconnue affiche la page 404 au lieu du message
+    // brut « Failed to parse route » du routeur.
+    #[route("/:..rest")]
+    CatchAll { rest: Vec<String> },
 }
 
 /// Main App component
@@ -78,6 +82,13 @@ fn App() -> Element {
     rsx! {
         Router::<Route> {}
     }
+}
+
+/// Route catch-all : rend la page 404 pour toute URL inconnue.
+#[component]
+fn CatchAll(rest: Vec<String>) -> Element {
+    let _ = rest;
+    rsx! { NotFound {} }
 }
 
 /// WASM entry point, executed automatically when the module is instantiated

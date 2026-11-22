@@ -44,8 +44,20 @@ pub fn Arbitrage() -> Element {
             async move { api.get_equipes(None, None).await }
         }
     });
+    // Les matchs référencent l'id du club : repli via les clubs pour les noms.
+    let clubs = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move { api.get_clubs().await }
+        }
+    });
     let teams_list: Vec<Team> = match &*teams.read() {
         Some(Ok(t)) => t.clone(),
+        _ => Vec::new(),
+    };
+    let clubs_list = match &*clubs.read() {
+        Some(Ok(c)) => c.clone(),
         _ => Vec::new(),
     };
 
@@ -80,7 +92,7 @@ pub fn Arbitrage() -> Element {
                         for m in list {
                             Link { to: "/arbitrage/{m.id}", key: "{m.id}", class: "page-card",
                                 span { class: "badge", "{match_status_label(&m.status)}" }
-                                h3 { "{team_name(&teams_list, &m.team1_id)} — {team_name(&teams_list, &m.team2_id)}" }
+                                h3 { "{team_name(&teams_list, &clubs_list, &m.team1_id)} — {team_name(&teams_list, &clubs_list, &m.team2_id)}" }
                                 p { class: "muted", "{format_date_fr(&m.date)}{time_suffix(&m.time)} · {m.location.clone().unwrap_or_default()}" }
                                 if let Some(j) = m.journee {
                                     p { class: "muted", "Journée {j}" }

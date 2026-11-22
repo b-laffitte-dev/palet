@@ -1,0 +1,4 @@
+-- Seed Vague 1 : compétitions ponctuelles (tournois / coupes).
+-- `organizer_id` : compte commission de démo (voir users_seed.sql).
+INSERT INTO public.competitions (id, name, code, competition_type, category, material, season, description, location, format, registration_start, registration_end, start_date, end_date, status, max_teams, fee, is_public, organizer_id, created_at, updated_at) VALUES
+('33333333-3333-3333-3333-333333333333', 'Tournoi de Bressuire 2026', 'TOUR-BRE-2026', 'tournament', 'doublette', 'fonte', '2026-2027', 'Tournoi de doublette en élimination directe, matchs en 13 points.', 'Boulodrome de Bressuire', 'knockout', '2026-11-01 00:00:00+00', '2026-11-25 00:00:00+00', '2026-12-05 00:00:00+00', '2026-12-05 00:00:00+00', 'registration', 8, 5.0, true, '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2026-11-08 16:00:47+00', '2026-11-08 16:00:47+00');

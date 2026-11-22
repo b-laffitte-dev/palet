@@ -75,8 +75,7 @@ pub fn Header() -> Element {
                                     }
                                 }
                             });
-                            let auth = use_auth();
-                            let connected = auth.read().user.is_some();
+                            let connected = use_auth().read().user.is_some();
                             let count = if connected {
                                 unread.read().clone().flatten().map(|u| u.unread).unwrap_or(0)
                             } else {

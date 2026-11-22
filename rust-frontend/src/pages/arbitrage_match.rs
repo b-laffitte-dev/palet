@@ -43,8 +43,20 @@ pub fn ArbitrageMatch(id: String) -> Element {
             async move { api.get_equipes(None, None).await }
         }
     });
+    // Les matchs référencent l'id du club : repli via les clubs pour les noms.
+    let clubs = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move { api.get_clubs().await }
+        }
+    });
     let teams_list: Vec<Team> = match &*teams.read() {
         Some(Ok(t)) => t.clone(),
+        _ => Vec::new(),
+    };
+    let clubs_list = match &*clubs.read() {
+        Some(Ok(c)) => c.clone(),
         _ => Vec::new(),
     };
     // disponibilités du match (rechargées avec le match via `version`)
@@ -166,8 +178,8 @@ pub fn ArbitrageMatch(id: String) -> Element {
                     Link { to: "/arbitrage", class: "page-sub", "← Tous les matchs" }
                     match &*match_res.read() {
                         Some(Ok(m)) => {
-                            let name1 = team_name(&teams_list, &m.team1_id);
-                            let name2 = team_name(&teams_list, &m.team2_id);
+                            let name1 = team_name(&teams_list, &clubs_list, &m.team1_id);
+                            let name2 = team_name(&teams_list, &clubs_list, &m.team2_id);
                             let manches = m.manches.clone().unwrap_or_default();
                             let current_manche = manches.len() as i32;
                             let score_line = match (&m.team1_score, &m.team2_score) {

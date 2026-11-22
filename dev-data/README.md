@@ -18,11 +18,16 @@ Tables extraites : `championships`, `clubs`, `divisions`,
 
 Seeds Vague 1 (générés, pas des dumps) : `players.sql`, `teams.sql` (une équipe
 par club, `id = club_id`), `team_players.sql`, `users_seed.sql` (comptes de
-démo, mot de passe `Palet2026!`), `news.sql`.
+démo, mot de passe `Palet2026!`), `news.sql`, `competitions.sql` (tournois).
 
 Ordre de chargement (dépendances FK, utilisé par `init-db.sh`) :
 `data.sql` → `players.sql` → `teams.sql` → `team_players.sql` →
-`users_seed.sql` → `news.sql`.
+`users_seed.sql` → `news.sql` → `competitions.sql`.
+
+> Ces seeds Vague 1 sont appliqués par le **backend** au démarrage
+> (`seed_dev_data`, voir `rust-backend/src/db.rs`) uniquement si la table
+> `users` est vide — c'est un one-shot : re-seeder from scratch avec
+> `docker compose down -v && docker compose up`.
 
 ## Ré-extraire depuis la base de dev
 

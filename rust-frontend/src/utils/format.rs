@@ -17,6 +17,11 @@ pub fn format_date_fr(date: &DateTime<Utc>) -> String {
     date.format("%d/%m/%Y").to_string()
 }
 
+/// Année d'une date (p. ex. pour le copyright du footer).
+pub fn year_of(now: &DateTime<Utc>) -> i32 {
+    now.year()
+}
+
 /// Current sports season, e.g. "2026-2027".
 ///
 /// A palet season runs roughly July→June: from July onwards the season is
@@ -34,6 +39,12 @@ pub fn current_season(now: &DateTime<Utc>) -> String {
 mod tests {
     use super::*;
     use chrono::TimeZone;
+
+    #[test]
+    fn year_of_renvoie_l_annee() {
+        let date = Utc.with_ymd_and_hms(2026, 11, 22, 12, 0, 0).unwrap();
+        assert_eq!(year_of(&date), 2026);
+    }
 
     #[test]
     fn season_starts_in_july() {

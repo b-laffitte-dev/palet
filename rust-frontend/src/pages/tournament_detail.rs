@@ -108,8 +108,21 @@ pub fn TournamentDetail(id: String) -> Element {
     let mut sending = use_signal(|| false);
     let mut feedback = use_signal(|| Option::<(bool, String)>::None);
 
+    // Les matchs de la compétition référencent l'id du club : les clubs
+    // servent de repli pour résoudre les noms d'équipes.
+    let clubs = use_resource({
+        let api = api.clone();
+        move || {
+            let api = api.clone();
+            async move { api.get_clubs().await }
+        }
+    });
     let teams_list = match &*teams.read() {
         Some(Ok(t)) => t.clone(),
+        _ => Vec::new(),
+    };
+    let clubs_list = match &*clubs.read() {
+        Some(Ok(c)) => c.clone(),
         _ => Vec::new(),
     };
     let my_teams_list = match &*my_teams.read() {
@@ -261,7 +274,7 @@ pub fn TournamentDetail(id: String) -> Element {
                                                     tbody {
                                                         for r in list {
                                                             tr { key: "{r.team_id}",
-                                                                td { "{team_name(&teams_list, &r.team_id)}" }
+                                                                td { "{team_name(&teams_list, &clubs_list, &r.team_id)}" }
                                                                 td { span { class: "badge", "{registration_status_label(&r.status)}" } }
                                                                 td { if r.paid { "Oui" } else { "Non" } }
                                                                 td { "{format_date_fr(&r.created_at)}" }
@@ -279,7 +292,7 @@ pub fn TournamentDetail(id: String) -> Element {
                                 section {
                                     h2 { class: "page-title", "Matchs" }
                                     match &*matches.read() {
-                                        Some(Ok(list)) => rsx! { MatchTable { matches: list.clone(), teams: teams_list.clone() } },
+                                        Some(Ok(list)) => rsx! { MatchTable { matches: list.clone(), teams: teams_list.clone(), clubs: clubs_list.clone() } },
                                         Some(Err(e)) => rsx! { p { class: "page-error", "Erreur matchs : {e}" } },
                                         None => rsx! { p { class: "page-empty", "Chargement…" } },
                                     }
