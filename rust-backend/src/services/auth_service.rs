@@ -7,7 +7,8 @@ use crate::db::DatabaseError;
 use crate::models::user::{NewUser, UserAccount};
 use crate::repositories::user_repository::UserRepository;
 use actix_web::{http::StatusCode, HttpResponse};
-use argon2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
+use argon2::password_hash::phc::{PasswordHash, SaltString};
+use argon2::password_hash::{PasswordHasher, PasswordVerifier};
 use argon2::Argon2;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -76,9 +77,9 @@ pub struct Claims {
 }
 
 pub fn hash_password(password: &str) -> Result<String, AuthError> {
-    let salt = SaltString::generate(&mut rand::rngs::OsRng);
+    let salt = SaltString::generate();
     Argon2::default()
-        .hash_password(password.as_bytes(), &salt)
+        .hash_password_with_salt(password.as_bytes(), salt.as_bytes())
         .map(|h| h.to_string())
         .map_err(|e| AuthError::Internal(format!("hash du mot de passe : {e}")))
 }
