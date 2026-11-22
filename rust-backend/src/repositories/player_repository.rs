@@ -4,10 +4,10 @@
 
 use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{CreatePlayerRequest, DominantHand, LicenseStatus, Player, PlayerStatus};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -75,7 +75,7 @@ impl PostgresPlayerRepository {
         let photo: Option<String> = row.get("photo");
         let status_str: String = row.get("status");
         let status: PlayerStatus = enum_from_db_string(&status_str)?;
-        let birth_date: chrono::DateTime<Utc> = row.get("birth_date");
+        let birth_date: time::OffsetDateTime = row.get("birth_date");
         let age: i32 = row.get("age");
         let birth_place: Option<String> = row.get("birth_place");
         let nationality: String = row.get("nationality");
@@ -89,13 +89,13 @@ impl PostgresPlayerRepository {
         let club_number: Option<String> = row.get("club_number");
         let category: String = row.get("category");
         let license_number: String = row.get("license_number");
-        let license_date: chrono::DateTime<Utc> = row.get("license_date");
+        let license_date: time::OffsetDateTime = row.get("license_date");
         let license_status_str: String = row.get("license_status");
         let license_status: LicenseStatus =
             enum_from_db_string(&license_status_str).unwrap_or(LicenseStatus::Valid);
-        let registration_date: chrono::DateTime<Utc> = row.get("registration_date");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let registration_date: time::OffsetDateTime = row.get("registration_date");
+        let created_at: time::OffsetDateTime = row.get("created_at");
+        let updated_at: time::OffsetDateTime = row.get("updated_at");
 
         Ok(Player {
             id,
@@ -132,10 +132,7 @@ impl PostgresPlayerRepository {
 #[async_trait]
 impl PlayerRepository for PostgresPlayerRepository {
     async fn create_player(&self, request: CreatePlayerRequest) -> Result<Player, DatabaseError> {
-        let age: i32 = (Utc::now()
-            .signed_duration_since(request.birth_date)
-            .num_days()
-            / 365) as i32;
+        let age: i32 = ((OffsetDateTime::now_utc() - request.birth_date).whole_days() / 365) as i32;
 
         let player = Player {
             id: Uuid::new_v4(),
@@ -160,11 +157,11 @@ impl PlayerRepository for PostgresPlayerRepository {
             club_number: None,
             category: request.category,
             license_number: request.license_number.unwrap_or_default(),
-            license_date: request.license_date.unwrap_or(Utc::now()),
+            license_date: request.license_date.unwrap_or(OffsetDateTime::now_utc()),
             license_status: LicenseStatus::Valid,
-            registration_date: Utc::now(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            registration_date: OffsetDateTime::now_utc(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         // Insert into database
@@ -269,7 +266,7 @@ impl PlayerRepository for PostgresPlayerRepository {
             player.license_date = license_date;
         }
 
-        player.updated_at = Utc::now();
+        player.updated_at = OffsetDateTime::now_utc();
 
         // Update in database
         let query = r#"
@@ -459,10 +456,7 @@ impl PlayerRepository for MockPlayerRepository {
             ));
         }
 
-        let age: i32 = (Utc::now()
-            .signed_duration_since(request.birth_date)
-            .num_days()
-            / 365) as i32;
+        let age: i32 = ((OffsetDateTime::now_utc() - request.birth_date).whole_days() / 365) as i32;
 
         let player = Player {
             id: Uuid::new_v4(),
@@ -487,11 +481,11 @@ impl PlayerRepository for MockPlayerRepository {
             club_number: None,
             category: request.category,
             license_number: request.license_number.unwrap_or_default(),
-            license_date: request.license_date.unwrap_or(Utc::now()),
+            license_date: request.license_date.unwrap_or(OffsetDateTime::now_utc()),
             license_status: LicenseStatus::Valid,
-            registration_date: Utc::now(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            registration_date: OffsetDateTime::now_utc(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         Ok(player)
@@ -552,7 +546,7 @@ impl PlayerRepository for MockPlayerRepository {
                 player.license_date = license_date;
             }
 
-            player.updated_at = Utc::now();
+            player.updated_at = OffsetDateTime::now_utc();
 
             Ok(Some(player.clone()))
         } else {

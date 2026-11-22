@@ -10,7 +10,6 @@ use actix_web::{http::StatusCode, HttpResponse};
 use argon2::password_hash::phc::{PasswordHash, SaltString};
 use argon2::password_hash::{PasswordHasher, PasswordVerifier};
 use argon2::Argon2;
-use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use palet_shared::{
     ApiResponse, AuthResponse, AuthToken, LoginRequest, RefreshTokenRequest, RegisterRequest,
@@ -18,6 +17,7 @@ use palet_shared::{
 };
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use time::{Duration, OffsetDateTime};
 use uuid::Uuid;
 
 pub const ACCESS_TOKEN_TYPE: &str = "access";
@@ -188,7 +188,7 @@ impl AuthService {
             .find_refresh_token(&request.refresh_token)
             .await?
             .ok_or_else(|| AuthError::Unauthorized("Refresh token invalide".to_string()))?;
-        if !stored.is_usable(&Utc::now()) {
+        if !stored.is_usable(&OffsetDateTime::now_utc()) {
             return Err(AuthError::Unauthorized(
                 "Refresh token expiré ou révoqué".to_string(),
             ));
@@ -232,15 +232,15 @@ impl AuthService {
     }
 
     async fn issue_tokens(&self, user: &UserAccount) -> Result<AuthToken, AuthError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let claims = Claims {
             sub: user.id.to_string(),
             email: user.email.clone(),
             role: user.role.clone(),
             club_id: user.club_id.map(|c| c.to_string()),
             token_type: ACCESS_TOKEN_TYPE.to_string(),
-            iat: now.timestamp(),
-            exp: (now + Duration::seconds(self.access_exp_secs)).timestamp(),
+            iat: now.unix_timestamp(),
+            exp: (now + Duration::seconds(self.access_exp_secs)).unix_timestamp(),
         };
         let access_token = create_token(&self.jwt_secret, &claims)?;
         let refresh_token = format!("{}{}", Uuid::new_v4().simple(), Uuid::new_v4().simple());
@@ -279,8 +279,8 @@ mod tests {
     use super::*;
     use crate::models::user::{NewUser, RefreshToken};
     use async_trait::async_trait;
-    use chrono::DateTime;
     use std::sync::Mutex;
+    use time::OffsetDateTime;
 
     struct MockUserRepository {
         users: Mutex<Vec<UserAccount>>,
@@ -321,7 +321,7 @@ mod tests {
                 club_id,
                 license_number,
             } = new_user;
-            let now = Utc::now();
+            let now = OffsetDateTime::now_utc();
             let user = UserAccount {
                 id: Uuid::new_v4(),
                 email,
@@ -371,7 +371,7 @@ mod tests {
             &self,
             user_id: Uuid,
             token: String,
-            expires_at: DateTime<Utc>,
+            expires_at: OffsetDateTime,
         ) -> Result<RefreshToken, DatabaseError> {
             let rt = RefreshToken {
                 id: Uuid::new_v4(),
@@ -379,7 +379,7 @@ mod tests {
                 token,
                 expires_at,
                 revoked_at: None,
-                created_at: Utc::now(),
+                created_at: OffsetDateTime::now_utc(),
             };
             self.tokens.lock().unwrap().push(rt.clone());
             Ok(rt)
@@ -401,7 +401,7 @@ mod tests {
         async fn revoke_refresh_token(&self, token: &str) -> Result<(), DatabaseError> {
             let mut tokens = self.tokens.lock().unwrap();
             if let Some(t) = tokens.iter_mut().find(|t| t.token == token) {
-                t.revoked_at = Some(Utc::now());
+                t.revoked_at = Some(OffsetDateTime::now_utc());
             }
             Ok(())
         }
@@ -410,7 +410,7 @@ mod tests {
             Ok(())
         }
 
-        async fn delete_expired_tokens(&self, _now: DateTime<Utc>) -> Result<u64, DatabaseError> {
+        async fn delete_expired_tokens(&self, _now: OffsetDateTime) -> Result<u64, DatabaseError> {
             Ok(0)
         }
     }
@@ -448,8 +448,8 @@ mod tests {
             role: UserRole::Player,
             club_id: None,
             token_type: ACCESS_TOKEN_TYPE.to_string(),
-            iat: Utc::now().timestamp(),
-            exp: (Utc::now() + Duration::hours(1)).timestamp(),
+            iat: OffsetDateTime::now_utc().unix_timestamp(),
+            exp: (OffsetDateTime::now_utc() + Duration::hours(1)).unix_timestamp(),
         };
         let token = create_token(secret, &claims).expect("token");
         let back = validate_token(secret, &token, ACCESS_TOKEN_TYPE).expect("valide");
@@ -458,7 +458,7 @@ mod tests {
         assert!(validate_token(secret, &token, "refresh").is_err());
 
         let expired = Claims {
-            exp: (Utc::now() - Duration::hours(1)).timestamp(),
+            exp: (OffsetDateTime::now_utc() - Duration::hours(1)).unix_timestamp(),
             ..claims.clone()
         };
         let expired_token = create_token(secret, &expired).expect("token");

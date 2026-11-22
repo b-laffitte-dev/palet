@@ -27,7 +27,7 @@ pub async fn health_check(state: web::Data<AppState>) -> impl Responder {
     let health = HealthCheck {
         statut: "OK".to_string(),
         version: "0.1.0".to_string(),
-        timestamp: chrono::Utc::now(),
+        timestamp: time::OffsetDateTime::now_utc(),
         database: database_status,
         cache: palet_shared::CacheStatus::Connected,
     };

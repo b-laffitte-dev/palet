@@ -14,7 +14,7 @@ actix-web = "4.17.0"
 actix-cors = "0.7.2"
 
 # Database (features "migrate" + "macros" pour sqlx::migrate! sur ./migrations)
-sqlx = { version = "^0.9.0", default-features = false, features = ["postgres", "runtime-tokio", "tls-rustls", "uuid", "chrono", "json", "migrate", "macros"] }
+sqlx = { version = "^0.9.0", default-features = false, features = ["postgres", "runtime-tokio", "tls-rustls", "uuid", "time", "json", "migrate", "macros"] }
 
 # Auth : JWT (HS256) + hash de mots de passe Argon2id
 jsonwebtoken = "9.3"
@@ -28,7 +28,7 @@ thiserror = "2.0.21"
 uuid = { version = "1.28.0", features = ["v4", "serde"] }
 
 # Time with SQLx support
-chrono = { version = "0.4.45", features = ["serde"] }
+time = { workspace = true }
 
 # Async runtime
 tokio = { version = "1.53.3", features = ["full"] }
@@ -47,7 +47,7 @@ dotenvy = "0.15"
 palet-shared = { path = "../rust-shared" }
 
 # OpenAPI documentation
-utoipa = { version = "6.0.0", features = ["actix_extras", "chrono", "uuid"] }
+utoipa = { version = "6.0.0", features = ["actix_extras", "time", "uuid"] }
 utoipa-swagger-ui = { version = "10.0.1", features = ["actix-web"] }
 
 [dev-dependencies]

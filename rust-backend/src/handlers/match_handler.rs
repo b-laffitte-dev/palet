@@ -548,7 +548,9 @@ async fn notify_match_verified(state: &web::Data<AppState>, m: &Match) {
     let title = "Match vérifié".to_string();
     let message = format!(
         "Le résultat du match du {} est officiel.",
-        m.date.format("%d/%m/%Y")
+        m.date
+            .format(&time::macros::format_description!("[day]/[month]/[year]"))
+            .unwrap_or_default()
     );
     let link = format!("/arbitrage/{}", m.id);
     for team_id in [m.team1_id, m.team2_id] {

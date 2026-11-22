@@ -4,7 +4,6 @@
 //! It implements the TDD harness requirements for championship functionality.
 
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{
     Championship, ChampionshipClassification, ChampionshipTeam, ClassificationPrimary,
     ClassificationSecondary, ClassificationTertiary, CompetitionStatus, CreateChampionshipRequest,
@@ -13,6 +12,7 @@ use palet_shared::{
 use serde_json;
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -159,8 +159,8 @@ impl PostgresChampionshipRepository {
         let current_journee: Option<i32> = row.get("current_journee");
         let current_phase: Option<String> = row.get("current_phase");
         let organizer_id: Uuid = row.get("organizer_id");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let created_at: time::OffsetDateTime = row.get("created_at");
+        let updated_at: time::OffsetDateTime = row.get("updated_at");
 
         Ok(Championship {
             id,
@@ -188,7 +188,7 @@ impl PostgresChampionshipRepository {
     ) -> Result<ChampionshipClassification, sqlx::Error> {
         let division: String = row.get("division");
         let journee: i32 = row.get("journee");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let updated_at: time::OffsetDateTime = row.get("updated_at");
 
         // Parse teams JSON
         let teams_json: serde_json::Value = row.get("teams");
@@ -255,8 +255,8 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             current_journee: None,
             current_phase: None,
             organizer_id: request.organizer_id,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         // Insert into database
@@ -381,7 +381,7 @@ impl ChampionshipRepository for PostgresChampionshipRepository {
             championship.current_phase = Some(current_phase);
         }
 
-        championship.updated_at = Utc::now();
+        championship.updated_at = OffsetDateTime::now_utc();
 
         // Update in database
         let query = r#"
@@ -824,8 +824,8 @@ impl ChampionshipRepository for MockChampionshipRepository {
             current_journee: None,
             current_phase: None,
             organizer_id: request.organizer_id,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
         self.championships
             .lock()
@@ -914,7 +914,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
                 championship.current_phase = Some(current_phase);
             }
 
-            championship.updated_at = Utc::now();
+            championship.updated_at = OffsetDateTime::now_utc();
 
             Ok(Some(championship.clone()))
         } else {
@@ -1032,7 +1032,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
         if let Some(championship) = championships.iter_mut().find(|c| c.id == championship_id) {
             championship.status = CompetitionStatus::InProgress;
             championship.current_journee = Some(1);
-            championship.updated_at = Utc::now();
+            championship.updated_at = OffsetDateTime::now_utc();
             Ok(championship.clone())
         } else {
             Err(DatabaseError::NotFound(format!(
@@ -1062,7 +1062,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
             }
 
             championship.current_journee = Some(next_journee);
-            championship.updated_at = Utc::now();
+            championship.updated_at = OffsetDateTime::now_utc();
 
             // If this is the last journee, mark as completed
             if next_journee == championship.total_journees {
@@ -1093,7 +1093,7 @@ impl ChampionshipRepository for MockChampionshipRepository {
         if let Some(championship) = championships.iter_mut().find(|c| c.id == championship_id) {
             championship.status = CompetitionStatus::Completed;
             championship.current_phase = Some("finished".to_string());
-            championship.updated_at = Utc::now();
+            championship.updated_at = OffsetDateTime::now_utc();
             Ok(championship.clone())
         } else {
             Err(DatabaseError::NotFound(format!(

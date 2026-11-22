@@ -4,7 +4,6 @@
 
 use actix_web::{http::StatusCode, test, web, App};
 use async_trait::async_trait;
-use chrono::{Duration, Utc};
 use palet_backend::{
     config::AppConfig,
     db::{
@@ -18,6 +17,7 @@ use palet_backend::{
 use palet_shared::*;
 use sqlx::postgres::PgPoolOptions;
 use std::sync::{Arc, Mutex};
+use time::{Duration, OffsetDateTime};
 use uuid::Uuid;
 
 // ============================================
@@ -31,8 +31,8 @@ fn claims_for(role: UserRole, club_id: Option<Uuid>) -> Claims {
         role,
         club_id: club_id.map(|c| c.to_string()),
         token_type: ACCESS_TOKEN_TYPE.to_string(),
-        iat: Utc::now().timestamp(),
-        exp: (Utc::now() + Duration::hours(1)).timestamp(),
+        iat: OffsetDateTime::now_utc().unix_timestamp(),
+        exp: (OffsetDateTime::now_utc() + Duration::hours(1)).unix_timestamp(),
     }
 }
 
@@ -62,7 +62,7 @@ macro_rules! post_json {
 // ============================================
 
 fn sample_player(id: Uuid, club_id: Uuid, first: &str, last: &str) -> Player {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Player {
         id,
         first_name: first.to_string(),
@@ -225,7 +225,7 @@ impl PlayerRepository for MockPlayerRepository {
 }
 
 fn sample_team(id: Uuid, club_id: Uuid, name: &str) -> Team {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Team {
         id,
         name: name.to_string(),
@@ -361,7 +361,7 @@ impl TeamRepository for MockTeamRepository {
             player_id,
             role: role.clone(),
             position,
-            joined_at: Utc::now(),
+            joined_at: OffsetDateTime::now_utc(),
         };
         Ok(member)
     }
@@ -410,7 +410,7 @@ impl CompetitionRepository for MockCompetitionRepository {
         &self,
         request: CreateCompetitionRequest,
     ) -> Result<CompetitionEvent, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let event = CompetitionEvent {
             id: Uuid::new_v4(),
             name: request.name,
@@ -526,7 +526,7 @@ impl CompetitionRepository for MockCompetitionRepository {
             status: RegistrationStatus::Pending,
             registered_by,
             paid: false,
-            created_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
             confirmed_at: None,
             confirmed_by: None,
         };
@@ -575,7 +575,7 @@ impl CompetitionRepository for MockCompetitionRepository {
             return Ok(None);
         };
         r.status = RegistrationStatus::Confirmed;
-        r.confirmed_at = Some(Utc::now());
+        r.confirmed_at = Some(OffsetDateTime::now_utc());
         r.confirmed_by = Some(confirmed_by);
         Ok(Some(r.clone()))
     }
@@ -597,7 +597,7 @@ struct MockMatchRepository {
 #[async_trait]
 impl MatchRepository for MockMatchRepository {
     async fn create_match(&self, request: CreateMatchRequest) -> Result<Match, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let m = Match {
             id: Uuid::new_v4(),
             competition_id: request.competition_id,
@@ -704,8 +704,8 @@ impl MatchRepository for MockMatchRepository {
     }
     async fn get_matches_by_date_range(
         &self,
-        _s: chrono::DateTime<Utc>,
-        _e: chrono::DateTime<Utc>,
+        _s: time::OffsetDateTime,
+        _e: time::OffsetDateTime,
     ) -> Result<Vec<Match>, DatabaseError> {
         Ok(Vec::new())
     }
@@ -737,7 +737,7 @@ impl NewsRepository for MockNewsRepository {
         request: CreateNewsRequest,
         author_id: Uuid,
     ) -> Result<NewsArticle, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let article = NewsArticle {
             id: Uuid::new_v4(),
             slug: slugify(&request.title),
@@ -813,7 +813,7 @@ impl NewsRepository for MockNewsRepository {
         if let Some(p) = request.published {
             a.published = p;
             if p && a.published_at.is_none() {
-                a.published_at = Some(Utc::now());
+                a.published_at = Some(OffsetDateTime::now_utc());
             }
         }
         Ok(Some(a.clone()))

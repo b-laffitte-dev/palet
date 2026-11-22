@@ -3,8 +3,8 @@
 
 use crate::db::Database;
 use crate::services::auth_service::AuthError;
-use chrono::{Duration, Utc};
 use palet_shared::{CompetitionStatus, CreateMatchRequest, Match, UpdateCompetitionRequest};
+use time::{Duration, OffsetDateTime};
 use uuid::Uuid;
 
 /// Génère les appariements d'un round-robin (méthode du cercle).
@@ -63,7 +63,7 @@ pub async fn generate_matches(
     }
     let base_date = event
         .start_date
-        .unwrap_or_else(|| Utc::now() + Duration::days(7));
+        .unwrap_or_else(|| OffsetDateTime::now_utc() + Duration::days(7));
     let mut created = Vec::with_capacity(pairs.len());
     for (index, (team1_id, team2_id)) in pairs.into_iter().enumerate() {
         let journee = (index as i32) + 1;

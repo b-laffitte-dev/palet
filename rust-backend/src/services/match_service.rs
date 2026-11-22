@@ -4,13 +4,13 @@
 //! It implements the TDD harness requirements and integrates with the repository.
 
 use async_trait::async_trait;
-use chrono::Utc;
 #[cfg(test)]
 use palet_shared::CompetitionType;
 use palet_shared::{
     CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner, UpdateMatchRequest,
 };
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::repositories::match_repository::MatchRepository;
@@ -378,7 +378,7 @@ impl<T: MatchRepository + Send + Sync> MatchService for MatchServiceImpl<T> {
 
         // Validate date is in the future or today (with a small tolerance
         // for the elapsed time between the caller capturing `now` and this check)
-        if request.date < Utc::now() - chrono::Duration::seconds(1) {
+        if request.date < OffsetDateTime::now_utc() - time::Duration::seconds(1) {
             return Err(MatchServiceError::ValidationError(
                 "Match date cannot be in the past".to_string(),
             ));
@@ -459,7 +459,7 @@ pub fn create_test_match_request(
         competition_type,
         team1_id,
         team2_id,
-        date: Utc::now(),
+        date: OffsetDateTime::now_utc(),
         location: Some("Test Location".to_string()),
         journee: Some(1),
         phase: None,
@@ -499,12 +499,12 @@ pub fn create_test_match(
         verified: false,
         verified_by: None,
         verified_at: None,
-        date: Utc::now(),
+        date: OffsetDateTime::now_utc(),
         time: None,
         location: Some("Test Location".to_string()),
         duration: None,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
+        created_at: OffsetDateTime::now_utc(),
+        updated_at: OffsetDateTime::now_utc(),
         started_at: None,
         ended_at: None,
     }
@@ -527,7 +527,7 @@ mod tests {
             competition_type: CompetitionType::Tournament,
             team1_id: Uuid::new_v4(),
             team2_id: Uuid::new_v4(),
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             location: Some("Salle des Essarts".to_string()),
             journee: Some(1),
             phase: None,
@@ -556,7 +556,7 @@ mod tests {
             competition_type: CompetitionType::Tournament,
             team1_id: team_id,
             team2_id: team_id, // Same team - invalid
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             location: Some("Salle des Essarts".to_string()),
             journee: Some(1),
             phase: None,
@@ -636,7 +636,7 @@ mod tests {
             competition_type: CompetitionType::Championship,
             team1_id,
             team2_id,
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             location: Some("Test Location".to_string()),
             journee: Some(1),
             phase: None,
@@ -684,13 +684,13 @@ mod tests {
             verified: false,
             verified_by: None,
             verified_at: None,
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             time: None,
             location: None,
             duration: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-            started_at: Some(Utc::now()),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
+            started_at: Some(OffsetDateTime::now_utc()),
             ended_at: None,
         };
 
@@ -726,13 +726,13 @@ mod tests {
             verified: false,
             verified_by: None,
             verified_at: None,
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             time: None,
             location: None,
             duration: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-            started_at: Some(Utc::now()),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
+            started_at: Some(OffsetDateTime::now_utc()),
             ended_at: None,
         };
 
@@ -768,13 +768,13 @@ mod tests {
             verified: false,
             verified_by: None,
             verified_at: None,
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             time: None,
             location: None,
             duration: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-            started_at: Some(Utc::now()),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
+            started_at: Some(OffsetDateTime::now_utc()),
             ended_at: None,
         };
 

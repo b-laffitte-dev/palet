@@ -5,10 +5,10 @@
 //! home page renders one tab per division.
 
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{CreateDivisionRequest, Division};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -78,7 +78,7 @@ impl DivisionRepository for PostgresDivisionRepository {
         .fetch_one(&*self.pool)
         .await?;
 
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let row = sqlx::query(
             r#"
             INSERT INTO divisions (id, name, league, season, position, created_at, updated_at)
@@ -192,7 +192,7 @@ mod tests {
                 .max()
                 .unwrap_or(0)
                 + 1;
-            let now = Utc::now();
+            let now = OffsetDateTime::now_utc();
             let division = Division {
                 id: Uuid::new_v4(),
                 name,

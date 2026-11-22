@@ -4,13 +4,13 @@
 use crate::db::DatabaseError;
 use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{
     CompetitionEvent, CompetitionStatus, CompetitionType, CreateCompetitionRequest, Registration,
     UpdateCompetitionRequest,
 };
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 #[async_trait]
@@ -145,7 +145,7 @@ impl CompetitionRepository for PostgresCompetitionRepository {
         .bind(request.fee)
         .bind(request.is_public)
         .bind(request.organizer_id)
-        .bind(Utc::now())
+        .bind(OffsetDateTime::now_utc())
         .fetch_one(&*self.pool)
         .await
         .map_err(|e| match e {
@@ -212,7 +212,7 @@ impl CompetitionRepository for PostgresCompetitionRepository {
         id: Uuid,
         request: UpdateCompetitionRequest,
     ) -> Result<Option<CompetitionEvent>, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let row = sqlx::query(
             r#"
             UPDATE competitions SET
@@ -268,7 +268,7 @@ impl CompetitionRepository for PostgresCompetitionRepository {
         team_id: Uuid,
         registered_by: Uuid,
     ) -> Result<Registration, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let row = sqlx::query(
             r#"
             INSERT INTO registrations (competition_id, team_id, status, registered_by, created_at)
@@ -335,7 +335,7 @@ impl CompetitionRepository for PostgresCompetitionRepository {
         team_id: Uuid,
         confirmed_by: Uuid,
     ) -> Result<Option<Registration>, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let row = sqlx::query(
             r#"
             UPDATE registrations SET status = 'confirmed', confirmed_at = $1, confirmed_by = $2

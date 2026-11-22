@@ -4,10 +4,10 @@
 
 use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{Team, TeamMember, TeamMemberRole, TeamMemberWithPlayer, TeamStats, TeamStatus};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -98,8 +98,8 @@ impl PostgresTeamRepository {
 
         let status_str: String = row.get("status");
         let status: TeamStatus = enum_from_db_string(&status_str)?;
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let created_at: time::OffsetDateTime = row.get("created_at");
+        let updated_at: time::OffsetDateTime = row.get("updated_at");
 
         Ok(Team {
             id,
@@ -131,8 +131,8 @@ impl TeamRepository for PostgresTeamRepository {
             logo: None,
             stats: TeamStats::default(),
             status: TeamStatus::Active,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         // Insert into database
@@ -212,7 +212,7 @@ impl TeamRepository for PostgresTeamRepository {
             team.status = status;
         }
 
-        team.updated_at = Utc::now();
+        team.updated_at = OffsetDateTime::now_utc();
 
         // Update in database
         let query = r#"
@@ -313,7 +313,7 @@ impl TeamRepository for PostgresTeamRepository {
         role: TeamMemberRole,
         position: Option<String>,
     ) -> Result<TeamMember, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let row = sqlx::query(
             r#"
             INSERT INTO team_players (team_id, player_id, role, position, joined_at)
@@ -474,8 +474,8 @@ impl TeamRepository for MockTeamRepository {
             logo: None,
             stats: TeamStats::default(),
             status: TeamStatus::Active,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         Ok(team)
@@ -536,7 +536,7 @@ impl TeamRepository for MockTeamRepository {
                 team.status = status;
             }
 
-            team.updated_at = Utc::now();
+            team.updated_at = OffsetDateTime::now_utc();
 
             Ok(Some(team.clone()))
         } else {

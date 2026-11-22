@@ -7,7 +7,6 @@
 
 use actix_web::{http::StatusCode, test, web, App};
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_backend::{
     config::AppConfig,
     db::{Database, DatabaseError, MatchRepository},
@@ -21,6 +20,7 @@ use palet_shared::{
 };
 use sqlx::postgres::PgPoolOptions;
 use std::sync::{Arc, Mutex};
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 // ============================================
@@ -44,7 +44,7 @@ impl MockMatchRepository {
 }
 
 fn sample_match(status: MatchStatus) -> Match {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Match {
         id: Uuid::new_v4(),
         competition_id: Uuid::new_v4(),
@@ -79,7 +79,7 @@ fn sample_match(status: MatchStatus) -> Match {
 #[async_trait]
 impl MatchRepository for MockMatchRepository {
     async fn create_match(&self, request: CreateMatchRequest) -> Result<Match, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let m = Match {
             id: Uuid::new_v4(),
             competition_id: request.competition_id,
@@ -201,7 +201,7 @@ impl MatchRepository for MockMatchRepository {
             ));
         }
         m.status = MatchStatus::InProgress;
-        m.started_at = Some(Utc::now());
+        m.started_at = Some(OffsetDateTime::now_utc());
         Ok(m.clone())
     }
 
@@ -218,7 +218,7 @@ impl MatchRepository for MockMatchRepository {
         }
         m.status = MatchStatus::Completed;
         m.winner = Some(winner);
-        m.ended_at = Some(Utc::now());
+        m.ended_at = Some(OffsetDateTime::now_utc());
         Ok(m.clone())
     }
 
@@ -295,7 +295,7 @@ impl MatchRepository for MockMatchRepository {
         }
         m.verified = true;
         m.verified_by = Some(verifier_id);
-        m.verified_at = Some(Utc::now());
+        m.verified_at = Some(OffsetDateTime::now_utc());
         Ok(m.clone())
     }
 
@@ -313,8 +313,8 @@ impl MatchRepository for MockMatchRepository {
 
     async fn get_matches_by_date_range(
         &self,
-        start: chrono::DateTime<Utc>,
-        end: chrono::DateTime<Utc>,
+        start: time::OffsetDateTime,
+        end: time::OffsetDateTime,
     ) -> Result<Vec<Match>, DatabaseError> {
         Ok(self
             .matches
@@ -429,8 +429,8 @@ fn claims_for(role: UserRole, sub: Uuid) -> Claims {
         role,
         club_id: None,
         token_type: ACCESS_TOKEN_TYPE.to_string(),
-        iat: Utc::now().timestamp(),
-        exp: (Utc::now() + chrono::Duration::hours(1)).timestamp(),
+        iat: OffsetDateTime::now_utc().unix_timestamp(),
+        exp: (OffsetDateTime::now_utc() + time::Duration::hours(1)).unix_timestamp(),
     }
 }
 

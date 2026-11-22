@@ -2,10 +2,10 @@
 
 use crate::db::DatabaseError;
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{slugify, CreateNewsRequest, NewsArticle, UpdateNewsRequest};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 #[async_trait]
@@ -68,7 +68,7 @@ impl NewsRepository for PostgresNewsRepository {
         request: CreateNewsRequest,
         author_id: Uuid,
     ) -> Result<NewsArticle, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let slug = slugify(&request.title);
         let published_at = if request.published { Some(now) } else { None };
         let row = sqlx::query(
@@ -153,7 +153,7 @@ impl NewsRepository for PostgresNewsRepository {
         id: Uuid,
         request: UpdateNewsRequest,
     ) -> Result<Option<NewsArticle>, DatabaseError> {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let new_slug = request.title.as_deref().map(slugify);
         let row = sqlx::query(
             r#"

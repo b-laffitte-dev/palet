@@ -1,10 +1,10 @@
 //! Repository des disponibilités des joueurs pour un match (Module 8, E3).
 
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{AvailabilityStatus, MatchAvailability};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -125,6 +125,6 @@ pub fn availability_fixture(
         player_id,
         status,
         commentaire: None,
-        updated_at: Utc::now(),
+        updated_at: OffsetDateTime::now_utc(),
     }
 }

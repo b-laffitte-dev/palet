@@ -1,13 +1,13 @@
 //! Footer component for Palet Vendéen
 
 use crate::utils::format::year_of;
-use chrono::Utc;
+use time::OffsetDateTime;
 use dioxus::prelude::*;
 
 /// Footer component
 #[component]
 pub fn Footer() -> Element {
-    let year = year_of(&Utc::now());
+    let year = year_of(&OffsetDateTime::now_utc());
     rsx! {
         footer { class: "bg-brand-green-900/80 border-t border-brand-green-800",
             div { class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8",

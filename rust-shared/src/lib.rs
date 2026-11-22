@@ -1,8 +1,31 @@
 //! Shared types and utilities for Palet Vendéen
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 use uuid::Uuid;
+
+/// (Dé)sérialise un `Option<OffsetDateTime>` en chaîne RFC 3339, comme le
+/// faisait `chrono::DateTime<Utc>`.
+pub mod serde_option_rfc3339 {
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use time::OffsetDateTime;
+
+    #[derive(Serialize, Deserialize)]
+    struct Wrapper(#[serde(with = "time::serde::rfc3339")] pub OffsetDateTime);
+
+    pub fn serialize<S: Serializer>(
+        value: &Option<OffsetDateTime>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        value.as_ref().map(|v| Wrapper(*v)).serialize(serializer)
+    }
+
+    pub fn deserialize<'de, D: Deserializer<'de>>(
+        deserializer: D,
+    ) -> Result<Option<OffsetDateTime>, D::Error> {
+        Ok(Option::<Wrapper>::deserialize(deserializer)?.map(|w| w.0))
+    }
+}
 
 // ============================================
 // COMMON TYPES
@@ -15,8 +38,8 @@ pub trait Identifiable {
 
 /// Trait for timestamped entities
 pub trait Timestamped {
-    fn created_at(&self) -> &DateTime<Utc>;
-    fn updated_at(&self) -> &DateTime<Utc>;
+    fn created_at(&self) -> &OffsetDateTime;
+    fn updated_at(&self) -> &OffsetDateTime;
 }
 
 // ============================================
@@ -45,7 +68,8 @@ pub struct User {
     pub photo: Option<String>,
     pub bio: Option<String>,
     pub phone: Option<String>,
-    pub birth_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub birth_date: Option<OffsetDateTime>,
 
     // Palet Info
     pub license_number: Option<String>,
@@ -64,16 +88,20 @@ pub struct User {
     pub preferences: UserPreferences,
 
     // Security
-    pub password_last_changed: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub password_last_changed: Option<OffsetDateTime>,
     pub mfa_enabled: bool,
-    pub last_login: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub last_login: Option<OffsetDateTime>,
 
     // Social
     pub social: SocialLinks,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 impl Identifiable for User {
@@ -83,10 +111,10 @@ impl Identifiable for User {
 }
 
 impl Timestamped for User {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -230,7 +258,8 @@ pub struct UserProfile {
     pub category: String,
     pub status: UserStatus,
     pub email_verified: bool,
-    pub created_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
@@ -292,8 +321,10 @@ pub struct Club {
     pub social: SocialLinks,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 impl Identifiable for Club {
@@ -303,10 +334,10 @@ impl Identifiable for Club {
 }
 
 impl Timestamped for Club {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -329,7 +360,8 @@ pub struct Federation {
     pub name: String,
     pub slug: String,
     pub description: Option<String>,
-    pub created_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
 }
 
 impl Identifiable for Federation {
@@ -358,8 +390,10 @@ pub struct Division {
     pub season: String,
     /// Display order of the tab (1 = first)
     pub position: i32,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 impl Identifiable for Division {
@@ -369,10 +403,10 @@ impl Identifiable for Division {
 }
 
 impl Timestamped for Division {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -427,7 +461,8 @@ pub struct Player {
     pub status: PlayerStatus,
 
     // Personal info
-    pub birth_date: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub birth_date: OffsetDateTime,
     pub age: i32,
     pub birth_place: Option<String>,
     pub nationality: String,
@@ -447,13 +482,17 @@ pub struct Player {
 
     // License info
     pub license_number: String,
-    pub license_date: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub license_date: OffsetDateTime,
     pub license_status: LicenseStatus,
-    pub registration_date: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub registration_date: OffsetDateTime,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 impl Identifiable for Player {
@@ -463,10 +502,10 @@ impl Identifiable for Player {
 }
 
 impl Timestamped for Player {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -507,8 +546,10 @@ pub struct Team {
     pub status: TeamStatus,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 impl Identifiable for Team {
@@ -518,10 +559,10 @@ impl Identifiable for Team {
 }
 
 impl Timestamped for Team {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -606,10 +647,14 @@ pub struct Competition {
     pub format: CompetitionFormat,
 
     // Dates
-    pub registration_start: Option<DateTime<Utc>>,
-    pub registration_end: Option<DateTime<Utc>>,
-    pub start_date: Option<DateTime<Utc>>,
-    pub end_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_start: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_end: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub start_date: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub end_date: Option<OffsetDateTime>,
 
     // Status
     pub status: CompetitionStatus,
@@ -637,8 +682,10 @@ pub struct Competition {
     pub organizer_id: Uuid,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 impl Identifiable for Competition {
@@ -648,10 +695,10 @@ impl Identifiable for Competition {
 }
 
 impl Timestamped for Competition {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -692,8 +739,10 @@ pub struct Championship {
     pub current_journee: Option<i32>,
     pub current_phase: Option<String>,
     pub organizer_id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
@@ -730,7 +779,8 @@ pub enum ClassificationTertiary {
 pub struct ChampionshipClassification {
     pub division: String,
     pub journee: i32,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
     pub teams: Vec<ChampionshipTeam>,
 }
 
@@ -779,10 +829,14 @@ pub struct Tournament {
     pub format: CompetitionFormat,
 
     // Dates
-    pub registration_start: Option<DateTime<Utc>>,
-    pub registration_end: Option<DateTime<Utc>>,
-    pub start_date: Option<DateTime<Utc>>,
-    pub end_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_start: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_end: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub start_date: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub end_date: Option<OffsetDateTime>,
 
     // Status
     pub status: CompetitionStatus,
@@ -820,8 +874,10 @@ pub struct Tournament {
     pub phases: Vec<TournamentPhase>,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
@@ -859,7 +915,8 @@ pub struct TournamentMatch {
     pub team2_score: Option<i32>,
     pub winner_id: Option<Uuid>,
     pub status: MatchStatus,
-    pub date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub date: Option<OffsetDateTime>,
     pub time: Option<String>,
     pub location: Option<String>,
     pub round: String,
@@ -920,19 +977,25 @@ pub struct Match {
     pub status: MatchStatus,
     pub verified: bool,
     pub verified_by: Option<Uuid>,
-    pub verified_at: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub verified_at: Option<OffsetDateTime>,
 
     // Details
-    pub date: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub date: OffsetDateTime,
     pub time: Option<String>,
     pub location: Option<String>,
     pub duration: Option<String>,
 
     // Timestamps
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub started_at: Option<DateTime<Utc>>,
-    pub ended_at: Option<DateTime<Utc>>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub started_at: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub ended_at: Option<OffsetDateTime>,
 }
 
 impl Identifiable for Match {
@@ -942,10 +1005,10 @@ impl Identifiable for Match {
 }
 
 impl Timestamped for Match {
-    fn created_at(&self) -> &DateTime<Utc> {
+    fn created_at(&self) -> &OffsetDateTime {
         &self.created_at
     }
-    fn updated_at(&self) -> &DateTime<Utc> {
+    fn updated_at(&self) -> &OffsetDateTime {
         &self.updated_at
     }
 }
@@ -991,7 +1054,8 @@ pub struct TeamMember {
     pub player_id: Uuid,
     pub role: TeamMemberRole,
     pub position: Option<String>,
-    pub joined_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub joined_at: OffsetDateTime,
 }
 
 /// Membre d'équipe avec sa fiche joueur jointe (GET /equipes/{id}/effectif).
@@ -1001,7 +1065,8 @@ pub struct TeamMemberWithPlayer {
     pub player_id: Uuid,
     pub role: TeamMemberRole,
     pub position: Option<String>,
-    pub joined_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub joined_at: OffsetDateTime,
     pub player: Player,
 }
 
@@ -1045,10 +1110,14 @@ pub struct CompetitionEvent {
     pub description: Option<String>,
     pub location: Option<String>,
     pub format: CompetitionFormat,
-    pub registration_start: Option<DateTime<Utc>>,
-    pub registration_end: Option<DateTime<Utc>>,
-    pub start_date: Option<DateTime<Utc>>,
-    pub end_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_start: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_end: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub start_date: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub end_date: Option<OffsetDateTime>,
     pub status: CompetitionStatus,
     pub max_teams: Option<i32>,
     /// Nombre d'inscriptions (tous statuts), calculé à la lecture.
@@ -1056,8 +1125,10 @@ pub struct CompetitionEvent {
     pub fee: Option<f64>,
     pub is_public: bool,
     pub organizer_id: Uuid,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
@@ -1071,10 +1142,14 @@ pub struct CreateCompetitionRequest {
     pub description: Option<String>,
     pub location: Option<String>,
     pub format: CompetitionFormat,
-    pub registration_start: Option<DateTime<Utc>>,
-    pub registration_end: Option<DateTime<Utc>>,
-    pub start_date: Option<DateTime<Utc>>,
-    pub end_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_start: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_end: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub start_date: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub end_date: Option<OffsetDateTime>,
     pub max_teams: Option<i32>,
     pub fee: Option<f64>,
     pub is_public: bool,
@@ -1089,10 +1164,14 @@ pub struct UpdateCompetitionRequest {
     pub description: Option<String>,
     pub location: Option<String>,
     pub format: Option<CompetitionFormat>,
-    pub registration_start: Option<DateTime<Utc>>,
-    pub registration_end: Option<DateTime<Utc>>,
-    pub start_date: Option<DateTime<Utc>>,
-    pub end_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_start: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_end: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub start_date: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub end_date: Option<OffsetDateTime>,
     pub max_teams: Option<i32>,
     pub fee: Option<f64>,
     pub is_public: Option<bool>,
@@ -1119,8 +1198,10 @@ pub struct Registration {
     pub status: RegistrationStatus,
     pub registered_by: Uuid,
     pub paid: bool,
-    pub created_at: DateTime<Utc>,
-    pub confirmed_at: Option<DateTime<Utc>>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub confirmed_at: Option<OffsetDateTime>,
     pub confirmed_by: Option<Uuid>,
 }
 
@@ -1139,9 +1220,12 @@ pub struct NewsArticle {
     pub category: String,
     pub author_id: Option<Uuid>,
     pub published: bool,
-    pub published_at: Option<DateTime<Utc>>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub published_at: Option<OffsetDateTime>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
@@ -1236,7 +1320,8 @@ pub struct PaginatedResponse<T> {
 pub struct HealthCheck {
     pub statut: String,
     pub version: String,
-    pub timestamp: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub timestamp: OffsetDateTime,
     pub database: DatabaseStatus,
     pub cache: CacheStatus,
 }
@@ -1265,7 +1350,8 @@ pub struct CreateMatchRequest {
     pub competition_type: CompetitionType,
     pub team1_id: Uuid,
     pub team2_id: Uuid,
-    pub date: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub date: OffsetDateTime,
     pub location: Option<String>,
     pub journee: Option<i32>,
     pub phase: Option<String>,
@@ -1354,13 +1440,15 @@ pub struct CreatePlayerRequest {
     pub first_name: String,
     pub last_name: String,
     pub email: String,
-    pub birth_date: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub birth_date: OffsetDateTime,
     pub nationality: String,
     pub dominant_hand: DominantHand,
     pub category: String,
     pub club_id: Uuid,
     pub license_number: Option<String>,
-    pub license_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub license_date: Option<OffsetDateTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, PartialEq)]
@@ -1375,10 +1463,14 @@ pub struct CreateTournamentRequest {
     pub location: Option<String>,
     pub divisions: Vec<String>,
     pub format: CompetitionFormat,
-    pub registration_start: Option<DateTime<Utc>>,
-    pub registration_end: Option<DateTime<Utc>>,
-    pub start_date: Option<DateTime<Utc>>,
-    pub end_date: Option<DateTime<Utc>>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_start: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub registration_end: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub start_date: Option<OffsetDateTime>,
+    #[serde(with = "crate::serde_option_rfc3339")]
+    pub end_date: Option<OffsetDateTime>,
     pub fee: Option<f64>,
     pub payment_required: bool,
     pub payment_methods: Vec<String>,
@@ -1400,18 +1492,22 @@ pub fn generate_uuid() -> Uuid {
 }
 
 /// Get current UTC timestamp
-pub fn now_utc() -> DateTime<Utc> {
-    Utc::now()
+pub fn now_utc() -> OffsetDateTime {
+    OffsetDateTime::now_utc()
 }
 
 /// Format date for display
-pub fn format_date(date: &DateTime<Utc>) -> String {
-    date.format("%Y-%m-%d").to_string()
+pub fn format_date(date: &OffsetDateTime) -> String {
+    date.format(&time::macros::format_description!("[year]-[month]-[day]"))
+        .unwrap_or_default()
 }
 
 /// Format date and time for display
-pub fn format_datetime(date: &DateTime<Utc>) -> String {
-    date.format("%Y-%m-%d %H:%M:%S").to_string()
+pub fn format_datetime(date: &OffsetDateTime) -> String {
+    date.format(&time::macros::format_description!(
+        "[year]-[month]-[day] [hour]:[minute]:[second]"
+    ))
+    .unwrap_or_default()
 }
 
 // ============================================
@@ -1444,7 +1540,8 @@ pub struct MatchAvailability {
     pub player_id: Uuid,
     pub status: AvailabilityStatus,
     pub commentaire: Option<String>,
-    pub updated_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub updated_at: OffsetDateTime,
 }
 
 /// Corps de POST /matchs/{id}/dispo
@@ -1475,7 +1572,8 @@ pub struct AppNotification {
     pub message: String,
     pub link: Option<String>,
     pub read: bool,
-    pub created_at: DateTime<Utc>,
+    #[serde(with = "time::serde::rfc3339")]
+    pub created_at: OffsetDateTime,
 }
 
 /// Compteur de notifications non lues — GET /notifications/count
@@ -1541,8 +1639,8 @@ mod tests {
             league: "Deux-Sèvres".to_string(),
             season: "2026-2027".to_string(),
             position: 1,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         let json = serde_json::to_string(&division).expect("serialize");
@@ -1671,7 +1769,7 @@ mod tests {
                 category: "senior".to_string(),
                 status: UserStatus::Active,
                 email_verified: false,
-                created_at: Utc::now(),
+                created_at: OffsetDateTime::now_utc(),
             },
         };
         let json = serde_json::to_string(&response).expect("serialize");

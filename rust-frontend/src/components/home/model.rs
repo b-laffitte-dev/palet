@@ -227,7 +227,10 @@ fn format_score(diff: i32) -> String {
 }
 
 fn format_match_datetime(m: &Match) -> String {
-    let date = m.date.format("%d/%m/%Y").to_string();
+    let date = m
+        .date
+        .format(&time::macros::format_description!("[day]/[month]/[year]"))
+        .unwrap_or_default();
     match &m.time {
         Some(time) if !time.is_empty() => format!("{date} · {time}"),
         _ => date,
@@ -497,7 +500,11 @@ fn carousel_when_location(m: &Match) -> (String, String) {
             .as_ref()
             .filter(|t| !t.is_empty())
             .cloned()
-            .unwrap_or_else(|| m.date.format("%Hh%M").to_string())
+            .unwrap_or_else(|| {
+                m.date
+                    .format(&time::macros::format_description!("[hour]h[minute]"))
+                    .unwrap_or_default()
+            })
     };
     let location = m
         .location
@@ -539,7 +546,10 @@ fn carousel_match(m: &Match, clubs: &[Club]) -> CarouselMatch {
         meta,
         when,
         location,
-        date_label: m.date.format("%d/%m/%Y").to_string(),
+        date_label: m
+            .date
+            .format(&time::macros::format_description!("[day]/[month]/[year]"))
+            .unwrap_or_default(),
         best_of: m.best_of,
         manches: m
             .manches
@@ -906,11 +916,11 @@ fn build_top(tabs: &[DivisionTab]) -> Vec<TopCard> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::Utc;
     use palet_shared::{
         ChampionshipTeam, CompetitionStatus, CurrentScores, MancheScore, MatchWinner,
         TeamClassificationStatus, TeamStats,
     };
+    use time::OffsetDateTime;
 
     fn club(id: Uuid, name: &str, city: &str) -> Club {
         Club {
@@ -931,8 +941,8 @@ mod tests {
             contact_phone: None,
             website: None,
             social: Default::default(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         }
     }
 
@@ -961,12 +971,12 @@ mod tests {
             verified: false,
             verified_by: None,
             verified_at: None,
-            date: Utc::now(),
+            date: OffsetDateTime::now_utc(),
             time: Some("15h00".to_string()),
             location: Some("Terrain clos de La Roche-sur-Yon".to_string()),
             duration: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
             started_at: None,
             ended_at: None,
         }
@@ -1012,8 +1022,8 @@ mod tests {
             league: league.to_string(),
             season: "2026-2027".to_string(),
             position,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         }
     }
 
@@ -1025,7 +1035,7 @@ mod tests {
         ChampionshipClassification {
             division: division_name.to_string(),
             journee,
-            updated_at: Utc::now(),
+            updated_at: OffsetDateTime::now_utc(),
             teams: vec![ChampionshipTeam {
                 position: 1,
                 team_id,
@@ -1066,8 +1076,8 @@ mod tests {
             current_journee: Some(3),
             current_phase: None,
             organizer_id: Uuid::new_v4(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         }
     }
 
@@ -1095,7 +1105,7 @@ mod tests {
         let classification = vec![ChampionshipClassification {
             division: "D1".to_string(),
             journee: 12,
-            updated_at: Utc::now(),
+            updated_at: OffsetDateTime::now_utc(),
             teams: vec![team],
         }];
 
@@ -1127,7 +1137,7 @@ mod tests {
         let classification = vec![ChampionshipClassification {
             division: "D1".to_string(),
             journee: 3,
-            updated_at: Utc::now(),
+            updated_at: OffsetDateTime::now_utc(),
             teams: vec![ChampionshipTeam {
                 position: 1,
                 team_id,
@@ -1228,7 +1238,7 @@ mod tests {
         let classification = vec![ChampionshipClassification {
             division: "D9".to_string(),
             journee: 1,
-            updated_at: Utc::now(),
+            updated_at: OffsetDateTime::now_utc(),
             teams: vec![],
         }];
         let championship = championship_fixture(vec!["D1".to_string(), "D2".to_string()]);
@@ -1292,8 +1302,8 @@ mod tests {
             current_journee: None,
             current_phase: None,
             organizer_id: Uuid::new_v4(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
         let mut d1 = pending.clone();
         d1.name = "D1".to_string();
@@ -1321,9 +1331,7 @@ mod tests {
         m.status = status.clone();
         // Les vrais matchs ont `time = None` : l'heure est dans `date`.
         m.time = None;
-        m.date = chrono::DateTime::parse_from_rfc3339("2026-11-08T14:30:00Z")
-            .expect("date")
-            .with_timezone(&Utc);
+        m.date = time::macros::datetime!(2026-11-08 14:30:00 UTC);
         match &status {
             MatchStatus::InProgress => {
                 m.manches = Some(vec![

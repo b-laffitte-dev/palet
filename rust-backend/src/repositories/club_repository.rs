@@ -3,11 +3,11 @@
 //! This module provides the database operations for managing clubs.
 
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{Club, ClubStatus, CreateClubRequest, UpdateClubRequest};
 use serde_json;
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -89,8 +89,8 @@ impl PostgresClubRepository {
                 instagram: None,
             });
 
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
+        let created_at: time::OffsetDateTime = row.get("created_at");
+        let updated_at: time::OffsetDateTime = row.get("updated_at");
 
         Ok(Club {
             id,
@@ -141,8 +141,8 @@ impl ClubRepository for PostgresClubRepository {
                 twitter: None,
                 instagram: None,
             },
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         // Insert into database
@@ -251,7 +251,7 @@ impl ClubRepository for PostgresClubRepository {
             club.website = Some(website);
         }
 
-        club.updated_at = Utc::now();
+        club.updated_at = OffsetDateTime::now_utc();
 
         // Update in database
         let query = r#"
@@ -436,8 +436,8 @@ impl ClubRepository for MockClubRepository {
                 twitter: None,
                 instagram: None,
             },
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
         };
 
         Ok(club)
@@ -513,7 +513,7 @@ impl ClubRepository for MockClubRepository {
                 club.website = Some(website);
             }
 
-            club.updated_at = Utc::now();
+            club.updated_at = OffsetDateTime::now_utc();
 
             Ok(Some(club.clone()))
         } else {

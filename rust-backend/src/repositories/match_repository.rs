@@ -4,13 +4,13 @@
 //! It implements the TDD harness requirements for match functionality.
 
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_shared::{
     CreateMatchRequest, MancheScore, Match, MatchStatus, MatchWinner, UpdateMatchRequest,
 };
 use serde_json;
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::db::DatabaseError;
@@ -67,8 +67,8 @@ pub trait MatchRepository {
     // Query Operations
     async fn get_matches_by_date_range(
         &self,
-        start_date: chrono::DateTime<Utc>,
-        end_date: chrono::DateTime<Utc>,
+        start_date: time::OffsetDateTime,
+        end_date: time::OffsetDateTime,
     ) -> Result<Vec<Match>, DatabaseError>;
     async fn get_matches_by_team(&self, team_id: Uuid) -> Result<Vec<Match>, DatabaseError>;
     async fn get_matches_by_journee(
@@ -138,15 +138,15 @@ impl PostgresMatchRepository {
             enum_from_db_string(&status_str).unwrap_or(MatchStatus::Scheduled);
         let verified: bool = row.get("verified");
         let verified_by: Option<Uuid> = row.get("verified_by");
-        let verified_at: Option<chrono::DateTime<Utc>> = row.get("verified_at");
-        let date: chrono::DateTime<Utc> = row.get("date");
+        let verified_at: Option<time::OffsetDateTime> = row.get("verified_at");
+        let date: time::OffsetDateTime = row.get("date");
         let time: Option<String> = row.get("time");
         let location: Option<String> = row.get("location");
         let duration: Option<String> = row.get("duration");
-        let created_at: chrono::DateTime<Utc> = row.get("created_at");
-        let updated_at: chrono::DateTime<Utc> = row.get("updated_at");
-        let started_at: Option<chrono::DateTime<Utc>> = row.get("started_at");
-        let ended_at: Option<chrono::DateTime<Utc>> = row.get("ended_at");
+        let created_at: time::OffsetDateTime = row.get("created_at");
+        let updated_at: time::OffsetDateTime = row.get("updated_at");
+        let started_at: Option<time::OffsetDateTime> = row.get("started_at");
+        let ended_at: Option<time::OffsetDateTime> = row.get("ended_at");
 
         Ok(Match {
             id,
@@ -211,8 +211,8 @@ impl MatchRepository for PostgresMatchRepository {
             time: None,
             location: request.location,
             duration: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
             started_at: None,
             ended_at: None,
         };
@@ -354,7 +354,7 @@ impl MatchRepository for PostgresMatchRepository {
             match_obj.verified = verified;
         }
 
-        match_obj.updated_at = Utc::now();
+        match_obj.updated_at = OffsetDateTime::now_utc();
 
         // Update in database
         let query = r#"
@@ -589,8 +589,8 @@ impl MatchRepository for PostgresMatchRepository {
 
     async fn get_matches_by_date_range(
         &self,
-        start_date: chrono::DateTime<Utc>,
-        end_date: chrono::DateTime<Utc>,
+        start_date: time::OffsetDateTime,
+        end_date: time::OffsetDateTime,
     ) -> Result<Vec<Match>, DatabaseError> {
         let query = "SELECT * FROM matches WHERE date BETWEEN $1 AND $2 ORDER BY date";
         let rows = sqlx::query(query)
@@ -745,8 +745,8 @@ impl MatchRepository for MockMatchRepository {
             time: None,
             location: request.location,
             duration: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: OffsetDateTime::now_utc(),
             started_at: None,
             ended_at: None,
         };
@@ -851,7 +851,7 @@ impl MatchRepository for MockMatchRepository {
             if let Some(verified) = request.verified {
                 match_obj.verified = verified;
             }
-            match_obj.updated_at = Utc::now();
+            match_obj.updated_at = OffsetDateTime::now_utc();
 
             Ok(Some(match_obj.clone()))
         } else {
@@ -885,8 +885,8 @@ impl MatchRepository for MockMatchRepository {
         let mut matches = self.matches.lock().unwrap();
         if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.status = MatchStatus::InProgress;
-            match_obj.started_at = Some(Utc::now());
-            match_obj.updated_at = Utc::now();
+            match_obj.started_at = Some(OffsetDateTime::now_utc());
+            match_obj.updated_at = OffsetDateTime::now_utc();
             Ok(match_obj.clone())
         } else {
             Err(DatabaseError::NotFound(format!(
@@ -911,8 +911,8 @@ impl MatchRepository for MockMatchRepository {
         if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.status = MatchStatus::Completed;
             match_obj.winner = Some(winner);
-            match_obj.ended_at = Some(Utc::now());
-            match_obj.updated_at = Utc::now();
+            match_obj.ended_at = Some(OffsetDateTime::now_utc());
+            match_obj.updated_at = OffsetDateTime::now_utc();
             Ok(match_obj.clone())
         } else {
             Err(DatabaseError::NotFound(format!(
@@ -958,7 +958,7 @@ impl MatchRepository for MockMatchRepository {
             });
             match_obj.team1_score = Some(team1_total);
             match_obj.team2_score = Some(team2_total);
-            match_obj.updated_at = Utc::now();
+            match_obj.updated_at = OffsetDateTime::now_utc();
 
             // Check if match is completed (13 or 15 points)
             let best_of = match_obj.best_of.unwrap_or(13);
@@ -969,7 +969,7 @@ impl MatchRepository for MockMatchRepository {
                 } else {
                     Some(MatchWinner::Team2)
                 };
-                match_obj.ended_at = Some(Utc::now());
+                match_obj.ended_at = Some(OffsetDateTime::now_utc());
             }
 
             Ok(match_obj.clone())
@@ -1015,7 +1015,7 @@ impl MatchRepository for MockMatchRepository {
 
             match_obj.team1_score = Some(team1_total);
             match_obj.team2_score = Some(team2_total);
-            match_obj.updated_at = Utc::now();
+            match_obj.updated_at = OffsetDateTime::now_utc();
 
             Ok(match_obj.clone())
         } else {
@@ -1041,8 +1041,8 @@ impl MatchRepository for MockMatchRepository {
         if let Some(match_obj) = matches.iter_mut().find(|m| m.id == match_id) {
             match_obj.verified = true;
             match_obj.verified_by = Some(verifier_id);
-            match_obj.verified_at = Some(Utc::now());
-            match_obj.updated_at = Utc::now();
+            match_obj.verified_at = Some(OffsetDateTime::now_utc());
+            match_obj.updated_at = OffsetDateTime::now_utc();
             Ok(match_obj.clone())
         } else {
             Err(DatabaseError::NotFound(format!(
@@ -1064,7 +1064,7 @@ impl MatchRepository for MockMatchRepository {
             match_obj.verified = false;
             match_obj.verified_by = None;
             match_obj.verified_at = None;
-            match_obj.updated_at = Utc::now();
+            match_obj.updated_at = OffsetDateTime::now_utc();
             Ok(match_obj.clone())
         } else {
             Err(DatabaseError::NotFound(format!(
@@ -1076,8 +1076,8 @@ impl MatchRepository for MockMatchRepository {
 
     async fn get_matches_by_date_range(
         &self,
-        _start_date: chrono::DateTime<Utc>,
-        _end_date: chrono::DateTime<Utc>,
+        _start_date: time::OffsetDateTime,
+        _end_date: time::OffsetDateTime,
     ) -> Result<Vec<Match>, DatabaseError> {
         if self.should_fail {
             return Err(DatabaseError::ConnectionError(

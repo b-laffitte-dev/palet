@@ -19,8 +19,8 @@ serde_json = "1"
 # UUID
 uuid = { version = "1", features = ["v4", "serde", "js"] }
 
-# Chrono for dates
-chrono = { version = "0.4", features = ["serde"] }
+# Time for dates ("wasm-bindgen" : now_utc() fonctionne sur wasm32-unknown-unknown)
+time = { version = "0.3", features = ["serde", "macros", "formatting", "parsing", "wasm-bindgen"] }
 
 # Shared types
 palet-shared = { path = "../rust-shared" }

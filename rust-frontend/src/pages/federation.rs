@@ -8,9 +8,9 @@ use crate::components::home::model::HOME_LEAGUE;
 use crate::components::layout::Layout;
 use crate::services::api::ApiService;
 use crate::utils::format::current_season;
-use chrono::Utc;
 use dioxus::prelude::*;
 use palet_shared::CreateDivisionRequest;
+use time::OffsetDateTime;
 
 /// Page component
 #[component]
@@ -43,7 +43,7 @@ pub fn Federation() -> Element {
             let request = CreateDivisionRequest {
                 name,
                 league: HOME_LEAGUE.to_string(),
-                season: current_season(&Utc::now()),
+                season: current_season(&OffsetDateTime::now_utc()),
             };
             match api.create_division(&request).await {
                 Ok(d) => {

@@ -224,8 +224,8 @@ pub fn matches_query(haystack: &str, query: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::Utc;
     use palet_shared::{CompetitionType, MancheScore};
+    use time::OffsetDateTime;
 
     #[allow(clippy::too_many_arguments)]
     fn mk_match(
@@ -238,7 +238,7 @@ mod tests {
         status: MatchStatus,
         verified: bool,
     ) -> Match {
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         Match {
             id,
             competition_id: Uuid::new_v4(),
@@ -332,28 +332,28 @@ mod tests {
                 player_id: player,
                 status: AvailabilityStatus::Disponible,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
             MatchAvailability {
                 match_id: m,
                 player_id: player,
                 status: AvailabilityStatus::Incertain,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
             MatchAvailability {
                 match_id: m,
                 player_id: player,
                 status: AvailabilityStatus::Indisponible,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
             MatchAvailability {
                 match_id: m,
                 player_id: player,
                 status: AvailabilityStatus::Disponible,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
         ];
         let stats = compute_player_stats(player, &[], &[], &dispo);
@@ -475,21 +475,21 @@ mod tests {
                 player_id: p,
                 status: AvailabilityStatus::Disponible,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
             MatchAvailability {
                 match_id: m,
                 player_id: p,
                 status: AvailabilityStatus::Disponible,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
             MatchAvailability {
                 match_id: m,
                 player_id: p,
                 status: AvailabilityStatus::Indisponible,
                 commentaire: None,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
             },
         ];
         assert_eq!(summarize_availabilities(&list), (3, 2, 1, 0));

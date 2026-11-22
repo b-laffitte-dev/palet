@@ -2,8 +2,8 @@
 //! refresh tokens (table `refresh_tokens`). Le hash de mot de passe ne sort
 //! jamais de ce module : l'API n'expose que `palet_shared::UserProfile`.
 
-use chrono::{DateTime, Utc};
 use palet_shared::{UserRole, UserStatus};
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -20,9 +20,9 @@ pub struct UserAccount {
     pub category: String,
     pub status: UserStatus,
     pub email_verified: bool,
-    pub last_login: Option<DateTime<Utc>>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    pub last_login: Option<OffsetDateTime>,
+    pub created_at: OffsetDateTime,
+    pub updated_at: OffsetDateTime,
 }
 
 /// Données de création d'un compte (le hash est déjà calculé par le service).
@@ -42,13 +42,13 @@ pub struct RefreshToken {
     pub id: Uuid,
     pub user_id: Uuid,
     pub token: String,
-    pub expires_at: DateTime<Utc>,
-    pub revoked_at: Option<DateTime<Utc>>,
-    pub created_at: DateTime<Utc>,
+    pub expires_at: OffsetDateTime,
+    pub revoked_at: Option<OffsetDateTime>,
+    pub created_at: OffsetDateTime,
 }
 
 impl RefreshToken {
-    pub fn is_usable(&self, now: &DateTime<Utc>) -> bool {
+    pub fn is_usable(&self, now: &OffsetDateTime) -> bool {
         self.revoked_at.is_none() && &self.expires_at > now
     }
 }

@@ -4,7 +4,6 @@
 //! It implements the TDD harness requirements and integrates with the repository.
 
 use async_trait::async_trait;
-use chrono::Utc;
 #[cfg(test)]
 use palet_shared::TeamStats;
 use palet_shared::{
@@ -13,6 +12,7 @@ use palet_shared::{
     TeamClassificationStatus, UpdateChampionshipRequest,
 };
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 use crate::repositories::championship_repository::ChampionshipRepository;
@@ -371,7 +371,7 @@ impl<T: ChampionshipRepository + Send + Sync> ChampionshipService for Championsh
             let classification = ChampionshipClassification {
                 division,
                 journee,
-                updated_at: Utc::now(),
+                updated_at: OffsetDateTime::now_utc(),
                 teams: teams_with_positions,
             };
 
@@ -591,8 +591,8 @@ pub fn create_test_championship(
         current_journee: None,
         current_phase: None,
         organizer_id,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
+        created_at: OffsetDateTime::now_utc(),
+        updated_at: OffsetDateTime::now_utc(),
     }
 }
 

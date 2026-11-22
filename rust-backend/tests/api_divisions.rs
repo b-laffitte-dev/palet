@@ -7,7 +7,6 @@
 
 use actix_web::{http::StatusCode, test, web, App};
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_backend::services::auth_service::{create_token, Claims, ACCESS_TOKEN_TYPE};
 use palet_backend::{
     config::AppConfig,
@@ -18,6 +17,7 @@ use palet_backend::{
 use palet_shared::{ApiResponse, CreateDivisionRequest, Division, UserRole};
 use sqlx::postgres::PgPoolOptions;
 use std::sync::{Arc, Mutex};
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 struct MockDivisionRepository {
@@ -57,7 +57,7 @@ impl DivisionRepository for MockDivisionRepository {
             .max()
             .unwrap_or(0)
             + 1;
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let division = Division {
             id: Uuid::new_v4(),
             name,
@@ -134,8 +134,8 @@ fn claims_for(role: UserRole) -> Claims {
         role,
         club_id: None,
         token_type: ACCESS_TOKEN_TYPE.to_string(),
-        iat: Utc::now().timestamp(),
-        exp: (Utc::now() + chrono::Duration::hours(1)).timestamp(),
+        iat: OffsetDateTime::now_utc().unix_timestamp(),
+        exp: (OffsetDateTime::now_utc() + time::Duration::hours(1)).unix_timestamp(),
     }
 }
 

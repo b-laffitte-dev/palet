@@ -7,7 +7,6 @@
 
 use actix_web::{http::StatusCode, test, web, App};
 use async_trait::async_trait;
-use chrono::Utc;
 use palet_backend::{
     config::AppConfig,
     db::{
@@ -30,6 +29,7 @@ use palet_shared::{
 };
 use sqlx::postgres::PgPoolOptions;
 use std::sync::{Arc, Mutex};
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 // ============================================
@@ -37,7 +37,7 @@ use uuid::Uuid;
 // ============================================
 
 fn fixture_player(id: Uuid, club_id: Uuid, license: &str) -> Player {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Player {
         id,
         first_name: "Jean".to_string(),
@@ -70,7 +70,7 @@ fn fixture_player(id: Uuid, club_id: Uuid, license: &str) -> Player {
 }
 
 fn fixture_club(id: Uuid, name: &str) -> Club {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Club {
         id,
         name: name.to_string(),
@@ -95,7 +95,7 @@ fn fixture_club(id: Uuid, name: &str) -> Club {
 }
 
 fn fixture_team(id: Uuid, club_id: Uuid, name: &str) -> Team {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Team {
         id,
         name: name.to_string(),
@@ -110,7 +110,7 @@ fn fixture_team(id: Uuid, club_id: Uuid, name: &str) -> Team {
 }
 
 fn fixture_match(id: Uuid, t1: Uuid, t2: Uuid) -> Match {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     Match {
         id,
         competition_id: Uuid::new_v4(),
@@ -148,7 +148,7 @@ fn fixture_user(
     club_id: Option<Uuid>,
     license: Option<&str>,
 ) -> UserAccount {
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     UserAccount {
         id,
         email: format!("{id}@example.fr"),
@@ -194,7 +194,7 @@ impl NotificationRepository for MockNotificationRepository {
             message: message.to_string(),
             link: link.map(|s| s.to_string()),
             read: false,
-            created_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
         };
         self.items.lock().unwrap().push(n.clone());
         Ok(n)
@@ -267,7 +267,7 @@ impl AvailabilityRepository for MockAvailabilityRepository {
             player_id,
             status,
             commentaire,
-            updated_at: Utc::now(),
+            updated_at: OffsetDateTime::now_utc(),
         };
         if let Some(existing) = items
             .iter_mut()
@@ -381,8 +381,8 @@ impl MatchRepository for MockMatchRepository {
     }
     async fn get_matches_by_date_range(
         &self,
-        _s: chrono::DateTime<Utc>,
-        _e: chrono::DateTime<Utc>,
+        _s: time::OffsetDateTime,
+        _e: time::OffsetDateTime,
     ) -> Result<Vec<Match>, DatabaseError> {
         unimplemented!()
     }
@@ -513,7 +513,7 @@ impl UserRepository for MockUserRepository {
         &self,
         _u: Uuid,
         _t: String,
-        _e: chrono::DateTime<Utc>,
+        _e: time::OffsetDateTime,
     ) -> Result<palet_backend::models::user::RefreshToken, DatabaseError> {
         unimplemented!()
     }
@@ -531,7 +531,7 @@ impl UserRepository for MockUserRepository {
     }
     async fn delete_expired_tokens(
         &self,
-        _now: chrono::DateTime<Utc>,
+        _now: time::OffsetDateTime,
     ) -> Result<u64, DatabaseError> {
         unimplemented!()
     }
@@ -860,8 +860,8 @@ fn token_for(user: &UserAccount) -> String {
         role: user.role.clone(),
         club_id: user.club_id.map(|c| c.to_string()),
         token_type: ACCESS_TOKEN_TYPE.to_string(),
-        iat: Utc::now().timestamp(),
-        exp: (Utc::now() + chrono::Duration::hours(1)).timestamp(),
+        iat: OffsetDateTime::now_utc().unix_timestamp(),
+        exp: (OffsetDateTime::now_utc() + time::Duration::hours(1)).unix_timestamp(),
     };
     create_token(&AppConfig::default().jwt_secret, &claims).expect("token")
 }

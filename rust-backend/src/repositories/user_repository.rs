@@ -4,9 +4,9 @@ use crate::db::DatabaseError;
 use crate::models::user::{NewUser, RefreshToken, UserAccount};
 use crate::repositories::enum_conv::{enum_from_db_string, enum_to_db_string};
 use async_trait::async_trait;
-use chrono::{DateTime, Utc};
 use sqlx::{PgPool, Row};
 use std::sync::Arc;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 #[async_trait]
@@ -20,12 +20,12 @@ pub trait UserRepository: Send + Sync {
         &self,
         user_id: Uuid,
         token: String,
-        expires_at: DateTime<Utc>,
+        expires_at: OffsetDateTime,
     ) -> Result<RefreshToken, DatabaseError>;
     async fn find_refresh_token(&self, token: &str) -> Result<Option<RefreshToken>, DatabaseError>;
     async fn revoke_refresh_token(&self, token: &str) -> Result<(), DatabaseError>;
     async fn revoke_all_user_tokens(&self, user_id: Uuid) -> Result<(), DatabaseError>;
-    async fn delete_expired_tokens(&self, now: DateTime<Utc>) -> Result<u64, DatabaseError>;
+    async fn delete_expired_tokens(&self, now: OffsetDateTime) -> Result<u64, DatabaseError>;
 }
 
 #[derive(Clone)]
@@ -76,7 +76,7 @@ impl PostgresUserRepository {
 impl UserRepository for PostgresUserRepository {
     async fn create_user(&self, new_user: NewUser) -> Result<UserAccount, DatabaseError> {
         let email = new_user.email.clone();
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let row = sqlx::query(
             r#"
             INSERT INTO users (id, email, password_hash, first_name, last_name, role, club_id, license_number, category, status, created_at, updated_at)
@@ -130,7 +130,7 @@ impl UserRepository for PostgresUserRepository {
 
     async fn update_last_login(&self, id: Uuid) -> Result<(), DatabaseError> {
         sqlx::query("UPDATE users SET last_login = $1, updated_at = $1 WHERE id = $2")
-            .bind(Utc::now())
+            .bind(OffsetDateTime::now_utc())
             .bind(id)
             .execute(&*self.pool)
             .await?;
@@ -141,7 +141,7 @@ impl UserRepository for PostgresUserRepository {
         &self,
         user_id: Uuid,
         token: String,
-        expires_at: DateTime<Utc>,
+        expires_at: OffsetDateTime,
     ) -> Result<RefreshToken, DatabaseError> {
         let row = sqlx::query(
             r#"
@@ -154,7 +154,7 @@ impl UserRepository for PostgresUserRepository {
         .bind(user_id)
         .bind(&token)
         .bind(expires_at)
-        .bind(Utc::now())
+        .bind(OffsetDateTime::now_utc())
         .fetch_one(&*self.pool)
         .await?;
         Ok(Self::row_to_token(row))
@@ -172,7 +172,7 @@ impl UserRepository for PostgresUserRepository {
         sqlx::query(
             "UPDATE refresh_tokens SET revoked_at = $1 WHERE token = $2 AND revoked_at IS NULL",
         )
-        .bind(Utc::now())
+        .bind(OffsetDateTime::now_utc())
         .bind(token)
         .execute(&*self.pool)
         .await?;
@@ -183,14 +183,14 @@ impl UserRepository for PostgresUserRepository {
         sqlx::query(
             "UPDATE refresh_tokens SET revoked_at = $1 WHERE user_id = $2 AND revoked_at IS NULL",
         )
-        .bind(Utc::now())
+        .bind(OffsetDateTime::now_utc())
         .bind(user_id)
         .execute(&*self.pool)
         .await?;
         Ok(())
     }
 
-    async fn delete_expired_tokens(&self, now: DateTime<Utc>) -> Result<u64, DatabaseError> {
+    async fn delete_expired_tokens(&self, now: OffsetDateTime) -> Result<u64, DatabaseError> {
         let result = sqlx::query(
             "DELETE FROM refresh_tokens WHERE expires_at < $1 OR revoked_at IS NOT NULL",
         )

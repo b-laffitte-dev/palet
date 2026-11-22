@@ -14,8 +14,9 @@ resolver = "2"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 uuid = { version = "1.28.0", features = ["v4", "serde"] }
-# "wasmbind" : Utc::now() fonctionne sur wasm32-unknown-unknown (sinon panic).
-chrono = { version = "0.4.45", features = ["serde", "wasmbind"] }
+# "wasm-bindgen" (ajouté côté frontend/mobile) : OffsetDateTime::now_utc()
+# fonctionne sur wasm32-unknown-unknown (sinon panic).
+time = { version = "0.3", features = ["serde", "macros", "formatting", "parsing"] }
 log = "0.4.34"
 
 [profile.dev]

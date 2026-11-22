@@ -821,8 +821,8 @@ mod tests {
             current_journee: None,
             current_phase: None,
             organizer_id: Uuid::new_v4(),
-            created_at: chrono::Utc::now(),
-            updated_at: chrono::Utc::now(),
+            created_at: time::OffsetDateTime::now_utc(),
+            updated_at: time::OffsetDateTime::now_utc(),
         };
 
         // WHEN: Validating rules
@@ -856,8 +856,8 @@ mod tests {
             current_journee: None,
             current_phase: None,
             organizer_id: Uuid::new_v4(),
-            created_at: chrono::Utc::now(),
-            updated_at: chrono::Utc::now(),
+            created_at: time::OffsetDateTime::now_utc(),
+            updated_at: time::OffsetDateTime::now_utc(),
         };
 
         // WHEN: Validating rules
@@ -910,14 +910,14 @@ mod tests {
             verified: false,
             verified_by: None,
             verified_at: None,
-            date: chrono::Utc::now(),
+            date: time::OffsetDateTime::now_utc(),
             time: None,
             location: None,
             duration: None,
-            created_at: chrono::Utc::now(),
-            updated_at: chrono::Utc::now(),
-            started_at: Some(chrono::Utc::now()),
-            ended_at: Some(chrono::Utc::now()),
+            created_at: time::OffsetDateTime::now_utc(),
+            updated_at: time::OffsetDateTime::now_utc(),
+            started_at: Some(time::OffsetDateTime::now_utc()),
+            ended_at: Some(time::OffsetDateTime::now_utc()),
         };
 
         // WHEN: Validating rules
@@ -952,14 +952,14 @@ mod tests {
             verified: false,
             verified_by: None,
             verified_at: None,
-            date: chrono::Utc::now(),
+            date: time::OffsetDateTime::now_utc(),
             time: None,
             location: None,
             duration: None,
-            created_at: chrono::Utc::now(),
-            updated_at: chrono::Utc::now(),
-            started_at: Some(chrono::Utc::now()),
-            ended_at: Some(chrono::Utc::now()),
+            created_at: time::OffsetDateTime::now_utc(),
+            updated_at: time::OffsetDateTime::now_utc(),
+            started_at: Some(time::OffsetDateTime::now_utc()),
+            ended_at: Some(time::OffsetDateTime::now_utc()),
         };
 
         // WHEN: Validating rules

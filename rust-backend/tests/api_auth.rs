@@ -4,7 +4,6 @@
 
 use actix_web::{http::StatusCode, test, web, App};
 use async_trait::async_trait;
-use chrono::{DateTime, Duration, Utc};
 use palet_backend::{
     config::AppConfig,
     db::{Database, DatabaseError, DivisionRepository, UserRepository},
@@ -18,6 +17,7 @@ use palet_shared::{
 };
 use sqlx::postgres::PgPoolOptions;
 use std::sync::{Arc, Mutex};
+use time::{Duration, OffsetDateTime};
 use uuid::Uuid;
 
 // ============================================
@@ -65,7 +65,7 @@ impl UserRepository for MockUserRepository {
                 "Un compte existe déjà pour {email}"
             )));
         }
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let user = UserAccount {
             id: Uuid::new_v4(),
             email,
@@ -110,7 +110,7 @@ impl UserRepository for MockUserRepository {
     async fn update_last_login(&self, id: Uuid) -> Result<(), DatabaseError> {
         let mut users = self.users.lock().unwrap();
         if let Some(u) = users.iter_mut().find(|u| u.id == id) {
-            u.last_login = Some(Utc::now());
+            u.last_login = Some(OffsetDateTime::now_utc());
         }
         Ok(())
     }
@@ -119,7 +119,7 @@ impl UserRepository for MockUserRepository {
         &self,
         user_id: Uuid,
         token: String,
-        expires_at: DateTime<Utc>,
+        expires_at: OffsetDateTime,
     ) -> Result<RefreshToken, DatabaseError> {
         let rt = RefreshToken {
             id: Uuid::new_v4(),
@@ -127,7 +127,7 @@ impl UserRepository for MockUserRepository {
             token,
             expires_at,
             revoked_at: None,
-            created_at: Utc::now(),
+            created_at: OffsetDateTime::now_utc(),
         };
         self.tokens.lock().unwrap().push(rt.clone());
         Ok(rt)
@@ -146,7 +146,7 @@ impl UserRepository for MockUserRepository {
     async fn revoke_refresh_token(&self, token: &str) -> Result<(), DatabaseError> {
         let mut tokens = self.tokens.lock().unwrap();
         if let Some(t) = tokens.iter_mut().find(|t| t.token == token) {
-            t.revoked_at = Some(Utc::now());
+            t.revoked_at = Some(OffsetDateTime::now_utc());
         }
         Ok(())
     }
@@ -155,7 +155,7 @@ impl UserRepository for MockUserRepository {
         Ok(())
     }
 
-    async fn delete_expired_tokens(&self, _now: DateTime<Utc>) -> Result<u64, DatabaseError> {
+    async fn delete_expired_tokens(&self, _now: OffsetDateTime) -> Result<u64, DatabaseError> {
         Ok(0)
     }
 }
@@ -173,7 +173,7 @@ impl DivisionRepository for MockDivisionRepository {
         let (name, league, season) = request
             .validated()
             .map_err(DatabaseError::ValidationError)?;
-        let now = Utc::now();
+        let now = OffsetDateTime::now_utc();
         let division = Division {
             id: Uuid::new_v4(),
             name,
@@ -269,8 +269,8 @@ fn claims_for(role: UserRole) -> Claims {
         role,
         club_id: None,
         token_type: ACCESS_TOKEN_TYPE.to_string(),
-        iat: Utc::now().timestamp(),
-        exp: (Utc::now() + Duration::hours(1)).timestamp(),
+        iat: OffsetDateTime::now_utc().unix_timestamp(),
+        exp: (OffsetDateTime::now_utc() + Duration::hours(1)).unix_timestamp(),
     }
 }
 
