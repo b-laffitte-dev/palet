@@ -26,7 +26,7 @@ use pages::{
 /// Route definitions
 #[derive(Clone, Debug, PartialEq, Routable)]
 #[rustfmt::skip]
-enum Route {
+pub(crate) enum Route {
     #[route("/")]
     Home,
     #[route("/championnats")]
