@@ -246,7 +246,57 @@
   color: #fca5a5;
 }
 
+/* Federal space — external FNSMR services (Gestaffil, le-palet.com) */
+.fed-links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.fed-link-card {
+  display: block;
+  background: color-mix(in srgb, var(--color-brand-green-900) 60%, transparent);
+  border: 1px solid var(--color-brand-green-700);
+  border-radius: 12px;
+  padding: 16px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.fed-link-card:hover {
+  border-color: var(--color-brand-green-500);
+  background: color-mix(in srgb, var(--color-brand-green-800) 50%, transparent);
+}
+
+.fed-link-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+
+.fed-link-desc {
+  color: var(--color-brand-green-200);
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+
+.fed-link-cta {
+  color: var(--color-brand-orange, #ff8c00);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 @media (min-width: 640px) {
+  .fed-links {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fed-link-card {
+    padding: 20px;
+  }
+}
   .fed-panel {
     padding: 24px;
   }

@@ -15,10 +15,12 @@ pub fn Footer() -> Element {
                     div { class: "mb-4 md:mb-0",
                         p { class: "text-brand-green-200 text-sm", "© {year} Palet Vendéen. Tous droits réservés." }
                     }
-                    div { class: "flex space-x-6",
+                    div { class: "flex flex-wrap justify-center gap-x-6 gap-y-2",
                         a { class: "text-brand-green-200 hover:text-white transition-colors text-sm", href: "/mentions-legales", "Mentions légales" }
                         a { class: "text-brand-green-200 hover:text-white transition-colors text-sm", href: "/contact", "Contact" }
-                        a { class: "text-brand-green-200 hover:text-white transition-colors text-sm", href: "https://github.com/b-laffitte-dev/palet", "GitHub" }
+                        a { class: "text-brand-green-200 hover:text-white transition-colors text-sm", href: "https://www.gestaffil.org/", target: "_blank", rel: "noopener noreferrer", "Gestaffil" }
+                        a { class: "text-brand-green-200 hover:text-white transition-colors text-sm", href: "https://www.le-palet.com/", target: "_blank", rel: "noopener noreferrer", "le-palet.com" }
+                        a { class: "text-brand-green-200 hover:text-white transition-colors text-sm", href: "https://github.com/b-laffitte-dev/palet", target: "_blank", rel: "noopener noreferrer", "GitHub" }
                     }
                 }
             }

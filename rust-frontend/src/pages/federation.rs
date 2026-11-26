@@ -131,6 +131,36 @@ pub fn Federation() -> Element {
                             p { class: "text-brand-green-200 text-sm mt-2", "{message}" }
                         }
                     }
+                    section { class: "fed-panel",
+                        h2 { class: "text-white font-bold mb-2", "Services FNSMR" }
+                        p { class: "text-brand-green-200 mb-4",
+                            "Accès aux outils nationaux de la Fédération Nationale du Sport en Milieu Rural."
+                        }
+                        div { class: "fed-links",
+                            a {
+                                class: "fed-link-card",
+                                href: "https://www.gestaffil.org/",
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                                p { class: "fed-link-title", "Gestaffil — Affiliations" }
+                                p { class: "fed-link-desc",
+                                    "Gestion des licences et affiliations des clubs et des licenciés FNSMR."
+                                }
+                                span { class: "fed-link-cta", "Accéder à Gestaffil →" }
+                            }
+                            a {
+                                class: "fed-link-card",
+                                href: "https://www.le-palet.com/",
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                                p { class: "fed-link-title", "Fédération FNSMR" }
+                                p { class: "fed-link-desc",
+                                    "Actualités, règlements et informations nationales du palet fonte sur plomb."
+                                }
+                                span { class: "fed-link-cta", "Visiter le-palet.com →" }
+                            }
+                        }
+                    }
                 }
             }
         }
