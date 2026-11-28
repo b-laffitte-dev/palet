@@ -13,6 +13,9 @@ use dioxus::prelude::*;
 pub fn Header() -> Element {
     // Section active déduite de la route courante (pages détail incluses).
     let section = active_section(&use_route::<Route>());
+    let connected = use_auth().read().is_authenticated();
+    let mut q = use_signal(String::new);
+    let navigator = use_navigator();
     let link_class = |href: &str| {
         if section == href {
             "text-white font-semibold underline"
@@ -27,10 +30,13 @@ pub fn Header() -> Element {
                     div { class: "flex items-center space-x-8",
                         Link { to: "/", Logo { } }
                         nav { class: "hidden md:flex space-x-6",
-                            Link { to: "/clubs", class: link_class("/clubs"), "Clubs" }
-                            Link { to: "/joueurs", class: link_class("/joueurs"), "Joueurs" }
-                            Link { to: "/tournois", class: link_class("/tournois"), "Tournois" }
-                            Link { to: "/championnats", class: link_class("/championnats"), "Championnats" }
+                            // Sections réservées aux visiteurs connectés.
+                            if connected {
+                                Link { to: "/clubs", class: link_class("/clubs"), "Clubs" }
+                                Link { to: "/joueurs", class: link_class("/joueurs"), "Joueurs" }
+                                Link { to: "/tournois", class: link_class("/tournois"), "Tournois" }
+                                Link { to: "/championnats", class: link_class("/championnats"), "Championnats" }
+                            }
                             Link { to: "/actualites", class: link_class("/actualites"), "Actualités" }
                             Link { to: "/federation", class: link_class("/federation"), "Fédération" }
                             {
@@ -52,26 +58,23 @@ pub fn Header() -> Element {
                         }
                     }
                     div { class: "flex items-center space-x-4",
-                        {
-                            let mut q = use_signal(String::new);
-                            let navigator = use_navigator();
-                            rsx! {
-                                form {
-                                    class: "hidden md:flex items-center",
-                                    onsubmit: move |evt: FormEvent| {
-                                        evt.prevent_default();
-                                        let v = q.read().trim().to_string();
-                                        if v.chars().count() >= 2 {
-                                            navigator.push(format!("/recherche/{}", url_encode(&v)));
-                                        }
-                                    },
-                                    input {
-                                        class: "page-input",
-                                        r#type: "search",
-                                        placeholder: "Rechercher…",
-                                        value: "{q}",
-                                        oninput: move |evt: FormEvent| q.set(evt.value()),
+                        // La recherche n'est accessible qu'aux connectés.
+                        if connected {
+                            form {
+                                class: "hidden md:flex items-center",
+                                onsubmit: move |evt: FormEvent| {
+                                    evt.prevent_default();
+                                    let v = q.read().trim().to_string();
+                                    if v.chars().count() >= 2 {
+                                        navigator.push(format!("/recherche/{}", url_encode(&v)));
                                     }
+                                },
+                                input {
+                                    class: "page-input",
+                                    r#type: "search",
+                                    placeholder: "Rechercher…",
+                                    value: "{q}",
+                                    oninput: move |evt: FormEvent| q.set(evt.value()),
                                 }
                             }
                         }

@@ -6,6 +6,7 @@
 use crate::components::common::{Button, ButtonSize, ButtonVariant};
 use crate::components::home::model::HOME_LEAGUE;
 use crate::components::layout::Layout;
+use crate::hooks::use_auth::use_auth;
 use crate::services::api::ApiService;
 use crate::utils::format::current_season;
 use dioxus::prelude::*;
@@ -16,6 +17,8 @@ use time::OffsetDateTime;
 #[component]
 pub fn Federation() -> Element {
     let api = ApiService::new();
+    // La gestion des divisions est réservée aux visiteurs connectés.
+    let connected = use_auth().read().is_authenticated();
     let divisions = use_resource({
         let api = api.clone();
         move || {
@@ -66,7 +69,8 @@ pub fn Federation() -> Element {
                         "Gestion des divisions départementales — {HOME_LEAGUE} (79). "
                         "Chaque division ajoutée apparaît comme onglet sur la page d'accueil."
                     }
-                    section { class: "fed-panel",
+                    if connected {
+                        section { class: "fed-panel",
                         h2 { class: "text-white font-bold mb-4", "Divisions" }
                         match &*divisions.read() {
                             Some(Ok(list)) if !list.is_empty() => {
@@ -129,6 +133,16 @@ pub fn Federation() -> Element {
                         }
                         if !message.read().is_empty() {
                             p { class: "text-brand-green-200 text-sm mt-2", "{message}" }
+                        }
+                        }
+                    } else {
+                        section { class: "fed-panel",
+                            h2 { class: "text-white font-bold mb-2", "Gestion des divisions" }
+                            p { class: "text-brand-green-200",
+                                "Réservée aux utilisateurs connectés. "
+                                Link { to: "/connexion", class: "text-brand-orange-300 underline", "Connectez-vous" }
+                                " pour gérer les divisions."
+                            }
                         }
                     }
                     section { class: "fed-panel",

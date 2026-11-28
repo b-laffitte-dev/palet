@@ -38,6 +38,12 @@ if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
     exit 1
 fi
 
+echo "STOP des services existants (tag ${IMAGE_TAG})..."
+docker compose -f "$COMPOSE_FILE" down
+
+echo "Cleaning des images locales (tag ${IMAGE_TAG})..."
+docker compose -f "$COMPOSE_FILE" rm --force --stop --all
+
 echo "Login au registry ${DOCKER_REGISTRY} (user: ${DOCKER_LOGIN_USER})..."
 echo "$DOCKER_LOGIN_PASS" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_LOGIN_USER" --password-stdin
 

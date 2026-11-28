@@ -10,12 +10,17 @@ use crate::components::home::{
     HeroSection, HomeData, HomeFooter, JourneeCarousel, SiteHeader, Spaces, Standings, TopBar,
     TopPlayers, Upcoming,
 };
+use crate::hooks::use_auth::use_auth_guard;
 use crate::services::api::ApiService;
 use dioxus::prelude::*;
 
 /// Home page component
+///
+/// Page d'accueil réservée aux visiteurs connectés : le garde de route
+/// redirige vers la page fédération sinon.
 #[component]
 pub fn Home() -> Element {
+    let allowed = use_auth_guard();
     let data = use_resource(|| {
         let api = ApiService::new();
         async move { HomeData::load(&api).await }
@@ -51,27 +56,29 @@ pub fn Home() -> Element {
             TopBar {}
             SiteHeader {}
             main {
-                if let Some(home) = &*data.read() {
-                    JourneeCarousel {
-                        slides: home.slides.clone(),
-                        on_select: move |sel: CarouselSelection| selection.set(Some(sel)),
+                if allowed {
+                    if let Some(home) = &*data.read() {
+                        JourneeCarousel {
+                            slides: home.slides.clone(),
+                            on_select: move |sel: CarouselSelection| selection.set(Some(sel)),
+                        }
+                        HeroSection { hero }
+                        Standings {
+                            title: home.championship_name.clone(),
+                            subtitle: home.subtitle.clone(),
+                            tabs: home.tabs.clone(),
+                            active: active_name.clone(),
+                            on_select: move |name: String| active.set(name),
+                        }
+                        Upcoming { events: home.events.clone() }
+                        TopPlayers { cards: home.top.clone() }
+                    } else {
+                        div { class: "pv-loading",
+                            p { "Chargement des données…" }
+                        }
                     }
-                    HeroSection { hero }
-                    Standings {
-                        title: home.championship_name.clone(),
-                        subtitle: home.subtitle.clone(),
-                        tabs: home.tabs.clone(),
-                        active: active_name.clone(),
-                        on_select: move |name: String| active.set(name),
-                    }
-                    Upcoming { events: home.events.clone() }
-                    TopPlayers { cards: home.top.clone() }
-                } else {
-                    div { class: "pv-loading",
-                        p { "Chargement des données…" }
-                    }
+                    Spaces {}
                 }
-                Spaces {}
             }
             HomeFooter {}
         }

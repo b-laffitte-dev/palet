@@ -1,6 +1,8 @@
 //! État d'authentification global (context Dioxus), persisté en localStorage.
 
 use crate::services::api::{self, ApiService};
+use crate::utils::nav::{guard_action, GuardAction};
+use crate::Route;
 use dioxus::prelude::*;
 use palet_shared::{LoginRequest, RegisterRequest, UserProfile};
 
@@ -37,6 +39,33 @@ pub fn provide_auth() {
 /// Accès au signal global d'auth depuis n'importe quel composant.
 pub fn use_auth() -> Signal<AuthState> {
     use_context::<Signal<AuthState>>()
+}
+
+/// Garde de route : applique [`guard_action`] à la route courante.
+///
+/// Doit être appelé dans un composant descendant du `Router` (ex. `Layout`,
+/// `Home`). Redirige via le navigateur quand la route n'est pas autorisée et
+/// renvoie `true` si la route courante est accessible (permet de masquer le
+/// contenu protégé le temps de la redirection).
+pub fn use_auth_guard() -> bool {
+    let route = use_route::<Route>();
+    let auth = use_auth();
+    let navigator = use_navigator();
+    let allowed = matches!(
+        guard_action(&route, auth.read().is_authenticated()),
+        GuardAction::Allow
+    );
+    use_effect(move || {
+        // `router().current()` relit le signal interne de la route et
+        // `auth.read()` l'état d'auth : l'effet se réexécute à chaque
+        // changement de route ou de connexion.
+        if let GuardAction::Redirect(target) =
+            guard_action(&router().current::<Route>(), auth.read().is_authenticated())
+        {
+            navigator.push(target);
+        }
+    });
+    allowed
 }
 
 pub async fn login(email: &str, password: &str) -> Result<(), String> {
