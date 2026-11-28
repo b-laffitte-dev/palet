@@ -100,6 +100,21 @@ jobs:
           cargo +nightly audit --deny warnings
           cargo +nightly audit --deny vulnerabilities
 
+  # Scan for hardcoded secrets (security checks run on the nightly schedule only)
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Check for hardcoded secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: .
+          extra_args: --only-verified
+
   # Performance benchmarks
   benchmarks:
     name: Performance Benchmarks
