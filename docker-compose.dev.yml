@@ -1,0 +1,68 @@
+# Environnement dev déployé depuis les images publiées par la CI
+# (job docker-dev de rust-ci.yml : tags dev / dev-<sha>) sur le registry custom.
+# À lancer sur le serveur via scripts/deploy-dev.sh — ne pas confondre avec
+# docker-compose.yml (build local des images).
+#
+# Variables (exportées ou dans .env.deploy à la racine, non commité) :
+#   DOCKER_REGISTRY      (requis)  url du registry, ex. registry.example.com
+#   REGISTRY_NAMESPACE   (défaut : b-laffitte-dev)  owner des images publiées
+#   IMAGE_TAG            (défaut : dev)             tag à déployer (dev ou dev-<sha>)
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: palet
+      POSTGRES_PASSWORD: palet
+      POSTGRES_DB: palet
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Seed dev : exécuté une seule fois, à la première initialisation
+      # (volume pgdata vide), via /docker-entrypoint-initdb.d.
+      - ./dev-data:/dev-data:ro
+      - ./rust-backend/migrations:/migrations:ro
+      - ./dev-data/init-db.sh:/docker-entrypoint-initdb.d/01-seed-dev-data.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U palet"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    image: ${DOCKER_REGISTRY:?DOCKER_REGISTRY requis}/${REGISTRY_NAMESPACE:-b-laffitte-dev}/palet-backend:${IMAGE_TAG:-dev}
+    environment:
+      PALET__DATABASE_URL: postgres://palet:palet@db:5432/palet
+      PALET__ENVIRONMENT: ${PALET__ENVIRONMENT:-development}
+      PALET__SEED_DIR: ${PALET__SEED_DIR:-/seed}
+      PALET__LOG_LEVEL: info
+      # Secret JWT obligatoire hors dev : définir PALET__JWT_SECRET dans l'environnement
+      # du serveur (ou .env.deploy). Aucun secret en dur dans ce fichier.
+      PALET__JWT_SECRET: ${PALET__JWT_SECRET:?PALET__JWT_SECRET requis (voir .env.example)}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dev-data:/seed:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      # Image scratch : seul busybox est présent, et on cible 127.0.0.1
+      # (pas de /etc/hosts dans l'image → "localhost" non résoluble).
+      test: ["CMD", "/bin/busybox", "wget", "-q", "-O-", "http://127.0.0.1:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  web:
+    image: ${DOCKER_REGISTRY:?DOCKER_REGISTRY requis}/${REGISTRY_NAMESPACE:-b-laffitte-dev}/palet-frontend:${IMAGE_TAG:-dev}
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:
