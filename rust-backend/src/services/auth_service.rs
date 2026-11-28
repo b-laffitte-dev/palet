@@ -94,21 +94,17 @@ pub fn verify_password(password: &str, hash: &str) -> bool {
 }
 
 pub fn create_token(secret: &str, claims: &Claims) -> Result<String, AuthError> {
-    encode(
-        &Header::default(),
-        claims,
-        &EncodingKey::from_secret(secret.as_bytes()),
-    )
-    .map_err(|e| AuthError::Internal(format!("création du JWT : {e}")))
+    let key = EncodingKey::from_secret(secret.as_bytes())
+        .map_err(|e| AuthError::Internal(format!("clé d'encodage JWT : {e}")))?;
+    encode(&Header::default(), claims, &key)
+        .map_err(|e| AuthError::Internal(format!("création du JWT : {e}")))
 }
 
 pub fn validate_token(secret: &str, token: &str, expected_type: &str) -> Result<Claims, AuthError> {
-    let data = decode::<Claims>(
-        token,
-        &DecodingKey::from_secret(secret.as_bytes()),
-        &Validation::default(),
-    )
-    .map_err(|_| AuthError::Unauthorized("Token invalide ou expiré".to_string()))?;
+    let key = DecodingKey::from_secret(secret.as_bytes())
+        .map_err(|_| AuthError::Unauthorized("Token invalide ou expiré".to_string()))?;
+    let data = decode::<Claims>(token, &key, &Validation::default())
+        .map_err(|_| AuthError::Unauthorized("Token invalide ou expiré".to_string()))?;
     if data.claims.token_type != expected_type {
         return Err(AuthError::Unauthorized(
             "Type de token inattendu".to_string(),
